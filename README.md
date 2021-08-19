@@ -3,7 +3,7 @@
 [![Azure DevOps Pipeline Status](https://img.shields.io/azure-devops/tests/MSPsUK/NinjaRMM/4?style=for-the-badge)](https://dev.azure.com/MSPsUK/NinjaRMM/_build?definitionId=1)
 [![Azure DevOps Code Coverage](https://img.shields.io/azure-devops/coverage/MSPsUK/NinjaRMM/4?style=for-the-badge)](https://dev.azure.com/MSPsUK/NinjaRMM/_build?definitionId=1)
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/NinjaRMM?style=for-the-badge)](https://www.powershellgallery.com/packages/NinjaRMM/)
-[![License](https://img.shields.io/github/license/homotechsual/NinjaRMMstyle=for-the-badge)](https://ninjarmmapi.mit-license.org/)
+[![License](https://img.shields.io/github/license/homotechsual/NinjaRMM?style=for-the-badge)](https://ninjarmmapi.mit-license.org/)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/homotechsual?style=for-the-badge)](https://github.com/sponsors/homotechsual/)
 [![Stable Release](https://img.shields.io/powershellgallery/v/NinjaRMM?label=Stable+Release&style=for-the-badge)](https://www.powershellgallery.com/packages/NinjaRMM/)
 [![Preview Release](https://img.shields.io/powershellgallery/v/NinjaRMM?label=Preview+Release&include_prereleases&style=for-the-badge)](https://www.powershellgallery.com/packages/NinjaRMM/)
