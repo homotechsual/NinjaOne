@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "VQgKNTBv7ZdTlhaPPz8Bql+Z5gzsv1AmNTb83PjQb3t58hz+jG38tUmb0gUfzzNgj/mH0sflIuJdPzq0rAMOlA==",
+  "success": true,
+  "projectFilePath": "X:\\OneDrive - MJCO\\Documents\\PowerShell\\Modules\\NinjaRMM\\OAuthListener\\OAuthListener.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\MichaelO'Toole\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\5.0.8\\microsoft.netcore.app.host.win-x64.5.0.8.nupkg.sha512"
+  ],
+  "logs": []
+}
