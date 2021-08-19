@@ -20,7 +20,7 @@ The module is written for [PowerShell 7](https://docs.microsoft.com/en-us/powers
 
 ## What does it do?
 
-NinjaRMM provides a PowerShell wrapper around the Halo API, tested extensively against HaloPSA instances only (please test against HaloISM or HaloServiceDesk instances and let us know how it works). The module can retrieve and send information to the Halo API.
+NinjaRMM provides a PowerShell wrapper around the NinjaRMM API. The module can retrieve and send information to the NinjaRMM API.
 
 ## Installing
 
