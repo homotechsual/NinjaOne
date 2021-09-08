@@ -18,6 +18,7 @@ function Get-NinjaRMMDeviceHealthReport {
         [Alias('df')]
         [String]$deviceFilter,
         # Filter by health status.
+        [ValidateSet('UNHEALTHY', 'HEALTHY', 'UNKNOWN', 'NEEDS_ATTENTION')]
         [String]$health,
         # Cursor name.
         [String]$cursor,
@@ -37,15 +38,13 @@ function Get-NinjaRMMDeviceHealthReport {
         $DeviceHealthReport = New-NinjaRMMGETRequest @RequestParams
         Return $DeviceHealthReport
     } catch {
-        $CommandFailedError = [ErrorRecord]::New(
-            [System.Exception]::New(
-                'Failed to get the device health report from NinjaRMM. You can use "Get-Error" for detailed error information.',
-                $_.Exception
-            ),
-            'NinjaCommandFailed',
-            'ReadError',
-            $TargetObject
-        )
-        $PSCmdlet.ThrowTerminatingError($CommandFailedError)
+        $ErrorRecord = @{
+            ExceptionType = 'System.Exception'
+            ErrorRecord = $_
+            ErrorCategory = 'ReadError'
+            BubbleUpDetails = $True
+            CommandName = $CommandName
+        }
+        New-NinjaRMMError @ErrorRecord
     }
 }

@@ -38,15 +38,13 @@ function Get-NinjaRMMVolumesReport {
         $VolumesReport = New-NinjaRMMGETRequest @RequestParams
         Return $VolumesReport
     } catch {
-        $CommandFailedError = [ErrorRecord]::New(
-            [System.Exception]::New(
-                'Failed to get the volumes report from NinjaRMM. You can use "Get-Error" for detailed error information.',
-                $_.Exception
-            ),
-            'NinjaCommandFailed',
-            'ReadError',
-            $TargetObject
-        )
-        $PSCmdlet.ThrowTerminatingError($CommandFailedError)
+        $ErrorRecord = @{
+            ExceptionType = 'System.Exception'
+            ErrorRecord = $_
+            ErrorCategory = 'ReadError'
+            BubbleUpDetails = $True
+            CommandName = $CommandName
+        }
+        New-NinjaRMMError @ErrorRecord
     }
 }

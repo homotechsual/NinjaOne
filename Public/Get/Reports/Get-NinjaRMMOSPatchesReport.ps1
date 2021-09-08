@@ -21,10 +21,13 @@ function Get-NinjaRMMOSPatchesReport {
         [Alias('ts')]
         [string]$timeStamp,
         # Filter patches by patch status.
+        [ValidateSet('MANUAL', 'APPROVED', 'FAILED', 'REJECTED')]
         [String]$status,
         # Filter patches by type.
+        [ValidateSet('UPDATE_ROLLUPS', 'SECURITY_UPDATES', 'DEFINITION_UPDATES', 'CRITICAL_UPDATES', 'REGULAR_UPDATES', 'FEATURE_PACKS', 'DRIVER_UPDATES')]
         [String]$type,
         # Filter patches by severity.
+        [ValidateSet('OPTIONAL', 'MODERATE', 'IMPORTANT', 'CRITICAL')]
         [String]$severity,
         # Cursor name.
         [String]$cursor,
@@ -44,15 +47,13 @@ function Get-NinjaRMMOSPatchesReport {
         $OSPatchesReport = New-NinjaRMMGETRequest @RequestParams
         Return $OSPatchesReport
     } catch {
-        $CommandFailedError = [ErrorRecord]::New(
-            [System.Exception]::New(
-                'Failed to get the OS patches report from NinjaRMM. You can use "Get-Error" for detailed error information.',
-                $_.Exception
-            ),
-            'NinjaCommandFailed',
-            'ReadError',
-            $TargetObject
-        )
-        $PSCmdlet.ThrowTerminatingError($CommandFailedError)
+        $ErrorRecord = @{
+            ExceptionType = 'System.Exception'
+            ErrorRecord = $_
+            ErrorCategory = 'ReadError'
+            BubbleUpDetails = $True
+            CommandName = $CommandName
+        }
+        New-NinjaRMMError @ErrorRecord
     }
 }

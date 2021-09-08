@@ -21,9 +21,9 @@ function Get-NinjaRMMSoftwareInventoryReport {
         [String]$cursor,
         # Number of results per page.
         [Int]$pageSize,
-        # Filter patches to those installed before this date.
+        # Filter sofware to those installed before this date.
         [DateTime]$installedBefore,
-        # Filter patches to those installed after this date.
+        # Filter software to those installed after this date.
         [DateTime]$installedAfter
     )
     $CommandName = $MyInvocation.InvocationName
@@ -39,15 +39,13 @@ function Get-NinjaRMMSoftwareInventoryReport {
         $SoftwareInventoryReport = New-NinjaRMMGETRequest @RequestParams
         Return $SoftwareInventoryReport
     } catch {
-        $CommandFailedError = [ErrorRecord]::New(
-            [System.Exception]::New(
-                'Failed to get the software inventory report from NinjaRMM. You can use "Get-Error" for detailed error information.',
-                $_.Exception
-            ),
-            'NinjaCommandFailed',
-            'ReadError',
-            $TargetObject
-        )
-        $PSCmdlet.ThrowTerminatingError($CommandFailedError)
+        $ErrorRecord = @{
+            ExceptionType = 'System.Exception'
+            ErrorRecord = $_
+            ErrorCategory = 'ReadError'
+            BubbleUpDetails = $True
+            CommandName = $CommandName
+        }
+        New-NinjaRMMError @ErrorRecord
     }
 }

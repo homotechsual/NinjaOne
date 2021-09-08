@@ -48,19 +48,11 @@ function Get-NinjaRMMInstaller {
         $QSCollection = New-NinjaRMMQuery -CommandName $CommandName -Parameters $Parameters
         if ($organisationID -and $locationID) {
             Write-Verbose 'Getting device from NinjaRMM API.'
-            $Organisation = Get-NinjaRMMOrganisations -organisationID $organisationID -ErrorAction SilentlyContinue
+            $Organisation = Get-NinjaRMMOrganisations -organisationID $organisationID
             $Location = Get-NinjaRMMLocations -organisationID $organisationID | Where-Object { $_.id -eq $locationID }
             if ($Organisation -and $Location) {
                 Write-Verbose "Retrieving installer for $($Organisation.Name) - $($Location.Name) `($installerType`)."
                 $Resource = "v2/organization/$($organisationID)/location/$($locationID)/installer/$($installerType)"
-            } else {
-                $GroupNotFoundError = [ErrorRecord]::New(
-                    [ItemNotFoundException]::new("Organisation with ID $($organisationID) or location with ID $($locationID) was not found in NinjaRMM."),
-                    'NinjaDeviceNotFound',
-                    'ObjectNotFound',
-                    $deviceID
-                )
-                $PSCmdlet.ThrowTerminatingError($GroupNotFoundError)
             }
         }
         $RequestParams = @{
@@ -71,15 +63,13 @@ function Get-NinjaRMMInstaller {
         $AgentInstallerResults = New-NinjaRMMGETRequest @RequestParams
         Return $AgentInstallerResults
     } catch {
-        $CommandFailedError = [ErrorRecord]::New(
-            [System.Exception]::New(
-                'Failed to get agent installer URL from NinjaRMM. You can use "Get-Error" for detailed error information.',
-                $_.Exception
-            ),
-            'NinjaCommandFailed',
-            'ReadError',
-            $TargetObject
-        )
-        $PSCmdlet.ThrowTerminatingError($CommandFailedError)
+        $ErrorRecord = @{
+            ExceptionType = 'System.Exception'
+            ErrorRecord = $_
+            ErrorCategory = 'ReadError'
+            BubbleUpDetails = $True
+            CommandName = $CommandName
+        }
+        New-NinjaRMMError @ErrorRecord
     }
 }

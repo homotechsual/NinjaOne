@@ -39,8 +39,7 @@
         'PSUseCorrectCasing',
         'PSUseDeclaredVarsMoreThanAssignments',
         'PSUsePSCredentialType',
-        'PSUseShouldProcessForStateChangingFunctions',
-        'PSUseSingularNouns'
+        'PSUseShouldProcessForStateChangingFunctions'
     )
     Rules = @{
         PSPlaceOpenBrace = @{

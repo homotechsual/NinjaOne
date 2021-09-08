@@ -52,6 +52,7 @@ function Connect-NinjaRMM {
         [Parameter( ParameterSetName = 'Token Authentication' )]
         [Switch]$ShowTokens
     )
+    $CommandName = $MyInvocation.InvocationName
     # Convert scopes to space separated string if it's an array.
     if ($Scopes -is [System.Array]) {
         $AuthScopes = $Scopes -Join ' '
@@ -121,9 +122,14 @@ function Connect-NinjaRMM {
                 $GotAuthorisationCode = $True
             }
         } catch {
-            $ExceptionResponse = $_.Exception.Response
-            Write-Error "The NinjaRMM authorisation code request `($($ExceptionResponse.RequestMessage.Method) $($ExceptionResponse.RequestMessage.RequestUri)`) responded with $($ExceptionResponse.StatusCode.Value__): $($ExceptionResponse.ReasonPhrase). You'll see more detail if using '-Verbose'"
-            Write-Verbose $_
+            $ErrorRecord = @{
+                ExceptionType = 'System.Net.Http.HttpRequestException'
+                ErrorRecord = $_
+                ErrorCategory = 'ProtocolError'
+                BubbleUpDetails = $True
+                CommandName = $CommandName
+            }
+            New-NinjaRMMError @ErrorRecord
         }
     } 
     if (($UseTokenAuth) -or ($GotAuthorisationCode)) {
@@ -171,19 +177,14 @@ function Connect-NinjaRMM {
                 Write-Output '       SAVE THESE IN A SECURE LOCATION       '
             }
         } catch {
-            $ExceptionResponse = $_.Exception.Response
-            $TargetObject = $_.TargetObject
-            $NinjaRMMResponse = $_.ErrorDetails.Message | ConvertFrom-Json
-            $RequestFailedError = [ErrorRecord]::New(
-                [System.Net.Http.HttpRequestException]::New(
-                    "The NinjaRMM request `($($TargetObject.Method) $($TargetObject.RequestUri)`) responded with $($ExceptionResponse.StatusCode.Value__): $($ExceptionResponse.ReasonPhrase). NinjaRMM's API said $($NinjaRMMResponse.resultCode): $($NinjaRMMResponse.errorMessage).",
-                    $_.Exception
-                ),
-                'NinjaCommandFailed',
-                'ReadError',
-                $TargetObject
-            )
-            $PSCmdlet.ThrowTerminatingError($RequestFailedError)
+            $ErrorRecord = @{
+                ExceptionType = 'System.Net.Http.HttpRequestException'
+                ErrorRecord = $_
+                ErrorCategory = 'ProtocolError'
+                BubbleUpDetails = $True
+                CommandName = $CommandName
+            }
+            New-NinjaRMMError @ErrorRecord
         }
     }
 }

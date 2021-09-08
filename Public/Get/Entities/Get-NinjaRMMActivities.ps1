@@ -13,6 +13,8 @@ function Get-NinjaRMMActivities {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by device ID.
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [Alias('id')]
         [Int]$deviceID,
         # Activity class.
         [ValidateSet('SYSTEM', 'DEVICE', 'USER', 'ALL')]
@@ -51,18 +53,10 @@ function Get-NinjaRMMActivities {
         $QSCollection = New-NinjaRMMQuery -CommandName $CommandName -Parameters $Parameters
         if ($deviceID) {
             Write-Verbose 'Getting device from NinjaRMM API.'
-            $Device = Get-NinjaRMMDevices -deviceID $deviceID -ErrorAction SilentlyContinue
+            $Device = Get-NinjaRMMDevices -deviceID $deviceID
             if ($Device) {
                 Write-Verbose "Retrieving activities for $($Device.SystemName)."
                 $Resource = "v2/device/$($deviceID)/activities"
-            } else {
-                $DeviceNotFoundError = [ErrorRecord]::New(
-                    [ItemNotFoundException]::new("Device with ID $($DeviceId) was not found in NinjaRMM."),
-                    'NinjaDeviceNotFound',
-                    'ObjectNotFound',
-                    $deviceID
-                )
-                $PSCmdlet.ThrowTerminatingError($DeviceNotFoundError)
             }
         } else {
             Write-Verbose 'Retrieving all device activities.'
@@ -76,15 +70,13 @@ function Get-NinjaRMMActivities {
         $ActivityResults = New-NinjaRMMGETRequest @RequestParams
         Return $ActivityResults
     } catch {
-        $CommandFailedError = [ErrorRecord]::New(
-            [System.Exception]::New(
-                'Failed to get activities from NinjaRMM. You can use "Get-Error" for detailed error information.',
-                $_.Exception
-            ),
-            'NinjaCommandFailed',
-            'ReadError',
-            $TargetObject
-        )
-        $PSCmdlet.ThrowTerminatingError($CommandFailedError)
+        $ErrorRecord = @{
+            ExceptionType = 'System.Exception'
+            ErrorRecord = $_
+            ErrorCategory = 'ReadError'
+            BubbleUpDetails = $True
+            CommandName = $CommandName
+        }
+        New-NinjaRMMError @ErrorRecord
     }
 }

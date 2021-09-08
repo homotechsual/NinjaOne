@@ -21,10 +21,13 @@ function Get-NinjaRMMSoftwarePatchInstallsReport {
         [Alias('ts')]
         [string]$timeStamp,
         # Filter patches by patch status.
+        [ValidateSet('PATCH', 'INSTALLER')]
         [string]$type,
         # Filter patches by impact.
+        [ValidateSet('OPTIONAL', 'RECOMMENDED', 'CRITICAL')]
         [string]$impact,
         # Filter patches by patch status.
+        [ValidateSet('FAILED', 'INSTALLED')]
         [String]$status,
         # Filter patches by product identifier.
         [String]$productIdentifier,
@@ -49,15 +52,13 @@ function Get-NinjaRMMSoftwarePatchInstallsReport {
         $SoftwarePatchInstallsReport = New-NinjaRMMGETRequest @RequestParams
         Return $SoftwarePatchInstallsReport
     } catch {
-        $CommandFailedError = [ErrorRecord]::New(
-            [System.Exception]::New(
-                'Failed to get the software patch installs report from NinjaRMM. You can use "Get-Error" for detailed error information.',
-                $_.Exception
-            ),
-            'NinjaCommandFailed',
-            'ReadError',
-            $TargetObject
-        )
-        $PSCmdlet.ThrowTerminatingError($CommandFailedError)
+        $ErrorRecord = @{
+            ExceptionType = 'System.Exception'
+            ErrorRecord = $_
+            ErrorCategory = 'ReadError'
+            BubbleUpDetails = $True
+            CommandName = $CommandName
+        }
+        New-NinjaRMMError @ErrorRecord
     }
 }

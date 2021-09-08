@@ -20,8 +20,8 @@ function Get-NinjaRMMUsers {
         )]
         [String]$userType,
         # Filter by organisation ID.
-        [Parameter()]
-        [Alias('organizationID')]
+        [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
+        [Alias('id', 'organizationID')]
         [Int]$organisationID
     )
     $CommandName = $MyInvocation.InvocationName
@@ -30,19 +30,11 @@ function Get-NinjaRMMUsers {
         $QSCollection = New-NinjaRMMQuery -CommandName $CommandName -Parameters $Parameters
         if ($organisationID) {
             Write-Verbose 'Getting organisation from NinjaRMM API.'
-            $Organisation = Get-NinjaRMMOrganisations -organisationID $organisationID -ErrorAction SilentlyContinue
+            $Organisation = Get-NinjaRMMOrganisations -organisationID $organisationID
             if ($Organisation) {
                 Write-Verbose "Retrieving users for $($Organisation.Name)."
                 $Resource = "v2/organization/$($organisationID)/end-users"
-            } else {
-                $DeviceNotFoundError = [ErrorRecord]::New(
-                    "Organisation with ID $($organisationID) was not found in NinjaRMM.",
-                    'NinjaDeviceNotFound',
-                    'ObjectNotFound',
-                    $organisationID
-                )
-                $PSCmdlet.ThrowTerminatingError($DeviceNotFoundError)
-            }  
+            } 
         } else {
             Write-Verbose 'Retrieving all users.'
             $Resource = 'v2/users'
@@ -55,15 +47,13 @@ function Get-NinjaRMMUsers {
         $UserResults = New-NinjaRMMGETRequest @RequestParams
         Return $UserResults
     } catch {
-        $CommandFailedError = [ErrorRecord]::New(
-            [System.Exception]::New(
-                'Failed to get tasks from NinjaRMM. You can use "Get-Error" for detailed error information.',
-                $_.Exception
-            ),
-            'NinjaCommandFailed',
-            'ReadError',
-            $TargetObject
-        )
-        $PSCmdlet.ThrowTerminatingError($CommandFailedError)
+        $ErrorRecord = @{
+            ExceptionType = 'System.Exception'
+            ErrorRecord = $_
+            ErrorCategory = 'ReadError'
+            BubbleUpDetails = $True
+            CommandName = $CommandName
+        }
+        New-NinjaRMMError @ErrorRecord
     }
 }

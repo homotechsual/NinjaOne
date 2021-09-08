@@ -34,15 +34,13 @@ function Find-NinjaRMMDevices {
         $DeviceSearchResults = New-NinjaRMMGETRequest @RequestParams
         Return $DeviceSearchResults
     } catch {
-        $CommandFailedError = [ErrorRecord]::New(
-            [System.Exception]::New(
-                'The NinjaRMM device search failed. You can use "Get-Error" for detailed error information.',
-                $_.Exception
-            ),
-            'NinjaRequestFailed',
-            'ReadError',
-            $TargetObject
-        )
-        $PSCmdlet.ThrowTerminatingError($CommandFailedError)
+        $ErrorRecord = @{
+            ExceptionType = 'System.Exception'
+            ErrorRecord = $_
+            ErrorCategory = 'ReadError'
+            BubbleUpDetails = $True
+            CommandName = $CommandName
+        }
+        New-NinjaRMMError @ErrorRecord
     }
 }

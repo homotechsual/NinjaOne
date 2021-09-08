@@ -17,7 +17,8 @@ function Get-NinjaRMMLocations {
         # Start results from location ID.
         [Int]$after,
         # Filter by organisation ID.
-        [Alias('organizationID')]
+        [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
+        [Alias('id', 'organizationID')]
         [Int]$organisationID
     )
     $CommandName = $MyInvocation.InvocationName
@@ -26,18 +27,10 @@ function Get-NinjaRMMLocations {
         $QSCollection = New-NinjaRMMQuery -CommandName $CommandName -Parameters $Parameters
         if ($organisationID) {
             Write-Verbose 'Getting organisation from NinjaRMM API.'
-            $Organisation = Get-NinjaRMMOrganisations -organisationID $organisationID -ErrorAction SilentlyContinue
+            $Organisation = Get-NinjaRMMOrganisations -organisationID $organisationID
             if ($Organisation) {
                 Write-Verbose "Retrieving locations for $($Organisation.Name)."
                 $Resource = "v2/organization/$($organisationID)/locations"
-            } else {
-                $DeviceNotFoundError = [ErrorRecord]::New(
-                    "Organisation with ID $($organisationID) was not found in NinjaRMM.",
-                    'NinjaDeviceNotFound',
-                    'ObjectNotFound',
-                    $organisationID
-                )
-                $PSCmdlet.ThrowTerminatingError($DeviceNotFoundError)
             }
         } else {
             Write-Verbose 'Retrieving all locations.'
@@ -51,15 +44,13 @@ function Get-NinjaRMMLocations {
         $LocationResults = New-NinjaRMMGETRequest @RequestParams
         Return $LocationResults
     } catch {
-        $CommandFailedError = [ErrorRecord]::New(
-            [System.Exception]::New(
-                'Failed to get locations from NinjaRMM. You can use "Get-Error" for detailed error information.',
-                $_.Exception
-            ),
-            'NinjaCommandFailed',
-            'ReadError',
-            $TargetObject
-        )
-        $PSCmdlet.ThrowTerminatingError($CommandFailedError)
+        $ErrorRecord = @{
+            ExceptionType = 'System.Exception'
+            ErrorRecord = $_
+            ErrorCategory = 'ReadError'
+            BubbleUpDetails = $True
+            CommandName = $CommandName
+        }
+        New-NinjaRMMError @ErrorRecord
     }
 }

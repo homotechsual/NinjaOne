@@ -25,6 +25,8 @@ function Get-NinjaRMMAlerts {
         [Alias('tz')]
         [String]$timeZone,
         # Filter by device ID.
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [Alias('id')]
         [Int]$deviceID
     )
     $CommandName = $MyInvocation.InvocationName
@@ -37,18 +39,10 @@ function Get-NinjaRMMAlerts {
         $QSCollection = New-NinjaRMMQuery -CommandName $CommandName -Parameters $Parameters
         if ($deviceID) {
             Write-Verbose 'Getting device from NinjaRMM API.'
-            $Device = Get-NinjaRMMDevices -deviceID $deviceID -ErrorAction SilentlyContinue
+            $Device = Get-NinjaRMMDevices -deviceID $deviceID
             if ($Device) {
                 Write-Verbose "Retrieving alerts for $($Device.SystemName)."
                 $Resource = "v2/device/$($deviceID)/alerts"
-            } else {
-                $DeviceNotFoundError = [ErrorRecord]::New(
-                    [ItemNotFoundException]::new("Device with ID $($deviceID) was not found in NinjaRMM."),
-                    'NinjaDeviceNotFound',
-                    'ObjectNotFound',
-                    $deviceID
-                )
-                $PSCmdlet.ThrowTerminatingError($DeviceNotFoundError)
             }
         } else {
             Write-Verbose 'Retrieving all alerts.'
@@ -62,15 +56,13 @@ function Get-NinjaRMMAlerts {
         $AlertResults = New-NinjaRMMGETRequest @RequestParams
         Return $AlertResults
     } catch {
-        $CommandFailedError = [ErrorRecord]::New(
-            [System.Exception]::New(
-                'Failed to get alerts from NinjaRMM. You can use "Get-Error" for detailed error information.',
-                $_.Exception
-            ),
-            'NinjaCommandFailed',
-            'ReadError',
-            $TargetObject
-        )
-        $PSCmdlet.ThrowTerminatingError($CommandFailedError)
+        $ErrorRecord = @{
+            ExceptionType = 'System.Exception'
+            ErrorRecord = $_
+            ErrorCategory = 'ReadError'
+            BubbleUpDetails = $True
+            CommandName = $CommandName
+        }
+        New-NinjaRMMError @ErrorRecord
     }
 }

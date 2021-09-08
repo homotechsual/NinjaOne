@@ -34,18 +34,16 @@ function Get-NinjaRMMComputerSystemsReport {
             Resource = $Resource
             QSCollection = $QSCollection
         }
-        $CustomFieldsReport = New-NinjaRMMGETRequest @RequestParams
-        Return $CustomFieldsReport
+        $ComputerSystemsReport = New-NinjaRMMGETRequest @RequestParams
+        Return $ComputerSystemsReport
     } catch {
-        $CommandFailedError = [ErrorRecord]::New(
-            [System.Exception]::New(
-                'Failed to get the computer systems report from NinjaRMM. You can use "Get-Error" for detailed error information.',
-                $_.Exception
-            ),
-            'NinjaCommandFailed',
-            'ReadError',
-            $TargetObject
-        )
-        $PSCmdlet.ThrowTerminatingError($CommandFailedError)
+        $ErrorRecord = @{
+            ExceptionType = 'System.Exception'
+            ErrorRecord = $_
+            ErrorCategory = 'ReadError'
+            BubbleUpDetails = $True
+            CommandName = $CommandName
+        }
+        New-NinjaRMMError @ErrorRecord
     }
 }

@@ -13,7 +13,8 @@ function Get-NinjaRMMSoftwareProducts {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Device ID
-        [Parameter( ParameterSetName = 'Single', Mandatory = $True )]
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [Alias('id')]
         [Int]$deviceID
     )
     $CommandName = $MyInvocation.InvocationName
@@ -22,18 +23,10 @@ function Get-NinjaRMMSoftwareProducts {
         $QSCollection = New-NinjaRMMQuery -CommandName $CommandName -Parameters $Parameters
         if ($deviceID) {
             Write-Verbose 'Getting device from NinjaRMM API.'
-            $Device = Get-NinjaRMMDevices -deviceID $deviceID -ErrorAction SilentlyContinue
+            $Device = Get-NinjaRMMDevices -deviceID $deviceID
             if ($Device) {
                 Write-Verbose "Retrieving software products for $($Device.SystemName)."
                 $Resource = "v2/device/$($deviceID)/software"
-            } else {
-                $DeviceNotFoundError = [ErrorRecord]::New(
-                    [ItemNotFoundException]::new("Device with ID $($deviceID) was not found in NinjaRMM."),
-                    'NinjaDeviceNotFound',
-                    'ObjectNotFound',
-                    $deviceID
-                )
-                $PSCmdlet.ThrowTerminatingError($DeviceNotFoundError)
             }
         } else {
             Write-Verbose 'Retrieving all software products.'
@@ -47,15 +40,13 @@ function Get-NinjaRMMSoftwareProducts {
         $SoftwareProductResults = New-NinjaRMMGETRequest @RequestParams
         Return $SoftwareProductResults
     } catch {
-        $CommandFailedError = [ErrorRecord]::New(
-            [System.Exception]::New(
-                'Failed to get software products from NinjaRMM. You can use "Get-Error" for detailed error information.',
-                $_.Exception
-            ),
-            'NinjaCommandFailed',
-            'ReadError',
-            $TargetObject
-        )
-        $PSCmdlet.ThrowTerminatingError($CommandFailedError)
+        $ErrorRecord = @{
+            ExceptionType = 'System.Exception'
+            ErrorRecord = $_
+            ErrorCategory = 'ReadError'
+            BubbleUpDetails = $True
+            CommandName = $CommandName
+        }
+        New-NinjaRMMError @ErrorRecord
     }
 }

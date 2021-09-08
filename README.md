@@ -48,8 +48,8 @@ All going well you should be at `configuration/integrations/api/client`.
 1. Enter the **Name**.  
 For example *NinjaRMM API PS Module*.
 
-1. In the **Redirect URIs** box enter *`http://localhost:9090`*
-You can use any port number here just make sure you remember it and adjust the `Connect-NinjaRMM` command below appropriately.
+1. In the **Redirect URIs** box enter *`http://localhost:9090/`*
+**Make sure the redirect URI ends with a `/`. You can use any port number here just make sure you remember it and adjust the `Connect-NinjaRMM` command below appropriately.
 
 1. Set the **Scopes** appropriately. If you want to be able to do anything using the API select all three scopes. Otherwise select them as appropriate for your needs:
 

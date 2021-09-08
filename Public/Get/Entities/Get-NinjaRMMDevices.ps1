@@ -55,18 +55,10 @@ function Get-NinjaRMMDevices {
             $Resource = "v2/device/$($deviceID)"
         } elseif ($organisationID) {
             Write-Verbose 'Getting organisation from NinjaRMM API.'
-            $Organisation = Get-NinjaRMMOrganisation -organisationID $organisationID -ErrorAction SilentlyContinue
+            $Organisation = Get-NinjaRMMOrganisation -organisationID $organisationID
             if ($Organisation) {
                 Write-Verbose "Retrieving devices for $($Organisation.Name)."
                 $Resource = "v2/organization/$($organisationID)/devices"
-            } else {
-                $OrganisationNotFoundError = [ErrorRecord]::New(
-                    [ItemNotFoundException]::new("Organisation with ID $($organisationID) was not found in NinjaRMM."),
-                    'NinjaOrganisationNotFound',
-                    'ObjectNotFound',
-                    $organisationID
-                )
-                $PSCmdlet.ThrowTerminatingError($OrganisationNotFoundError)
             }
         } else {
             if ($Detailed) {
@@ -85,15 +77,13 @@ function Get-NinjaRMMDevices {
         $DeviceResults = New-NinjaRMMGETRequest @RequestParams
         Return $DeviceResults
     } catch {
-        $CommandFailedError = [ErrorRecord]::New(
-            [System.Exception]::New(
-                'Failed to get devices from NinjaRMM. You can use "Get-Error" for detailed error information.',
-                $_.Exception
-            ),
-            'NinjaCommandFailed',
-            'ReadError',
-            $TargetObject
-        )
-        $PSCmdlet.ThrowTerminatingError($CommandFailedError)
+        $ErrorRecord = @{
+            ExceptionType = 'System.Exception'
+            ErrorRecord = $_
+            ErrorCategory = 'ReadError'
+            BubbleUpDetails = $True
+            CommandName = $CommandName
+        }
+        New-NinjaRMMError @ErrorRecord
     }
 }
