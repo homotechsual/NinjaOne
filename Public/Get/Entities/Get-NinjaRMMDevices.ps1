@@ -55,7 +55,7 @@ function Get-NinjaRMMDevices {
             $Resource = "v2/device/$($deviceID)"
         } elseif ($organisationID) {
             Write-Verbose 'Getting organisation from NinjaRMM API.'
-            $Organisation = Get-NinjaRMMOrganisation -organisationID $organisationID
+            $Organisation = Get-NinjaRMMOrganisations -organisationID $organisationID
             if ($Organisation) {
                 Write-Verbose "Retrieving devices for $($Organisation.Name)."
                 $Resource = "v2/organization/$($organisationID)/devices"
