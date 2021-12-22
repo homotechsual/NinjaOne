@@ -18,43 +18,43 @@ X:\Development\Repositories\MJCO\OAuthListener\obj\Debug\net5.0\refint\OAuthList
 X:\Development\Repositories\MJCO\OAuthListener\obj\Debug\net5.0\OAuthListener.pdb
 X:\Development\Repositories\MJCO\OAuthListener\obj\Debug\net5.0\OAuthListener.genruntimeconfig.cache
 X:\Development\Repositories\MJCO\OAuthListener\obj\Debug\net5.0\ref\OAuthListener.dll
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\bin\Debug\net5.0\OAuthListener.exe
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\bin\Debug\net5.0\OAuthListener.deps.json
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\bin\Debug\net5.0\OAuthListener.runtimeconfig.json
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\bin\Debug\net5.0\OAuthListener.runtimeconfig.dev.json
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\bin\Debug\net5.0\OAuthListener.dll
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\bin\Debug\net5.0\OAuthListener.pdb
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.csproj.AssemblyReference.cache
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.GeneratedMSBuildEditorConfig.editorconfig
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.AssemblyInfoInputs.cache
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.AssemblyInfo.cs
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.csproj.CoreCompileInputs.cache
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.MvcApplicationPartsAssemblyInfo.cache
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\obj\Debug\net5.0\scopedcss\bundle\OAuthListener.styles.css
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\obj\Debug\net5.0\staticwebassets\OAuthListener.StaticWebAssets.Manifest.cache
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.RazorTargetAssemblyInfo.cache
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.dll
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\obj\Debug\net5.0\refint\OAuthListener.dll
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.pdb
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.genruntimeconfig.cache
-X:\Development\Repositories\MJCO\NinjaRMM\OAuthListener\obj\Debug\net5.0\ref\OAuthListener.dll
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\bin\Debug\net5.0\OAuthListener.exe
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\bin\Debug\net5.0\OAuthListener.deps.json
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\bin\Debug\net5.0\OAuthListener.runtimeconfig.json
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\bin\Debug\net5.0\OAuthListener.runtimeconfig.dev.json
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\bin\Debug\net5.0\OAuthListener.dll
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\bin\Debug\net5.0\OAuthListener.pdb
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.csproj.AssemblyReference.cache
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.GeneratedMSBuildEditorConfig.editorconfig
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.AssemblyInfoInputs.cache
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.AssemblyInfo.cs
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.csproj.CoreCompileInputs.cache
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.MvcApplicationPartsAssemblyInfo.cache
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\obj\Debug\net5.0\scopedcss\bundle\OAuthListener.styles.css
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\obj\Debug\net5.0\staticwebassets\OAuthListener.StaticWebAssets.Manifest.cache
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.RazorTargetAssemblyInfo.cache
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.dll
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\obj\Debug\net5.0\refint\OAuthListener.dll
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.pdb
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\obj\Debug\net5.0\OAuthListener.genruntimeconfig.cache
-X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaRMM\OAuthListener\obj\Debug\net5.0\ref\OAuthListener.dll
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\bin\Debug\net5.0\OAuthListener.exe
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\bin\Debug\net5.0\OAuthListener.deps.json
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\bin\Debug\net5.0\OAuthListener.runtimeconfig.json
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\bin\Debug\net5.0\OAuthListener.runtimeconfig.dev.json
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\bin\Debug\net5.0\OAuthListener.dll
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\bin\Debug\net5.0\OAuthListener.pdb
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.csproj.AssemblyReference.cache
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.GeneratedMSBuildEditorConfig.editorconfig
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.AssemblyInfoInputs.cache
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.AssemblyInfo.cs
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.csproj.CoreCompileInputs.cache
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.MvcApplicationPartsAssemblyInfo.cache
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\scopedcss\bundle\OAuthListener.styles.css
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\staticwebassets\OAuthListener.StaticWebAssets.Manifest.cache
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.RazorTargetAssemblyInfo.cache
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.dll
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\refint\OAuthListener.dll
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.pdb
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.genruntimeconfig.cache
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\ref\OAuthListener.dll
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\bin\Debug\net5.0\OAuthListener.exe
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\bin\Debug\net5.0\OAuthListener.deps.json
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\bin\Debug\net5.0\OAuthListener.runtimeconfig.json
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\bin\Debug\net5.0\OAuthListener.runtimeconfig.dev.json
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\bin\Debug\net5.0\OAuthListener.dll
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\bin\Debug\net5.0\OAuthListener.pdb
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.csproj.AssemblyReference.cache
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.GeneratedMSBuildEditorConfig.editorconfig
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.AssemblyInfoInputs.cache
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.AssemblyInfo.cs
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.csproj.CoreCompileInputs.cache
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.MvcApplicationPartsAssemblyInfo.cache
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\obj\Debug\net5.0\scopedcss\bundle\OAuthListener.styles.css
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\obj\Debug\net5.0\staticwebassets\OAuthListener.StaticWebAssets.Manifest.cache
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.RazorTargetAssemblyInfo.cache
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.dll
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.pdb
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.genruntimeconfig.cache
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\obj\Debug\net5.0\ref\OAuthListener.dll
+X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\bin\Debug\net5.0\ref\OAuthListener.dll
