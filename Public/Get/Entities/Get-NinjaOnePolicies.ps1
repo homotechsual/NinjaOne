@@ -26,13 +26,6 @@ function Get-NinjaOnePolicies {
         $PolicyResults = New-NinjaOneGETRequest @RequestParams
         Return $PolicyResults
     } catch {
-        $ErrorRecord = @{
-            ExceptionType = 'System.Exception'
-            ErrorRecord = $_
-            ErrorCategory = 'ReadError'
-            BubbleUpDetails = $True
-            CommandName = $CommandName
-        }
-        New-NinjaOneError @ErrorRecord
+        New-NinjaOneError -ErrorRecord $_
     }
 }

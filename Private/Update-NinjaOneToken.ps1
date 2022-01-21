@@ -17,6 +17,6 @@ function Update-NinjaOneToken {
         Write-Verbose 'Refreshed authentication token information from NinjaOne.'
         Write-Debug "Authentication information now set to: $($Script:NRAPIAuthenticationInformation | Out-String -Width 2048)"
     } catch {
-        Throw
+        New-NinjaOneError $_
     }
 }

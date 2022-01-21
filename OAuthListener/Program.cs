@@ -38,7 +38,7 @@ namespace OAuthListener
         )
         .Build()
         // Run asynchronously using the cancellation token to signal when the process should end.
-        // This will be awaited by the .NET framework and the process will end when the cancellation token is invalidated.
+        // This will be awaited by the .NETramework and the process will end when the cancellation token is invalidated.
         .RunAsync(_cts.Token);
     }
 }

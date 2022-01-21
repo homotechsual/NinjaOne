@@ -2,7 +2,7 @@
 function Get-TokenExpiry {
     <#
     .SYNOPSIS
-        Calculates and returns the expiry date/time of a Halo token.
+        Calculates and returns the expiry date/time of an access token.
     .DESCRIPTION
         Takes the expires in time for an auth token and returns a PowerShell date/time object containing the expiry date/time of the token.
     .OUTPUTS
@@ -19,7 +19,7 @@ function Get-TokenExpiry {
     )
     $Now = Get-Date
     $TimeZone = Get-TimeZone
-    $UTCTime = $Now.AddMilliseconds($ExpiresIn)
+    $UTCTime = $Now.AddSeconds($ExpiresIn)
     $UTCOffset = $TimeZone.GetUtcOffset($(Get-Date)).TotalMinutes
     $ExpiryDateTime = $UTCTime.AddMinutes($UTCOffset)
     Write-Verbose "Calcuated token expiry as $($ExpiryDateTime.ToString())"

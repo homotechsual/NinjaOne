@@ -22,6 +22,14 @@ The module is written for [PowerShell 7](https://docs.microsoft.com/en-us/powers
 
 NinjaOne provides a PowerShell wrapper around the NinjaOne API. The module can retrieve and send information to the NinjaOne API.
 
+## Thanks & Credits
+
+This module would not work nearly as well without the support of the NinjaOne team in particular:
+
+- Robert K
+- Peter B
+- Jonathan C
+
 ## Installing
 
 This module is published to the PowerShell Gallery and can be installed from within PowerShell with `Install-Module`
@@ -29,6 +37,28 @@ This module is published to the PowerShell Gallery and can be installed from wit
 ```PowerShell
 Install-Module NinjaOne -AllowPrerelease
 ```
+
+## Current Status
+
+The following API endpoints have not yet been implemented or have been implemented but not tested. They will be added/tested before the first stable release unless otherwise indicated. This list does not contain any `GET` actions - all information can be retrieved - only outstanding commands are `POST`, `PUT`, `PATCH` and `DELETE` actions (`Set-`, `New-` and `Remove-` commands.)
+
+| Endpoint                                            | Status       | Notes                                                             |
+| --------------------------------------------------- | ------------ | ----------------------------------------------------------------- |
+| /v2/webhook                                         | Not Planned  | This endpoint is not useful in the context of the PS module.      |
+| /v2/devices/approval/$mode                          | Not Tested   | Will be tested before 1.0.0.                                      |
+| /v2/alert/$uid                                      | Not Added    | Will be added before 1.0.0. Waiting on clarity from NinjaOne.     |
+| /v2/ticketing/ticket/$ticketId                      | Not Added    | Will be added before 1.0.0.                                       |
+| /v2/ticketing/ticket                                | Not Added    | Will be added before 1.0.0.                                       |
+| /v2/device/$id/windows-service/$serviceId/configure | Not Added    | Will be added before 1.0.0.                                       |
+| /v2/device/$id/reboot/$mode                         | Not Added    | Will be added before 1.0.0.                                       |
+| /v2/device/$id                                      | Not Added    | Will be added before 1.0.0.                                       |
+| /v2/device/$id/windows-service/$serviceId/control   | Not Added    | Will be added before 1.0.0.                                       |
+| /v2/device/$id/maintenance                          | Not Added    | Will be added before 1.0.0.                                       |
+| /v2/device/$id/script/run                           | Not Added    | Will be added before 1.0.0.                                       |
+| /v2/organization/$id/locations                      | Not Added    | Will be added before 1.0.0.                                       |
+| /v2/organization/$id                                | Not Added    | Will be added before 1.0.0.                                       |
+| /v2/organization/$id/locations/$locationId          | Not Added    | Will be added before 1.0.0.                                       |
+| /v2/organization/$id/policies                       | Not Added    | Will be added before 1.0.0.                                       |
 
 ## Getting Started
 

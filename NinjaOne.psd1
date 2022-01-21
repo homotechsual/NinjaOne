@@ -12,13 +12,13 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '0.1.0'
+    ModuleVersion = '0.9.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
 
     # ID used to uniquely identify this module
-    GUID = '0acb6fd3-575a-4dc4-873e-afbda65015b4'
+    GUID = '2f88e09d-773b-441e-8ca5-5b5eff57bf3c'
 
     # Author of this module
     Author = 'Mikey O''Toole'
@@ -74,6 +74,7 @@
         'Find-NinjaOneDevices'
         'Get-NinjaOneActivities',
         'Get-NinjaOneAlerts',
+        'Get-NinjaOneAttachment',
         'Get-NinjaOneDeviceCustomFields',
         'Get-NinjaOneDeviceJobs',
         'Get-NinjaOneDeviceLastLoggedOnUser',
@@ -96,28 +97,35 @@
         'Get-NinjaOneSoftwareProducts',
         'Get-NinjaOneTasks',
         'Get-NinjaOneUsers',
-        'Get-NinjaOneCustomFieldsReport',
-        'Get-NinjaOneAntivirusStatusReport',
-        'Get-NinjaOneAntivirusThreatsReport',
-        'Get-NinjaOneComputerSystemsReport',
-        'Get-NinjaOneCustomFieldsReport',
-        'Get-NinjaOneDeviceHealthReport',
-        'Get-NinjaOneDisksReport',
-        'Get-NinjaOneLoggedOnUsersReport',
-        'Get-NinjaOneOperatingSystemsReport',
-        'Get-NinjaOneOSPatchesReport',
-        'Get-NinjaOneOSPatchInstallsReport',
-        'Get-NinjaOneProcessorsReport',
-        'Get-NinjaOneRAIDControllersReport',
-        'Get-NinjaOneRAIDDrivesReport',
-        'Get-NinjaOneSoftwareInventoryReport',
-        'Get-NinjaOneSoftwarePatchesReport',
-        'Get-NinjaOneSoftwarePatchInstallsReport',
-        'Get-NinjaOneVolumesReport',
-        'Get-NinjaOneWindowsServicesReport',
+        'Get-NinjaOneCustomFields',
+        'Get-NinjaOneAntivirusStatus',
+        'Get-NinjaOneAntivirusThreats',
+        'Get-NinjaOneComputerSystems',
+        'Get-NinjaOneCustomFields',
+        'Get-NinjaOneDeviceHealth',
+        'Get-NinjaOneDisks',
+        'Get-NinjaOneLoggedOnUsers',
+        'Get-NinjaOneOperatingSystems',
+        'Get-NinjaOneOSPatches',
+        'Get-NinjaOneOSPatchInstalls',
+        'Get-NinjaOneProcessors',
+        'Get-NinjaOneRAIDControllers',
+        'Get-NinjaOneRAIDDrives',
+        'Get-NinjaOneSoftwareInventory',
+        'Get-NinjaOneSoftwarePatches',
+        'Get-NinjaOneSoftwarePatchInstalls',
+        'Get-NinjaOneVolumes',
+        'Get-NinjaOneWindowsServices',
         'Get-NinjaOneDeviceDashboardURL',
         'Get-NinjaOneDeviceScriptingOptions',
-        'Get-NinjaOneInstaller'
+        'Get-NinjaOneInstaller',
+        'Get-NinjaOneBoards',
+        'Get-NinjaOneContacts',
+        'Get-NinjaOneTicketForms',
+        'Get-NinjaOneTicketLogEntries',
+        'Get-NinjaOneTickets',
+        'Reset-NinjaOneAlert',
+        'New-NinjaOneOrganisation'
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -157,28 +165,29 @@
         'Get-NinjaRMMSoftwareProducts',
         'Get-NinjaRMMTasks',
         'Get-NinjaRMMUsers',
-        'Get-NinjaRMMCustomFieldsReport',
-        'Get-NinjaRMMAntivirusStatusReport',
-        'Get-NinjaRMMAntivirusThreatsReport',
-        'Get-NinjaRMMComputerSystemsReport',
-        'Get-NinjaRMMCustomFieldsReport',
-        'Get-NinjaRMMDeviceHealthReport',
-        'Get-NinjaRMMDisksReport',
-        'Get-NinjaRMMLoggedOnUsersReport',
-        'Get-NinjaRMMOperatingSystemsReport',
-        'Get-NinjaRMMOSPatchesReport',
-        'Get-NinjaRMMOSPatchInstallsReport',
-        'Get-NinjaRMMProcessorsReport',
-        'Get-NinjaRMMRAIDControllersReport',
-        'Get-NinjaRMMRAIDDrivesReport',
-        'Get-NinjaRMMSoftwareInventoryReport',
-        'Get-NinjaRMMSoftwarePatchesReport',
-        'Get-NinjaRMMSoftwarePatchInstallsReport',
-        'Get-NinjaRMMVolumesReport',
-        'Get-NinjaRMMWindowsServicesReport',
+        'Get-NinjaRMMCustomFields',
+        'Get-NinjaRMMAntivirusStatus',
+        'Get-NinjaRMMAntivirusThreats',
+        'Get-NinjaRMMComputerSystems',
+        'Get-NinjaRMMCustomFields',
+        'Get-NinjaRMMDeviceHealth',
+        'Get-NinjaRMMDisks',
+        'Get-NinjaRMMLoggedOnUsers',
+        'Get-NinjaRMMOperatingSystems',
+        'Get-NinjaRMMOSPatches',
+        'Get-NinjaRMMOSPatchInstalls',
+        'Get-NinjaRMMProcessors',
+        'Get-NinjaRMMRAIDControllers',
+        'Get-NinjaRMMRAIDDrives',
+        'Get-NinjaRMMSoftwareInventory',
+        'Get-NinjaRMMSoftwarePatches',
+        'Get-NinjaRMMSoftwarePatchInstalls',
+        'Get-NinjaRMMVolumes',
+        'Get-NinjaRMMWindowsServices',
         'Get-NinjaRMMDeviceDashboardURL',
         'Get-NinjaRMMDeviceScriptingOptions',
-        'Get-NinjaRMMInstaller'
+        'Get-NinjaRMMInstaller',
+        'New-NinjaOneOrganization'
     )
 
     # DSC resources to export from this module

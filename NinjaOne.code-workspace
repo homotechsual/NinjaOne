@@ -27,5 +27,30 @@
 		"powershell.codeFormatting.whitespaceBeforeOpenParen": true,
 		"powershell.codeFormatting.whitespaceBetweenParameters": false,
 		"powershell.codeFormatting.whitespaceInsideBrace": true
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "PowerShell Attach to Host Process",
+				"type": "PowerShell",
+				"request": "attach",
+				"runspaceId": 1
+			},
+			{
+				"name": "PowerShell Attach Interactive Session Runspace",
+				"type": "PowerShell",
+				"request": "attach",
+				"processId": "current"
+			},
+			{
+				"name": "PowerShell: Launch Current File",
+				"type": "PowerShell",
+				"request": "launch",
+				"script": "${file}",
+				"cwd": "${file}"
+			}
+
+		]
 	}
 }

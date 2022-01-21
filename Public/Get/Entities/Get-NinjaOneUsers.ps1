@@ -47,13 +47,6 @@ function Get-NinjaOneUsers {
         $UserResults = New-NinjaOneGETRequest @RequestParams
         Return $UserResults
     } catch {
-        $ErrorRecord = @{
-            ExceptionType = 'System.Exception'
-            ErrorRecord = $_
-            ErrorCategory = 'ReadError'
-            BubbleUpDetails = $True
-            CommandName = $CommandName
-        }
-        New-NinjaOneError @ErrorRecord
+        New-NinjaOneError -ErrorRecord $_
     }
 }

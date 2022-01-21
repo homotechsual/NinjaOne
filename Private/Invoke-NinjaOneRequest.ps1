@@ -23,7 +23,7 @@ function Invoke-NinjaOneRequest {
     $Now = Get-Date
     if ($Script:NRAPIAuthenticationInformation.Expires -le $Now) {
         Write-Verbose 'The auth token has expired, renewing.'
-        Update-NinjaOneToken
+        Update-NinjaOneToken -Verbose:$VerbosePreference
     }
     if ($null -ne $Script:NRAPIAuthenticationInformation) {
         $AuthHeaders = @{
@@ -36,25 +36,24 @@ function Invoke-NinjaOneRequest {
         Write-Verbose "Making a $($WebRequestParams.Method) request to $($WebRequestParams.Uri)"
         $Response = Invoke-WebRequest @WebRequestParams -Headers $AuthHeaders -ContentType 'application/json'
         Write-Debug "Response headers: $($Response.Headers | Out-String)"
-        Write-Debug "Response object: $($Reponse | Out-String)"
+        Write-Debug "Response object: $($Response.Content ?? 'No content' | Out-String)"
         $Results = $Response.Content | ConvertFrom-Json
         if ($null -eq $Results) {
-            $Results = @{}
+            if ($Response.StatusCode) {
+                Write-Verbose "Request completed with status code $($Response.StatusCode)"
+                $Results = $Response.StatusCode
+            } else {
+                Write-Verbose 'Request completed with no status code'
+                $Results = @{}
+            }
+            
+
         }
+        
         return $Results
+    } catch [Microsoft.PowerShell.Commands.HttpResponseException] {
+        throw $_
     } catch {
-        $ExceptionResponse = $_.Exception.Response
-        $TargetObject = $_.TargetObject
-        $NinjaOneResponse = $_.ErrorDetails.Message | ConvertFrom-Json
-        $RequestFailedError = [ErrorRecord]::New(
-            [System.Net.Http.HttpRequestException]::New(
-                "The NinjaOne API request `($($TargetObject.Method) $($TargetObject.RequestUri)`) responded with $($ExceptionResponse.StatusCode.Value__): $($ExceptionResponse.ReasonPhrase). NinjaOne's API said $($NinjaOneResponse.resultCode): $($NinjaOneResponse.errorMessage).",
-                $_.Exception
-            ),
-            'NinjaRequestFailed',
-            'ProtocolError',
-            $TargetObject
-        )
-        $PSCmdlet.ThrowTerminatingError($RequestFailedError)
+        throw $_
     }
 }

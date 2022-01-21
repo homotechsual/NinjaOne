@@ -6,7 +6,6 @@ function New-NinjaOneGETRequest {
             Wrapper function to build web requests for the NinjaOne API.
         .EXAMPLE
             PS C:\> New-NinjaOneGETRequest -Method "GET" -Resource "/v2/organizations"
-            Gets all Knowledgebase Articles
         .OUTPUTS
             Outputs an object containing the response from the web request.
     #>
@@ -52,15 +51,19 @@ function New-NinjaOneGETRequest {
             Method = $Method
             Uri = $RequestUri.ToString()
         }
-        Write-Debug "Building new NinjaOneRequest with params: $($WebRequestParams | Out-String)"
-        $Result = Invoke-NinjaOneRequest -WebRequestParams $WebRequestParams
-        if ($Result) {
-            Write-Debug "NinjaOne request returned $($Result | Out-String)"
+        Write-Debug "Building new NinjaOneRequest with params: $($WebRequestParams ?? 'No Params' | Out-String)"
+        try {
+            $Result = Invoke-NinjaOneRequest -WebRequestParams $WebRequestParams
+            Write-Debug "NinjaOne request returned: $($Result ?? 'No Content' | Out-String)"
             Return $Result
-        } else {
-            Throw 'Failed to process GET request.'
+        } catch [Microsoft.PowerShell.Commands.HttpResponseException] {
+            throw $_
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
+    } catch [Microsoft.PowerShell.Commands.HttpResponseException] {
+        throw $_
     } catch {
-        Throw
+        New-NinjaOneError -ErrorRecord $_
     }
 }

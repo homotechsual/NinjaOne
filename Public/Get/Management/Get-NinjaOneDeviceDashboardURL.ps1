@@ -43,13 +43,6 @@ function Get-NinjaOneDeviceDashboardURL {
         $DeviceDashboardURLResults = New-NinjaOneGETRequest @RequestParams
         Return $DeviceDashboardURLResults
     } catch {
-        $ErrorRecord = @{
-            ExceptionType = 'System.Exception'
-            ErrorRecord = $_
-            ErrorCategory = 'ReadError'
-            BubbleUpDetails = $True
-            CommandName = $CommandName
-        }
-        New-NinjaOneError @ErrorRecord
+        New-NinjaOneError -ErrorRecord $_
     }
 }

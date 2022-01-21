@@ -34,7 +34,6 @@ X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\scopedc
 X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\staticwebassets\OAuthListener.StaticWebAssets.Manifest.cache
 X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.RazorTargetAssemblyInfo.cache
 X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.dll
-X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\refint\OAuthListener.dll
 X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.pdb
 X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.genruntimeconfig.cache
 X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\obj\Debug\net5.0\ref\OAuthListener.dll
@@ -58,3 +57,4 @@ X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\obj\Debug
 X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\obj\Debug\net5.0\OAuthListener.genruntimeconfig.cache
 X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\obj\Debug\net5.0\ref\OAuthListener.dll
 X:\OneDrive - MJCO\Documents\PowerShell\Modules\NinjaOne\OAuthListener\bin\Debug\net5.0\ref\OAuthListener.dll
+X:\Development\Repositories\MJCO\NinjaOne\OAuthListener\bin\Debug\net5.0\ref\OAuthListener.dll

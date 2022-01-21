@@ -44,13 +44,6 @@ function Get-NinjaOneDeviceScriptingOptions {
         $DeviceScriptingOptionResults = New-NinjaOneGETRequest @RequestParams
         Return $DeviceScriptingOptionResults
     } catch {
-        $ErrorRecord = @{
-            ExceptionType = 'System.Exception'
-            ErrorRecord = $_
-            ErrorCategory = 'ReadError'
-            BubbleUpDetails = $True
-            CommandName = $CommandName
-        }
-        New-NinjaOneError @ErrorRecord
+        New-NinjaOneError -ErrorRecord $_
     }
 }
