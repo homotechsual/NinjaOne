@@ -32,7 +32,7 @@ Describe 'Core' {
     }
 
     It 'GUID is correct' {
-        $Script:ModuleInformation.GUID | Should -Be '0acb6fd3-575a-4dc4-873e-afbda65015b4'
+        $Script:ModuleInformation.GUID | Should -Be '2f88e09d-773b-441e-8ca5-5b5eff57bf3c'
     }
 
     It 'Version is valid' {
