@@ -7,7 +7,7 @@ pool:
   vmImage: 'vs2017-win2016'
 
 variables:
-  - group: AKV
+  - group: MSPsUK KeyVault
 
 stages:
   - stage: Setup
