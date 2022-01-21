@@ -98,6 +98,8 @@ Authorization code is used for the initial login, the refresh token is used to m
 
 1. Click on **Close** and on the **Client App IDs** screen copy the **Client ID** for your application. Store this with your **Client Secret**.
 
+*Important*: You cannot currently use Client Credentials authentication to access any of the `ticketing` API endpoints (Tickets/Boards/Contacts) due to a bug on Ninja's side.
+
 ### Connecting the PowerShell module to the API
 
 1. Connect to the NinjaOne API with `Connect-NinjaOne`  
