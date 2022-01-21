@@ -64,7 +64,67 @@ The following API endpoints have not yet been implemented or have been implement
 
 The first and probably most important requirement for this module is getting it connected to NinjaOne instance.
 
-### Creating an API application in NinjaOne
+### Using Client Credentials (Non-Interactive/Unattended Auth)
+
+#### Creating an API application in NinjaOne
+
+1. In your NinjaOne tenant head to **Configuration** > **Integrations** > **API**.
+
+1. Click on **Client App IDs**  
+All going well you should be at `configuration/integrations/api/client`.
+
+1. Click on **Add** to add a new API application.
+
+1. Set the **Application Platform** to *API Services (machine-to-machine)*
+
+1. Enter the **Name**.  
+For example *NinjaOne API PS Module*.
+
+1. In the **Redirect URIs** box enter *`https://localhost/`*
+This isn't actually used so just set it to plain old `localhost` as above.
+
+1. Set the **Scopes** appropriately. If you want to be able to do anything using the API select all three scopes. Otherwise select them as appropriate for your needs:
+
+    * Monitoring -  *This provides access to most of the `Get-*` commands.*
+    * Management - *This provides access to most of the management functionality like agent installer generation.*
+    * Control - *This provides access to control settings and make changes to the configuration of your Ninja tenant.*
+
+1. Set the **Allowed Grant Types** to *Client Credentials* and *Refresh Token*.
+Authorization code is used for the initial login, the refresh token is used to maintain access on subsequent logins.
+
+1. Click on **Save** and **Complete the MFA challenge**.
+
+1. Store the **Client Secret** securely and close the small popup window.
+
+1. Click on **Close** and on the **Client App IDs** screen copy the **Client ID** for your application. Store this with your **Client Secret**.
+
+### Connecting the PowerShell module to the API
+
+1. Connect to the NinjaOne API with `Connect-NinjaOne`  
+
+    ```PowerShell
+    # Splat the parameters - easier to read!
+    $ConnectionParameters = @{
+        Instance = 'eu'
+        ClientID = 'ABCDEfGH-IjKLmnopqrstUV1w23x45yz'
+        ClientSecret = 'abc123abc123def456def456ghi789ghi789lmn012lmn012'
+        UseClientAuth = $True
+    }
+
+    Connect-NinjaOne @ConnectionParameters
+    ```
+
+    * Let's disect that last parameter:
+        * `UseClientAuth` tells the module that we have we want to use Client Credentials to authenticate and get an access token the module can use to authenticate to NinjaOne.
+
+    ```PowerShell
+    # Pass the parameters individually - more familiar!
+    Connect-NinjaOne -Instance 'eu' -ClientID 'ABCDEfGH-IjKLmnopqrstUV1w23x45yz' -ClientSecret 'abc123abc123def456def456ghi789ghi789lmn012lmn012' -UseClientAuth
+    ```
+
+### Using Authorisation Code (Interactive/Attended Auth)
+
+#### Creating an API application in NinjaOne
 
 1. In your NinjaOne tenant head to **Configuration** > **Integrations** > **API**.
 
@@ -85,7 +145,7 @@ For example *NinjaOne API PS Module*.
 
     * Monitoring -  *This provides access to most of the `Get-*` commands.*
     * Management - *This provides access to most of the management functionality like agent installer generation.*
-    * Control - *This provides access to control settings and make changes to the configuration of you Ninja tenant.*
+    * Control - *This provides access to control settings and make changes to the configuration of your Ninja tenant.*
 
 1. Set the **Allowed Grant Types** to *Authorization Code* and *Refresh Token*.
 Authorization code is used for the initial login, the refresh token is used to maintain access on subsequent logins.
@@ -96,7 +156,7 @@ Authorization code is used for the initial login, the refresh token is used to m
 
 1. Click on **Close** and on the **Client App IDs** screen copy the **Client ID** for your application. Store this with your **Client Secret**.
 
-### Connecting the PowerShell module to the API (first time / authorisation code flow)
+#### Connecting the PowerShell module to the API (first time / authorisation code flow)
 
 1. Install the NinjaOne PowerShell module on PowerShell 7.0 or above.  
 
