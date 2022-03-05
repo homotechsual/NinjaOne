@@ -15,13 +15,10 @@ function Get-TokenExpiry {
         [Parameter(
             Mandatory = $True
         )]
-        [Int]$ExpiresIn
+        [int64]$ExpiresIn
     )
     $Now = Get-Date
-    $TimeZone = Get-TimeZone
-    $UTCTime = $Now.AddSeconds($ExpiresIn)
-    $UTCOffset = $TimeZone.GetUtcOffset($(Get-Date)).TotalMinutes
-    $ExpiryDateTime = $UTCTime.AddMinutes($UTCOffset)
-    Write-Verbose "Calcuated token expiry as $($ExpiryDateTime.ToString())"
+    $ExpiryDateTime = $Now.AddSeconds($ExpiresIn)
+    Write-Verbose "Calcuated token expiry as $ExpiryDateTime"
     Return $ExpiryDateTime
 }

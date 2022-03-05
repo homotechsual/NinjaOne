@@ -16,7 +16,10 @@ function Reset-NinjaOneAlert {
     Param(
         # The alert ID to reset status for.
         [Parameter(Mandatory = $true)]
-        [string]$uid
+        [string]$uid,
+        # The reset activity data.
+        [Parameter()]
+        [object]$activityData
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
@@ -24,17 +27,35 @@ function Reset-NinjaOneAlert {
     if ($uid) {
         $Parameters.Remove('uid') | Out-Null
     }
+    # Workaround to prevent the query string processor from adding an 'activityData=' parameter by removing it from the set parameters.
+    if ($activityData) {
+        $Parameters.Remove('activityData') | Out-Null
+    }
     try {
-        $Resource = "v2/alert/$uid/reset"
-        $RequestParams = @{
-            Method = 'POST'
-            Resource = $Resource
-            Body = $null
-        }
-        if ($PSCmdlet.ShouldProcess('Alert', 'Reset')) {
-            $Alert = New-NinjaOnePOSTRequest @RequestParams
-            if ($Alert -eq 204) {
-                Write-Information 'Alert reset successfully.'
+        if ($activityData) {
+            $Resource = "v2/alert/$uid/reset"
+            $RequestParams = @{
+                Method = 'POST'
+                Resource = $Resource
+                Body = $activityData
+            }
+            if ($PSCmdlet.ShouldProcess('Alert', 'Reset')) {
+                $Alert = New-NinjaOnePOSTRequest @RequestParams
+                if ($Alert -eq 204) {
+                    Write-Information 'Alert reset successfully.'
+                }
+            }
+        } else {
+            $Resource = "v2/alert/$uid"
+            $RequestParams = @{
+                Method = 'DELETE'
+                Resource = $Resource
+            }
+            if ($PSCmdlet.ShouldProcess('Alert', 'Reset')) {
+                $Alert = New-NinjaOneDELETERequest @RequestParams
+                if ($Alert -eq 204) {
+                    Write-Information 'Alert reset successfully.'
+                }
             }
         }
     } catch {

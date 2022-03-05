@@ -20,7 +20,7 @@ function Set-NinjaOneDeviceApproval {
         [string]$mode,
         # The device(s) to set the approval status for.
         [Parameter(Mandatory = $true)]
-        [string[]]$deviceIds
+        [int[]]$deviceIds
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
@@ -48,7 +48,7 @@ function Set-NinjaOneDeviceApproval {
             Resource = $Resource
             Body = $devices
         }
-        if ($PSCmdlet.ShouldProcess('Alert', 'Reset')) {
+        if ($PSCmdlet.ShouldProcess('Device Approval', 'Set')) {
             $DeviceApprovals = New-NinjaOnePOSTRequest @RequestParams
             if ($DeviceApprovals -eq 204) {
                 Write-Information "Devices $($deviceIds) $($mode -eq 'APPROVE' ? 'approved' : 'rejected' ) successfully."

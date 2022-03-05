@@ -57,6 +57,7 @@ function Connect-NinjaOne {
         # Output the tokens - useful when using "Authorisation Code" flow - to use with "Token Authentication" flow.
         [Parameter( ParameterSetName = 'Authorisation Code' )]
         [Parameter( ParameterSetName = 'Token Authentication' )]
+        [Parameter( ParameterSetName = 'Client Credentials' )]
         [Switch]$ShowTokens
     )
     # Convert scopes to space separated string if it's an array.
