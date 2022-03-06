@@ -49,7 +49,6 @@ function Get-NinjaOneAlerts {
             $Resource = 'v2/alerts'
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

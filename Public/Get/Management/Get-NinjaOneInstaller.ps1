@@ -56,7 +56,6 @@ function Get-NinjaOneInstaller {
             }
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

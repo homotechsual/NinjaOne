@@ -49,7 +49,6 @@ function Get-NinjaOneDeviceSoftwarePatchInstalls {
             }
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

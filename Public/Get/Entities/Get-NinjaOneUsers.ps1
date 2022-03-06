@@ -40,7 +40,6 @@ function Get-NinjaOneUsers {
             $Resource = 'v2/users'
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

@@ -28,7 +28,6 @@ function Get-NinjaOneOrganisationDocuments {
             $Resource = "v2/organization/$($organisationId)/documents"
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

@@ -1,11 +1,11 @@
-function New-NinjaOneDELETERequest {
+function New-NinjaOnePATCHRequest {
     <#
         .SYNOPSIS
             Builds a request for the NinjaOne API.
         .DESCRIPTION
             Wrapper function to build web requests for the NinjaOne API.
         .EXAMPLE
-            PS C:\> New-NinjaOneDELETERequest -Resource "/v2/organizations"
+            PS C:\> New-NinjaOnePATCHRequest -Resource "/v2/organizations"
         .OUTPUTS
             Outputs an object containing the response from the web request.
     #>
@@ -17,7 +17,10 @@ function New-NinjaOneDELETERequest {
         [Parameter(Mandatory = $True)]
         [String]$Resource,
         # A hashtable used to build the query string.
-        [HashTable]$QSCollection
+        [HashTable]$QSCollection,
+        # A hashtable used to build the body of the request.
+        [Parameter(Mandatory = $True)]
+        [Hashtable]$Body
     )
     if ($null -eq $Script:NRAPIConnectionInformation) {
         Throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
@@ -27,9 +30,9 @@ function New-NinjaOneDELETERequest {
     }
     try {
         if ($QSCollection) {
-            Write-Debug "Query string in New-NinjaOneDELETERequest contains: $($QSCollection | Out-String)"
+            Write-Debug "Query string in New-NinjaOnePATCHRequest contains: $($QSCollection | Out-String)"
             $QueryStringCollection = [System.Web.HTTPUtility]::ParseQueryString([String]::Empty)
-            Write-Verbose 'Building [HttpQSCollection] for New-NinjaOneDELETERequest'
+            Write-Verbose 'Building [HttpQSCollection] for New-NinjaOnePATCHRequest'
             foreach ($Key in $QSCollection.Keys) {
                 $QueryStringCollection.Add($Key, $QSCollection.$Key)
             }
@@ -47,16 +50,18 @@ function New-NinjaOneDELETERequest {
             Write-Debug 'Query string not present...'
         }
         $WebRequestParams = @{
-            Method = 'DELETE'
+            Method = 'PATCH'
             Uri = $RequestUri.ToString()
+            Body = ($Body | ConvertTo-Json -Depth 100)
         }
+        Write-Debug "Raw body is $($WebRequestParams.Body)"
         Write-Debug "Building new NinjaOneRequest with params: $($WebRequestParams | Out-String)"
         try {
             $Result = Invoke-NinjaOneRequest -WebRequestParams $WebRequestParams
             Write-Debug "NinjaOne request returned $($Result | Out-String)"
-            if ($Result.results) {
+            if ($Result['results']) {
                 Return $Result.results
-            } elseif ($Result.result) {
+            } elseif ($Result['result']) {
                 Return $Result.result
             } else {
                 Return $Result

@@ -48,7 +48,6 @@ function Get-NinjaOneDeviceWindowsServices {
             }
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

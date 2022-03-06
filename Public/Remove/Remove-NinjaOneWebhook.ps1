@@ -17,7 +17,6 @@ function Remove-NinjaOneWebhook {
     try {
         $Resource = 'v2/webhook'
         $RequestParams = @{
-            Method = 'DELETE'
             Resource = $Resource
         }
         if ($PSCmdlet.ShouldProcess('Webhook Configuration', 'Update')) {

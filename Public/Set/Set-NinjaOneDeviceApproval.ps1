@@ -22,16 +22,6 @@ function Set-NinjaOneDeviceApproval {
         [Parameter(Mandatory = $true)]
         [int[]]$deviceIds
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding a 'mode=' parameter by removing it from the set parameters.
-    if ($mode) {
-        $Parameters.Remove('mode') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding an 'deviceIds=' parameter by removing it from the set parameters.
-    if ($deviceIds) {
-        $Parameters.Remove('deviceIds') | Out-Null
-    }
     try {
         $Resource = "v2/devices/approval/$mode"
         if ($deviceIds -is [array]) {
@@ -44,7 +34,6 @@ function Set-NinjaOneDeviceApproval {
             }
         }
         $RequestParams = @{
-            Method = 'POST'
             Resource = $Resource
             Body = $devices
         }

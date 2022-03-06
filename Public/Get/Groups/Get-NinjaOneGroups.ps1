@@ -23,7 +23,6 @@ function Get-NinjaOneGroups {
         Write-Verbose 'Retrieving all groups.'
         $Resource = 'v2/groups'
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

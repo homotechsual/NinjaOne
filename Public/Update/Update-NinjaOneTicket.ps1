@@ -21,20 +21,9 @@ function Update-NinjaOneTicket {
         [Parameter(Mandatory = $true)]
         [Object]$ticket 
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding a 'ticketId=' parameter by removing it from the set parameters.
-    if ($ticketId) {
-        $Parameters.Remove('ticketId') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding a 'ticket=' parameter by removing it from the set parameters.
-    if ($ticket) {
-        $Parameters.Remove('ticket') | Out-Null
-    }
     try {
         $Resource = "v2/ticketing/ticket/$ticketId"
         $RequestParams = @{
-            Method = 'PUT'
             Resource = $Resource
             Body = $ticket
         }

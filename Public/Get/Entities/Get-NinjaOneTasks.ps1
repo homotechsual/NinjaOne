@@ -19,7 +19,6 @@ function Get-NinjaOneTasks {
         Write-Verbose 'Retrieving all tasks.'
         $Resource = 'v2/tasks'
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

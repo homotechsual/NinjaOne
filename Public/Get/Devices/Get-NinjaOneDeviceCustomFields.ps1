@@ -37,7 +37,6 @@ function Get-NinjaOneDeviceCustomFields {
             $Resource = 'v2/device-custom-fields'
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

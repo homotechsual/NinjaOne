@@ -5,7 +5,7 @@ function New-NinjaOnePUTRequest {
         .DESCRIPTION
             Wrapper function to build web requests for the NinjaOne API.
         .EXAMPLE
-            PS C:\> New-NinjaOnePOSTRequest -Method "POST" -Resource "/v2/organizations"
+            PS C:\> New-NinjaOnePUTRequest -Resource "/v2/organizations -Body @{"name"="MyOrg"}
         .OUTPUTS
             Outputs an object containing the response from the web request.
     #>
@@ -13,15 +13,13 @@ function New-NinjaOnePUTRequest {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Private function - no need to support.')]
     param (
-        # The HTTP request method.
-        [Parameter(Mandatory = $True)]
-        [String]$Method,
         # The resource to send the request to.
         [Parameter(Mandatory = $True)]
         [String]$Resource,
         # A hashtable used to build the query string.
         [HashTable]$QSCollection,
         # A hashtable used to build the body of the request.
+        [Parameter(Mandatory = $True)]
         [Hashtable]$Body
     )
     if ($null -eq $Script:NRAPIConnectionInformation) {
@@ -32,9 +30,9 @@ function New-NinjaOnePUTRequest {
     }
     try {
         if ($QSCollection) {
-            Write-Debug "Query string in New-NinjaOnePOSTRequest contains: $($QSCollection | Out-String)"
+            Write-Debug "Query string in New-NinjaOnePUTRequest contains: $($QSCollection | Out-String)"
             $QueryStringCollection = [System.Web.HTTPUtility]::ParseQueryString([String]::Empty)
-            Write-Verbose 'Building [HttpQSCollection] for New-NinjaOneGETRequest'
+            Write-Verbose 'Building [HttpQSCollection] for New-NinjaOnePUTRequest'
             foreach ($Key in $QSCollection.Keys) {
                 $QueryStringCollection.Add($Key, $QSCollection.$Key)
             }
@@ -52,20 +50,23 @@ function New-NinjaOnePUTRequest {
             Write-Debug 'Query string not present...'
         }
         $WebRequestParams = @{
-            Method = $Method
+            Method = 'PUT'
             Uri = $RequestUri.ToString()
         }
         if ($Body) {
-            Write-Verbose 'Building [HttpBody] for New-NinjaOnePOSTRequest'
+            Write-Verbose 'Building [HttpBody] for New-NinjaOnePUTequest'
             $WebRequestParams.Body = ($Body | ConvertTo-Json -Depth 100)
+            Write-Debug "Raw body is $($WebRequestParams.Body)"
         } else {
-            Write-Verbose 'No body provided for New-NinjaOnePOSTRequest'
+            Write-Verbose 'No body provided for New-NinjaOnePUTRequest'
         }
         Write-Debug "Building new NinjaOneRequest with params: $($WebRequestParams | Out-String)"
-        $Result = try {
-            Invoke-NinjaOneRequest -WebRequestParams $WebRequestParams
+        try {
+            $Result = Invoke-NinjaOneRequest -WebRequestParams $WebRequestParams
             Write-Debug "NinjaOne request returned $($Result | Out-String)"
-            if ($Result.result) {
+            if ($Result['results']) {
+                Return $Result.results
+            } elseif ($Result['result']) {
                 Return $Result.result
             } else {
                 Return $Result

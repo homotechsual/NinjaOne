@@ -34,7 +34,6 @@ function Get-NinjaOneDeviceVolumes {
             }
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

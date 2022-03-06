@@ -37,7 +37,6 @@ function Get-NinjaOneGroupMembers {
             }
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

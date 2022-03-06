@@ -20,7 +20,6 @@ function Get-NinjaOneTicketForms {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         $Resource = '/v2/ticketing/ticket-form'
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

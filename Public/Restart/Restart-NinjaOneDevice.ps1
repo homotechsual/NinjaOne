@@ -25,24 +25,9 @@ function Restart-NinjaOneDevice {
         [Parameter()]
         [string]$reason
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding a 'deviceId=' parameter by removing it from the set parameters.
-    if ($deviceId) {
-        $Parameters.Remove('deviceId') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding a 'mode=' parameter by removing it from the set parameters.
-    if ($mode) {
-        $Parameters.Remove('mode') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding a 'reason=' parameter by removing it from the set parameters.
-    if ($reason) {
-        $Parameters.Remove('reason') | Out-Null
-    }
     try {
         $Resource = "v2/device/$deviceId/reboot/$mode"
         $RequestParams = @{
-            Method = 'POST'
             Resource = $Resource
         }
         if ($reason) {

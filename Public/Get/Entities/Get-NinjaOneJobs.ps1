@@ -48,7 +48,6 @@ function Get-NinjaOneJobs {
             $Resource = 'v2/jobs'
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

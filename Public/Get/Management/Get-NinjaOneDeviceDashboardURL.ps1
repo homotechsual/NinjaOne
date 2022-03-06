@@ -36,7 +36,6 @@ function Get-NinjaOneDeviceDashboardURL {
             }
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

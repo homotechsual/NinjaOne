@@ -21,21 +21,10 @@ function Reset-NinjaOneAlert {
         [Parameter()]
         [object]$activityData
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'uid=' parameter by removing it from the set parameters.
-    if ($uid) {
-        $Parameters.Remove('uid') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding an 'activityData=' parameter by removing it from the set parameters.
-    if ($activityData) {
-        $Parameters.Remove('activityData') | Out-Null
-    }
     try {
         if ($activityData) {
             $Resource = "v2/alert/$uid/reset"
             $RequestParams = @{
-                Method = 'POST'
                 Resource = $Resource
                 Body = $activityData
             }
@@ -48,7 +37,6 @@ function Reset-NinjaOneAlert {
         } else {
             $Resource = "v2/alert/$uid"
             $RequestParams = @{
-                Method = 'DELETE'
                 Resource = $Resource
             }
             if ($PSCmdlet.ShouldProcess('Alert', 'Reset')) {

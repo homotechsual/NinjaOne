@@ -46,13 +46,8 @@ function Invoke-NinjaOneRequest {
                 Write-Verbose 'Request completed with no status code'
                 $Results = @{}
             }
-            
-
         }
-        
         return $Results
-    } catch [Microsoft.PowerShell.Commands.HttpResponseException] {
-        throw $_
     } catch {
         throw $_
     }

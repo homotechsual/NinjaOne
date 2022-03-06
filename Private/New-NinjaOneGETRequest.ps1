@@ -5,7 +5,7 @@ function New-NinjaOneGETRequest {
         .DESCRIPTION
             Wrapper function to build web requests for the NinjaOne API.
         .EXAMPLE
-            PS C:\> New-NinjaOneGETRequest -Method "GET" -Resource "/v2/organizations"
+            PS C:\> New-NinjaOneGETRequest -Resource "/v2/organizations"
         .OUTPUTS
             Outputs an object containing the response from the web request.
     #>
@@ -13,15 +13,8 @@ function New-NinjaOneGETRequest {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Private function - no need to support.')]
     param (
-        # The HTTP request method.
-        [Parameter(
-            Mandatory = $True
-        )]
-        [String]$Method,
         # The resource to send the request to.
-        [Parameter(
-            Mandatory = $True
-        )]
+        [Parameter( Mandatory = $True )]
         [String]$Resource,
         # A hashtable used to build the query string.
         [HashTable]$QSCollection
@@ -48,14 +41,20 @@ function New-NinjaOneGETRequest {
         $RequestUri.Path = $Resource
         $RequestUri.Query = $QueryStringCollection.toString()
         $WebRequestParams = @{
-            Method = $Method
+            Method = 'GET'
             Uri = $RequestUri.ToString()
         }
         Write-Debug "Building new NinjaOneRequest with params: $($WebRequestParams ?? 'No Params' | Out-String)"
         try {
             $Result = Invoke-NinjaOneRequest -WebRequestParams $WebRequestParams
             Write-Debug "NinjaOne request returned: $($Result ?? 'No Content' | Out-String)"
-            Return $Result
+            if ($Result['results']) {
+                Return $Result.results
+            } elseif ($Result['result']) {
+                Return $Result.result
+            } else {
+                Return $Result
+            }
         } catch [Microsoft.PowerShell.Commands.HttpResponseException] {
             throw $_
         } catch {

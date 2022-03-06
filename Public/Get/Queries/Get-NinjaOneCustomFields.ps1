@@ -37,7 +37,6 @@ function Get-NinjaOneCustomFields {
             $Resource = 'v2/queries/custom-fields'
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

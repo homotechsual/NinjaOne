@@ -14,7 +14,7 @@ function Invoke-NinjaOneWindowsServiceAction {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # The device to change servce configuration for.
+        # The device to change service configuration for.
         [Parameter(Mandatory = $true)]
         [string[]]$deviceId,
         # The service to alter configuration for.
@@ -25,24 +25,9 @@ function Invoke-NinjaOneWindowsServiceAction {
         [ValidateSet('START', 'PAUSE', 'STOP', 'RESTART')]
         [object]$action
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'deviceId=' parameter by removing it from the set parameters.
-    if ($deviceIds) {
-        $Parameters.Remove('deviceId') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding an 'serviceId=' parameter by removing it from the set parameters.
-    if ($serviceId) {
-        $Parameters.Remove('serviceId') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding an 'action=' parameter by removing it from the set parameters.
-    if ($action) {
-        $Parameters.Remove('action') | Out-Null
-    }
     try {
         $Resource = "v2/device/$deviceId/windows-service/$serviceId/control"
         $RequestParams = @{
-            Method = 'POST'
             Resource = $Resource
             Body = @{
                 action = $action

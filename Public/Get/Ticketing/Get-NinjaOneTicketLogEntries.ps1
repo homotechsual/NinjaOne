@@ -27,7 +27,6 @@ function Get-NinjaOneTicketLogEntries {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         $Resource = "v2/ticketing/ticket/$ticketID/log-entry"
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

@@ -33,7 +33,6 @@ function Get-NinjaOneSoftwareProducts {
             $Resource = 'v2/software-products'
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

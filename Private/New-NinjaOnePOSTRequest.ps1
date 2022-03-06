@@ -13,9 +13,6 @@ function New-NinjaOnePOSTRequest {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Private function - no need to support.')]
     param (
-        # The HTTP request method.
-        [Parameter(Mandatory = $True)]
-        [String]$Method,
         # The resource to send the request to.
         [Parameter(Mandatory = $True)]
         [String]$Resource,
@@ -52,20 +49,23 @@ function New-NinjaOnePOSTRequest {
             Write-Debug 'Query string not present...'
         }
         $WebRequestParams = @{
-            Method = $Method
+            Method = 'POST'
             Uri = $RequestUri.ToString()
         }
         if ($Body) {
             Write-Verbose 'Building [HttpBody] for New-NinjaOnePOSTRequest'
             $WebRequestParams.Body = ($Body | ConvertTo-Json -Depth 100)
+            Write-Debug "Raw body is $($WebRequestParams.Body)"
         } else {
             Write-Verbose 'No body provided for New-NinjaOnePOSTRequest'
         }
         Write-Debug "Building new NinjaOneRequest with params: $($WebRequestParams | Out-String)"
-        $Result = try {
-            Invoke-NinjaOneRequest -WebRequestParams $WebRequestParams
+        try {
+            $Result = Invoke-NinjaOneRequest -WebRequestParams $WebRequestParams
             Write-Debug "NinjaOne request returned $($Result | Out-String)"
-            if ($Result.result) {
+            if ($Result['results']) {
+                Return $Result.results
+            } elseif ($Result['result']) {
                 Return $Result.result
             } else {
                 Return $Result

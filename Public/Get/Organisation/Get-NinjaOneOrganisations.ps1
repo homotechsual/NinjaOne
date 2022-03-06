@@ -14,8 +14,8 @@ function Get-NinjaOneOrganisations {
     Param(
         # Organisation ID
         [Parameter( ParameterSetName = 'Single', Mandatory = $True )]
-        [Alias('organizationID')]
-        [Int]$organisationID,
+        [Alias('organizationId')]
+        [Int]$organisationId,
         # Number of results per page.
         [Parameter( ParameterSetName = 'Multi' )]
         [Int]$pageSize,
@@ -42,7 +42,6 @@ function Get-NinjaOneOrganisations {
             Write-Verbose "Retrieving information on organisation with ID $($organisationID)"
             $Resource = "v2/organization/$($organisationID)"
             $RequestParams = @{
-                Method = 'GET'
                 Resource = $Resource
                 QSCollection = $QSCollection
             }
@@ -55,7 +54,6 @@ function Get-NinjaOneOrganisations {
                 $Resource = 'v2/organizations'
             }
             $RequestParams = @{
-                Method = 'GET'
                 Resource = $Resource
                 QSCollection = $QSCollection
             }

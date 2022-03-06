@@ -45,7 +45,6 @@ function Get-NinjaOneDeviceSoftwarePatches {
             }
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

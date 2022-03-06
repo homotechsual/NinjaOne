@@ -26,31 +26,16 @@ function Set-NinjaOneWindowsServiceConfiguration {
         [Parameter(Mandatory = $true)]
         [object]$configuration
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'deviceId=' parameter by removing it from the set parameters.
-    if ($deviceIds) {
-        $Parameters.Remove('deviceId') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding an 'serviceId=' parameter by removing it from the set parameters.
-    if ($serviceId) {
-        $Parameters.Remove('serviceId') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding an 'configuration=' parameter by removing it from the set parameters.
-    if ($configuration) {
-        $Parameters.Remove('configuration') | Out-Null
-    }
     try {
         $Resource = "v2/device/$deviceId/windows-service/$serviceId/configure"
         $RequestParams = @{
-            Method = 'POST'
             Resource = $Resource
             Body = $configuration
         }
         if ($PSCmdlet.ShouldProcess("Service $serviceId configuration", 'Set')) {
             $ServiceConfiguration = New-NinjaOnePOSTRequest @RequestParams
-            if ($ServiceConfiguration -eq 204) {
-                Write-Information "Service configuration for service $($serviceId) on device $($deviceId) updated successfully."
+            if ($InformationPreference -eq 'Continue' -and $ServiceConfiguration -eq 204) {
+                Write-Information "Service configuration for service $($serviceId) on device $($deviceId) updated successfully." -InformationAction Continue
             }
         }
     } catch {

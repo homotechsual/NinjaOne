@@ -34,7 +34,6 @@ function Get-NinjaOneDeviceProcessors {
             }
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

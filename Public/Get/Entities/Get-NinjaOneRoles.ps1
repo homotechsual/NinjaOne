@@ -19,7 +19,6 @@ function Get-NinjaOneRoles {
         Write-Verbose 'Retrieving all roles.'
         $Resource = 'v2/roles'
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

@@ -37,7 +37,6 @@ function Get-NinjaOneLocations {
             $Resource = 'v2/locations'
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

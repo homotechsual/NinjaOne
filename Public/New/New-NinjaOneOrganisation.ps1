@@ -22,27 +22,10 @@ function New-NinjaOneOrganisation {
         # Show the organisation that was created.
         [switch]$show
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'templateOrganizationId=' parameter by removing it from the set parameters.
-    if ($templateOrganizationId) {
-        $Parameters.Remove('templateOrganizationId') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding an 'organisation=' parameter by removing it from the set parameters.
-    if ($organisation) {
-        $Parameters.Remove('organisation') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding an 'show=' parameter by removing it from the set parameters.
-    if ($show) {
-        $Parameters.Remove('show') | Out-Null
-    }
     try {
-        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         $Resource = 'v2/organizations'
         $RequestParams = @{
-            Method = 'POST'
             Resource = $Resource
-            QSCollection = $QSCollection
             Body = $organisation
         }
         if ($PSCmdlet.ShouldProcess("Organisation '$($organisation.name)'", 'Create')) {

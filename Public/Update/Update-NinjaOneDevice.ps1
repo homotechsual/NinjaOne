@@ -21,20 +21,9 @@ function Update-NinjaOneDevice {
         [Parameter(Mandatory = $true)]
         [object]$deviceInformation
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'deviceId=' parameter by removing it from the set parameters.
-    if ($deviceIds) {
-        $Parameters.Remove('deviceId') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding an 'deviceInformation=' parameter by removing it from the set parameters.
-    if ($deviceInformation) {
-        $Parameters.Remove('deviceInformation') | Out-Null
-    }
     try {
         $Resource = "v2/device/$deviceId"
         $RequestParams = @{
-            Method = 'PATCH'
             Resource = $Resource
             Body = $deviceInformation
         }

@@ -34,7 +34,6 @@ function Get-NinjaOneDeviceDisks {
             }
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

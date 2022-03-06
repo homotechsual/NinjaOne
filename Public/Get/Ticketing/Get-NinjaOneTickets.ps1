@@ -29,7 +29,6 @@ function Get-NinjaOneTickets {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         $Resource = "v2/ticketing/trigger/board/$boardID/run"
         $RequestParams = @{
-            Method = 'POST'
             Resource = $Resource
             QSCollection = $QSCollection
             Body = $filters

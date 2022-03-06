@@ -124,8 +124,17 @@
         'Get-NinjaOneTicketForms',
         'Get-NinjaOneTicketLogEntries',
         'Get-NinjaOneTickets',
+        'New-NinjaOneOrganisation',
+        'New-NinjaOneTicket',
         'Reset-NinjaOneAlert',
-        'New-NinjaOneOrganisation'
+        'Restart-NinjaOneDevice',
+        'Set-NinjaOneDeviceApproval',
+        'Set-NinjaOneDeviceCustomFields',
+        'Set-NinjaOneDeviceMaintenance',
+        'Set-NinjaOneWindowsServiceConfiguration',
+        'Update-NinjaOneDevice',
+        'Update-NinjaOneTicket',
+        'Update-NinjaOneWebhook'
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

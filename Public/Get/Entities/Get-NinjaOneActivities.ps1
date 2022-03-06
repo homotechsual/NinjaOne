@@ -63,7 +63,6 @@ function Get-NinjaOneActivities {
             $Resource = 'v2/activities'
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

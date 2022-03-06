@@ -16,7 +16,7 @@ function Set-NinjaOneDeviceMaintenance {
     Param(
         # The device to set a maintenance window for.
         [Parameter(Mandatory = $true)]
-        [string[]]$deviceId,
+        [string]$deviceId,
         # The features to disable during maintenance.
         [Parameter(Mandatory = $true)]
         [ValidateSet('ALERTS', 'PATCHING', 'AVSCANS', 'TASKS')]
@@ -28,51 +28,45 @@ function Set-NinjaOneDeviceMaintenance {
         [Parameter(Mandatory = $true)]
         [string]$end
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding a 'deviceid=' parameter by removing it from the set parameters.
-    if ($mode) {
-        $Parameters.Remove('deviceId') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding a 'disabledfeatures=' parameter by removing it from the set parameters.
-    if ($disabledFeatures) {
-        $Parameters.Remove('disabledFeatures') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding a 'start=' parameter by removing it from the set parameters.
-    if ($start) {
-        $Parameters.Remove('start') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding an 'end=' parameter by removing it from the set parameters.
-    if ($end) {
-        $Parameters.Remove('end') | Out-Null
-    }
     try {
+        Write-Debug 'Into try block.'
         # Validate the dates.
-        if ($start -and [DateTime]::Parse($start)) {
+        if ($start -and $start -as [DateTime]) {
+            Write-Verbose 'Parsing start date/time.'
             $dateTimeStart = [DateTime]::Parse($start)
+            if ($dateTimeStart -lt [DateTime]::Now) {
+                throw [System.IO.InvalidDataException]::New('Start date/time must be in the future.')
+            }
             $unixStart = Get-Date -Date $dateTimeStart -UFormat '%s'
         }
-        if ($end -and [DateTime]::Parse($end)) {
+        Write-Verbose 'Parsed start date/time.'
+        if ($end -as [DateTime]) {
+            Write-Verbose 'Parsing end date/time.'
             $dateTimeEnd = [DateTime]::Parse($end)
+            if ($dateTimeEnd -lt [DateTime]::Now -or $dateTimeEnd -lt $dateTimeStart) {
+                throw [System.IO.InvalidDataException]::New('End date/time must be in the future and after the start date/time.')
+            }
             $unixEnd = Get-Date -Date $dateTimeEnd -UFormat '%s'
         }
+        Write-Verbose 'Parsed dates.'
         $Resource = "v2/device/$deviceId/maintenance"
-        $MaintenanceWindow = [PSCustomObject]@{
+        $MaintenanceWindow = @{
             disabledFeatures = [array]$disabledFeatures
             start = $unixStart
             end = $unixEnd
         }
         $RequestParams = @{
-            Method = 'POST'
             Resource = $Resource
             Body = $MaintenanceWindow
         }
         if ($PSCmdlet.ShouldProcess('Device Maintenance', 'Set')) {
-            $DeviceMaintenance = New-NinjaOnePUTRequest @RequestParams
+            $DeviceMaintenance = New-NinjaOnePUTRequest @RequestParams -ErrorAction Stop
             if ($DeviceMaintenance -eq 204) {
                 Write-Information "Device $($deviceIds) maintenance window created successfully."
             }
         }
+    } catch [System.IO.InvalidDataException] {
+        throw $_
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

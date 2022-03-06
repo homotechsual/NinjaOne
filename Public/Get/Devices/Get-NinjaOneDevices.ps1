@@ -70,7 +70,6 @@ function Get-NinjaOneDevices {
             }
         }
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

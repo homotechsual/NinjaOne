@@ -19,7 +19,6 @@ function Get-NinjaOnePolicies {
         Write-Verbose 'Retrieving all policies.'
         $Resource = 'v2/policies'
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

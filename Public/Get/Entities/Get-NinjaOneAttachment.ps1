@@ -28,7 +28,6 @@ function Get-NinjaOneAtachment {
         Write-Verbose 'Retrieving attachment.'
         $Resource = "v2/attachment/$(attachmentID)"
         $RequestParams = @{
-            Method = 'GET'
             Resource = $Resource
             QSCollection = $QSCollection
         }

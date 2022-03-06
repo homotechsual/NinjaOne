@@ -20,23 +20,10 @@ function New-NinjaOneTicket {
         # Show the organisation that was created.
         [switch]$show
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'ticket=' parameter by removing it from the set parameters.
-    if ($ticket) {
-        $Parameters.Remove('ticket') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding an 'show=' parameter by removing it from the set parameters.
-    if ($show) {
-        $Parameters.Remove('show') | Out-Null
-    }
     try {
-        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         $Resource = 'v2/ticketing/ticket'
         $RequestParams = @{
-            Method = 'POST'
             Resource = $Resource
-            QSCollection = $QSCollection
             Body = $ticket
         }
         if ($PSCmdlet.ShouldProcess("Ticket '$($ticket.summary)'", 'Create')) {
