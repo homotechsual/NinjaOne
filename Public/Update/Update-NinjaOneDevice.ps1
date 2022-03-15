@@ -27,11 +27,16 @@ function Update-NinjaOneDevice {
             Resource = $Resource
             Body = $deviceInformation
         }
-        if ($PSCmdlet.ShouldProcess('Device information', 'Update')) {
-            $DeviceUpdate = New-NinjaOnePOSTRequest @RequestParams
-            if ($DeviceUpdate -eq 204) {
-                Write-Information "Device information for device $($deviceId) updated successfully."
+        $DeviceExists = (Get-NinjaOneDevice -Id $deviceId).Count -gt 0
+        if ($DeviceExists) {
+            if ($PSCmdlet.ShouldProcess('Device information', 'Update')) {
+                $DeviceUpdate = New-NinjaOnePATCHRequest @RequestParams
+                if ($DeviceUpdate -eq 204) {
+                    Write-Information "Device information for device $($deviceId) updated successfully."
+                }
             }
+        } else {
+            throw "Device $($deviceId) does not exist."
         }
     } catch {
         New-NinjaOneError -ErrorRecord $_

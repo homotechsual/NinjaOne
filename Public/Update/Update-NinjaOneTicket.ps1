@@ -27,11 +27,16 @@ function Update-NinjaOneTicket {
             Resource = $Resource
             Body = $ticket
         }
-        if ($PSCmdlet.ShouldProcess('Ticket', 'Update')) {
-            $TicketUpdate = New-NinjaOnePUTRequest @RequestParams
-            if ($TicketUpdate -eq 204) {
-                Write-Information 'Ticket updated successfully.'
+        $TicketExists = (Get-NinjaOneTicket -TicketId $ticketId).Count -gt 0
+        if ($TicketExists) {
+            if ($PSCmdlet.ShouldProcess('Ticket', 'Update')) {
+                $TicketUpdate = New-NinjaOnePUTRequest @RequestParams
+                if ($TicketUpdate -eq 204) {
+                    Write-Information 'Ticket updated successfully.'
+                }
             }
+        } else {
+            throw "Ticket $ticketId does not exist."
         }
     } catch {
         New-NinjaOneError -ErrorRecord $_

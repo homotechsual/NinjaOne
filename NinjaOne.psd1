@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '0.9.0'
+    ModuleVersion = '1.0.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -124,8 +124,13 @@
         'Get-NinjaOneTicketForms',
         'Get-NinjaOneTicketLogEntries',
         'Get-NinjaOneTickets',
+        'Invoke-NinjaOneDeviceScript',
+        'Invoke-NinjaOneWindowsServiceAction',
+        'New-NinjaOneLocation',
         'New-NinjaOneOrganisation',
         'New-NinjaOneTicket',
+        'Remove-NinjaOneDeviceMaintenance',
+        'Remove-NinjaOneWebhook',
         'Reset-NinjaOneAlert',
         'Restart-NinjaOneDevice',
         'Set-NinjaOneDeviceApproval',
@@ -133,6 +138,9 @@
         'Set-NinjaOneDeviceMaintenance',
         'Set-NinjaOneWindowsServiceConfiguration',
         'Update-NinjaOneDevice',
+        'Update-NinjaOneLocation',
+        'Update-NinjaOneNodeRolePolicyAssignment',
+        'Update-NinjaOneOrganisation',
         'Update-NinjaOneTicket',
         'Update-NinjaOneWebhook'
     )
@@ -235,10 +243,10 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Fixes a bug with getting devices for an organisation. Overhauls error handling. Adds pipeline support.'
+            ReleaseNotes = 'Finish adding API endpoints.'
 
             # Prerelease string of this module
-            Prerelease = '-Beta1'
+            # Prerelease = ''
 
             # Flag to indicate whether the module requires explicit user acceptance for install/update/save
             # RequireLicenseAcceptance = $false

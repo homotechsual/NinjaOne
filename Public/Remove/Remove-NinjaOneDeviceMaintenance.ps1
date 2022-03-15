@@ -4,26 +4,35 @@ using namespace System.Management.Automation
 function Remove-NinjaOneDeviceMaintenance {
     <#
         .SYNOPSIS
-            Removes webhook configuration for the current application/API client.
+            Cancels scheduled maintenance for the given device.
         .DESCRIPTION
-            Removes webhook configuration for the current application/API client using the NinjaOne v2 API.
+            Cancels scheduled maintenance for the given device using the NinjaOne v2 API.
         .OUTPUTS
             A powershell object containing the response.
     #>
     [CmdletBinding( SupportsShouldProcess = $true, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-    Param()
+    Param(
+        # The device ID to cancel maintenance for.
+        [Parameter(Mandatory = $true)]
+        [Int]$deviceId
+    )
     try {
-        $Resource = 'v2/webhook'
+        $Resource = "v2/device/$deviceId/maintenance"
         $RequestParams = @{
             Resource = $Resource
         }
-        if ($PSCmdlet.ShouldProcess('Webhook Configuration', 'Update')) {
-            $WebhookConfiguration = New-NinjaOneDELETERequest @RequestParams
-            if ($WebhookConfiguration -eq 204) {
-                Write-Information 'Webhook configuration deleted successfully.'
+        $DeviceExists = (Get-NinjaOneDevice -Id $deviceId).Count -gt 0
+        if ($DeviceExists) {
+            if ($PSCmdlet.ShouldProcess('Device Maintenance', 'Delete')) {
+                $DeviceMaintenance = New-NinjaOneDELETERequest @RequestParams
+                if ($DeviceMaintenance -eq 204) {
+                    Write-Information 'Scheduled device maintenance deleted successfully.'
+                }
             }
+        } else {
+            throw "Device with ID $deviceId does not exist."
         }
     } catch {
         New-NinjaOneError -ErrorRecord $_

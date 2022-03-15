@@ -55,7 +55,7 @@ function Get-NinjaOneDevices {
             $Resource = "v2/device/$($deviceID)"
         } elseif ($organisationID) {
             Write-Verbose 'Getting organisation from NinjaOne API.'
-            $Organisation = Get-NinjaOneOrganisations -organisationID $organisationID
+            $Organisation = Get-NinjaOneOrganisations -organisationId $organisationID
             if ($Organisation) {
                 Write-Verbose "Retrieving devices for $($Organisation.Name)."
                 $Resource = "v2/organization/$($organisationID)/devices"
