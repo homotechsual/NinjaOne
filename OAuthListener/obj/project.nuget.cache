@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "QFCYwE55Guyx4m42sznCVWsP73Jd3OBL8GtTYLxctS+80izv1LzU143c9LSbXsR0o1YWPP5ni6FHSaldt+edNg==",
+  "dgSpecHash": "77T0VnZPr3x0crGeUT/qvh/BtfnjrthCceSSRPLbHKDmMSF+Wbzw3zfoFLKG07KAD7ws/Bi02zRNBh+haB+/XA==",
   "success": true,
-  "projectFilePath": "X:\\OneDrive - MJCO\\Documents\\PowerShell\\Modules\\NinjaOne\\OAuthListener\\OAuthListener.csproj",
+  "projectFilePath": "X:\\Development\\Repositories\\MJCO\\NinjaOne\\OAuthListener\\OAuthListener.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

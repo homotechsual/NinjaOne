@@ -111,7 +111,7 @@ function Connect-NinjaOne {
         # Start with the query string.
         $AuthRequestQuery = [System.Web.HttpUtility]::ParseQueryString([String]::Empty)
         $AuthRequestParams.GetEnumerator() | ForEach-Object {
-            $AuthRequestURI.Add($_.Key, $_.Value)
+            $AuthRequestQuery.Add($_.Key, $_.Value)
         }
         # Now the authentication URI
         $AuthRequestURI = [System.UriBuilder]$URL
@@ -122,7 +122,7 @@ function Connect-NinjaOne {
             # Get our authorisation code.
             Write-Verbose 'Opening browser to authenticate.'
             Write-Debug "Authentication URL: $($AuthRequestURI.ToString())"
-            Start-Process $AuthReqURI.ToString()
+            Start-Process $AuthRequestURI.ToString()
             $OAuthListenerDirectory = Join-Path "$((Get-Item $PSScriptRoot).Parent.FullName)" 'OAuthListener'
             $Script:NRAPIAuthenticationInformation.Code = dotnet run --project $OAuthListenerDirectory -- $Port
             Write-Debug "Authorisation code received: $($Script:NRAPIAuthenticationInformation.Code)"

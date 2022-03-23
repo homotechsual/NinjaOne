@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "X:\\OneDrive - MJCO\\Documents\\PowerShell\\Modules\\NinjaOne\\OAuthListener\\OAuthListener.csproj": {}
+    "X:\\Development\\Repositories\\MJCO\\NinjaOne\\OAuthListener\\OAuthListener.csproj": {}
   },
   "projects": {
-    "X:\\OneDrive - MJCO\\Documents\\PowerShell\\Modules\\NinjaOne\\OAuthListener\\OAuthListener.csproj": {
+    "X:\\Development\\Repositories\\MJCO\\NinjaOne\\OAuthListener\\OAuthListener.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "X:\\OneDrive - MJCO\\Documents\\PowerShell\\Modules\\NinjaOne\\OAuthListener\\OAuthListener.csproj",
+        "projectUniqueName": "X:\\Development\\Repositories\\MJCO\\NinjaOne\\OAuthListener\\OAuthListener.csproj",
         "projectName": "OAuthListener",
-        "projectPath": "X:\\OneDrive - MJCO\\Documents\\PowerShell\\Modules\\NinjaOne\\OAuthListener\\OAuthListener.csproj",
+        "projectPath": "X:\\Development\\Repositories\\MJCO\\NinjaOne\\OAuthListener\\OAuthListener.csproj",
         "packagesPath": "C:\\Users\\MichaelO'Toole\\.nuget\\packages\\",
-        "outputPath": "X:\\OneDrive - MJCO\\Documents\\PowerShell\\Modules\\NinjaOne\\OAuthListener\\obj\\",
+        "outputPath": "X:\\Development\\Repositories\\MJCO\\NinjaOne\\OAuthListener\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\MichaelO'Toole\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -55,7 +55,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.103\\RuntimeIdentifierGraph.json"
         }
       }
     }
