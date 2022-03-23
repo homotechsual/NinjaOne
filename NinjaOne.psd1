@@ -243,7 +243,7 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Finish adding API endpoints.'
+            ReleaseNotes = 'Fixes for interactive authentication.'
 
             # Prerelease string of this module
             # Prerelease = ''
