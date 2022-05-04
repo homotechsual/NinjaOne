@@ -83,7 +83,7 @@ For example *NinjaOne API PS Module*.
 1. In the **Redirect URIs** box enter *`https://localhost/`*
 This isn't actually used so just set it to plain old `localhost` as above.
 
-1. Set the **Scopes** appropriately. If you want to be able to do anything using the API select all three scopes. Otherwise select them as appropriate for your needs:
+1. Set the **Scopes** to Monitoring, Management, Control. Non-Interactive/Unattended Auth requires all three scopes.
 
     * Monitoring -  *This provides access to most of the `Get-*` commands.*
     * Management - *This provides access to most of the management functionality like agent installer generation.*
