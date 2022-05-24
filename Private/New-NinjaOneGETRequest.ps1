@@ -48,11 +48,14 @@ function New-NinjaOneGETRequest {
         try {
             $Result = Invoke-NinjaOneRequest -WebRequestParams $WebRequestParams
             Write-Debug "NinjaOne request returned: $($Result ?? 'No Content' | Out-String)"
-            if ($Result['results']) {
+            if ($Result.results) {
+                Write-Debug "Returning 'results' property.'"
                 Return $Result.results
-            } elseif ($Result['result']) {
+            } elseif ($Result.result) {
+                Write-Debug "Returning 'result' property.'"
                 Return $Result.result
             } else {
+                Write-Debug "Returning raw.'"
                 Return $Result
             }
         } catch [Microsoft.PowerShell.Commands.HttpResponseException] {
