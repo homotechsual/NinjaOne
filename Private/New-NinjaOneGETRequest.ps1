@@ -48,10 +48,11 @@ function New-NinjaOneGETRequest {
         try {
             $Result = Invoke-NinjaOneRequest -WebRequestParams $WebRequestParams
             Write-Debug "NinjaOne request returned: $($Result ?? 'No Content' | Out-String)"
-            if ($Result.results) {
+            $Properties = ($Result | Get-Member -MemberType 'NoteProperty')
+            if ($Properties.name -contains 'results') {
                 Write-Debug "Returning 'results' property.'"
                 Return $Result.results
-            } elseif ($Result.result) {
+            } elseif ($Properties.name -contains 'result') {
                 Write-Debug "Returning 'result' property.'"
                 Return $Result.result
             } else {
