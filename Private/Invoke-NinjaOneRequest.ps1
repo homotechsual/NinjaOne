@@ -39,11 +39,11 @@ function Invoke-NinjaOneRequest {
         Write-Debug "Response object: $($Response.Content ?? 'No content' | Out-String)"
         $Results = $Response.Content | ConvertFrom-Json
         if ($null -eq $Results) {
-            if ($Response.StatusCode) {
-                Write-Verbose "Request completed with status code $($Response.StatusCode)"
+            if ($Response.StatusCode -and $WebRequestParams.Method -ne 'GET') {
+                Write-Verbose "Request completed with status code $($Response.StatusCode). No content in the response - returning Status Code."
                 $Results = $Response.StatusCode
             } else {
-                Write-Verbose 'Request completed with no status code'
+                Write-Verbose 'Request completed with no results and/or no status code.'
                 $Results = @{}
             }
         }

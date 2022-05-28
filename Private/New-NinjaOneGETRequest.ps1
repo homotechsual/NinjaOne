@@ -50,12 +50,15 @@ function New-NinjaOneGETRequest {
             Write-Debug "NinjaOne request returned: $($Result ?? 'No Content' | Out-String)"
             if ($Result.results) {
                 Write-Debug "Returning 'results' property.'"
+                Write-Debug "Result type is $($Result.results.GetType())"
                 Return $Result.results
             } elseif ($Result.result) {
                 Write-Debug "Returning 'result' property.'"
+                Write-Debug "Result type is $($Result.result.GetType())"
                 Return $Result.result
             } else {
                 Write-Debug "Returning raw.'"
+                Write-Debug "Result type is $($Result.GetType())"
                 Return $Result
             }
         } catch [Microsoft.PowerShell.Commands.HttpResponseException] {
