@@ -1,11 +1,11 @@
 {
   "version": 3,
   "targets": {
-    "net5.0": {}
+    "net6.0": {}
   },
   "libraries": {},
   "projectFileDependencyGroups": {
-    "net5.0": []
+    "net6.0": []
   },
   "packageFolders": {
     "C:\\Users\\MichaelO'Toole\\.nuget\\packages\\": {}
@@ -13,25 +13,25 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "X:\\Development\\Repositories\\MJCO\\NinjaOne\\OAuthListener\\OAuthListener.csproj",
+      "projectUniqueName": "C:\\Users\\MichaelO'Toole\\Development\\NinjaOne\\OAuthListener\\OAuthListener.csproj",
       "projectName": "OAuthListener",
-      "projectPath": "X:\\Development\\Repositories\\MJCO\\NinjaOne\\OAuthListener\\OAuthListener.csproj",
+      "projectPath": "C:\\Users\\MichaelO'Toole\\Development\\NinjaOne\\OAuthListener\\OAuthListener.csproj",
       "packagesPath": "C:\\Users\\MichaelO'Toole\\.nuget\\packages\\",
-      "outputPath": "X:\\Development\\Repositories\\MJCO\\NinjaOne\\OAuthListener\\obj\\",
+      "outputPath": "C:\\Users\\MichaelO'Toole\\Development\\NinjaOne\\OAuthListener\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\MichaelO'Toole\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\MichaelO'Toole\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "net5.0"
+        "net6.0"
       ],
       "sources": {
-        "https://api.nuget.org/v3/index.json": {},
-        "https://www.powershellgallery.com/api/v2/": {}
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {}
       },
       "frameworks": {
-        "net5.0": {
-          "targetAlias": "net5.0",
+        "net6.0": {
+          "targetAlias": "net6.0",
           "projectReferences": {}
         }
       },
@@ -42,8 +42,8 @@
       }
     },
     "frameworks": {
-      "net5.0": {
-        "targetAlias": "net5.0",
+      "net6.0": {
+        "targetAlias": "net6.0",
         "imports": [
           "net461",
           "net462",
@@ -62,7 +62,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.104\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
       }
     }
   }
