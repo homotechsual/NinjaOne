@@ -15,7 +15,9 @@ function Get-NinjaOneDeviceVolumes {
         # Device ID
         [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
         [Alias('id')]
-        [Int]$deviceID
+        [Int]$deviceID,
+        # Additional information to include (bl - BitLocker status)
+        [String]$include
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
