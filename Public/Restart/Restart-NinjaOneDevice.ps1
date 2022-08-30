@@ -34,7 +34,7 @@ function Restart-NinjaOneDevice {
             $reasonObject = @{
                 reason = $reason
             }
-            $RequestParams.Add('reason', $reasonObject)
+            $RequestParams.Add('body', $reasonObject)
         }
         if ($PSCmdlet.ShouldProcess("Device $deviceId", 'Reboot')) {
             $Alert = New-NinjaOnePOSTRequest @RequestParams

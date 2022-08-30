@@ -23,7 +23,7 @@ function Remove-NinjaOneDeviceMaintenance {
         $RequestParams = @{
             Resource = $Resource
         }
-        $DeviceExists = (Get-NinjaOneDevice -Id $deviceId).Count -gt 0
+        $DeviceExists = (Get-NinjaOneDevices -deviceId $deviceId).Count -gt 0
         if ($DeviceExists) {
             if ($PSCmdlet.ShouldProcess('Device Maintenance', 'Delete')) {
                 $DeviceMaintenance = New-NinjaOneDELETERequest @RequestParams

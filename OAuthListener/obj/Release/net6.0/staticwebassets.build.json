@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "jvH5Q55hV22z3Z9IA96e/mTsFtH1TwmH7nbGOqdThEE=",
+  "Source": "OAuthListener",
+  "BasePath": "_content/OAuthListener",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

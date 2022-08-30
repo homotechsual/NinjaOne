@@ -13,12 +13,12 @@ function Find-NinjaOneDevices {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
+        # Limit number of devices to return.
+        [Int]$limit,
         # Search query
         [Parameter( Mandatory = $True )]
         [Alias('q')]
-        [String]$query,
-        # Limit number of devices to return.
-        [Int]$limit
+        [String]$searchQuery
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters

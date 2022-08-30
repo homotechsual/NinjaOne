@@ -21,7 +21,7 @@ namespace OAuthListener
         // Disable all logging to stdout
         .ConfigureLogging(config => config.ClearProviders())
         // Listen on the port passed to the process.
-        .UseKestrel(options => options.ListenLocalhost(int.Parse(args[0])))
+        .UseKestrel(options: options => options.ListenLocalhost(int.Parse(args[0])))
         .Configure(app => app.Run(async context =>
         {
             var message = "ERROR: Unable to retrieve authorisation code.";

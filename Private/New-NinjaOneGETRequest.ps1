@@ -58,7 +58,7 @@ function New-NinjaOneGETRequest {
                 Write-Debug "Result type is $($Result.result.GetType())"
                 Return $Result.result
             } else {
-                Write-Debug "Returning raw.'"
+                Write-Debug 'Returning raw.'
                 Write-Debug "Result type is $($Result.GetType())"
                 Return $Result
             }

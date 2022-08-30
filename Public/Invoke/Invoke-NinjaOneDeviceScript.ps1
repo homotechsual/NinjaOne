@@ -20,7 +20,7 @@ function Invoke-NinjaOneDeviceScript {
         # The type - script or action.
         [Parameter(Mandatory = $true)]
         [ValidateSet('SCRIPT', 'ACTION')]
-        [object]$action,
+        [object]$type,
         # The id of the script to run. Only used if the type is script.
         [Parameter()]
         [int]$scriptId,
