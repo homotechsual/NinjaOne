@@ -122,12 +122,27 @@ function Connect-NinjaOne {
             # Get our authorisation code.
             Write-Verbose 'Opening browser to authenticate.'
             Write-Debug "Authentication URL: $($AuthRequestURI.ToString())"
-            Start-Process $AuthRequestURI.ToString()
-            $OAuthListenerDirectory = Join-Path "$((Get-Item $PSScriptRoot).Parent.FullName)" 'OAuthListener'
-            $Script:NRAPIAuthenticationInformation.Code = dotnet run --project $OAuthListenerDirectory -- $Port
-            Write-Debug "Authorisation code received: $($Script:NRAPIAuthenticationInformation.Code)"
-            if ($null -ne $Script:NRAPIAuthenticationInformation.Code) {
-                $GotAuthorisationCode = $True
+            $HTTP = [System.Net.HttpListener]::new()
+            $HTTP.Prefixes.Add("http://localhost:$Port/")
+            $HTTP.Start()
+            Start-Process $AuthRequestURI.ToString() 
+            while ($HTTP.IsListening) {
+                $Context = $HTTP.GetContext()
+                Write-Debug $Context.Request.QueryString
+                if ($Context.Request.QueryString -and $Context.Request.QueryString['Code']) {
+                    $Script:NRAPIAuthenticationInformation.Code = $Context.Request.QueryString['Code']
+                    Write-Debug "Authorisation code received: $($Script:NRAPIAuthenticationInformation.Code)"
+                    if ($null -ne $Script:NRAPIAuthenticationInformation.Code) {
+                        $GotAuthorisationCode = $True
+                    }
+                    [string]$HTML = '<h1>NinjaOne PowerShell Module</h1><br /><p>An authorisation code has been received. You can close this window now. The HTTP listener will stop in 5 seconds.</p>'
+                    $Response = [System.Text.Encoding]::UTF8.GetBytes($HTML)
+                    $Context.Response.ContentLength64 = $Response.Length
+                    $Context.Response.OutputStream.Write($Response, 0, $Response.Length)
+                    $Context.Response.OutputStream.Close()
+                    Start-Sleep -Seconds 5
+                    $HTTP.Stop()
+                }
             }
         } catch {
             New-NinjaOneError -ErrorRecord $_
