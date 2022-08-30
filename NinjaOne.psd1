@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.2.3'
+    ModuleVersion = '1.3.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -245,10 +245,10 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Fix 200 status code being returned instead of $null result for empty GET request responses. Thanks to @Dru and @Gavsto.'
+            ReleaseNotes = 'Testing .NET 6 fixes for OAuthListener'
 
             # Prerelease string of this module
-            # Prerelease = ''
+            Prerelease = 'Beta1'
 
             # Flag to indicate whether the module requires explicit user acceptance for install/update/save
             # RequireLicenseAcceptance = $false
