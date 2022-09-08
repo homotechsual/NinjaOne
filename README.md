@@ -68,10 +68,10 @@ The first and probably most important requirement for this module is getting it 
 
 #### Creating an API application in NinjaOne
 
-1. In your NinjaOne tenant head to **Configuration** > **Integrations** > **API**.
+1. In your NinjaOne tenant head to **Administration** > **Apps** > **API**.
 
 1. Click on **Client App IDs**  
-All going well you should be at `configuration/integrations/api/client`.
+All going well you should be at `administration/apps/api/client`.
 
 1. Click on **Add** to add a new API application.
 
@@ -81,7 +81,7 @@ All going well you should be at `configuration/integrations/api/client`.
 For example *NinjaOne API PS Module*.
 
 1. In the **Redirect URIs** box enter *`https://localhost/`*
-This isn't actually used so just set it to plain old `localhost` as above.
+This isn't actually used so just set it to plain old `localhost`.
 
 1. Set the **Scopes** to Monitoring, Management, Control. Non-Interactive/Unattended Auth requires all three scopes.
 
@@ -128,10 +128,10 @@ Authorization code is used for the initial login, the refresh token is used to m
 
 #### Creating an API application in NinjaOne
 
-1. In your NinjaOne tenant head to **Configuration** > **Integrations** > **API**.
+1. In your NinjaOne tenant head to **Administration** > **Apps** > **API**.
 
 1. Click on **Client App IDs**  
-All going well you should be at `configuration/integrations/api/client`.
+All going well you should be at `administration/apps/api/client`.
 
 1. Click on **Add** to add a new API application.
 
