@@ -15,18 +15,18 @@ function Get-NinjaOneSoftwareProducts {
         # Device ID
         [Parameter(ValueFromPipelineByPropertyName)]
         [Alias('id')]
-        [Int]$deviceID
+        [Int]$deviceId
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        if ($deviceID) {
+        if ($deviceId) {
             Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceID $deviceID
+            $Device = Get-NinjaOneDevices -deviceID $deviceId
             if ($Device) {
                 Write-Verbose "Retrieving software products for $($Device.SystemName)."
-                $Resource = "v2/device/$($deviceID)/software"
+                $Resource = "v2/device/$($deviceId)/software"
             }
         } else {
             Write-Verbose 'Retrieving all software products.'

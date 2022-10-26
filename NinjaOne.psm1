@@ -15,6 +15,7 @@ foreach ($Function in @($Functions)) {
     'eu' = 'https://eu.ninjarmm.com'
     'oc' = 'https://oc.ninjarmm.com'
     'us' = 'https://app.ninjarmm.com'
+    'ca' = 'https://ca.ninjarmm.com'
 }
 New-Alias -Name 'Connect-NinjaRMM' -Value 'Connect-NinjaOne'
 New-Alias -Name 'Find-NinjaRMMDevices' -Value 'Find-NinjaOneDevices'

@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.3.0'
+    ModuleVersion = '1.4.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -245,7 +245,7 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Replace OAuthListener with pure .NET classes and PowerShell implementation. Faster, easier and more maintainable.'
+            ReleaseNotes = 'Tweak Get-NinjaOneTickets to return only the tickets by default. Use the parameter `-includeMetadata` for the included metadata provided by NinjaOne.'
 
             # Prerelease string of this module
             # Prerelease = ''

@@ -26,22 +26,22 @@ function Get-NinjaOneJobs {
         # Filter by device ID.
         [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
         [Alias('id')]
-        [Int]$deviceID
+        [Int]$deviceId
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    if ($deviceID) {
+    if ($deviceId) {
         $Parameters.Remove('deviceID') | Out-Null
     }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        if ($deviceID) {
+        if ($deviceId) {
             Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceID $deviceID
+            $Device = Get-NinjaOneDevices -deviceID $deviceId
             if ($Device) {
                 Write-Verbose "Retrieving jobs for $($Device.SystemName)."
-                $Resource = "v2/device/$($deviceID)/jobs"
+                $Resource = "v2/device/$($deviceId)/jobs"
             }
         } else {
             Write-Verbose 'Retrieving all jobs.'

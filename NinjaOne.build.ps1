@@ -27,7 +27,6 @@ task CopyModuleFiles {
     }
     Copy-Item -Path "$($PSScriptRoot)\Private\" -Filter *.* -Recurse -Destination "$($PSScriptRoot)\Output\NinjaOne" -Force
     Copy-Item -Path "$($PSScriptRoot)\Public\" -Filter *.* -Recurse -Destination "$($PSScriptRoot)\Output\NinjaOne" -Force
-    Copy-Item -Path "$($PSScriptRoot)\OauthListener\" -Filter *.* -Recurse -Destination "$($PSScriptRoot)\Output\NinjaOne" -Force
 
     #Copy Module Manifest files
     Copy-Item -Path @(
@@ -89,7 +88,7 @@ task PublishModule -if ($Configuration -eq 'Production') {
             ErrorAction = 'Stop'
         }
         Publish-Module @params
-        Write-Output -InputObject ("NinjaOne PowerShell Module version $($NewVersion) published to the PowerShell Gallery")
+        Write-Output -InputObject ('NinjaOne PowerShell Module published to the PowerShell Gallery')
     } Catch {
         Throw $_
     }

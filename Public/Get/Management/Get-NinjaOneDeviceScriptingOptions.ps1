@@ -15,7 +15,7 @@ function Get-NinjaOneDeviceScriptingOptions {
         # Device ID
         [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
         [Alias('id')]
-        [Int]$deviceID,
+        [Int]$deviceId,
         # Language tag
         [Alias('lang')]
         [String]$LanguageTag
@@ -23,17 +23,17 @@ function Get-NinjaOneDeviceScriptingOptions {
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    if ($deviceID) {
+    if ($deviceId) {
         $Parameters.Remove('deviceID') | Out-Null
     }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        if ($deviceID) {
+        if ($deviceId) {
             Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceID $deviceID
+            $Device = Get-NinjaOneDevices -deviceID $deviceId
             if ($Device) {
                 Write-Verbose "Retrieving scripting options for $($Device.SystemName)."
-                $Resource = "v2/device/$($deviceID)/scripting/options"
+                $Resource = "v2/device/$($deviceId)/scripting/options"
             }
         }
         $RequestParams = @{

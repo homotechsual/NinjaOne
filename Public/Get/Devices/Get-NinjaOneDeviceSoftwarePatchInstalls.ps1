@@ -4,7 +4,15 @@ function Get-NinjaOneDeviceSoftwarePatchInstalls {
         .SYNOPSIS
             Gets device software patch installs from the NinjaOne API.
         .DESCRIPTION
-            Retrieves device software patch installs from the NinjaOne v2 API.
+            Retrieves device software patch installs from the NinjaOne v2 API. If you want patch install status for multiple devices please check out the related 'queries' commandlet `Get-NinjaOneSoftwarePatchInstalls`.
+        .EXAMPLE
+            PS> Get-NinjaOneDeviceSoftwarePatchInstalls -deviceId 1
+
+            Gets software patch installs for the device with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneDeviceSoftwarePatchInstalls -deviceId 1 -type 'PATCH' -impact 'RECOMMENDED' -status 'FAILED' -installedAfter (Get-Date 2022/01/01)
+
+            Gets OS patch installs for the device with id 1 where the patch with type patch and impact / severity recommended failed to install after 2022-01-01.
         .OUTPUTS
             A powershell object containing the response.
     #>
@@ -15,7 +23,7 @@ function Get-NinjaOneDeviceSoftwarePatchInstalls {
         # Device ID
         [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
         [Alias('id')]
-        [Int]$deviceID,
+        [Int]$deviceId,
         # Filter patches by type.
         [ValidateSet('PATCH', 'INSTALLER')]
         [string]$type,
@@ -35,17 +43,17 @@ function Get-NinjaOneDeviceSoftwarePatchInstalls {
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    if ($deviceID) {
+    if ($deviceId) {
         $Parameters.Remove('deviceID') | Out-Null
     }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        if ($deviceID) {
+        if ($deviceId) {
             Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceID $deviceID
+            $Device = Get-NinjaOneDevices -deviceID $deviceId
             if ($Device) {
                 Write-Verbose "Retrieving software patch installs for $($Device.SystemName)."
-                $Resource = "v2/device/$($deviceID)/software-patch-installs"
+                $Resource = "v2/device/$($deviceId)/software-patch-installs"
             }
         }
         $RequestParams = @{

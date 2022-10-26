@@ -1,56 +1,54 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"editor.tabSize": 4,
-		"editor.formatOnSave": true,
-		"editor.formatOnSaveMode": "modificationsIfAvailable",
-		"azure-pipelines.customSchemaFile": ".\\DevOps\\azurepipelines.schema.json",
-		"powershell.pester.useLegacyCodeLens": false,
-		"powershell.codeFormatting.preset": "OTBS",
-		"powershell.codeFormatting.useConstantStrings": true,
-		"powershell.codeFormatting.alignPropertyValuePairs": false,
-		"powershell.codeFormatting.addWhitespaceAroundPipe": true,
-		"powershell.codeFormatting.autoCorrectAliases": true,
-		"powershell.codeFormatting.ignoreOneLineBlock": true,
-		"powershell.codeFormatting.newLineAfterCloseBrace": true,
-		"powershell.codeFormatting.newLineAfterOpenBrace": true,
-		"powershell.codeFormatting.useCorrectCasing": true,
-		"powershell.codeFormatting.whitespaceAfterSeparator": true,
-		"powershell.codeFormatting.trimWhitespaceAroundPipe": false,
-		"powershell.codeFormatting.whitespaceAroundOperator": true,
-		"powershell.codeFormatting.whitespaceAroundPipe": true,
-		"powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
-		"powershell.codeFormatting.whitespaceBeforeOpenParen": true,
-		"powershell.codeFormatting.whitespaceBetweenParameters": false,
-		"powershell.codeFormatting.whitespaceInsideBrace": true
-	},
-	"launch": {
-		"version": "0.2.0",
-		"configurations": [
-			{
-				"name": "PowerShell Attach to Host Process",
-				"type": "PowerShell",
-				"request": "attach",
-				"runspaceId": 1
-			},
-			{
-				"name": "PowerShell Attach Interactive Session Runspace",
-				"type": "PowerShell",
-				"request": "attach",
-				"processId": "current"
-			},
-			{
-				"name": "PowerShell: Launch Current File",
-				"type": "PowerShell",
-				"request": "launch",
-				"script": "${file}",
-				"cwd": "${file}"
-			}
-
-		]
-	}
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "editor.tabSize": 4,
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    "azure-pipelines.customSchemaFile": ".\\DevOps\\azurepipelines.schema.json",
+    "powershell.pester.useLegacyCodeLens": false,
+    "powershell.codeFormatting.preset": "OTBS",
+    "powershell.codeFormatting.useConstantStrings": true,
+    "powershell.codeFormatting.alignPropertyValuePairs": false,
+    "powershell.codeFormatting.addWhitespaceAroundPipe": true,
+    "powershell.codeFormatting.autoCorrectAliases": true,
+    "powershell.codeFormatting.ignoreOneLineBlock": true,
+    "powershell.codeFormatting.newLineAfterCloseBrace": true,
+    "powershell.codeFormatting.newLineAfterOpenBrace": true,
+    "powershell.codeFormatting.useCorrectCasing": true,
+    "powershell.codeFormatting.whitespaceAfterSeparator": true,
+    "powershell.codeFormatting.trimWhitespaceAroundPipe": false,
+    "powershell.codeFormatting.whitespaceAroundOperator": true,
+    "powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
+    "powershell.codeFormatting.whitespaceBeforeOpenParen": true,
+    "powershell.codeFormatting.whitespaceBetweenParameters": false,
+    "powershell.codeFormatting.whitespaceInsideBrace": true
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "PowerShell Attach to Host Process",
+        "type": "PowerShell",
+        "request": "attach",
+        "runspaceId": 1
+      },
+      {
+        "name": "PowerShell Attach Interactive Session Runspace",
+        "type": "PowerShell",
+        "request": "attach",
+        "processId": "current"
+      },
+      {
+        "name": "PowerShell: Launch Current File",
+        "type": "PowerShell",
+        "request": "launch",
+        "script": "${file}",
+        "cwd": "${file}"
+      }
+    ]
+  }
 }
