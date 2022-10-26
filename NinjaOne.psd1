@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.4.0'
+    ModuleVersion = '1.5.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -245,7 +245,7 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Tweak Get-NinjaOneTickets to return only the tickets by default. Use the parameter `-includeMetadata` for the included metadata provided by NinjaOne.'
+            ReleaseNotes = 'Add support for the CA instances. Various bugfixes.'
 
             # Prerelease string of this module
             # Prerelease = ''
