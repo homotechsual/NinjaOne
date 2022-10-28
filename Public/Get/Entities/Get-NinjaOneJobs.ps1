@@ -24,7 +24,7 @@ function Get-NinjaOneJobs {
         [Alias('ts')]
         [String]$timeZone,
         # Filter by device ID.
-        [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
+        [Parameter(ValueFromPipelineByPropertyName)]
         [Alias('id')]
         [Int]$deviceID
     )

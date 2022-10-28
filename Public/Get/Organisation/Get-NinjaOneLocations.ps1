@@ -17,7 +17,7 @@ function Get-NinjaOneLocations {
         # Start results from location ID.
         [Int]$after,
         # Filter by organisation ID.
-        [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
+        [Parameter(ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationID')]
         [Int]$organisationID
     )

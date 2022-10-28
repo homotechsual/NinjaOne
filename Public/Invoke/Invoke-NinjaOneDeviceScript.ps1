@@ -35,7 +35,7 @@ function Invoke-NinjaOneDeviceScript {
         [string]$runAs
     )
     try {
-        $Resource = "v2/device/$deviceId/script/run"
+        $Resource = "v2/device/$($deviceId)/script/run"
         $RunRequest = @{
             type = $action
         }

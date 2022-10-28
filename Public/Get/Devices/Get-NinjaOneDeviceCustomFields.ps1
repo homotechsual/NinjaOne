@@ -13,7 +13,7 @@ function Get-NinjaOneDeviceCustomFields {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by device ID.
-        [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
+        [Parameter(ValueFromPipelineByPropertyName)]
         [Alias('id')]
         [Int]$deviceID
     )

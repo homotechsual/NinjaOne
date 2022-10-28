@@ -20,7 +20,7 @@ function Get-NinjaOneUsers {
         )]
         [String]$userType,
         # Filter by organisation ID.
-        [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
+        [Parameter(ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationID')]
         [Int]$organisationID
     )
