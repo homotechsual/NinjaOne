@@ -15,7 +15,7 @@ function Get-NinjaOneActivities {
         # Filter by device ID.
         [Parameter(ValueFromPipelineByPropertyName)]
         [Alias('id')]
-        [Int]$deviceID,
+        [Int]$deviceId,
         # Activity class.
         [ValidateSet('SYSTEM', 'DEVICE', 'USER', 'ALL')]
         [String]$class,
@@ -51,12 +51,12 @@ function Get-NinjaOneActivities {
     $Parameters = (Get-Command -Name $CommandName).Parameters
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        if ($deviceID) {
+        if ($deviceId) {
             Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceID $deviceID
+            $Device = Get-NinjaOneDevices -deviceID $deviceId
             if ($Device) {
                 Write-Verbose "Retrieving activities for $($Device.SystemName)."
-                $Resource = "v2/device/$($deviceID)/activities"
+                $Resource = "v2/device/$($deviceId)/activities"
             }
         } else {
             Write-Verbose 'Retrieving all device activities.'

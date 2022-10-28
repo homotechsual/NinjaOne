@@ -6,10 +6,17 @@ function Connect-NinjaOne {
         .DESCRIPTION
             Creates a new connection to a NinjaOne instance and stores this in a PowerShell Session.
         .EXAMPLE
-            PS C:\> Connect-NinjaOne -Instance "eu"
-            This logs into NinjaOne using the Authorisation Code authorisation flow.
+            PS> Connect-NinjaOne -Instance 'eu' -ClientId 'AAaaA1aaAaAA-aaAaaA11a1A-aA' -ClientSecret '00Z00zzZzzzZzZzZzZzZZZ0zZ0zzZ_0zzz0zZZzzZz0Z0ZZZzz0z0Z' -UseClientAuth
+
+            This logs into NinjaOne using the client credentials flow.
+        .EXAMPLE
+            PS> Connect-NinjaOne -Instance 'eu' -ClientId 'AAaaA1aaAaAA-aaAaaA11a1A-aA' -ClientSecret '00Z00zzZzzzZzZzZzZzZZZ0zZ0zzZ_0zzz0zZZzzZz0Z0ZZZzz0z0Z' -Port 9090 -UseWebAuth
+
+            This logs into NinjaOne using the authorization code flow.
         .OUTPUTS
             Sets two script-scoped variables to hold connection and authentication information.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/connect-ninjaone
     #>
     [CmdletBinding( DefaultParameterSetName = 'Authorisation Code' )]
     [OutputType([System.Void])]
@@ -27,7 +34,7 @@ function Connect-NinjaOne {
         [Parameter( ParameterSetName = 'Authorisation Code', Mandatory = $True )]
         [Parameter( ParameterSetName = 'Token Authentication', Mandatory = $True )]
         [Parameter( ParameterSetName = 'Client Credentials', Mandatory = $True )]
-        [ValidateSet('eu', 'oc', 'us')]
+        [ValidateSet('eu', 'oc', 'us', 'ca')]
         [string]$Instance,
         # The Client ID for the application configured in NinjaOne.
         [Parameter( ParameterSetName = 'Authorisation Code', Mandatory = $True )]
@@ -119,39 +126,21 @@ function Connect-NinjaOne {
         $AuthRequestURI.Query = $AuthRequestQuery.ToString()
         Write-Debug "Authentication request query string is $($AuthRequestQuery.ToString())"
         try {
-            # Get our authorisation code.
-            Write-Verbose 'Opening browser to authenticate.'
-            Write-Debug "Authentication URL: $($AuthRequestURI.ToString())"
-            $HTTP = [System.Net.HttpListener]::new()
-            $HTTP.Prefixes.Add("http://localhost:$Port/")
-            $HTTP.Start()
-            Start-Process $AuthRequestURI.ToString() 
-            while ($HTTP.IsListening) {
-                $Context = $HTTP.GetContext()
-                Write-Debug $Context.Request.QueryString
-                if ($Context.Request.QueryString -and $Context.Request.QueryString['Code']) {
-                    $Script:NRAPIAuthenticationInformation.Code = $Context.Request.QueryString['Code']
-                    Write-Debug "Authorisation code received: $($Script:NRAPIAuthenticationInformation.Code)"
-                    if ($null -ne $Script:NRAPIAuthenticationInformation.Code) {
-                        $GotAuthorisationCode = $True
-                    }
-                    [string]$HTML = '<h1>NinjaOne PowerShell Module</h1><br /><p>An authorisation code has been received. You can close this window now. The HTTP listener will stop in 5 seconds.</p>'
-                    $Response = [System.Text.Encoding]::UTF8.GetBytes($HTML)
-                    $Context.Response.ContentLength64 = $Response.Length
-                    $Context.Response.OutputStream.Write($Response, 0, $Response.Length)
-                    $Context.Response.OutputStream.Close()
-                    Start-Sleep -Seconds 5
-                    $HTTP.Stop()
-                }
+            $OAuthListenerParams = @{
+                OpenURI = $AuthRequestURI
             }
+            $OAuthListenerParams.Verbose = $VerbosePreference
+            $OAuthListenerParams.Debug = $DebugPreference
+            $OAuthListenerResponse = Start-OAuthHTTPListener @OAuthListenerParams
+            $Script:NRAPIAuthenticationInformation.Code = $OAuthListenerResponse.Code
         } catch {
             New-NinjaOneError -ErrorRecord $_
         }
     }
-    if (($UseTokenAuth) -or ($GotAuthorisationCode) -or ($UseClientAuth)) {
+    if (($UseTokenAuth) -or ($OAuthListenerResponse.GotAuthorisationCode) -or ($UseClientAuth)) {
         Write-Verbose 'Getting authentication token.'
         try {
-            if ($GotAuthorisationCode) {
+            if ($OAuthListenerResponse.GotAuthorisationCode) {
                 Write-Verbose 'Using token authentication.'
                 $TokenRequestBody = @{
                     grant_type = 'authorization_code'

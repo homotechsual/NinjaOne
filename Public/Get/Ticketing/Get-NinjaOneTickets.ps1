@@ -17,13 +17,20 @@ function Get-NinjaOneTickets {
         # The board ID to get tickets for.
         [Parameter(Mandatory = $true)]
         [string]$boardID,
-        [hashtable]$filters = @{}
+        # Any filters to apply to the request.
+        [hashtable]$filters = @{},
+        # Return the full response including metadata
+        [switch]$includeMetadata
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'boardid=' parameter by removing it from the set parameters.
     if ($boardID) {
         $Parameters.Remove('boardID') | Out-Null
+    }
+    # Workaround to prevent the query string processor from adding an 'includemetadata=' parameter by removing it from the set parameters.
+    if ($includeMetadata) {
+        $Parameters.Remove('includeMetadata') | Out-Null
     }
     try {   
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
@@ -34,7 +41,12 @@ function Get-NinjaOneTickets {
             Body = $filters
         }
         $Tickets = New-NinjaOnePOSTRequest @RequestParams
-        Return $Tickets
+        if ($includeMetadata) {
+            Return $Tickets
+        } else {
+            # Return just the `data` property which lists the tickets.
+            Return $Tickets.data
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

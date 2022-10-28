@@ -5,7 +5,15 @@ function Find-NinjaOneDevices {
         .SYNOPSIS
             Searches for devices from the NinjaOne API.
         .DESCRIPTION
-            Retrieves devices from the NinjaOne v2 API matching a search string.
+            Retrieves devices from the NinjaOne v2 API matching a search string. Cannot be used with client credentials authentication at present.
+        .EXAMPLE
+            PS> Find-NinjaOneDevices -limit 10 -searchQuery 'ABCD'
+
+            Returns an object containing the query and matching devices. Raw data return
+        .EXAMPLE
+            PS> (Find-NinjaOneDevices -limit 10 -searchQuery 'ABCD').devices
+
+            Returns an array of device objects matching the query.
         .OUTPUTS
             A powershell object containing the response.
     #>
