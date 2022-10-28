@@ -17,7 +17,9 @@ function New-NinjaOneGETRequest {
         [Parameter( Mandatory = $True )]
         [String]$Resource,
         # A hashtable used to build the query string.
-        [HashTable]$QSCollection
+        [HashTable]$QSCollection,
+        # Don't drill down into the data property.
+        [Switch]$NoDrill
     )
     if ($null -eq $Script:NRAPIConnectionInformation) {
         Throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
