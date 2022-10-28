@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.6.0'
+    ModuleVersion = '1.6.1'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -245,7 +245,7 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Fix multiple parameters which were incorrect set as mandatoryowerShell implementation. Faster, easier and more maintainable.'
+            ReleaseNotes = 'Fix return value for Jobs endpoint.'
 
             # Prerelease string of this module
             # Prerelease = ''

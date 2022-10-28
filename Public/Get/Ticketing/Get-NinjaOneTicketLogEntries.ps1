@@ -23,6 +23,10 @@ function Get-NinjaOneTicketLogEntries {
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
+    # Workaround to prevent the query string processor from adding an 'ticketid=' parameter by removing it from the set parameters.
+    if ($boardID) {
+        $Parameters.Remove('ticketID') | Out-Null
+    }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         $Resource = "v2/ticketing/ticket/$ticketID/log-entry"
