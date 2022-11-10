@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.6.3'
+    ModuleVersion = '1.6.4'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -246,7 +246,7 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Fix an error in Update-NinjaOneOrganisation.'
+            ReleaseNotes = 'Fix incorrect parameter type on Update-NinjaOneOrganisation.'
 
             # Prerelease string of this module
             # Prerelease = ''

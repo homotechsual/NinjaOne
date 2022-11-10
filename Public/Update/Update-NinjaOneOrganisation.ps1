@@ -16,7 +16,7 @@ function Update-NinjaOneOrganisation {
     Param(
         # The organisation to set the information for.
         [Parameter(Mandatory = $true)]
-        [string[]]$organisationId,
+        [int]$organisationId,
         # The organisation information body object.
         [Parameter(Mandatory = $true)]
         [object]$organisationInformation
