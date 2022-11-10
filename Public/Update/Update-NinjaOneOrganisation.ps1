@@ -25,7 +25,7 @@ function Update-NinjaOneOrganisation {
         $Resource = "v2/organization/$organisationId"
         $RequestParams = @{
             Resource = $Resource
-            Body = $deviceInformation
+            Body = $organisationInformation
         }
         $OrganisationExists = (Get-NinjaOneOrganisations -OrganisationId $organisationId).Count -gt 0
         if ($OrganisationExists) {
