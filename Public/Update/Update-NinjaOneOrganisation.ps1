@@ -27,7 +27,7 @@ function Update-NinjaOneOrganisation {
             Resource = $Resource
             Body = $deviceInformation
         }
-        $OrganisationExists = (Get-NinjaOneOrganisation -OrganisationId $organisationId).Count -gt 0
+        $OrganisationExists = (Get-NinjaOneOrganisations -OrganisationId $organisationId).Count -gt 0
         if ($OrganisationExists) {
             if ($PSCmdlet.ShouldProcess('Organisation information', 'Update')) {
                 $OrganisationUpdate = New-NinjaOnePATCHRequest @RequestParams
