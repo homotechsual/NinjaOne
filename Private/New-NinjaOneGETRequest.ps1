@@ -59,10 +59,6 @@ function New-NinjaOneGETRequest {
                 Write-Debug "Returning 'result' property."
                 Write-Debug "Result type is $($Result.result.GetType())"
                 Return $Result.result
-            } elseif (($Properties.name -contains 'data') -and (-not $NoDrill)) {
-                Write-Debug "Returning 'data' property."
-                Write-Debug "Result type is $($Result.data.GetType())"
-                Return $Result.data
             } else {
                 Write-Debug 'Returning raw.'
                 Write-Debug "Result type is $($Result.GetType())"
