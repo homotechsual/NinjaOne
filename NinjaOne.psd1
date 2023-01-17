@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.6.6'
+    ModuleVersion = '1.6.7'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -144,6 +144,7 @@
         'Update-NinjaOneLocation',
         'Update-NinjaOneNodeRolePolicyAssignment',
         'Update-NinjaOneOrganisation',
+        'Update-NinjaOneOrganisationDocument',
         'Update-NinjaOneTicket',
         'Update-NinjaOneWebhook'
     )
@@ -207,7 +208,8 @@
         'Get-NinjaRMMDeviceDashboardURL',
         'Get-NinjaRMMDeviceScriptingOptions',
         'Get-NinjaRMMInstaller',
-        'New-NinjaOneOrganization'
+        'New-NinjaOneOrganization',
+        'Update-NinjaOneOrganizationDocument'
     )
 
     # DSC resources to export from this module
@@ -246,7 +248,7 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Fix issue affecting multiple Get commandlets.'
+            ReleaseNotes = 'Add Update-NinjaOneOrganisationDocument.'
 
             # Prerelease string of this module
             # Prerelease = ''
