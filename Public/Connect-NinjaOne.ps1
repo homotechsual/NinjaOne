@@ -1,4 +1,3 @@
-#Requires -Version 7
 function Connect-NinjaOne {
     <#
         .SYNOPSIS
@@ -51,7 +50,7 @@ function Connect-NinjaOne {
         [Parameter( ParameterSetName = 'Token Authentication' )]
         [Parameter( ParameterSetName = 'Client Credentials' )]
         [ValidateSet('monitoring', 'management', 'control', 'offline_access')]
-        [String[]]$Scopes = $PSCmdlet.ParameterSetName -eq 'Client Credentials' ? @('monitoring', 'management', 'control') : @('monitoring', 'management', 'control', 'offline_access'),
+        [String[]]$Scopes,
         # The redirect URI to use. If not set defaults to 'http://localhost'. Should be a full URI e.g. https://redirect.example.uk:9090/auth
         [Parameter( ParameterSetName = 'Authorisation Code' )]
         [URI]$RedirectURL,
@@ -67,6 +66,11 @@ function Connect-NinjaOne {
         [Parameter( ParameterSetName = 'Client Credentials' )]
         [Switch]$ShowTokens
     )
+    if ($PSCmdlet.ParameterSetName -eq 'Client Credentials' -and $null -eq $Scopes) {
+        $Scopes = @('monitoring', 'management', 'control')
+    } else {
+        $Scopes = @('monitoring', 'management', 'control', 'offline_access')
+    }
     # Convert scopes to space separated string if it's an array.
     if ($Scopes -is [System.Array]) {
         $AuthScopes = $Scopes -Join ' '

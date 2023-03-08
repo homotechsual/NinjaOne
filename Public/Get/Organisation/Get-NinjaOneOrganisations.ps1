@@ -1,4 +1,3 @@
-#Requires -Version 7
 function Get-NinjaOneOrganisations {
     <#
         .SYNOPSIS

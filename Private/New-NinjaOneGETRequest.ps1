@@ -5,6 +5,8 @@ function New-NinjaOneGETRequest {
         .DESCRIPTION
             Wrapper function to build web requests for the NinjaOne API.
         .EXAMPLE
+            Make a GET request to the organisations endpoint.
+
             PS C:\> New-NinjaOneGETRequest -Resource "/v2/organizations"
         .OUTPUTS
             Outputs an object containing the response from the web request.
@@ -46,10 +48,18 @@ function New-NinjaOneGETRequest {
             Method = 'GET'
             Uri = $RequestUri.ToString()
         }
-        Write-Debug "Building new NinjaOneRequest with params: $($WebRequestParams ?? 'No Params' | Out-String)"
+        if ($WebRequestParams) {
+            Write-Debug "WebRequestParams contains: $($WebRequestParams | Out-String)"
+        } else {
+            Write-Debug 'WebRequestParams is empty.'
+        }
         try {
             $Result = Invoke-NinjaOneRequest -WebRequestParams $WebRequestParams
-            Write-Debug "NinjaOne request returned: $($Result ?? 'No Content' | Out-String)"
+            if ($Result) {
+                Write-Debug "NinjaOne request returned:: $($Result | Out-String)"
+            } else {
+                Write-Debug 'NinjaOne request returned nothing.'
+            }
             $Properties = ($Result | Get-Member -MemberType 'NoteProperty')
             if ($Properties.name -contains 'results') {
                 Write-Debug "Returning 'results' property.'"

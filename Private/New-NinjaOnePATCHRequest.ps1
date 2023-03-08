@@ -5,7 +5,9 @@ function New-NinjaOnePATCHRequest {
         .DESCRIPTION
             Wrapper function to build web requests for the NinjaOne API.
         .EXAMPLE
-            PS C:\> New-NinjaOnePATCHRequest -Resource "/v2/organizations"
+            Make a PATCH request to the custom fields endpoint for device 1.
+
+            PS C:\> New-NinjaOnePATCHRequest -Resource "/v2/device/1/custom-fields" -Body @{"myCustomField" = "value"}
         .OUTPUTS
             Outputs an object containing the response from the web request.
     #>

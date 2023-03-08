@@ -1,6 +1,3 @@
-
-using namespace System.Management.Automation
-#Requires -Version 7
 function Set-NinjaOneDeviceApproval {
     <#
         .SYNOPSIS
@@ -40,7 +37,12 @@ function Set-NinjaOneDeviceApproval {
         if ($PSCmdlet.ShouldProcess('Device Approval', 'Set')) {
             $DeviceApprovals = New-NinjaOnePOSTRequest @RequestParams
             if ($DeviceApprovals -eq 204) {
-                Write-Information "Devices $($deviceIds) $($mode -eq 'APPROVE' ? 'approved' : 'rejected' ) successfully."
+                if ($mode -eq 'APPROVE') {
+                    $approvalResult = 'approved'
+                } else {
+                    $approvalResult = 'rejected'
+                }
+                Write-Information "Devices $($deviceIds) $($approvalResult) successfully."
             }
         }
     } catch {

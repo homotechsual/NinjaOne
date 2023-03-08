@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        Build script for NinjaOne module.
+        Homotechsual portable module build script.
 #>
 Param (
     [String]$Configuration = 'Development',

@@ -1,6 +1,3 @@
-
-using namespace System.Management.Automation
-#Requires -Version 7
 function Invoke-NinjaOneDeviceScript {
     <#
         .SYNOPSIS
@@ -58,7 +55,12 @@ function Invoke-NinjaOneDeviceScript {
         }
         $ServiceAction = New-NinjaOnePOSTRequest @RequestParams
         if ($ServiceAction -eq 204) {
-            Write-Information "Requested run for $($action -eq 'SCRIPT' ? 'script' : 'action' ) on device $($deviceId) successfully."
+            if ($action -eq 'SCRIPT') {
+                $actionResult = 'script'
+            } else {
+                $actionResult = 'action'
+            }
+            Write-Information "Requested run for $($actionResult) on device $($deviceId) successfully."
         }
     } catch {
         New-NinjaOneError -ErrorRecord $_

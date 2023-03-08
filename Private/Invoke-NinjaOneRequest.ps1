@@ -1,10 +1,14 @@
-#Requires -Version 7
+
 function Invoke-NinjaOneRequest {
     <#
         .SYNOPSIS
             Sends a request to the NinjaOne API.
         .DESCRIPTION
             Wrapper function to send web requests to the NinjaOne API.
+        .EXAMPLE
+            Make a GET request to the activities resource.
+
+            PS ~> Invoke-NinjaOneRequest -WebRequestParams @{ Method = 'GET'; Uri = 'https://eu.ninjarmm.com/v2/activities' }
         .OUTPUTS
             Outputs an object containing the response from the web request.
     #>
@@ -36,7 +40,16 @@ function Invoke-NinjaOneRequest {
         Write-Verbose "Making a $($WebRequestParams.Method) request to $($WebRequestParams.Uri)"
         $Response = Invoke-WebRequest @WebRequestParams -Headers $AuthHeaders -ContentType 'application/json'
         Write-Debug "Response headers: $($Response.Headers | Out-String)"
-        Write-Debug "Response object: $($Response.Content ?? 'No content' | Out-String)"
+        if ($Response.Content) {
+            $ResponseContent = $Response.Content
+        } else {
+            $ResponseContent = 'No content'
+        }
+        if ($Response.Content) {
+            Write-Debug "Response content: $($ResponseContent | Out-String)"
+        } else {
+            Write-Debug 'No response content.'
+        }
         $Results = $Response.Content | ConvertFrom-Json
         if ($null -eq $Results) {
             if ($Response.StatusCode -and $WebRequestParams.Method -ne 'GET') {

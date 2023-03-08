@@ -1,4 +1,4 @@
-#Requires -Version 7
+
 function Get-NinjaOneDeviceDisks {
     <#
         .SYNOPSIS

@@ -248,10 +248,10 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Add Update-NinjaOneOrganisationDocument.'
+            ReleaseNotes = 'Fix incorrect parameter type for `Update-NinjaOneDevice`'
 
             # Prerelease string of this module
-            Prerelease = 'Beta1'
+            # Prerelease = 'Beta1'
 
             # Flag to indicate whether the module requires explicit user acceptance for install/update/save
             # RequireLicenseAcceptance = $false

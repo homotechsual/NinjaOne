@@ -1,6 +1,3 @@
-
-using namespace System.Management.Automation
-#Requires -Version 7
 function Update-NinjaOneDevice {
     <#
         .SYNOPSIS
@@ -16,7 +13,7 @@ function Update-NinjaOneDevice {
     Param(
         # The device to set the information for.
         [Parameter(Mandatory = $true)]
-        [string[]]$deviceId,
+        [int]$deviceId,
         # The device information body object.
         [Parameter(Mandatory = $true)]
         [object]$deviceInformation

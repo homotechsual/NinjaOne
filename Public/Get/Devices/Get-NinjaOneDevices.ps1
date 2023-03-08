@@ -1,5 +1,5 @@
 using namespace System.Management.Automation
-#Requires -Version 7
+
 function Get-NinjaOneDevices {
     <#
         .SYNOPSIS

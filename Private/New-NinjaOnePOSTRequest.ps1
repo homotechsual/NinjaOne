@@ -5,6 +5,8 @@ function New-NinjaOnePOSTRequest {
         .DESCRIPTION
             Wrapper function to build web requests for the NinjaOne API.
         .EXAMPLE
+            Make a POST request to the organisations endpoint.
+
             PS C:\> New-NinjaOnePOSTRequest -Method "POST" -Resource "/v2/organizations"
         .OUTPUTS
             Outputs an object containing the response from the web request.

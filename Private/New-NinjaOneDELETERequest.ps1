@@ -5,7 +5,9 @@ function New-NinjaOneDELETERequest {
         .DESCRIPTION
             Wrapper function to build web requests for the NinjaOne API.
         .EXAMPLE
-            PS C:\> New-NinjaOneDELETERequest -Resource "/v2/organizations"
+            Cancel the maintenance for device with id 1.
+
+            PS ~> New-NinjaOneDELETERequest -Resource "/v2/device/1/maintenance"
         .OUTPUTS
             Outputs an object containing the response from the web request.
     #>
@@ -15,9 +17,7 @@ function New-NinjaOneDELETERequest {
     param (
         # The resource to send the request to.
         [Parameter(Mandatory = $True)]
-        [String]$Resource,
-        # A hashtable used to build the query string.
-        [HashTable]$QSCollection
+        [String]$Resource
     )
     if ($null -eq $Script:NRAPIConnectionInformation) {
         Throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
@@ -40,12 +40,6 @@ function New-NinjaOneDELETERequest {
         $RequestUri = [System.UriBuilder]"$($Script:NRAPIConnectionInformation.URL)"
         Write-Debug "Path is $($Resource)"
         $RequestUri.Path = $Resource
-        if ($QueryStringCollection) {
-            Write-Debug "Query string is $($QueryStringCollection | Out-String)"
-            $RequestUri.Query = $QueryStringCollection
-        } else {
-            Write-Debug 'Query string not present...'
-        }
         $WebRequestParams = @{
             Method = 'DELETE'
             Uri = $RequestUri.ToString()
