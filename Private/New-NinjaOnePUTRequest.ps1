@@ -20,7 +20,9 @@ function New-NinjaOnePUTRequest {
         [HashTable]$QSCollection,
         # A hashtable used to build the body of the request.
         [Parameter(Mandatory = $True)]
-        [Hashtable]$Body
+        [Hashtable]$Body,
+        # Force body to an array.
+        [Switch]$AsArray
     )
     if ($null -eq $Script:NRAPIConnectionInformation) {
         Throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
@@ -54,8 +56,8 @@ function New-NinjaOnePUTRequest {
             Uri = $RequestUri.ToString()
         }
         if ($Body) {
-            Write-Verbose 'Building [HttpBody] for New-NinjaOnePUTequest'
-            $WebRequestParams.Body = ($Body | ConvertTo-Json -Depth 100)
+            Write-Verbose 'Building [HttpBody] for New-NinjaOnePUTRequest'
+            $WebRequestParams.Body = ($Body | ConvertTo-Json -Depth 100 -AsArray:$AsArray)
             Write-Debug "Raw body is $($WebRequestParams.Body)"
         } else {
             Write-Verbose 'No body provided for New-NinjaOnePUTRequest'

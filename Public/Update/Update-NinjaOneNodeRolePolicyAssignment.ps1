@@ -29,11 +29,12 @@ function Update-NinjaOneNodeRolePolicyAssignment {
                 'nodeRoleId' = $nodeRoleId
                 'policyId' = $policyId
             }
+            AsArray = $true
         }
-        $OrganisationExists = (Get-NinjaOneOrganisation -OrganisationId $organisationId).Count -gt 0
+        $OrganisationExists = (Get-NinjaOneOrganisations -OrganisationId $organisationId).Count -gt 0
         if ($OrganisationExists) {
             if ($PSCmdlet.ShouldProcess('Node Role Policy Assignment', 'Update')) {
-                $NodeRolePolicyAssignment = New-NinjaOnePATCHRequest @RequestParams
+                $NodeRolePolicyAssignment = New-NinjaOnePUTRequest @RequestParams
                 if ($NodeRolePolicyAssignment -eq 204) {
                     Write-Information 'Node Role Policy Assignment updated successfully.'
                 }
