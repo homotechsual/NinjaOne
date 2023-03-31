@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023-03-31 - Version 1.6.8
+
+* Fix multiple bugs with `Update-NinjaOneNodeRolePolicyAssignment` command.
+
 ## 2023-03-08 - Version 1.6.7
 
 * Fix an incorrect parameter type in `Update-NinjaOneDevice` command.
