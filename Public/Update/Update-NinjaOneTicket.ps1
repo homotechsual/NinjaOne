@@ -24,7 +24,7 @@ function Update-NinjaOneTicket {
             Resource = $Resource
             Body = $ticket
         }
-        $TicketExists = (Get-NinjaOneTicket -TicketId $ticketId).Count -gt 0
+        $TicketExists = (Get-NinjaOneTickets -TicketId $ticketId).Count -gt 0
         if ($TicketExists) {
             if ($PSCmdlet.ShouldProcess('Ticket', 'Update')) {
                 $TicketUpdate = New-NinjaOnePUTRequest @RequestParams

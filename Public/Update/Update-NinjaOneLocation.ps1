@@ -27,8 +27,8 @@ function Update-NinjaOneLocation {
             Resource = $Resource
             Body = $deviceInformation
         }
-        $OrganisationExists = (Get-NinjaOneOrganisation -OrganisationId $organisationId).Count -gt 0
-        $LocationExists = (Get-NinjaOneLocation -OrganisationId $organisationId -LocationId $locationId).Count -gt 0
+        $OrganisationExists = (Get-NinjaOneOrganisations -OrganisationId $organisationId).Count -gt 0
+        $LocationExists = (Get-NinjaOneLocations -OrganisationId $organisationId -LocationId $locationId).Count -gt 0
         if ($OrganisationExists -and $LocationExists) {
             if ($PSCmdlet.ShouldProcess('Location information', 'Update')) {
                 $LocationUpdate = New-NinjaOnePATCHRequest @RequestParams
