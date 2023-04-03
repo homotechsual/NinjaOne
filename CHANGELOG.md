@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023-04-033 - Version 1.6.9
+
+* Fix multiple commandlets using incorrectly pluralised "Get-" commandlets.
+
 ## 2023-03-31 - Version 1.6.8
 
 * Fix multiple bugs with `Update-NinjaOneNodeRolePolicyAssignment` command.

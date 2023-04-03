@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.6.8'
+    ModuleVersion = '1.6.9'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -248,7 +248,7 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Fix multiple bugs with `Update-NinjaOneNodeRolePolicyAssignment`.'
+            ReleaseNotes = 'Fix multiple commandlets using incorrectly pluralised "Get-" commandlets.'
 
             # Prerelease string of this module
             # Prerelease = 'Beta1'
