@@ -25,10 +25,10 @@ function Update-NinjaOneLocation {
         $Resource = "v2/organization/$organisationId/locations/$locationId"
         $RequestParams = @{
             Resource = $Resource
-            Body = $deviceInformation
+            Body = $locationInformation
         }
         $OrganisationExists = (Get-NinjaOneOrganisations -OrganisationId $organisationId).Count -gt 0
-        $LocationExists = (Get-NinjaOneLocations -OrganisationId $organisationId -LocationId $locationId).Count -gt 0
+        $LocationExists = $(Get-NinjaOneLocations -OrganisationId $organisationId | Where-Object { $_.id -eq $locationId }).Count) -gt 0
         if ($OrganisationExists -and $LocationExists) {
             if ($PSCmdlet.ShouldProcess('Location information', 'Update')) {
                 $LocationUpdate = New-NinjaOnePATCHRequest @RequestParams
