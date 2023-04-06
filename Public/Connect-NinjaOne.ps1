@@ -68,7 +68,7 @@ function Connect-NinjaOne {
     )
     if ($PSCmdlet.ParameterSetName -eq 'Client Credentials' -and $null -eq $Scopes) {
         $Scopes = @('monitoring', 'management', 'control')
-    } else {
+    } elseif (($PSCmdlet.ParameterSetName -eq 'Authorisation Code' -or $PSCmdlet.ParameterSetName -eq 'Token Authentication') -and $null -eq $Scopes) {
         $Scopes = @('monitoring', 'management', 'control', 'offline_access')
     }
     # Convert scopes to space separated string if it's an array.
