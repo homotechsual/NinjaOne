@@ -1,6 +1,10 @@
 # Changelog
 
-## 2023-04-033 - Version 1.6.9
+## 2023-04-06 - Version 1.6.10
+
+* Fix bug in connection logic that hard coded scopes for all `client_credentials` connections.
+
+## 2023-04-03 - Version 1.6.9
 
 * Fix multiple commandlets using incorrectly pluralised "Get-" commandlets.
 

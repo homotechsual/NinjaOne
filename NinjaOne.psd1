@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.6.9'
+    ModuleVersion = '1.6.10'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -248,7 +248,7 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Fix multiple commandlets using incorrectly pluralised "Get-" commandlets.'
+            ReleaseNotes = 'Fix bug in connection logic that hard coded scopes for all `client_credentials` connections.'
 
             # Prerelease string of this module
             # Prerelease = 'Beta1'
