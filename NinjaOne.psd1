@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.6.10'
+    ModuleVersion = '1.6.11'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -248,7 +248,7 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Fix bug in connection logic that hard coded scopes for all `client_credentials` connections.'
+            ReleaseNotes = 'Fix an extra closing `)` in `Update-NinjaOneLocation` command.'
 
             # Prerelease string of this module
             # Prerelease = 'Beta1'

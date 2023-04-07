@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023-04-07 - Version 1.6.11
+
+* Fix an extra closing `)` in `Update-NinjaOneLocation` command.
+
 ## 2023-04-06 - Version 1.6.10
 
 * Fix bug in connection logic that hard coded scopes for all `client_credentials` connections.
