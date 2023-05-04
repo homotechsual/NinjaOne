@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.7.0'
+    ModuleVersion = '1.7.1'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -249,7 +249,7 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Fix New-NinjaOnePolicy and Reset-NinjaOneDevicePolicyOverrides, expose Invoke-NinjaOneRequest as public cmdlet.'
+            ReleaseNotes = 'Complete rework of DateTime parameter handling to auto convert values to Unix Timestamps and add companion parameters for accepting Unix-y values.'
 
             # Prerelease string of this module
             # Prerelease = 'Beta1'
