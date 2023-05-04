@@ -126,6 +126,7 @@
         'Get-NinjaOneTicketLogEntries',
         'Get-NinjaOneTickets',
         'Invoke-NinjaOneDeviceScript',
+        'Invoke-NinjaOneRequest',
         'Invoke-NinjaOneWindowsServiceAction',
         'New-NinjaOneLocation',
         'New-NinjaOneOrganisation',
