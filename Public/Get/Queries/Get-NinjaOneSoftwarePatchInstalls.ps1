@@ -28,16 +28,32 @@ function Get-NinjaOneSoftwarePatchInstalls {
         [String]$status,
         # Filter patches by product identifier.
         [String]$productIdentifier,
-        # Filter patches to those installed before this date.
+        # Filter patches to those installed before this date. PowerShell DateTime object.
         [DateTime]$installedBefore,
-        # Filter patches to those installed after this date.
+        # Filter patches to those installed after this date. Unix Epoch time.
+        [Int]$installedBeforeUnixEpoch,
+        # Filter patches to those installed after this date. PowerShell DateTime object.
         [DateTime]$installedAfter,
+        # Filter patches to those installed after this date. Unix Epoch time.
+        [Int]$installedAfterUnixEpoch,
         [String]$cursor,
         # Number of results per page.
         [Int]$pageSize
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
+    if ($installedBefore) {
+        $Parameters.installedBefore = Convert-DateTimeToUnixEpoch -DateTime $installedBefore
+    }
+    if ($installedBeforeUnixEpoch) {
+        $Parameters.installedBefore = $installedBeforeUnixEpoch
+    }
+    if ($installedAfter) {
+        $Parameters.installedAfter = Convert-DateTimeToUnixEpoch -DateTime $installedAfter
+    }
+    if ($installedAfterUnixEpoch) {
+        $Parameters.installedAfter = $installedAfterUnixEpoch
+    }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         $Resource = 'v2/queries/software-patch-installs'

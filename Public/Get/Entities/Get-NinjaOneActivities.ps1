@@ -19,10 +19,14 @@ function Get-NinjaOneActivities {
         # Activity class.
         [ValidateSet('SYSTEM', 'DEVICE', 'USER', 'ALL')]
         [String]$class,
-        # Return activities from before this date.
+        # Return activities from before this date. PowerShell DateTime object.
         [DateTime]$before,
-        # Return activities from after this date.
+        # Return activities from before this date. Unix Epoch time.
+        [Int]$beforeUnixEpoch,
+        # Return activities from after this date. PowerShell DateTime object.
         [DateTime]$after,
+        # Return activities from after this date. Unix Epoch time.
+        [Int]$afterUnixEpoch,
         # Return activities older than this activity ID.
         [Int]$olderThan,
         # Return activities newer than this activity ID.
@@ -49,6 +53,18 @@ function Get-NinjaOneActivities {
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
+    if ($before) {
+        $Parameters.before = Convert-DateTimeToUnixEpoch -DateTime $before
+    }
+    if ($beforeUnixEpoch) {
+        $Parameters.before = $beforeUnixEpoch
+    }
+    if ($after) {
+        $Parameters.after = Convert-DateTimeToUnixEpoch -DateTime $after
+    }
+    if ($afterUnixEpoch) {
+        $Parameters.after = $afterUnixEpoch
+    }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         if ($deviceId) {

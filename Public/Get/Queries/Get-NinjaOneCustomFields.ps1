@@ -18,8 +18,10 @@ function Get-NinjaOneCustomFields {
         [String]$cursor,
         # Number of results per page.
         [Int]$pageSize,
-        # Custom fields updated after the specified date.
+        # Custom fields updated after the specified date. PowerShell DateTime object.
         [DateTime]$updatedAfter,
+        # Custom fields updated after the specified date. Unix Epoch time.
+        [Int]$updatedAfterUnixEpoch,
         # Array of fields.
         [String[]]$fields,
         # Get the detailed version of this .
@@ -27,6 +29,12 @@ function Get-NinjaOneCustomFields {
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
+    if ($updatedAfter) {
+        $Parameters.updatedAfter = Convert-DateTimeToUnixEpoch -DateTime $updatedAfter
+    }
+    if ($updatedAfterUnixEpoch) {
+        $Parameters.updatedAfter = $updatedAfterUnixEpoch
+    }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         if ($detailed) {

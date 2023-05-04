@@ -35,16 +35,32 @@ function Get-NinjaOneDeviceSoftwarePatchInstalls {
         [String]$status,
         # Filter patches by product identifier.
         [String]$productIdentifier,
-        # Filter patches to those installed before this date.
+        # Filter patches to those installed before this date. PowerShell DateTime object.
         [DateTime]$installedBefore,
-        # Filter patches to those installed after this date.
-        [DateTime]$installedAfter
+        # Filter patches to those installed after this date. Unix Epoch time.
+        [Int]$installedBeforeUnixEpoch,
+        # Filter patches to those installed after this date. PowerShell DateTime object.
+        [DateTime]$installedAfter,
+        # Filter patches to those installed after this date. Unix Epoch time.
+        [Int]$installedAfterUnixEpoch
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
     if ($deviceId) {
         $Parameters.Remove('deviceID') | Out-Null
+    }
+    if ($installedBefore) {
+        $Parameters.installedBefore = Convert-DateTimeToUnixEpoch -DateTime $installedBefore
+    }
+    if ($installedBeforeUnixEpoch) {
+        $Parameters.installedBefore = $installedBeforeUnixEpoch
+    }
+    if ($installedAfter) {
+        $Parameters.installedAfter = Convert-DateTimeToUnixEpoch -DateTime $installedAfter
+    }
+    if ($installedAfterUnixEpoch) {
+        $Parameters.installedAfter = $installedAfterUnixEpoch
     }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters

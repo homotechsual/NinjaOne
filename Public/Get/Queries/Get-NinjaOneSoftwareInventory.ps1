@@ -18,13 +18,29 @@ function Get-NinjaOneSoftwareInventory {
         [String]$cursor,
         # Number of results per page.
         [Int]$pageSize,
-        # Filter sofware to those installed before this date.
+        # Filter software to those installed before this date. PowerShell DateTime object.
         [DateTime]$installedBefore,
-        # Filter software to those installed after this date.
-        [DateTime]$installedAfter
+        # Filter software to those installed after this date. Unix Epoch time.
+        [Int]$installedBeforeUnixEpoch,
+        # Filter software to those installed after this date. PowerShell DateTime object.
+        [DateTime]$installedAfter,
+        # Filter software to those installed after this date. Unix Epoch time.
+        [Int]$installedAfterUnixEpoch
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
+    if ($installedBefore) {
+        $Parameters.installedBefore = Convert-DateTimeToUnixEpoch -DateTime $installedBefore
+    }
+    if ($installedBeforeUnixEpoch) {
+        $Parameters.installedBefore = $installedBeforeUnixEpoch
+    }
+    if ($installedAfter) {
+        $Parameters.installedAfter = Convert-DateTimeToUnixEpoch -DateTime $installedAfter
+    }
+    if ($installedAfterUnixEpoch) {
+        $Parameters.installedAfter = $installedAfterUnixEpoch
+    }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         $Resource = 'v2/queries/software'
