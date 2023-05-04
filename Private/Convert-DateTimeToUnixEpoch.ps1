@@ -16,9 +16,8 @@ function Convert-DateTimeToUnixEpoch {
         )]
         [DateTime]$DateTime
     )
-    $UnixEpoch = Get-Date '1970-01-01'
     $UniversalDateTime = $DateTime.ToUniversalTime()
-    $UnixEpochTimestamp = [int]($UniversalDateTime - $UnixEpoch).TotalSeconds
+    $UnixEpochTimestamp = Get-Date -Date $UniversalDateTime -UFormat %s
     Write-Verbose "Converted $DateTime to Unix Epoch timestamp $UnixEpochTimestamp"
     Return $UnixEpochTimestamp
 }
