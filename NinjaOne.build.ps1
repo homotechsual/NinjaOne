@@ -4,6 +4,8 @@
 #>
 Param (
     [String]$Configuration = 'Development',
+    [String[]]$Remotes = @('origin', 'homotechsual'),
+    [Switch]$Push,
     [Switch]$UpdateHelp,
     [Switch]$CopyModuleFiles,
     [Switch]$Test,
@@ -16,6 +18,14 @@ $ModuleName = 'NinjaOne'
 
 # Use strict mode when building.
 Set-StrictMode -Version Latest
+
+if ($Push) {
+    # Push to remote repositories.
+    foreach ($Remote in $Remotes) {
+        Start-Process -FilePath 'git' -ArgumentList @('push', $Remote) -Wait -NoNewWindow
+        Start-Process -FilePath 'git' -ArgumentList @('push', $Remote, '--tags') -Wait -NoNewWindow
+    }
+}
 
 # Update the PowerShell Module Help Files.
 # Pre-requisites: PowerShell Module PlatyPS.
