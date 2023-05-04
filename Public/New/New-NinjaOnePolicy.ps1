@@ -14,7 +14,7 @@ function New-NinjaOnePolicy {
         # The mode to run in, new, child or copy.
         [Parameter(Mandatory)]
         [ValidateSet('NEW', 'CHILD', 'COPY')]
-        [int]$mode,
+        [string]$mode,
         # An object containing the policy to create.
         [Parameter(Mandatory)]
         [object]$policy,
