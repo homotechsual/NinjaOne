@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023-05-04 - Version 1.7.2
+
+* Simplify DateTime to Unix conversion.
+
 ## 2023-05-04 - Version 1.7.1
 
 * Complete rework of DateTime parameter handling to auto convert values to Unix Timestamps and add companion parameters for accepting Unix-y values.
