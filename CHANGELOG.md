@@ -1,5 +1,11 @@
 # Changelog
 
+## 2023-05-04 - Version 1.7.0
+
+* Fix New-NinjaOnePolicy and Reset-NinjaOneDevicePolicyOverrides exports.
+* Fix New-NinjaOnePolicy parameter type for `-mode` to be `[string]` instead of `[int]`.
+* Expose Invoke-NinjaOneRequest as public cmdlet.
+
 ## 2023-04-07 - Version 1.6.11
 
 * Fix an extra closing `)` in `Update-NinjaOneLocation` command.

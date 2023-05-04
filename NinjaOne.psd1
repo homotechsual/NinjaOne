@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.6.11'
+    ModuleVersion = '1.7.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -249,7 +249,7 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Fix an extra closing `)` in `Update-NinjaOneLocation` command.'
+            ReleaseNotes = 'Fix New-NinjaOnePolicy and Reset-NinjaOneDevicePolicyOverrides, expose Invoke-NinjaOneRequest as public cmdlet.'
 
             # Prerelease string of this module
             # Prerelease = 'Beta1'
