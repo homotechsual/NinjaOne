@@ -8,7 +8,7 @@
 * Fix incorrect parameter types for `Invoke-NinjaOneWindowsServiceAction` commandlet.
 * Fix incorrect resource path for `New-NinjaOneLocation` commandlet.
 * Fix incorrect variable expansion in `New-NinjaOneLocation` commandlet.
-* Add single ticket retrieval to `Get-NinjaOneTicket' commandlet.
+* Add single ticket retrieval to `Get-NinjaOneTicket` commandlet.
 
 ## 2023-05-04 - Version 1.7.2
 
