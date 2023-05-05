@@ -21,12 +21,12 @@ function New-NinjaOneLocation {
         [switch]$show
     )
     try {
-        $Resource = "v2/organizations/$organisationId/locations"
+        $Resource = "v2/organization/$($organisationId)/locations"
         $RequestParams = @{
             Resource = $Resource
             Body = $location
         }
-        $OrganisationExists = (Get-NinjaOneOrganisations -Id $organisationId).Count -gt 0
+        $OrganisationExists = (Get-NinjaOneOrganisations -organisationId $organisationId).Count -gt 0
         if ($OrganisationExists) {
             if ($PSCmdlet.ShouldProcess("Location '$($location.name)'", 'Create')) {
                 $LocationCreate = New-NinjaOnePOSTRequest @RequestParams

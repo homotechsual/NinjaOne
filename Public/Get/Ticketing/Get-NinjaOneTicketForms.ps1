@@ -11,6 +11,10 @@ function Get-NinjaOneTicketForms {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param()
+    if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
+        throw ('This function is not available when using client_credentials authentication. Please report this to api@ninjarmm.com.')
+        exit 1
+    }
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     try {

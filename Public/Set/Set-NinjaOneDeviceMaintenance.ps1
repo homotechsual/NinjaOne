@@ -26,7 +26,6 @@ function Set-NinjaOneDeviceMaintenance {
         [string]$end
     )
     try {
-        Write-Debug 'Into try block.'
         # Validate the dates.
         if ($start -and $start -as [DateTime]) {
             Write-Verbose 'Parsing start date/time.'

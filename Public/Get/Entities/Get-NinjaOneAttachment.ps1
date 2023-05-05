@@ -1,5 +1,5 @@
 
-function Get-NinjaOneAtachment {
+function Get-NinjaOneAttachment {
     <#
         .SYNOPSIS
             Gets an attachment from the NinjaOne API.
@@ -15,7 +15,7 @@ function Get-NinjaOneAtachment {
         # Filter by device ID.
         [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
         [Alias('id')]
-        [Int]$attachmentID
+        [String]$attachmentID
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
@@ -26,7 +26,7 @@ function Get-NinjaOneAtachment {
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         Write-Verbose 'Retrieving attachment.'
-        $Resource = "v2/attachment/$(attachmentID)"
+        $Resource = "v2/attachment/$($attachmentID)"
         $RequestParams = @{
             Resource = $Resource
             QSCollection = $QSCollection

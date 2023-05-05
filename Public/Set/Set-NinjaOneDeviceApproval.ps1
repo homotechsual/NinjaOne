@@ -19,6 +19,10 @@ function Set-NinjaOneDeviceApproval {
         [Parameter(Mandatory = $true)]
         [int[]]$deviceIds
     )
+    if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
+        throw ('This function is not available when using client_credentials authentication. Please report this to api@ninjarmm.com.')
+        exit 1
+    }
     try {
         $Resource = "v2/devices/approval/$mode"
         if ($deviceIds -is [array]) {

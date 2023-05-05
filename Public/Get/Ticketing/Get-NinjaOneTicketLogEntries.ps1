@@ -12,12 +12,17 @@ function Get-NinjaOneTicketLogEntries {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by ticket ID.
+        [Parameter(Mandatory)]
         [Alias('id')]
         [String]$ticketID,
         # Filter log entries by type.
         [ValidateSet('DESCRIPTION', 'COMMENT', 'CONDITION', 'SAVE', 'DELETE')]
         [String]$type
     )
+    if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
+        throw ('This function is not available when using client_credentials authentication. Please report this to api@ninjarmm.com.')
+        exit 1
+    }
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'ticketid=' parameter by removing it from the set parameters.

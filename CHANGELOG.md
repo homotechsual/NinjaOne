@@ -1,5 +1,15 @@
 # Changelog
 
+## 2023-05-05 - Version 1.8.0
+
+* Commandlets whose endpoints do not support Client Credentials authentication now return an early error if the authentication mode in use is `client_credentials`.
+* Fixed incorrect parameter type and function name for `Get-NinjaOneAttachment` commandlet.
+* Fix incorrect variable expansion in `Get-NinjaOneAttachment` commandlet.
+* Fix incorrect parameter types for `Invoke-NinjaOneWindowsServiceAction` commandlet.
+* Fix incorrect resource path for `New-NinjaOneLocation` commandlet.
+* Fix incorrect variable expansion in `New-NinjaOneLocation` commandlet.
+* Add single ticket retrieval to `Get-NinjaOneTicket' commandlet.
+
 ## 2023-05-04 - Version 1.7.2
 
 * Simplify DateTime to Unix conversion.

@@ -23,16 +23,33 @@ function New-NinjaOnePolicy {
         # Show the policy that was created.
         [switch]$show
     )
+    if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
+        throw ('This function is not available when using client_credentials authentication. Please report this to api@ninjarmm.com.')
+        exit 1
+    }
     try {
-        if ($Mode -eq 'CHILD' -and $null -eq $policy.parentPolicyId) {
+        if ($mode -eq 'CHILD' -and $null -eq $policy.parentPolicyId) {
             throw 'The policy must have a parent policy id if using "CHILD" mode.'
         } elseif ($mode -eq 'COPY' -and $null -eq $templatePolicyId) {
             throw 'The policy must have a template policy id if using "COPY" mode.'
         }
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        if ($policy) {
+            $Parameters.Remove('policy') | Out-Null
+        }
+        if ($templatePolicyId) {
+            $Parameters.Remove('templatePolicyId') | Out-Null
+        }
+        if ($show) {
+            $Parameters.Remove('show') | Out-Null
+        }
+        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         $Resource = 'v2/policies'
         $RequestParams = @{
             Resource = $Resource
-            Body = $location
+            Body = $policy
+            QSCollection = $QSCollection
         }
         if ($PSCmdlet.ShouldProcess("Policy '$($policy.name)'", 'Create')) {
             $PolicyCreate = New-NinjaOnePOSTRequest @RequestParams

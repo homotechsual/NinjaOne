@@ -33,7 +33,7 @@ function New-NinjaOnePOSTRequest {
         if ($QSCollection) {
             Write-Debug "Query string in New-NinjaOnePOSTRequest contains: $($QSCollection | Out-String)"
             $QueryStringCollection = [System.Web.HTTPUtility]::ParseQueryString([String]::Empty)
-            Write-Verbose 'Building [HttpQSCollection] for New-NinjaOneGETRequest'
+            Write-Verbose 'Building [HttpQSCollection] for New-NinjaOnePOSTRequest'
             foreach ($Key in $QSCollection.Keys) {
                 $QueryStringCollection.Add($Key, $QSCollection.$Key)
             }
@@ -45,8 +45,8 @@ function New-NinjaOnePOSTRequest {
         Write-Debug "Path is $($Resource)"
         $RequestUri.Path = $Resource
         if ($QueryStringCollection) {
-            Write-Debug "Query string is $($QueryStringCollection | Out-String)"
-            $RequestUri.Query = $QueryStringCollection
+            Write-Debug "Query string is $($QueryStringCollection.toString())"
+            $RequestUri.Query = $QueryStringCollection.toString()
         } else {
             Write-Debug 'Query string not present...'
         }

@@ -11,16 +11,16 @@ function Invoke-NinjaOneWindowsServiceAction {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # The device to change service configuration for.
+        # The device(s) to change service configuration for.
         [Parameter(Mandatory = $true)]
-        [string[]]$deviceId,
+        [int]$deviceId,
         # The service to alter configuration for.
         [Parameter(Mandatory = $true)]
-        [object]$serviceId,
+        [string]$serviceId,
         # The action to invoke.
         [Parameter(Mandatory = $true)]
         [ValidateSet('START', 'PAUSE', 'STOP', 'RESTART')]
-        [object]$action
+        [string]$action
     )
     try {
         $Resource = "v2/device/$($deviceId)/windows-service/$($serviceId)/control"

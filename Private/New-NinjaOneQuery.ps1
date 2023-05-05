@@ -23,6 +23,11 @@ function New-NinjaOneQuery {
             Write-Debug "Excluding system parameter $($Parameter.Name)."
             Continue
         }
+        # Skip optional system parameters.
+        if (([System.Management.Automation.Cmdlet]::OptionalCommonParameters).Contains($Parameter.Name)) {
+            Write-Debug "Excluding optional system parameter $($Parameter.Name)."
+            Continue
+        }
         $ParameterVariable = Get-Variable -Name $Parameter.Name -ErrorAction SilentlyContinue
         Write-Debug "Parameter variable: $($ParameterVariable | Out-String)"
         if (($Parameter.ParameterType.Name -eq 'String') -or ($Parameter.ParameterType.Name -eq 'String[]')) {

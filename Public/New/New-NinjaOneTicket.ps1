@@ -17,6 +17,10 @@ function New-NinjaOneTicket {
         # Show the organisation that was created.
         [switch]$show
     )
+    if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
+        throw ('This function is not available when using client_credentials authentication. Please report this to api@ninjarmm.com.')
+        exit 1
+    }
     try {
         $Resource = 'v2/ticketing/ticket'
         $RequestParams = @{

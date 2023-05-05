@@ -18,13 +18,17 @@ function Update-NinjaOneTicket {
         [Parameter(Mandatory = $true)]
         [Object]$ticket 
     )
+    if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
+        throw ('This function is not available when using client_credentials authentication. Please report this to api@ninjarmm.com.')
+        exit 1
+    }
     try {
         $Resource = "v2/ticketing/ticket/$ticketId"
         $RequestParams = @{
             Resource = $Resource
             Body = $ticket
         }
-        $TicketExists = (Get-NinjaOneTickets -TicketId $ticketId).Count -gt 0
+        $TicketExists = (Get-NinjaOneTickets -ticketId $ticketId).Count -gt 0
         if ($TicketExists) {
             if ($PSCmdlet.ShouldProcess('Ticket', 'Update')) {
                 $TicketUpdate = New-NinjaOnePUTRequest @RequestParams
