@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.7.2'
+    ModuleVersion = '1.8.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -249,7 +249,7 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Simplify DateTime to Unix conversion.'
+            ReleaseNotes = 'Multiple fixes and improvements.'
 
             # Prerelease string of this module
             # Prerelease = 'Beta1'
