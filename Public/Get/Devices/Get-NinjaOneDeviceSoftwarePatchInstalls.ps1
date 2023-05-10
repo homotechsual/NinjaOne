@@ -51,16 +51,18 @@ function Get-NinjaOneDeviceSoftwarePatchInstalls {
         $Parameters.Remove('deviceID') | Out-Null
     }
     if ($installedBefore) {
-        $Parameters.installedBefore = Convert-DateTimeToUnixEpoch -DateTime $installedBefore
+        [Int]$installedBefore = ConvertTo-UnixEpoch -DateTime $installedBefore
     }
     if ($installedBeforeUnixEpoch) {
-        $Parameters.installedBefore = $installedBeforeUnixEpoch
+        $Parameters.Remove('installedBeforeUnixEpoch') | Out-Null
+        [Int]$installedBefore = $installedBeforeUnixEpoch
     }
     if ($installedAfter) {
-        $Parameters.installedAfter = Convert-DateTimeToUnixEpoch -DateTime $installedAfter
+        [Int]$installedAfter = ConvertTo-UnixEpoch -DateTime $installedAfter
     }
     if ($installedAfterUnixEpoch) {
-        $Parameters.installedAfter = $installedAfterUnixEpoch
+        $Parameters.Remove('installedAfterUnixEpoch') | Out-Null
+        [Int]$installedAfter = $installedAfterUnixEpoch
     }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters

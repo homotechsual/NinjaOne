@@ -30,7 +30,7 @@ function Get-NinjaOneCustomFields {
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     if ($updatedAfter) {
-        $Parameters.updatedAfter = Convert-DateTimeToUnixEpoch -DateTime $updatedAfter
+        $Parameters.updatedAfter = ConvertTo-UnixEpoch -DateTime $updatedAfter
     }
     if ($updatedAfterUnixEpoch) {
         $Parameters.updatedAfter = $updatedAfterUnixEpoch

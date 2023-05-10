@@ -7,49 +7,46 @@ function Set-NinjaOneDeviceMaintenance {
         .OUTPUTS
             A powershell object containing the response.
     #>
-    [CmdletBinding( SupportsShouldProcess = $true, ConfirmImpact = 'Medium' )]
+    [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device to set a maintenance window for.
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [string]$deviceId,
         # The features to disable during maintenance.
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [ValidateSet('ALERTS', 'PATCHING', 'AVSCANS', 'TASKS')]
         [string[]]$disabledFeatures,
-        # The start date/time for the maintenance window - most date formats will work, if not set defaults to now.
-        [Parameter()]
-        [string]$start,
-        # The end date/time for the maintenance window - most date formats will work.
-        [Parameter(Mandatory = $true)]
-        [string]$end
+        # The start date/time for the maintenance window - PowerShell DateTime object.
+        [DateTime]$start,
+        # The start date/time for the maintenance window - Unix Epoch time.
+        [Int]$unixStart,
+        # The end date/time for the maintenance window - PowerShell DateTime object.
+        [DateTime]$end,
+        # The end date/time for the maintenance window - Unix Epoch time.
+        [Int]$unixEnd
     )
     try {
-        # Validate the dates.
-        if ($start -and $start -as [DateTime]) {
-            Write-Verbose 'Parsing start date/time.'
-            $dateTimeStart = [DateTime]::Parse($start)
-            if ($dateTimeStart -lt [DateTime]::Now) {
-                throw [System.IO.InvalidDataException]::New('Start date/time must be in the future.')
-            }
-            $unixStart = Get-Date -Date $dateTimeStart -UFormat '%s'
+        if ($start) {
+            $start = ConvertTo-UnixEpoch -DateTime $start
+        } elseif ($unixStart) {
+            $Parameters.Remove('unixStart') | Out-Null
+            $start = $unixStart
         }
-        Write-Verbose 'Parsed start date/time.'
-        if ($end -as [DateTime]) {
-            Write-Verbose 'Parsing end date/time.'
-            $dateTimeEnd = [DateTime]::Parse($end)
-            if ($dateTimeEnd -lt [DateTime]::Now -or $dateTimeEnd -lt $dateTimeStart) {
-                throw [System.IO.InvalidDataException]::New('End date/time must be in the future and after the start date/time.')
-            }
-            $unixEnd = Get-Date -Date $dateTimeEnd -UFormat '%s'
+        if ($end) {
+            $end = ConvertTo-UnixEpoch -DateTime $end
+        } elseif ($unixEnd) {
+            $Parameters.Remove('unixEnd') | Out-Null
+            $end = $unixEnd
+        } else {
+            throw 'An end date/time must be specified.'
         }
-        Write-Verbose 'Parsed dates.'
         $Resource = "v2/device/$deviceId/maintenance"
         $MaintenanceWindow = @{
             disabledFeatures = [array]$disabledFeatures
-            start = $unixStart
-            end = $unixEnd
+            start = $start
+            end = $end
         }
         $RequestParams = @{
             Resource = $Resource

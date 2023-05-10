@@ -20,7 +20,7 @@ function Get-NinjaOneOSPatchInstalls {
         # Filter patches by patch status.
         [ValidateSet('FAILED', 'INSTALLED')]
         [String]$status,
-        # Filter patches to those installed before this date. PowerShell DateTime object.
+        # Filter patches to those installed before this date. 
         [DateTime]$installedBefore,
         # Filter patches to those installed after this date. Unix Epoch time.
         [Int]$installedBeforeUnixEpoch,
@@ -36,16 +36,18 @@ function Get-NinjaOneOSPatchInstalls {
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     if ($installedBefore) {
-        $Parameters.installedBefore = Convert-DateTimeToUnixEpoch -DateTime $installedBefore
+        [Int]$installedBefore = ConvertTo-UnixEpoch -DateTime $installedBefore
     }
     if ($installedBeforeUnixEpoch) {
-        $Parameters.installedBefore = $installedBeforeUnixEpoch
+        $Parameters.Remove('installedBeforeUnixEpoch') | Out-Null
+        [Int]$installedBefore = $installedBeforeUnixEpoch
     }
     if ($installedAfter) {
-        $Parameters.installedAfter = Convert-DateTimeToUnixEpoch -DateTime $installedAfter
+        [Int]$installedAfter = ConvertTo-UnixEpoch -DateTime $installedAfter
     }
     if ($installedAfterUnixEpoch) {
-        $Parameters.installedAfter = $installedAfterUnixEpoch
+        $Parameters.Remove('installedAfterUnixEpoch') | Out-Null
+        [Int]$installedAfter = $installedAfterUnixEpoch
     }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters

@@ -54,16 +54,18 @@ function Get-NinjaOneActivities {
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     if ($before) {
-        $Parameters.before = Convert-DateTimeToUnixEpoch -DateTime $before
+        [Int]$before = ConvertTo-UnixEpoch -DateTime $before
     }
     if ($beforeUnixEpoch) {
-        $Parameters.before = $beforeUnixEpoch
+        $Parameters.Remove('beforeUnixEpoch') | Out-Null
+        [Int]$before = $beforeUnixEpoch
     }
     if ($after) {
-        $Parameters.after = Convert-DateTimeToUnixEpoch -DateTime $after
+        [Int]$after = ConvertTo-UnixEpoch -DateTime $after
     }
     if ($afterUnixEpoch) {
-        $Parameters.after = $afterUnixEpoch
+        $Parameters.Remove('afterUnixEpoch') | Out-Null
+        [Int]$after = $afterUnixEpoch
     }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
