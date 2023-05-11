@@ -1,5 +1,16 @@
 # Changelog
 
+## 2023-05-11 - Version 1.9.0
+
+* Fix all date/time parameters - previous change in 1.7.1 was not functional.
+* Add `Get-NinjaOneLocationBackupUsage` commandlet. Gets the backup usage for a location.
+* Add `Get-NinjaOneBackupUsage` commandlet. Gets the backup usage broken down by device.
+* Add `Get-NinjaOnePolicyOverrides` commandlet. Gets the policy overrides broken down by device.
+* Add `New-NinjaOneInstaller` commandlet. Creates an advanced installer for a device with the ability to limit the number of uses for the installer.
+* Fix `Get-NinjaOneTickets` commandlet. Now uses the correct HTTP method for single ticket retrieval.
+* Add `Get-NinjaOneTicketAttributes` commandlet. Gets the attributes for tickets.
+* Fix `Get-NinjaOneTicketForms` commandlet. Now allows single ticket form retrieval.
+
 ## 2023-05-05 - Version 1.8.0
 
 * Commandlets whose endpoints do not support Client Credentials authentication now return an early error if the authentication mode in use is `client_credentials`.

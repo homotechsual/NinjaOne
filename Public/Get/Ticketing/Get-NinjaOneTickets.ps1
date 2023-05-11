@@ -1,9 +1,9 @@
 function Get-NinjaOneTickets {
     <#
         .SYNOPSIS
-            Gets boards from the NinjaOne API.
+            Gets tickets from the NinjaOne API.
         .DESCRIPTION
-            Retrieves boards from the NinjaOne v2 API.
+            Retrieves tickets from the NinjaOne v2 API.
         .OUTPUTS
             A powershell object containing the response.
     #>
@@ -46,10 +46,12 @@ function Get-NinjaOneTickets {
         if ($ticketId) {
             Write-Verbose "Retrieving information on ticket with id $($deviceId)"
             $Resource = "v2/ticketing/ticket/$($ticketId)"
+            $Method = 'GET'
         } else {
             Write-Verbose 'Retrieving tickets for board with id $($boardId)'
             $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
             $Resource = "v2/ticketing/trigger/board/$($boardId)/run"
+            $Method = 'POST'
         }
         $RequestParams = @{
             Resource = $Resource
@@ -59,8 +61,12 @@ function Get-NinjaOneTickets {
         }
         if ($filters) {
             $RequestParams.Body = $filters
-        }   
-        $Tickets = New-NinjaOnePOSTRequest @RequestParams
+        }
+        if ($Method -eq 'GET') {
+            $Tickets = New-NinjaOneGETRequest @RequestParams
+        } elseif ($Method -eq 'POST') {
+            $Tickets = New-NinjaOnePOSTRequest @RequestParams
+        }
         if ($includeMetadata) {
             Return $Tickets
         } else {
