@@ -1,4 +1,4 @@
-function Get-NinjaOneTickets {
+function Get-NinjaOneTicketAttributes {
     <#
         .SYNOPSIS
             Gets ticket attributes from the NinjaOne API.
