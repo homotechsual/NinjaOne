@@ -21,7 +21,9 @@ function New-NinjaOneGETRequest {
         # A hashtable used to build the query string.
         [HashTable]$QSCollection,
         # Don't drill down into the data property.
-        [Switch]$NoDrill
+        [Switch]$NoDrill,
+        # Return the raw response.
+        [Switch]$Raw
     )
     if ($null -eq $Script:NRAPIConnectionInformation) {
         Throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
@@ -43,10 +45,19 @@ function New-NinjaOneGETRequest {
         Write-Debug "URI is $($Script:NRAPIConnectionInformation.URL)"
         $RequestUri = [System.UriBuilder]"$($Script:NRAPIConnectionInformation.URL)"
         $RequestUri.Path = $Resource
-        $RequestUri.Query = $QueryStringCollection.toString()
+        if ($QueryStringCollection) {
+            $RequestUri.Query = $QueryStringCollection.toString()
+        } else {
+            Write-Debug 'No query string collection present.'
+        }
         $WebRequestParams = @{
             Method = 'GET'
             Uri = $RequestUri.ToString()
+        }
+        if ($Raw) {
+            $WebRequestParams.Add('Raw', $Raw)
+        } else {
+            Write-Debug 'Raw switch not present.'
         }
         if ($WebRequestParams) {
             Write-Debug "WebRequestParams contains: $($WebRequestParams | Out-String)"
@@ -54,7 +65,7 @@ function New-NinjaOneGETRequest {
             Write-Debug 'WebRequestParams is empty.'
         }
         try {
-            $Result = Invoke-NinjaOneRequest -WebRequestParams $WebRequestParams
+            $Result = Invoke-NinjaOneRequest @WebRequestParams
             if ($Result) {
                 Write-Debug "NinjaOne request returned:: $($Result | Out-String)"
             } else {

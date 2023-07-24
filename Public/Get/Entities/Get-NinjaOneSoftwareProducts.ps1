@@ -5,10 +5,18 @@ function Get-NinjaOneSoftwareProducts {
             Gets software products from the NinjaOne API.
         .DESCRIPTION
             Retrieves software products from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwareProducts
+            
+            Gets all software products.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwareProducts -deviceId 1
+
+            Gets all software products for the device with ID 1.
         .OUTPUTS
             A powershell object containing the response.
     #>
-    [CmdletBinding( DefaultParameterSetName = 'Multi' )]
+    [CmdletBinding()]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(

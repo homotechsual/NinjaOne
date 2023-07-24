@@ -5,6 +5,14 @@ function Get-NinjaOneDeviceScriptingOptions {
             Gets device scripting options from the NinjaOne API.
         .DESCRIPTION
             Retrieves device scripting options from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneDeviceScriptingOptions -deviceId 1
+
+            Gets the device scripting options for the device with id 1.
+        .EXAMPLE
+            PS> (Get-NinjaOneDeviceScriptingOptions -deviceId 1).scripts
+
+            Gets the scripts for the device with id 1.
         .OUTPUTS
             A powershell object containing the response.
     #>

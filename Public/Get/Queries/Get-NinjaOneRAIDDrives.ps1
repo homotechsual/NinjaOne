@@ -4,6 +4,18 @@ function Get-NinjaOneRAIDDrives {
             Gets the RAID drives from the NinjaOne API.
         .DESCRIPTION
             Retrieves the RAID drives from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneRAIDDrives
+
+            Gets the RAID drives.
+        .EXAMPLE
+            PS> Get-NinjaOneRAIDDrives -deviceFilter 'org = 1'
+
+            Gets the RAID drives for the organisation with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneRAIDDrives -timeStamp 1619712000
+
+            Gets the RAID drives with a monitoring timestamp at or after 1619712000.
         .OUTPUTS
             A powershell object containing the response.
     #>

@@ -4,6 +4,14 @@ function Get-NinjaOneLoggedOnUsers {
             Gets the logged on users from the NinjaOne API.
         .DESCRIPTION
             Retrieves the logged on users from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneLoggedOnUsers
+
+            Gets all logged on users.
+        .EXAMPLE
+            PS> Get-NinjaOneLoggedOnUsers -deviceFilter 'org = 1'
+
+            Gets the logged on users for the organisation with id 1.
         .OUTPUTS
             A powershell object containing the response.
     #>

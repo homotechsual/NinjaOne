@@ -4,6 +4,10 @@ function Get-NinjaOneOrganisationDocuments {
             Gets documents from the NinjaOne API.
         .DESCRIPTION
             Retrieves documents from the NinjaOne v2 API.
+        .EXAMPLE
+            Get-NinjaOneOrganisationDocuments -organisationId 1
+
+            Gets documents for the organisation with id 1.
         .OUTPUTS
             A powershell object containing the response.
     #>

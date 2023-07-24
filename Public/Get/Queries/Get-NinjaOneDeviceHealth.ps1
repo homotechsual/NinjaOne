@@ -4,6 +4,18 @@ function Get-NinjaOneDeviceHealth {
             Gets the device health from the NinjaOne API.
         .DESCRIPTION
             Retrieves the device health from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneDeviceHealth
+
+            Gets the device health.
+        .EXAMPLE
+            PS> Get-NinjaOneDeviceHealth -deviceFilter 'org = 1'
+
+            Gets the device health for the organisation with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneDeviceHealth -health 'UNHEALTHY'
+
+            Gets the device health for devices with the health status 'UNHEALTHY'.
         .OUTPUTS
             A powershell object containing the response.
     #>

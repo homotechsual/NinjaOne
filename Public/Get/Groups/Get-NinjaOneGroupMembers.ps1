@@ -5,6 +5,10 @@ function Get-NinjaOneGroupMembers {
             Gets group members from the NinjaOne API.
         .DESCRIPTION
             Retrieves group members from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneGroupMembers -groupID 1
+            
+            Gets all group members for group ID 1.
         .OUTPUTS
             A powershell object containing the response.
     #>

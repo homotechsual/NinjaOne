@@ -5,6 +5,50 @@ function Get-NinjaOneActivities {
             Gets activities from the NinjaOne API.
         .DESCRIPTION
             Retrieves activities from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneActivities
+
+            Gets all activities.
+        .EXAMPLE
+            PS> Get-NinjaOneActivities -deviceId 1
+
+            Gets activities for the device with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneActivities -class SYSTEM
+
+            Gets system activities.
+        .EXAMPLE
+            PS> Get-NinjaOneActivities -before ([DateTime]::Now.AddDays(-1))
+
+            Gets activities from before yesterday.
+        .EXAMPLE
+            PS> Get-NinjaOneActivities -after ([DateTime]::Now.AddDays(-1))
+
+            Gets activities from after yesterday.
+        .EXAMPLE
+            PS> Get-NinjaOneActivities -olderThan 1
+
+            Gets activities older than activity id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneActivities -newerThan 1
+
+            Gets activities newer than activity id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneActivities -type 'Action'
+
+            Gets activities of type 'Action'.
+        .EXAMPLE
+            PS> Get-NinjaOneActivities -status 'COMPLETED'
+
+            Gets activities with status 'COMPLETED'.
+        .EXAMPLE
+            PS> Get-NinjaOneActivities -seriesUid '23e4567-e89b-12d3-a456-426614174000'
+
+            Gets activities for the alert series with uid '23e4567-e89b-12d3-a456-426614174000'.
+        .EXAMPLE
+            PS> Get-NinjaOneActivities -deviceFilter 'organization in (1,2,3)'
+
+            Gets activities for devices in organisations 1, 2 and 3.
         .OUTPUTS
             A powershell object containing the response.
     #>

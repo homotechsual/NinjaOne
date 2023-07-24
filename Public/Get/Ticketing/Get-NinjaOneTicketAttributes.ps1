@@ -4,6 +4,10 @@ function Get-NinjaOneTicketAttributes {
             Gets ticket attributes from the NinjaOne API.
         .DESCRIPTION
             Retrieves a list of the ticket attributes from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneTicketAttributes
+
+            Gets all ticket attributes.
         .OUTPUTS
             A powershell object containing the response.
     #>
@@ -11,12 +15,8 @@ function Get-NinjaOneTicketAttributes {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param()
-    #if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
-    #    throw ('This function is not available when using client_credentials authentication. Please report this to api@ninjarmm.com.')
-    #    exit 1
-    #}
-    #$CommandName = $MyInvocation.InvocationName
-    #$Parameters = (Get-Command -Name $CommandName).Parameters
+    $CommandName = $MyInvocation.InvocationName
+    $Parameters = (Get-Command -Name $CommandName).Parameters
     try {
         $Resource = 'v2/ticketing/attributes'
         $RequestParams = @{

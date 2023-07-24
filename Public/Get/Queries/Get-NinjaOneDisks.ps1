@@ -4,6 +4,18 @@ function Get-NinjaOneDisks {
             Gets the disks from the NinjaOne API.
         .DESCRIPTION
             Retrieves the disks from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneDisks
+
+            Gets all disks.
+        .EXAMPLE
+            PS> Get-NinjaOneDisks -deviceFilter 'org = 1'
+
+            Gets the disks for the organisation with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneDisks -timeStamp 1619712000
+
+            Gets the disks with a monitoring timestamp at or after 1619712000.
         .OUTPUTS
             A powershell object containing the response.
     #>

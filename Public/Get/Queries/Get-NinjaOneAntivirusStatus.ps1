@@ -4,6 +4,22 @@ function Get-NinjaOneAntivirusStatus {
             Gets the antivirus status from the NinjaOne API.
         .DESCRIPTION
             Retrieves the antivirus status from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneAntivirusStatus -deviceFilter 'org = 1'
+
+            Gets the antivirus status for the organisation with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneAntivirusStatus -timeStamp 1619712000
+
+            Gets the antivirus status at or after the timestamp 1619712000.
+        .EXAMPLE
+            PS> Get-NinjaOneAntivirusStatus -productState 'ON'
+
+            Gets the antivirus status where the product state is ON.
+        .EXAMPLE
+            PS> Get-NinjaOneAntivirusStatus -productName 'Microsoft Defender Antivirus'
+
+            Gets the antivirus status where the antivirus product name is Microsoft Defender Antivirus.
         .OUTPUTS
             A powershell object containing the response.
     #>
@@ -16,7 +32,7 @@ function Get-NinjaOneAntivirusStatus {
         [String]$deviceFilter,
         # Monitoring timestamp filter.
         [Alias('ts')]
-        [string]$timeStamp,
+        [Int]$timeStamp,
         # Filter by product state.
         [String]$productState,
         # Filter by product name.

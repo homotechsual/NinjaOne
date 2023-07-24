@@ -4,6 +4,30 @@ function Get-NinjaOneSoftwareInventory {
             Gets the software inventory from the NinjaOne API.
         .DESCRIPTION
             Retrieves the software inventory from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwareInventory
+
+            Gets the software inventory.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwareInventory -deviceFilter 'org = 1'
+
+            Gets the software inventory for the organisation with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwareInventory -installedBefore (Get-Date)
+
+            Gets the software inventory for software installed before the current date.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwareInventory -installedBeforeUnixEpoch 1619712000
+
+            Gets the software inventory for software installed before 1619712000.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwareInventory -installedAfter (Get-Date).AddDays(-1)
+
+            Gets the software inventory for software installed after the previous day.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwareInventory -installedAfterUnixEpoch 1619712000
+
+            Gets the software inventory for software installed after 1619712000.
         .OUTPUTS
             A powershell object containing the response.
     #>

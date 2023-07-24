@@ -46,7 +46,7 @@ function New-NinjaOneDELETERequest {
         }
         Write-Debug "Building new NinjaOneRequest with params: $($WebRequestParams | Out-String)"
         try {
-            $Result = Invoke-NinjaOneRequest -WebRequestParams $WebRequestParams
+            $Result = Invoke-NinjaOneRequest @WebRequestParams
             Write-Debug "NinjaOne request returned $($Result | Out-String)"
             if ($Result.results) {
                 Return $Result.results

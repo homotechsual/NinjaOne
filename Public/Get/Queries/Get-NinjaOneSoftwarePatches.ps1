@@ -4,6 +4,34 @@ function Get-NinjaOneSoftwarePatches {
             Gets the software patches from the NinjaOne API.
         .DESCRIPTION
             Retrieves the software patches from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwarePatches
+
+            Gets all software patches.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwarePatches -deviceFilter 'org = 1'
+
+            Gets the software patches for the organisation with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwarePatches -timeStamp 1619712000
+
+            Gets the software patches with a monitoring timestamp at or after 1619712000.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwarePatches -status 'FAILED'
+
+            Gets the software patches with a status of 'FAILED'.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwarePatches -productIdentifier 23e4567-e89b-12d3-a456-426614174000
+
+            Gets the software patches with a product identifier of '23e4567-e89b-12d3-a456-426614174000'.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwarePatches -type 'PATCH'
+
+            Gets the software patches with a type of 'PATCH'.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwarePatches -impact 'OPTIONAL'
+
+            Gets the software patches with an impact of 'OPTIONAL'.
         .OUTPUTS
             A powershell object containing the response.
     #>

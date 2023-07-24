@@ -4,6 +4,14 @@ function Get-NinjaOneAntivirusThreats {
             Gets the antivirus threats from the NinjaOne API.
         .DESCRIPTION
             Retrieves the antivirus threats from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneAntivirusThreats
+
+            Gets the antivirus threats.
+        .EXAMPLE
+            PS> Get-NinjaOneAntivirusThreats -deviceFilter 'org = 1'
+
+            Gets the antivirus threats for the organisation with id 1.
         .OUTPUTS
             A powershell object containing the response.
     #>

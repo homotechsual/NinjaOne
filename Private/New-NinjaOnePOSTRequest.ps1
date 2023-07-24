@@ -19,9 +19,9 @@ function New-NinjaOnePOSTRequest {
         [Parameter(Mandatory = $True)]
         [String]$Resource,
         # A hashtable used to build the query string.
-        [HashTable]$QSCollection,
+        [Hashtable]$QSCollection,
         # A hashtable used to build the body of the request.
-        [Hashtable]$Body
+        [Object]$Body
     )
     if ($null -eq $Script:NRAPIConnectionInformation) {
         Throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
@@ -63,7 +63,7 @@ function New-NinjaOnePOSTRequest {
         }
         Write-Debug "Building new NinjaOneRequest with params: $($WebRequestParams | Out-String)"
         try {
-            $Result = Invoke-NinjaOneRequest -WebRequestParams $WebRequestParams
+            $Result = Invoke-NinjaOneRequest @WebRequestParams
             Write-Debug "NinjaOne request returned $($Result | Out-String)"
             if ($Result['results']) {
                 Return $Result.results

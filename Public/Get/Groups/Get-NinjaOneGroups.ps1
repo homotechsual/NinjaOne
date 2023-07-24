@@ -5,6 +5,10 @@ function Get-NinjaOneGroups {
             Gets groups from the NinjaOne API.
         .DESCRIPTION
             Retrieves groups from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneGroups
+            
+            Gets all groups.
         .OUTPUTS
             A powershell object containing the response.
     #>

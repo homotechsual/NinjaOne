@@ -4,6 +4,22 @@ function Get-NinjaOneOrganisations {
             Gets organisations from the NinjaOne API.
         .DESCRIPTION
             Retrieves organisations from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneOrganisations
+
+            Gets all organisations.
+        .EXAMPLE
+            PS> Get-NinjaOneOrganisations -organisationId 1
+
+            Gets the organisation with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneOrganisations -pageSize 10 -after 1
+
+            Gets 10 organisations starting from organisation id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneOrganisations -detailed
+
+            Gets all organisations with locations and policy mappings.
         .OUTPUTS
             A powershell object containing the response.
     #>

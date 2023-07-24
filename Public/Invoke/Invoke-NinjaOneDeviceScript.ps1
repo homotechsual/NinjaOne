@@ -32,7 +32,7 @@ function Invoke-NinjaOneDeviceScript {
         [string]$runAs
     )
     if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
-        throw ('This function is not available when using client_credentials authentication. Please report this to api@ninjarmm.com.')
+        throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
         exit 1
     }
     try {

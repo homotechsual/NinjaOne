@@ -4,6 +4,50 @@ function Get-NinjaOneSoftwarePatchInstalls {
             Gets the software patch installs from the NinjaOne API.
         .DESCRIPTION
             Retrieves the software patch installs from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwarePatchInstalls
+
+            Gets all software patch installs.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwarePatchInstalls -deviceFilter 'org = 1'
+
+            Gets the software patch installs for the organisation with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwarePatchInstalls -timeStamp 1619712000
+
+            Gets the software patch installs with a monitoring timestamp at or after 1619712000.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwarePatchInstalls -type 'PATCH'
+
+            Gets the software patch installs with a type of 'PATCH'.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwarePatchInstalls -impact 'OPTIONAL'
+
+            Gets the software patch installs with an impact of 'OPTIONAL'.
+        .EXAMPLE
+            Get-NinjaOneSoftwarePatchInstalls -status 'FAILED'
+
+            Gets the software patch installs with a status of 'FAILED'.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwarePatchInstalls -productIdentifier 23e4567-e89b-12d3-a456-426614174000
+
+            Gets the software patch installs with a product identifier of '23e4567-e89b-12d3-a456-426614174000'.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwarePatchInstalls -installedBefore (Get-Date)
+
+            Gets the software patch installs installed before the current date.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwarePatchInstalls -installedBeforeUnixEpoch 1619712000
+
+            Gets the software patch installs installed before 1619712000.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwarePatchInstalls -installedAfter (Get-Date)
+
+            Gets the software patch installs installed after the current date.
+        .EXAMPLE
+            PS> Get-NinjaOneSoftwarePatchInstalls -installedAfterUnixEpoch 1619712000
+
+            Gets the software patch installs installed after 1619712000.
         .OUTPUTS
             A powershell object containing the response.
     #>

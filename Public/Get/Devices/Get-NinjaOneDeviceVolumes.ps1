@@ -7,6 +7,12 @@ function Get-NinjaOneDeviceVolumes {
             Retrieves device volumes from the NinjaOne v2 API.
         .EXAMPLE
             PS> Get-NinjaOneDeviceVolumes -deviceId 1
+
+            Gets the volumes for the device with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneDeviceVolumes -deviceId 1 -include bl
+
+            Gets the volumes for the device with id 1 and includes BitLocker status.
         .OUTPUTS
             A powershell object containing the response.
     #>

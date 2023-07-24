@@ -31,14 +31,7 @@ function Get-NinjaOneDeviceCustomFields {
         [Alias('id')]
         [Int]$deviceId
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    if ($deviceId) {
-        $Parameters.Remove('deviceID') | Out-Null
-    }
     try {
-        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         if ($deviceId) {
             Write-Verbose 'Getting device from NinjaOne API.'
             $Device = Get-NinjaOneDevices -deviceID $deviceId
@@ -52,7 +45,6 @@ function Get-NinjaOneDeviceCustomFields {
         }
         $RequestParams = @{
             Resource = $Resource
-            QSCollection = $QSCollection
         }
         $DeviceCustomFieldResults = New-NinjaOneGETRequest @RequestParams
         Return $DeviceCustomFieldResults

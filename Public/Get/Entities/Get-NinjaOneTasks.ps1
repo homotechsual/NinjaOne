@@ -5,6 +5,10 @@ function Get-NinjaOneTasks {
             Gets tasks from the NinjaOne API.
         .DESCRIPTION
             Retrieves tasks from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneTasks
+            
+            Gets all tasks.
         .OUTPUTS
             A powershell object containing the response.
     #>

@@ -5,6 +5,14 @@ function Get-NinjaOneInstaller {
             Gets agent installer URL from the NinjaOne API.
         .DESCRIPTION
             Retrieves agent installer URL from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneInstaller -organisationID 1 -locationID 1 -installerType WINDOWS_MSI
+
+            Gets the agent installer URL for the location with id 1 in the organisation with id 1 for the Windows MSI installer.
+        .EXAMPLE
+            PS> Get-NinjaOneInstaller -organisationID 1 -locationID 1 -installerType MAC_PKG
+
+            Gets the agent installer URL for the location with id 1 in the organisation with id 1 for the Mac PKG installer.
         .OUTPUTS
             A powershell object containing the response.
     #>

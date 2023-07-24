@@ -4,6 +4,18 @@ function Get-NinjaOneProcessors {
             Gets the processors from the NinjaOne API.
         .DESCRIPTION
             Retrieves the processors from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneProcessors
+
+            Gets the processors.
+        .EXAMPLE
+            PS> Get-NinjaOneProcessors -deviceFilter 'org = 1'
+
+            Gets the processors for the organisation with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneProcessors -timeStamp 1619712000
+
+            Gets the processors with a monitoring timestamp at or after 1619712000.
         .OUTPUTS
             A powershell object containing the response.
     #>

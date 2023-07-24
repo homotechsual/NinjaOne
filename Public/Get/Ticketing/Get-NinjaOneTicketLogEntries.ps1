@@ -4,6 +4,14 @@ function Get-NinjaOneTicketLogEntries {
             Gets ticket log entries from the NinjaOne API.
         .DESCRIPTION
             Retrieves ticket log entries from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneTicketLogEntries -ticketID 1
+
+            Gets all ticket log entries for ticket with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneTicketLogEntries -ticketID 1 -type DESCRIPTION
+
+            Gets all ticket log entries for ticket with id 1 with type DESCRIPTION.
         .OUTPUTS
             A powershell object containing the response.
     #>
@@ -20,7 +28,7 @@ function Get-NinjaOneTicketLogEntries {
         [String]$type
     )
     if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
-        throw ('This function is not available when using client_credentials authentication. Please report this to api@ninjarmm.com.')
+        throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
         exit 1
     }
     $CommandName = $MyInvocation.InvocationName

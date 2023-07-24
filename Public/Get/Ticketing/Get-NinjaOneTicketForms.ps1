@@ -4,6 +4,14 @@ function Get-NinjaOneTicketForms {
             Gets ticket forms from the NinjaOne API.
         .DESCRIPTION
             Retrieves ticket forms from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneTicketForms
+
+            Gets all ticket forms.
+        .EXAMPLE
+            PS> Get-NinjaOneTicketForms -ticketFormId 1
+
+            Gets ticket form with id 1.
         .OUTPUTS
             A powershell object containing the response.
     #>
@@ -17,7 +25,7 @@ function Get-NinjaOneTicketForms {
         [Int]$ticketFormId
     )
     if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
-        throw ('This function is not available when using client_credentials authentication. Please report this to api@ninjarmm.com.')
+        throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
         exit 1
     }
     try {

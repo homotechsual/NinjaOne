@@ -5,6 +5,10 @@ function Get-NinjaOneRoles {
             Gets device roles from the NinjaOne API.
         .DESCRIPTION
             Retrieves device roles from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneRoles
+
+            Gets all device roles.
         .OUTPUTS
             A powershell object containing the response.
     #>

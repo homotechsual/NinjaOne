@@ -5,6 +5,22 @@ function Get-NinjaOneJobs {
             Gets jobs from the NinjaOne API.
         .DESCRIPTION
             Retrieves jobs from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneJobs
+
+            Gets all jobs.
+        .EXAMPLE
+            PS> Get-NinjaOneJobs -jobType SOFTWARE_PATCH_MANAGEMENT
+
+            Gets software patch management jobs.
+        .EXAMPLE
+            PS> Get-NinjaOneJobs -deviceFilter 'organization in (1,2,3)'
+
+            Gets jobs for devices in organisations 1, 2 and 3.
+        .EXAMPLE
+            PS> Get-NinjaOneJobs -deviceId 1
+
+            Gets jobs for the device with id 1.
         .OUTPUTS
             A powershell object containing the response.
     #>

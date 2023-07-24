@@ -6,6 +6,10 @@ function Get-NinjaOneLocationBackupUsage {
         .DESCRIPTION
             Retrieves backup usage for a location from the NinjaOne v2 API. For all locations omit the `locationId` parameter for devices backup usage use `Get-NinjaOneBackupUsage`.
         .EXAMPLE
+            PS> Get-NinjaOneLocationBackupUsage -organisationId 1
+
+            Gets backup usage for all locations in the organisation with id 1.
+        .EXAMPLE
             PS> Get-NinjaOneLocationBackupUsage -organisationId 1 -locationId 1
 
             Gets backup usage for the location with id 1 in the organisation with id 1.
@@ -17,11 +21,11 @@ function Get-NinjaOneLocationBackupUsage {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Organisation ID
-        [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
+        [Parameter(ValueFromPipelineByPropertyName, Mandatory, Position = 0)]
         [Alias('id')]
         [Int]$organisationId,
         # Location ID
-        [Parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(ValueFromPipelineByPropertyName, Position = 1)]
         [Int]$locationId
     )
     try {

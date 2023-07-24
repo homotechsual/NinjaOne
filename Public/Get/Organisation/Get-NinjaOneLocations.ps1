@@ -4,6 +4,18 @@ function Get-NinjaOneLocations {
             Gets locations from the NinjaOne API.
         .DESCRIPTION
             Retrieves locations from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneLocations
+
+            Gets all locations.
+        .EXAMPLE
+            PS> Get-NinjaOneLocations -after 1
+
+            Gets all locations after location ID 1.
+        .EXAMPLE
+            PS> Get-NinjaOneLocations -organisationID 1
+            
+            Gets all locations for the organisation with id 1.
         .OUTPUTS
             A powershell object containing the response.
     #>

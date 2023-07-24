@@ -186,6 +186,7 @@ function Connect-NinjaOne {
             }
             $TokenResult = Invoke-WebRequest @TokenRequestParams
             $TokenPayload = $TokenResult.Content | ConvertFrom-Json
+            Write-Debug "Token payload is $($TokenPayload | Format-List | Out-String)"
             # Update our script-scoped NRAPIAuthenticationInformation variable with the token.
             $Script:NRAPIAuthenticationInformation.Type = $TokenPayload.token_type
             $Script:NRAPIAuthenticationInformation.Access = $TokenPayload.access_token

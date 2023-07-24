@@ -30,6 +30,8 @@ function Get-NinjaOneDevices {
             PS> Get-NinjaOneDevices -deviceFilter 'class eq WINDOWS_WORKSTATION AND online'
 
             Gets all online WINDOWS_WORKSTATION devices.
+        .LINK
+            Device filters: https://docs.homotechsual.dev/modules/ninjaone/misc/device-filters
         .OUTPUTS
             A powershell object containing the response.
     #>

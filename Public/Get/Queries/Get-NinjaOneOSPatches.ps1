@@ -4,6 +4,30 @@ function Get-NinjaOneOSPatches {
             Gets the OS patches from the NinjaOne API.
         .DESCRIPTION
             Retrieves the OS patches from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneOSPatches
+
+            Gets all OS patches.
+        .EXAMPLE
+            PS> Get-NinjaOneOSPatches -deviceFilter 'org = 1'
+
+            Gets the OS patches for the organisation with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneOSPatches -timeStamp 1619712000
+
+            Gets the OS patches with a monitoring timestamp at or after 1619712000.
+        .EXAMPLE
+            PS> Get-NinjaOneOSPatches -status 'APPROVED'
+
+            Gets the OS patches with a status of APPROVED.
+        .EXAMPLE
+            PS> Get-NinjaOneOSPatches -type 'SECURITY_UPDATES'
+
+            Gets the OS patches with a type of SECURITY_UPDATES.
+        .EXAMPLE
+            PS> Get-NinjaOneOSPatches -severity 'CRITICAL'
+
+            Gets the OS patches with a severity of CRITICAL.
         .OUTPUTS
             A powershell object containing the response.
     #>

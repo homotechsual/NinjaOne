@@ -4,6 +4,30 @@ function Get-NinjaOneCustomFields {
             Gets the custom fields from the NinjaOne API.
         .DESCRIPTION
             Retrieves the custom fields from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneCustomFields
+
+            Gets all custom field values for all devices.
+        .EXAMPLE
+            PS> Get-NinjaOneCustomFields -deviceFilter 'org = 1'
+
+            Gets all custom field values for all devices in the organisation with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneCustomFields -updatedAfter (Get-Date).AddDays(-1)
+
+            Gets all custom field values for all devices updated in the last 24 hours.
+        .EXAMPLE
+            PS> Get-NinjaOneCustomFields -updatedAfterUnixEpoch 1619712000
+
+            Gets all custom field values for all devices updated at or after 1619712000.
+        .EXAMPLE
+            PS> Get-NinjaOneCustomFields -fields 'hasBatteries', 'autopilotHwid'
+
+            Gets the custom field values for the specified fields.
+        .EXAMPLE
+            PS> Get-NinjaOneCustomFields -detailed
+
+            Gets the detailed version of the custom field values.
         .OUTPUTS
             A powershell object containing the response.
     #>
@@ -36,7 +60,7 @@ function Get-NinjaOneCustomFields {
         $Parameters.updatedAfter = $updatedAfterUnixEpoch
     }
     try {
-        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
+        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters -CommaSeparatedArrays
         if ($detailed) {
             $Resource = 'v2/queries/custom-fields-detailed'
         } else {

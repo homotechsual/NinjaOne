@@ -4,6 +4,14 @@ function Get-NinjaOnePolicyOverrides {
             Gets the policy overrides by device from the NinjaOne API.
         .DESCRIPTION
             Retrieves the policy override sections by device from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOnePolicyOverrides
+
+            Gets the policy overrides by device.
+        .EXAMPLE
+            PS> Get-NinjaOnePolicyOverrides -deviceFilter 'org = 1'
+
+            Gets the policy overrides by device for the organisation with id 1.
         .OUTPUTS
             A powershell object containing the response.
     #>

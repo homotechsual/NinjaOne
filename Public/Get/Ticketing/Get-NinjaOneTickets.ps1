@@ -4,6 +4,18 @@ function Get-NinjaOneTickets {
             Gets tickets from the NinjaOne API.
         .DESCRIPTION
             Retrieves tickets from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneTickets -ticketId 1
+
+            Gets the ticket with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneTickets -boardId 1
+
+            Gets all tickets for the board with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneTickets -boardId 1 -filters @{status = 'open'}
+
+            Gets all open tickets for the board with id 1.
         .OUTPUTS
             A powershell object containing the response.
     #>
@@ -17,30 +29,25 @@ function Get-NinjaOneTickets {
         # The board ID to get tickets for.
         [Parameter(ParameterSetName = 'Board', Mandatory)]
         [string]$boardId,
+        # The sort rules to apply to the request.
+        [Parameter(ParameterSetName = 'Board')]
+        [NinjaOneTicketBoardSort[]]$sort,
         # Any filters to apply to the request.
         [Parameter(ParameterSetName = 'Board')]
-        [hashtable]$filters = @{},
-        # Return the full response including metadata
+        [NinjaOneTicketBoardFilter[]]$filters,
+        # The last cursor id to use for the request.
         [Parameter(ParameterSetName = 'Board')]
-        [switch]$includeMetadata
+        [string]$lastCursorId,
+        # The number of results to return.
+        [Parameter(ParameterSetName = 'Board')]
+        [int]$pageSize,
+        # The search criteria to apply to the request.
+        [Parameter(ParameterSetName = 'Board')]
+        [string]$searchCriteria
     )
     if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
-        throw ('This function is not available when using client_credentials authentication. Please report this to api@ninjarmm.com.')
+        throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
         exit 1
-    }
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'ticketId=' parameter by removing it from the set parameters.
-    if ($ticketId) {
-        $Parameters.Remove('ticketId') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding an 'boardid=' parameter by removing it from the set parameters.
-    if ($boardId) {
-        $Parameters.Remove('boardId') | Out-Null
-    }
-    # Workaround to prevent the query string processor from adding an 'includemetadata=' parameter by removing it from the set parameters.
-    if ($includeMetadata) {
-        $Parameters.Remove('includeMetadata') | Out-Null
     }
     try {
         if ($ticketId) {
@@ -49,7 +56,6 @@ function Get-NinjaOneTickets {
             $Method = 'GET'
         } else {
             Write-Verbose 'Retrieving tickets for board with id $($boardId)'
-            $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
             $Resource = "v2/ticketing/trigger/board/$($boardId)/run"
             $Method = 'POST'
         }
@@ -59,8 +65,20 @@ function Get-NinjaOneTickets {
         if ($QSCollection) {
             $RequestParams.QSCollection = $QSCollection
         }
+        if ($sort -or $filters -or $lastCursorId -or $searchCriteria) {
+            $RequestParams.Body = [hashtable]@{}
+        }
+        if ($sort) {
+            $RequestParams.Body.sort = $sort
+        }
         if ($filters) {
-            $RequestParams.Body = $filters
+            $RequestParams.Body.filters = $filters
+        }
+        if ($lastCursorId) {
+            $RequestParams.Body.lastCursorId = $lastCursorId
+        }
+        if ($searchCriteria) {
+            $RequestParams.Body.searchCriteria = $searchCriteria
         }
         if ($Method -eq 'GET') {
             $Tickets = New-NinjaOneGETRequest @RequestParams

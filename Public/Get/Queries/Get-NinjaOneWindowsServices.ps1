@@ -4,6 +4,22 @@ function Get-NinjaOneWindowsServices {
             Gets the windows services from the NinjaOne API.
         .DESCRIPTION
             Retrieves the windows services from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneWindowsServices
+
+            Gets the windows services.
+        .EXAMPLE
+            PS> Get-NinjaOneWindowsServices -deviceFilter 'organization in (1,2,3)'
+
+            Gets the windows services for devices in organisations 1, 2 and 3.
+        .EXAMPLE
+            PS> Get-NinjaOneWindowsServices -name 'NinjaOne'
+
+            Gets the windows services with the name 'NinjaOne'.
+        .EXAMPLE
+            PS> Get-NinjaOneWindowsServices -state 'RUNNING'
+
+            Gets the windows services with the state 'RUNNING'.
         .OUTPUTS
             A powershell object containing the response.
     #>

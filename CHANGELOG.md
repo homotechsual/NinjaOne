@@ -1,5 +1,11 @@
 # Changelog
 
+## 2023-05-11 - Version 1.9.1
+
+* Refactored internals to separate out the parameters for `Invoke-NinjaOneRequest`.
+* Refactored request type helper functions to splat rather than pass in a hashtable to `Invoke-NinjaOneRequest`.
+* Improve examples for all commandlets.
+
 ## 2023-05-11 - Version 1.9.0
 
 * Fix all date/time parameters - previous change in 1.7.1 was not functional.

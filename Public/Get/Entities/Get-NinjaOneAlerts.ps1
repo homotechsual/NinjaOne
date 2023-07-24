@@ -6,7 +6,19 @@ function Get-NinjaOneAlerts {
             Gets alerts from the NinjaOne API.
         .DESCRIPTION
             Retrieves alerts from the NinjaOne v2 API.
-        .OUTPUTS
+        .EXAMPLE
+            PS> Get-NinjaOneAlerts
+            
+            Gets all alerts.
+        .EXAMPLE
+            PS> Get-NinjaOneAlerts -sourceType 'CONDITION_CUSTOM_FIELD'
+
+            Gets all alerts with source type CONDITION_CUSTOM_FIELD.
+        .EXAMPLE
+            PS> Get-NinjaOneAlerts -deviceFilter 'status eq APPROVED'
+
+            Gets alerts for all approved devices.
+        .OUTPUTS    
             A powershell object containing the response.
     #>
     [CmdletBinding()]

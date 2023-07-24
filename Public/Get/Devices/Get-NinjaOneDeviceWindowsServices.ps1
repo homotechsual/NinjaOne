@@ -5,6 +5,18 @@ function Get-NinjaOneDeviceWindowsServices {
             Gets device windows services from the NinjaOne API.
         .DESCRIPTION
             Retrieves device windows services from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneDeviceWindowsServices -deviceId 1
+
+            Gets all windows services for the device with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneDeviceWindowsServices -deviceId 1 -name 'NinjaRMM Agent'
+
+            Gets all windows services for the device with id 1 that match the name 'NinjaRMM Agent'.
+        .EXAMPLE
+            PS> Get-NinjaOneDeviceWindowsServices -deviceId 1 -state 'RUNNING'
+
+            Gets all windows services for the device with id 1 that are in the 'RUNNING' state.
         .OUTPUTS
             A powershell object containing the response.
     #>

@@ -5,6 +5,10 @@ function Get-NinjaOneDeviceDashboardURL {
             Gets device dashboard URL from the NinjaOne API.
         .DESCRIPTION
             Retrieves device dashboard URL from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOneDeviceDashboardURL -deviceId 1
+
+            Gets the device dashboard URL for the device with ID 1.
         .OUTPUTS
             A powershell object containing the response.
     #>
@@ -16,7 +20,7 @@ function Get-NinjaOneDeviceDashboardURL {
         [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
         [Alias('id')]
         [Int]$deviceId,
-        # Return redirect response.
+        # Return redirect response. This is largely useless as it will return a HTML redirect page source.
         [Switch]$redirect
     )
     $CommandName = $MyInvocation.InvocationName
@@ -38,6 +42,9 @@ function Get-NinjaOneDeviceDashboardURL {
         $RequestParams = @{
             Resource = $Resource
             QSCollection = $QSCollection
+        }
+        if ($redirect) {
+            $RequestParams.Add('Raw', $true)
         }
         $DeviceDashboardURLResults = New-NinjaOneGETRequest @RequestParams
         Return $DeviceDashboardURLResults

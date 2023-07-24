@@ -5,6 +5,10 @@ function Get-NinjaOnePolicies {
             Gets policies from the NinjaOne API.
         .DESCRIPTION
             Retrieves policies from the NinjaOne v2 API.
+        .EXAMPLE
+            PS> Get-NinjaOnePolicies
+
+            Gets all policies.
         .OUTPUTS
             A powershell object containing the response.
     #>
