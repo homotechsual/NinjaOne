@@ -70,4 +70,6 @@ New-Alias -Name 'Get-NinjaRMMVolumes' -Value 'Get-NinjaOneVolumes'
 New-Alias -Name 'Get-NinjaRMMWindowsServices' -Value 'Get-NinjaOneWindowsServices'
 New-Alias -Name 'New-NinjaOneOrganization' -Value 'New-NinjaOneOrganisation'
 New-Alias -Name 'Update-NinjaOneOrganizationDocument' -Value 'Update-NinjaOneOrganisationDocument'
+New-Alias -Name 'Update-NinjaOneOrganizationCustomFields' -Value 'Update-NinjaOneOrganisationCustomFields'
+
 Export-ModuleMember -Function $Functions.BaseName -Alias *

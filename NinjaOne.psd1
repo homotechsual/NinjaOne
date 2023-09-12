@@ -151,6 +151,7 @@
         'Update-NinjaOneNodeRolePolicyAssignment',
         'Update-NinjaOneOrganisation',
         'Update-NinjaOneOrganisationDocument',
+        'Update-NinjaOneOrganisationCustomFields',
         'Update-NinjaOneTicket',
         'Update-NinjaOneWebhook'
     )
