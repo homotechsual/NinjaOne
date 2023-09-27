@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.9.0'
+    ModuleVersion = '1.10.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -78,7 +78,6 @@
         'Get-NinjaOneAntivirusThreats',
         'Get-NinjaOneAttachment',
         'Get-NinjaOneBackupUsage',
-        'Get-NinjaOneBoards',
         'Get-NinjaOneComputerSystems',
         'Get-NinjaOneContacts',
         'Get-NinjaOneCustomFields',
@@ -104,9 +103,11 @@
         'Get-NinjaOneInstaller',
         'Get-NinjaOneJobs',
         'Get-NinjaOneLocationBackupUsage',
+        'Get-NinjaOneLocationCustomFields',
         'Get-NinjaOneLocations',
         'Get-NinjaOneLoggedOnUsers',
         'Get-NinjaOneOperatingSystems',
+        'Get-NinjaOneOrganisationCustomFields',
         'Get-NinjaOneOrganisationDocuments',
         'Get-NinjaOneOrganisations',
         'Get-NinjaOneOSPatches',
@@ -116,6 +117,7 @@
         'Get-NinjaOneProcessors',
         'Get-NinjaOneRAIDControllers',
         'Get-NinjaOneRAIDDrives',
+        'Get-NinjaOneRelatedItems',
         'Get-NinjaOneRoles',
         'Get-NinjaOneSoftwareInventory',
         'Get-NinjaOneSoftwarePatches',
@@ -123,9 +125,11 @@
         'Get-NinjaOneSoftwareProducts',
         'Get-NinjaOneTasks',
         'Get-NinjaOneTicketAttributes',
+        'Get-NinjaOneTicketBoards',
         'Get-NinjaOneTicketForms',
         'Get-NinjaOneTicketLogEntries',
         'Get-NinjaOneTickets',
+        'Get-NinjaOneTicketStatuses',
         'Get-NinjaOneUsers',
         'Get-NinjaOneVolumes',
         'Get-NinjaOneWindowsServices',
@@ -145,6 +149,8 @@
         'Set-NinjaOneDeviceApproval',
         'Set-NinjaOneDeviceCustomFields',
         'Set-NinjaOneDeviceMaintenance',
+        'Set-NinjaOneLocationCustomFields',
+        'Set-NinjaOneOrganisationCustomFields',
         'Set-NinjaOneWindowsServiceConfiguration',
         'Update-NinjaOneDevice',
         'Update-NinjaOneLocation',
@@ -167,6 +173,7 @@
         'Find-NinjaRMMDevices',
         'Get-NinjaRMMActivities',
         'Get-NinjaRMMAlerts',
+        'Get-NinjaOneBoards',
         'Get-NinjaRMMDeviceCustomFields',
         'Get-NinjaRMMDeviceJobs',
         'Get-NinjaRMMDeviceLastLoggedOnUser',
@@ -181,6 +188,7 @@
         'Get-NinjaRMMGroups',
         'Get-NinjaRMMJobs',
         'Get-NinjaRMMLocations',
+        'Get-NinjaOneOrganizationCustomFields',
         'Get-NinjaRMMOrganisationDocuments',
         'Get-NinjaRMMOrganizationDocuments',
         'Get-NinjaOneOrganizationDocuments',
@@ -216,6 +224,11 @@
         'Get-NinjaRMMInstaller',
         'New-NinjaOneOrganization',
         'Update-NinjaOneOrganizationDocument'
+        'Update-NinjaOneOrganisationCustomFields',
+        'Update-NinjaOneOrganizationCustomFields',
+        'Set-NinjaOneOrganizationCustomFields',
+        'Update-NinjaOneLocationCustomFields',
+        'Update-NinjaOneDeviceCustomFields'
     )
 
     # DSC resources to export from this module
@@ -254,7 +267,7 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Various additions and bugfixes.'
+            ReleaseNotes = 'Add new endpoints from NinjaOne 5.4.'
 
             # Prerelease string of this module
             # Prerelease = 'Beta1'

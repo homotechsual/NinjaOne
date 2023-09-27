@@ -2,11 +2,14 @@
     .SYNOPSIS
         Homotechsual portable module build script.
 #>
+[CmdletBinding()]
 Param (
     [String]$Configuration = 'Development',
     [String[]]$Remotes = @('origin', 'homotechsual'),
     [Switch]$Push,
     [Switch]$UpdateHelp,
+    [System.IO.DirectoryInfo]$DocusaurusPath,
+    [Switch]$ForceUpdateCategoryFiles,
     [Switch]$CopyModuleFiles,
     [Switch]$Test,
     [Switch]$UpdateManifest,
@@ -15,6 +18,12 @@ Param (
 )
 
 $ModuleName = 'NinjaOne'
+
+# Install required modules
+if (-Not(Get-Module -Name 'Install-RequiredModule')) {
+    Install-Script -Name 'Install-RequiredModule' -Force -Scope CurrentUser
+}
+Install-RequiredModule -RequiredModulesFile ('{0}\RequiredModules.psd1' -f $PSScriptRoot) -Scope CurrentUser -TrustRegisteredRepositories -Import -Quiet
 
 # Use strict mode when building.
 Set-StrictMode -Version Latest
@@ -28,12 +37,141 @@ if ($Push) {
 }
 
 # Update the PowerShell Module Help Files.
-# Pre-requisites: PowerShell Module PlatyPS.
+## Requires PlatyPS, Pester, PSScriptAnalyzer and Alt3.Docusaurus.PowerShell installed.
 
 if ($UpdateHelp) {
-    Import-Module -Name $ModuleName -Force
-    Update-MarkdownHelp -Path "$($PSScriptRoot)\Docs\Markdown"
-    New-ExternalHelp -Path "$($PSScriptRoot)\Docs\Markdown" -OutputPath "$($PSScriptRoot)\Docs\en_GB" -Force
+    if (-Not($DocusaurusPath)) {
+        throw 'DocusaurusPath parameter is required when updating help'
+    } elseif (-Not(Resolve-Path -Path $DocusaurusPath)) {
+        throw 'DocusaurusPath does not resolve to a valid path'
+    }
+    $ExcludeFiles = Get-ChildItem -Path "$($PSScriptRoot)\Private" -Filter '*.ps1' -Recurse | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_.FullName) }
+    $NewDocusaurusHelpParams = @{
+        Module = ('.\{0}.psm1' -f $ModuleName)
+        DocsFolder = Join-Path -Path $DocusaurusPath -ChildPath 'docs' -AdditionalChildPath $ModuleName
+        Exclude = $ExcludeFiles
+        Sidebar = 'commandlets'
+        # MetaDescription = 'Generated cmdlet help for the %1 commandlet.'
+        GroupByVerb = $true
+        UseDescriptionFromHelp = $true
+    }
+    New-DocusaurusHelp @NewDocusaurusHelpParams | Out-Null
+    $CommandletDocsFolder = Join-Path -Path $DocusaurusPath -ChildPath 'docs' -AdditionalChildPath @($ModuleName, 'commandlets')
+    $VerbFolders = Get-ChildItem -Path $CommandletDocsFolder -Directory
+    $CategoryFileBase = @{
+        position = 1
+        collapsible = $true
+        collapsed = $true
+        link = @{
+            type = 'generated-index'
+        }
+        customProps = @{
+            description = ''
+        }
+    }
+    foreach ($VerbFolder in $VerbFolders) {
+        $HasCategoryFile = Get-ChildItem -Path $VerbFolder.FullName -Filter '_category_.*' -File -ErrorAction SilentlyContinue
+        $CategoryFilePath = Join-Path -Path $VerbFolder.FullName -ChildPath '_category_.json'
+        switch ($VerbFolder.Name) {
+            'Connect' {
+                $CategoryFile = $CategoryFileBase
+                $CategoryFile.label = 'Connect to Services'
+                $CategoryFile.position = 0.1
+                $CategoryFile.className = 'category-connect'
+                $CategoryFile.link.title = 'Connect to Services'
+                $CategoryFile.customProps.description = 'This category contains commands for connecting to services, retrieving and storing credentials and managing connections.'
+            }
+            'Find' {
+                $CategoryFile = $CategoryFileBase
+                $CategoryFile.label = 'Find Information'
+                $CategoryFile.position = 0.2
+                $CategoryFile.className = 'category-find'
+                $CategoryFile.link.title = 'Find Information'
+                $CategoryFile.customProps.description = 'This category contains commands for finding information from services, this may include data, objects, settings and more.'
+            }
+            'Get' {
+                $CategoryFile = $CategoryFileBase
+                $CategoryFile.label = 'Retrieve Information'
+                $CategoryFile.position = 0.3
+                $CategoryFile.className = 'category-get'
+                $CategoryFile.link.title = 'Retrieve Information'
+                $CategoryFile.customProps.description = 'This category contains commands for retrieving information from services, this may include data, objects, settings and more.'
+            }
+            'Invoke' {
+                $CategoryFile = $CategoryFileBase
+                $CategoryFile.label = 'Invoke Actions'
+                $CategoryFile.position = 0.4
+                $CategoryFile.className = 'category-invoke'
+                $CategoryFile.link.title = 'Invoke Actions'
+                $CategoryFile.customProps.description = 'This category contains commands for invoking actions, this may include running scripts, executing commands and more. For API modules, this category will contain commands for sending arbitrary requests to the API - that is requests not covered by existing commands.'
+            }
+            'New' {
+                $CategoryFile = $CategoryFileBase
+                $CategoryFile.label = 'Create Data'
+                $CategoryFile.position = 0.5
+                $CategoryFile.className = 'category-new'
+                $CategoryFile.link.title = 'Create Data'
+                $CategoryFile.customProps.description = 'This category contains commands for creating data, objects, settings and more.'
+            }
+            'Remove' {
+                $CategoryFile = $CategoryFileBase
+                $CategoryFile.label = 'Remove Data'
+                $CategoryFile.position = 0.6
+                $CategoryFile.className = 'category-remove'
+                $CategoryFile.link.title = 'Remove Data'
+                $CategoryFile.customProps.description = 'This category contains commands for removing data, objects, settings and more.'
+            }
+            'Reset' {
+                $CategoryFile = $CategoryFileBase
+                $CategoryFile.label = 'Reset State'
+                $CategoryFile.position = 0.6
+                $CategoryFile.className = 'category-reset'
+                $CategoryFile.link.title = 'Reset State'
+                $CategoryFile.customProps.description = 'This category contains commands for resetting state, this may include resetting settings, connections and more.'
+            }
+            'Restart' {
+                $CategoryFile = $CategoryFileBase
+                $CategoryFile.label = 'Restart Services'
+                $CategoryFile.position = 0.6
+                $CategoryFile.className = 'category-restart'
+                $CategoryFile.link.title = 'Restart Services'
+                $CategoryFile.customProps.description = 'This category contains commands for restarting services, this may include restarting services, processes and more.'
+            }
+            'Restore' {
+                $CategoryFile = $CategoryFileBase
+                $CategoryFile.label = 'Restore Data'
+                $CategoryFile.position = 0.6
+                $CategoryFile.className = 'category-restore'
+                $CategoryFile.link.title = 'Restore Data'
+                $CategoryFile.customProps.description = 'This category contains commands for restoring data, objects, settings and more. These commands will primarily be used for restoring data to a previous state.'
+            }
+            'Set' {
+                $CategoryFile = $CategoryFileBase
+                $CategoryFile.label = 'Update Data (Set)'
+                $CategoryFile.position = 0.4
+                $CategoryFile.className = 'category-set'
+                $CategoryFile.link.title = 'Update Data (Set)'
+                $CategoryFile.customProps.description = 'This category contains commands for updating data, objects, settings and more. This category will overlap with the Update category.'
+            }
+            'Update' {
+                $CategoryFile = $CategoryFileBase
+                $CategoryFile.label = 'Update Data (Update)'
+                $CategoryFile.position = 0.4
+                $CategoryFile.className = 'category-update'
+                $CategoryFile.link.title = 'Update Data (Update)'
+                $CategoryFile.customProps.description = 'This category contains commands for updating data, objects, settings and more. This category will overlap with the Set category.'
+            }
+        }
+        if (-Not($HasCategoryFile)) {
+            $CategoryFile | ConvertTo-Json | Out-File -FilePath $CategoryFilePath -Force
+        } else {
+            if (-Not($ForceUpdateCategoryFiles)) {
+                Write-Warning -Message ('Category file already exists in "{0}" verb folder. Use the ForceUpdateCategoryFiles switch to overwrite existing category files.' -f $VerbFolder.Name)
+            } else {
+                Set-Content -Path $CategoryFilePath -Value ($CategoryFile | ConvertTo-Json) -Force
+            }
+        }
+    }
 }
 
 # Copy PowerShell Module files to output folder for release on PSGallery

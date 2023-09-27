@@ -17,6 +17,10 @@ function Get-NinjaOneDeviceCustomFields {
             PS> Get-NinjaOneDeviceCustomFields -deviceId 1
 
             Gets the device custom fields and values for the device with id 1
+        .EXAMPLE
+            PS> Get-NinjaOneDeviceCustomFields -deviceId 1 -withInheritance
+
+            Gets the device custom fields and values for the device with id 1 and inherits values from parent location and/or organisation, if no value is set for the device you will get the value from the parent location and if no value is set for the parent location you will get the value from the parent organisation.
         .OUTPUTS
             A powershell object containing the response
         .LINK
@@ -29,14 +33,17 @@ function Get-NinjaOneDeviceCustomFields {
         # Device id to get custom field values for a specific device.
         [Parameter(ValueFromPipelineByPropertyName)]
         [Alias('id')]
-        [Int]$deviceId
+        [Int]$deviceId,
+        # Inherit custom field values from parent location and/or organisation.
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [Switch]$withInheritance
     )
     try {
         if ($deviceId) {
             Write-Verbose 'Getting device from NinjaOne API.'
             $Device = Get-NinjaOneDevices -deviceID $deviceId
             if ($Device) {
-                Write-Verbose "Retrieving custom fields for $($Device.SystemName)."
+                Write-Verbose "Retrieving custom fields for device $($Device.SystemName)."
                 $Resource = "v2/device/$($deviceId)/custom-fields"
             }
         } else {

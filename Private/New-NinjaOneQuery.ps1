@@ -78,6 +78,19 @@ function New-NinjaOneQuery {
                 Write-Debug "Adding parameter $($Query) with value $($Value)"
             }
         }
+        if ($Parameter.ParameterType.Name -eq 'Boolean') {
+            Write-Debug "Found Boolearn param $($ParameterVariable.Name) with value $($ParameterVariable.Value)."
+            if ($Parameter.Aliases) {
+                # Use the first alias as the query string name.
+                $Query = ([String]$Parameter.Aliases[0])
+            } else {
+                # If no aliases then use the name.
+                $Query = ([String]$ParameterVariable.Name)
+            }
+            $Value = ([String]$ParameterVariable.Value).ToLower()
+            $QSCollection.Add($Query, $Value)
+            Write-Debug "Adding parameter $($Query) with value $($Value)"
+        }
         if (($Parameter.ParameterType.Name -eq 'Int32') -or ($Parameter.ParameterType.Name -eq 'Int64') -or ($Parameter.ParameterType.Name -eq 'Int32[]') -or ($Parameter.ParameterType.Name -eq 'Int64[]')) {
             Write-Debug "Found Int or Int Array param $($ParameterVariable.Name) with value $($ParameterVariable.Value)."
             if (($ParameterVariable.Value -eq 0) -or ($null -eq $ParameterVariable.Value)) {

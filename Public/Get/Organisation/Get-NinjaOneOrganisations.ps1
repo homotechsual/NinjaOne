@@ -28,8 +28,8 @@ function Get-NinjaOneOrganisations {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Organisation ID
-        [Parameter( ParameterSetName = 'Single', Mandatory = $True )]
-        [Alias('organizationId')]
+        [Parameter( ParameterSetName = 'Single', Mandatory, ValueFromPipelineByPropertyName )]
+        [Alias('organizationId', 'id')]
         [Int]$organisationId,
         # Number of results per page.
         [Parameter( ParameterSetName = 'Multi' )]

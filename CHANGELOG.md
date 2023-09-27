@@ -1,5 +1,10 @@
 # Changelog
 
+## 2023-09-25 - Version 1.10.0
+
+* Add new endpoints from NinjaOne's 5.4 release.
+* Update existing endpoints which changed in 5.4.
+
 ## 2023-05-11 - Version 1.9.1
 
 * Refactored internals to separate out the parameters for `Invoke-NinjaOneRequest`.

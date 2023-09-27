@@ -31,7 +31,7 @@ function Get-NinjaOneDevices {
 
             Gets all online WINDOWS_WORKSTATION devices.
         .LINK
-            Device filters: https://docs.homotechsual.dev/modules/ninjaone/misc/device-filters
+            https://docs.homotechsual.dev/modules/ninjaone/misc/device-filters
         .OUTPUTS
             A powershell object containing the response.
     #>
@@ -40,7 +40,7 @@ function Get-NinjaOneDevices {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Device id to retrieve
-        [Parameter( ParameterSetName = 'Single', Mandatory )]
+        [Parameter( ParameterSetName = 'Single', Mandatory, ValueFromPipelineByPropertyName )]
         [Int]$deviceId,
         # Filter devices.
         [Parameter( ParameterSetName = 'Multi' )]
@@ -56,8 +56,8 @@ function Get-NinjaOneDevices {
         [Parameter( ParameterSetName = 'Multi' )]
         [Switch]$detailed,
         # Filter by Organisation ID.
-        [Parameter( ParameterSetName = 'Organisation', Mandatory )]
-        [Alias('organizationId')]
+        [Parameter( ParameterSetName = 'Organisation', Mandatory, ValueFromPipelineByPropertyName )]
+        [Alias('organizationId', 'id')]
         [Int]$organisationId
     )
     $CommandName = $MyInvocation.InvocationName
