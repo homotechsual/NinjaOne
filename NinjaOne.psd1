@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.11.1'
+    ModuleVersion = '1.11.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -268,7 +268,7 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Fixes pipeline support for some cmdlets which were missing it or had it incorrectly implemented.'
+            ReleaseNotes = 'Add organizationId as an alias to all organisationId parameters.'
 
             # Prerelease string of this module
             # Prerelease = 'Beta1'
