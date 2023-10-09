@@ -26,7 +26,6 @@ function Get-NinjaOneLocationBackupUsage {
         [Int]$organisationId,
         # Location ID
         [Parameter(ValueFromPipelineByPropertyName, Position = 1)]
-        [Alias('id')]
         [Int]$locationId
     )
     try {
