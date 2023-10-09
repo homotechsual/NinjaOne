@@ -13,6 +13,7 @@ function Update-NinjaOneLocation {
     Param(
         # The organisation to set the location information for.
         [Parameter(Mandatory = $true)]
+        [Alias('id', 'organizationId')]
         [Int]$organisationId,
         # The location to set the information for.
         [Parameter(Mandatory = $true)]

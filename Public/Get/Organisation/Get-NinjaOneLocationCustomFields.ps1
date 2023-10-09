@@ -21,13 +21,12 @@ function Get-NinjaOneLocationCustomFields {
     Param(
         # Filter by organisation ID.
         [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
-        [Alias('id')]
+        [Alias('id', 'organizationId')]
         [Int]$organisationId,
         # Filter by location ID.
         [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
         [Int]$locationId,
         # Inherit custom field values from parent organisation.
-        [Parameter(ValueFromPipelineByPropertyName)]
         [Boolean]$withInheritance
     )
     $CommandName = $MyInvocation.InvocationName

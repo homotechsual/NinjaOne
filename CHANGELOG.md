@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023-09-27 - Version 1.10.1
+
+* Fixes pipeline support for some cmdlets which were missing it or had it incorrectly implemented.
+
 ## 2023-09-25 - Version 1.10.0
 
 * Add new endpoints from NinjaOne's 5.4 release.

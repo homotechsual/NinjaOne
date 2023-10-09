@@ -13,6 +13,7 @@ function Update-NinjaOneOrganisationDocument {
     Param(
         # The organisation to set the information for.
         [Parameter(Mandatory = $true)]
+        [Alias('id', 'organizationId')]
         [int]$organisationId,
         # The organisation document id to update.
         [Parameter(Mandatory = $true)]

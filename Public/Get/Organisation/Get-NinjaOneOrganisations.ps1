@@ -29,7 +29,7 @@ function Get-NinjaOneOrganisations {
     Param(
         # Organisation ID
         [Parameter( ParameterSetName = 'Single', Mandatory, ValueFromPipelineByPropertyName )]
-        [Alias('organizationId', 'id')]
+        [Alias('id', 'organizationId')]
         [Int]$organisationId,
         # Number of results per page.
         [Parameter( ParameterSetName = 'Multi' )]

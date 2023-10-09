@@ -21,6 +21,7 @@ function Set-NinjaOneLocationCustomFields {
     Param(
         # The organisation to set the custom fields for.
         [Parameter(Mandatory)]
+        [Alias('id', 'organizationId')]
         [int]$organisationId,
         # The location to set the custom fields for.
         [Parameter(Mandatory)]

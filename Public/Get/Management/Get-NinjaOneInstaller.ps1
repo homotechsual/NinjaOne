@@ -22,11 +22,11 @@ function Get-NinjaOneInstaller {
     Param(
         # Organisation ID
         [Parameter(Mandatory = $True)]
-        [Alias('organizationID')]
-        [Int]$organisationID,
+        [Alias('id', 'organizationId')]
+        [Int]$organisationId,
         # Location ID
         [Parameter(Mandatory = $True)]
-        [Int]$locationID,
+        [Int]$locationId,
         # Installer type/platform.
         [Parameter(Mandatory = $True)]
         [ValidateSet(

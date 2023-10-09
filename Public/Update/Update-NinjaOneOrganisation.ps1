@@ -13,6 +13,7 @@ function Update-NinjaOneOrganisation {
     Param(
         # The organisation to set the information for.
         [Parameter(Mandatory = $true)]
+        [Alias('id', 'organizationId')]
         [int]$organisationId,
         # The organisation information body object.
         [Parameter(Mandatory = $true)]

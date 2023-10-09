@@ -21,6 +21,7 @@ function Set-NinjaOneOrganisationCustomFields {
     Param(
         # The organisation to set the custom fields for.
         [Parameter(Mandatory = $true)]
+        [Alias('id', 'organizationId')]
         [int]$organisationId,
         # The organisation custom field body object.
         [Parameter(Mandatory = $true)]

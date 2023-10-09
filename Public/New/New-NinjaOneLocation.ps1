@@ -13,6 +13,7 @@ function New-NinjaOneLocation {
     Param(
         # The organization ID to use when creating the location.
         [Parameter(Mandatory = $true)]
+        [Alias('id', 'organizationId')]
         [int]$organisationId,
         # An object containing the location  to create.
         [Parameter(Mandatory = $true)]

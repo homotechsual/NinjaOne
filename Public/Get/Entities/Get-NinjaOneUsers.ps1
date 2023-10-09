@@ -33,8 +33,8 @@ function Get-NinjaOneUsers {
         [String]$userType,
         # Filter by organisation ID.
         [Parameter(ValueFromPipelineByPropertyName)]
-        [Alias('id', 'organizationID')]
-        [Int]$organisationID
+        [Alias('id', 'organizationId')]
+        [Int]$organisationId
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters

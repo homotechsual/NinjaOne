@@ -109,4 +109,5 @@ New-Alias -Name 'Update-NinjaOneOrganizationCustomFields' -Value 'Set-NinjaOneOr
 New-Alias -Name 'Set-OrganizationCustomFields' -Value 'Set-NinjaOneOrganisationCustomFields'
 New-Alias -Name 'Update-NinjaOneDeviceCustomFields' -Value 'Set-NinjaOneDeviceCustomFields'
 New-Alias -Name 'Get-NinjaOneOrganizationCustomFields' -Value 'Get-NinjaOneOrganisationCustomFields'
+New-Alias -Name 'Get-NinjaOneDevice' -Value 'Get-NinjaOneDevices'
 Export-ModuleMember -Function $Functions.BaseName -Alias *

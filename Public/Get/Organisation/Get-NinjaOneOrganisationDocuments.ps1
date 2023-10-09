@@ -17,7 +17,7 @@ function Get-NinjaOneOrganisationDocuments {
     Param(
         # Filter by organisation ID.
         [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
-        [Alias('id')]
+        [Alias('id', 'organizationId')]
         [Int]$organisationId
     )
     $CommandName = $MyInvocation.InvocationName

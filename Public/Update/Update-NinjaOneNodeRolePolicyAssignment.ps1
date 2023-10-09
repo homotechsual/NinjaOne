@@ -13,6 +13,7 @@ function Update-NinjaOneNodeRolePolicyAssignment {
     Param(
         # The organisation to update the policy assignment for.
         [Parameter(Mandatory = $true)]
+        [Alias('id', 'organizationId')]
         [Int]$organisationId,
         # The node role id to update the policy assignment for.
         [Parameter(Mandatory = $true)]

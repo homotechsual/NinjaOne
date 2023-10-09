@@ -249,6 +249,7 @@ if ($PublishModule -and $Configuration -eq 'Production') {
             Path = ("$($PSScriptRoot)\Output\$ModuleName")
             NuGetApiKey = $ENV:TF_BUILD ? $ENV:PSGalleryAPIKey : (Get-AzKeyVaultSecret -VaultName $ENV:PSGalleryVault -Name $ENV:PSGallerySecret -AsPlainText) # If running in Azure DevOps, use the Environment Variable, otherwise use the Key Vault
             ErrorAction = 'Stop'
+            
         }
         $ManifestPath = "$($PSScriptRoot)\$ModuleName.psd1"
         $Manifest = Test-ModuleManifest -Path $ManifestPath

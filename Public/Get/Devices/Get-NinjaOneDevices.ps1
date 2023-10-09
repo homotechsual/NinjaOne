@@ -57,7 +57,7 @@ function Get-NinjaOneDevices {
         [Switch]$detailed,
         # Filter by Organisation ID.
         [Parameter( ParameterSetName = 'Organisation', Mandatory, ValueFromPipelineByPropertyName )]
-        [Alias('organizationId', 'id')]
+        [Alias('id', 'organizationId')]
         [Int]$organisationId
     )
     $CommandName = $MyInvocation.InvocationName

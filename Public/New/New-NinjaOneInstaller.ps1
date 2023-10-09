@@ -13,6 +13,7 @@ function New-NinjaOneInstaller {
     Param(
         # The organization ID to use when creating the installer.
         [Parameter(Mandatory)]
+        [Alias('id', 'organizationId')]
         [Int]$organisationId,
         # The location ID to use when creating the installer.
         [Parameter(Mandatory)]

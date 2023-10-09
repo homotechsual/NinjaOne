@@ -22,6 +22,7 @@ function Get-NinjaOneLocationBackupUsage {
     Param(
         # Organisation ID
         [Parameter(ValueFromPipelineByPropertyName, Mandatory, Position = 0)]
+        [Alias('id', 'organizationId')]
         [Int]$organisationId,
         # Location ID
         [Parameter(ValueFromPipelineByPropertyName, Position = 1)]
