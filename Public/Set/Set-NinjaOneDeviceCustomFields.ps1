@@ -27,7 +27,7 @@ function Set-NinjaOneDeviceCustomFields {
         $Resource = "v2/device/$deviceId/custom-fields"
         $RequestParams = @{
             Resource = $Resource
-            Body = $customFields
+            Body = $deviceCustomFields
         }
         if ($PSCmdlet.ShouldProcess('Custom Fields', 'Set')) {
             $CustomFieldUpdate = New-NinjaOnePATCHRequest @RequestParams

@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.11.1'
+    ModuleVersion = '1.11.2'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -268,7 +268,7 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Add organizationId as an alias to all organisationId parameters.'
+            ReleaseNotes = 'Fix regression in the set device custom fields cmdlet.'
 
             # Prerelease string of this module
             # Prerelease = 'Beta1'
