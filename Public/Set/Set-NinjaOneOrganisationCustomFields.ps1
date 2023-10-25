@@ -25,7 +25,7 @@ function Set-NinjaOneOrganisationCustomFields {
         [int]$organisationId,
         # The organisation custom field body object.
         [Parameter(Mandatory = $true)]
-        [Alias('customFields', 'body')]
+        [Alias('customFields', 'body', 'organizationCustomFields')]
         [object]$organisationCustomFields
     )
     try {

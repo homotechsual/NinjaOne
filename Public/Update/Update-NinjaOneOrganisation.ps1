@@ -17,6 +17,7 @@ function Update-NinjaOneOrganisation {
         [int]$organisationId,
         # The organisation information body object.
         [Parameter(Mandatory = $true)]
+        [Alias('organizationInformation', 'body')]
         [object]$organisationInformation
     )
     try {

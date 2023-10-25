@@ -12,9 +12,11 @@ function New-NinjaOneOrganisation {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The ID of the organisation to use as a template.
-        [string]$templateOrganizationId,
+        [Alias('templateOrganizationId')]
+        [string]$templateOrganisationId,
         # An object containing the organisation to create.
         [Parameter(Mandatory = $true)]
+        [Alias('organization', 'body')]
         [object]$organisation,
         # Show the organisation that was created.
         [switch]$show

@@ -20,6 +20,7 @@ function Update-NinjaOneOrganisationDocument {
         [int]$documentId,
         # The organisation information body object.
         [Parameter(Mandatory = $true)]
+        [Alias('organizationDocument', 'body')]
         [object]$organisationDocument
     )
     if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
