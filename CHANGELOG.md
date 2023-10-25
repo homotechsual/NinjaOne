@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023-10-25 - Version 1.12.3
+
+* Fix broken template policy id parameter handling in `New-NinjaOneOrganisation`.
+
 ## 2023-10-25 - Version 1.12.2
 
 * Add missing aliases for various other `*organisation*` parameters.

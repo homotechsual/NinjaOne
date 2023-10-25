@@ -22,10 +22,20 @@ function New-NinjaOneOrganisation {
         [switch]$show
     )
     try {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        if ($organisation) {
+            $Parameters.Remove('organisation') | Out-Null
+        }
+        if ($show) {
+            $Parameters.Remove('show') | Out-Null
+        }
+        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         $Resource = 'v2/organizations'
         $RequestParams = @{
             Resource = $Resource
             Body = $organisation
+            QSCollection = $QSCollection
         }
         if ($PSCmdlet.ShouldProcess("Organisation '$($organisation.name)'", 'Create')) {
             $OrganisationCreate = New-NinjaOnePOSTRequest @RequestParams

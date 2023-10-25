@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.12.2'
+    ModuleVersion = '1.12.3'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -269,7 +269,7 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Add missing parameter aliases.'
+            ReleaseNotes = 'Fix broken template policy id parameter handling in New-NinjaOneOrganisation.'
 
             # Prerelease string of this module
             # Prerelease = 'Beta1'
