@@ -58,20 +58,20 @@ function Get-NinjaOneDeviceOSPatchInstalls {
     }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        if ($deviceId) {
-            Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceID $deviceId
-            if ($Device) {
-                Write-Verbose "Retrieving OS patch installs for $($Device.SystemName)."
-                $Resource = "v2/device/$($deviceId)/os-patch-installs"
+        Write-Verbose 'Getting device from NinjaOne API.'
+        $Device = Get-NinjaOneDevices -deviceId $deviceId
+        if ($Device) {
+            Write-Verbose "Retrieving OS patch installs for $($Device.SystemName)."
+            $Resource = "v2/device/$($deviceId)/os-patch-installs"
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
             }
+            $DeviceOSPatchInstallResults = New-NinjaOneGETRequest @RequestParams
+            Return $DeviceOSPatchInstallResults
+        } else {
+            throw "Device with id $($deviceId) not found."
         }
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
-        }
-        $DeviceOSPatchIntallResults = New-NinjaOneGETRequest @RequestParams
-        Return $DeviceOSPatchIntallResults
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

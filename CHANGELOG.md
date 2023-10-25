@@ -1,5 +1,21 @@
 # Changelog
 
+## 2023-10-25 - Version 1.12.1
+
+* Add alias for `Update-NinjaOneOrganization`.
+
+## 2023-10-25 - Version 1.12.0
+
+* Fix broken start/end parameters on `Set-NinjaOneDeviceMaintenance`.
+
+## 2023-10-10 - Version 1.11.2
+
+* Fix regression in the set device custom fields cmdlet.
+
+## 2023-10-09 - Version 1.11.1
+
+* Add organizationId as an alias to all organisationId parameters.
+
 ## 2023-09-27 - Version 1.10.1
 
 * Fixes pipeline support for some cmdlets which were missing it or had it incorrectly implemented.

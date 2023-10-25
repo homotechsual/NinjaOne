@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.11.2'
+    ModuleVersion = '1.12.1'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -223,6 +223,7 @@
         'Get-NinjaRMMDeviceScriptingOptions',
         'Get-NinjaRMMInstaller',
         'New-NinjaOneOrganization',
+        'Update-NinjaOneOrganization',
         'Update-NinjaOneOrganizationDocument'
         'Update-NinjaOneOrganisationCustomFields',
         'Update-NinjaOneOrganizationCustomFields',
@@ -268,7 +269,7 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Fix regression in the set device custom fields cmdlet.'
+            ReleaseNotes = 'Add alias for Update-NinjaOneOrganization.'
 
             # Prerelease string of this module
             # Prerelease = 'Beta1'

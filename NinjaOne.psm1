@@ -101,6 +101,7 @@ New-Alias -Name 'Get-NinjaRMMSoftwarePatchInstalls' -Value 'Get-NinjaOneSoftware
 New-Alias -Name 'Get-NinjaRMMVolumes' -Value 'Get-NinjaOneVolumes'
 New-Alias -Name 'Get-NinjaRMMWindowsServices' -Value 'Get-NinjaOneWindowsServices'
 New-Alias -Name 'New-NinjaOneOrganization' -Value 'New-NinjaOneOrganisation'
+New-Alias -Name 'Update-NinjaOneOrganization' -Value 'Update-NinjaOneOrganisation'
 New-Alias -Name 'Update-NinjaOneOrganizationDocument' -Value 'Update-NinjaOneOrganisationDocument'
 New-Alias -Name 'Get-NinjaOneBoards' -Value 'Get-NinjaOneTicketBoards'
 New-Alias -Name 'Update-NinjaOneOrganisationCustomFields' -Value 'Set-NinjaOneOrganisationCustomFields'
