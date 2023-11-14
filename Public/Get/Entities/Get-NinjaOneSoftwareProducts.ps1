@@ -5,6 +5,8 @@ function Get-NinjaOneSoftwareProducts {
             Gets software products from the NinjaOne API.
         .DESCRIPTION
             Retrieves software products from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Software Products
         .EXAMPLE
             PS> Get-NinjaOneSoftwareProducts
             
@@ -19,30 +21,17 @@ function Get-NinjaOneSoftwareProducts {
     [CmdletBinding()]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-    Param(
-        # Device ID
-        [Parameter(ValueFromPipelineByPropertyName)]
-        [Alias('id')]
-        [Int]$deviceId
-    )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
+    Param()
+    # $CommandName = $MyInvocation.InvocationName
+    # $Parameters = (Get-Command -Name $CommandName).Parameters
+    # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
     try {
-        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        if ($deviceId) {
-            Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceID $deviceId
-            if ($Device) {
-                Write-Verbose "Retrieving software products for $($Device.SystemName)."
-                $Resource = "v2/device/$($deviceId)/software"
-            }
-        } else {
-            Write-Verbose 'Retrieving all software products.'
-            $Resource = 'v2/software-products'
-        }
+        # $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
+        Write-Verbose 'Retrieving all software products.'
+        $Resource = 'v2/software-products'
         $RequestParams = @{
             Resource = $Resource
-            QSCollection = $QSCollection
+            # QSCollection = $QSCollection
         }
         $SoftwareProductResults = New-NinjaOneGETRequest @RequestParams
         Return $SoftwareProductResults

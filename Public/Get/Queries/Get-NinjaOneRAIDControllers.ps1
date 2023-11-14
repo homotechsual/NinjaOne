@@ -4,6 +4,8 @@ function Get-NinjaOneRAIDControllers {
             Gets the RAID controllers from the NinjaOne API.
         .DESCRIPTION
             Retrieves the RAID controllers from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            RAID Controllers Query
         .EXAMPLE
             PS> Get-NinjaOneRAIDControllers
 

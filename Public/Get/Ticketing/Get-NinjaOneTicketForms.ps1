@@ -4,6 +4,8 @@ function Get-NinjaOneTicketForms {
             Gets ticket forms from the NinjaOne API.
         .DESCRIPTION
             Retrieves ticket forms from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Ticket Forms
         .EXAMPLE
             PS> Get-NinjaOneTicketForms
 

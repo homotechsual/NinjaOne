@@ -4,6 +4,8 @@ function Get-NinjaOnePolicyOverrides {
             Gets the policy overrides by device from the NinjaOne API.
         .DESCRIPTION
             Retrieves the policy override sections by device from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Policy Overrides Query
         .EXAMPLE
             PS> Get-NinjaOnePolicyOverrides
 

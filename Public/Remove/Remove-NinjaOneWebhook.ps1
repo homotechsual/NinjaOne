@@ -4,6 +4,8 @@ function Remove-NinjaOneWebhook {
             Removes webhook configuration for the current application/API client.
         .DESCRIPTION
             Removes webhook configuration for the current application/API client using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Webhook
         .OUTPUTS
             A powershell object containing the response.
     #>

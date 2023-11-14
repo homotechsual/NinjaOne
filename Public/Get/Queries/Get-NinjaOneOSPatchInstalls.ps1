@@ -4,6 +4,8 @@ function Get-NinjaOneOSPatchInstalls {
             Gets the OS patch installs from the NinjaOne API.
         .DESCRIPTION
             Retrieves the OS patch installs from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            OS Patch Installs Query
         .EXAMPLE
             PS> Get-NinjaOneOSPatchInstalls
 
@@ -46,9 +48,11 @@ function Get-NinjaOneOSPatchInstalls {
         # Filter devices.
         [Alias('df')]
         [String]$deviceFilter,
-        # Monitoring timestamp filter.
+        # Monitoring timestamp filter. PowerShell DateTime object.
         [Alias('ts')]
-        [string]$timeStamp,
+        [DateTime]$timeStamp,
+        # Monitoring timestamp filter. Unix Epoch time.
+        [Int]$timeStampUnixEpoch,
         # Filter patches by patch status.
         [ValidateSet('FAILED', 'INSTALLED')]
         [String]$status,
@@ -67,19 +71,31 @@ function Get-NinjaOneOSPatchInstalls {
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
+    # If the [DateTime] parameter $installedBefore is set convert the value to a Unix Epoch.
     if ($installedBefore) {
-        [Int]$installedBefore = ConvertTo-UnixEpoch -DateTime $installedBefore
+        [Int]$Parameters.installedBefore = ConvertTo-UnixEpoch -DateTime $installedBefore
     }
+    # If the Unix Epoch parameter $installedBeforeUnixEpoch is set assign the value to the $installedBefore variable and null $installedBeforeUnixEpoch.
     if ($installedBeforeUnixEpoch) {
         $Parameters.Remove('installedBeforeUnixEpoch') | Out-Null
-        [Int]$installedBefore = $installedBeforeUnixEpoch
+        [Int]$Parameters.installedBefore = $installedBeforeUnixEpoch
     }
+    # If the [DateTime] parameter $installedAfter is set convert the value to a Unix Epoch.
     if ($installedAfter) {
-        [Int]$installedAfter = ConvertTo-UnixEpoch -DateTime $installedAfter
+        [Int]$Parameters.installedAfter = ConvertTo-UnixEpoch -DateTime $installedAfter
     }
+    # If the Unix Epoch parameter $installedAfterUnixEpoch is set assign the value to the $installedAfter variable and null $installedAfterUnixEpoch.
     if ($installedAfterUnixEpoch) {
         $Parameters.Remove('installedAfterUnixEpoch') | Out-Null
-        [Int]$installedAfter = $installedAfterUnixEpoch
+        [Int]$Parameters.installedAfter = $installedAfterUnixEpoch
+    }
+    # If the [DateTime] parameter $timeStamp is set convert the value to a Unix Epoch.
+    if ($timeStamp) {
+        [int]$Parameters.timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
+    }
+    # If the Unix Epoch parameter $timeStampUnixEpoch is set assign the value to the $timeStamp variable and null $timeStampUnixEpoch.
+    if ($timeStampUnixEpoch) {
+        [int]$Parameters.timeStamp = $timeStampUnixEpoch
     }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters

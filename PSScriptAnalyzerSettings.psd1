@@ -44,7 +44,16 @@
         'PSUseCorrectCasing',
         'PSUseDeclaredVarsMoreThanAssignments',
         'PSUsePSCredentialType',
-        'PSUseShouldProcessForStateChangingFunctions'
+        'PSUseShouldProcessForStateChangingFunctions',
+        'PSUseSingularNouns',
+        'PSUseLowerCaseForBooleanVariables',
+        'PSUseLowerCaseForBuiltInFunctions',
+        'PSUseLowerCaseForParameters',
+        'PSUseTitleCaseForNonConstants',
+        'PSUseTitleCaseFunctionNames',
+        'PSUseTitleCaseVerbs',
+        'PSUseTitleCaseForCmdletParameters',
+        'PSUseTitleCaseForConstants'
     )
     Rules = @{
         PSPlaceOpenBrace = @{

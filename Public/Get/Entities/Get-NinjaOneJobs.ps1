@@ -5,6 +5,8 @@ function Get-NinjaOneJobs {
             Gets jobs from the NinjaOne API.
         .DESCRIPTION
             Retrieves jobs from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Jobs
         .EXAMPLE
             PS> Get-NinjaOneJobs
 
@@ -28,21 +30,25 @@ function Get-NinjaOneJobs {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
+        # Filter by device id.
+        [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('id')]
+        [Int]$deviceId,
         # Filter by job type.
+        [Parameter(Position = 1)]
         [String]$jobType,
         # Filter by device triggering the alert.
+        [Parameter(Position = 2)]
         [Alias('df')]
         [String]$deviceFilter,
         # Filter by language tag.
+        [Parameter(Position = 3)]
         [Alias('lang')]
         [String]$languageTag,
         # Filter by timezone.
+        [Parameter(Position = 4)]
         [Alias('ts')]
-        [String]$timeZone,
-        # Filter by device ID.
-        [Parameter(ValueFromPipelineByPropertyName)]
-        [Alias('id')]
-        [Int]$deviceId
+        [String]$timeZone
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters

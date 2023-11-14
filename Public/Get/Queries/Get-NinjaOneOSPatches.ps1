@@ -4,6 +4,8 @@ function Get-NinjaOneOSPatches {
             Gets the OS patches from the NinjaOne API.
         .DESCRIPTION
             Retrieves the OS patches from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            OS Patches Query
         .EXAMPLE
             PS> Get-NinjaOneOSPatches
 
@@ -40,7 +42,9 @@ function Get-NinjaOneOSPatches {
         [String]$deviceFilter,
         # Monitoring timestamp filter.
         [Alias('ts')]
-        [string]$timeStamp,
+        [DateTime]$timeStamp,
+        # Monitoring timestamp filter in unix time.
+        [Int]$timeStampUnixEpoch,
         # Filter patches by patch status.
         [ValidateSet('MANUAL', 'APPROVED', 'FAILED', 'REJECTED')]
         [String]$status,
@@ -57,6 +61,14 @@ function Get-NinjaOneOSPatches {
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
+    # If the [DateTime] parameter $timeStamp is set convert the value to a Unix Epoch.
+    if ($timeStamp) {
+        [int]$Parameters.timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
+    }
+    # If the Unix Epoch parameter $timeStampUnixEpoch is set assign the value to the $timeStamp variable and null $timeStampUnixEpoch.
+    if ($timeStampUnixEpoch) {
+        [int]$Parameters.timeStamp = $timeStampUnixEpoch
+    }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         $Resource = 'v2/queries/os-patches'

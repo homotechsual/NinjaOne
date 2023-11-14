@@ -6,6 +6,8 @@ function Get-NinjaOneAlerts {
             Gets alerts from the NinjaOne API.
         .DESCRIPTION
             Retrieves alerts from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Alerts
         .EXAMPLE
             PS> Get-NinjaOneAlerts
             
@@ -25,21 +27,25 @@ function Get-NinjaOneAlerts {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
+        # Filter by device ID.
+        [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('id')]
+        [Int]$deviceId,
         # Filter by source type.
+        [Parameter(Position = 1)]
         [String]$sourceType,
         # Filter by device which triggered the alert.
+        [Parameter(Position = 2)]
         [Alias('df')]
         [String]$deviceFilter,
         # Filter by language tag.
+        [Parameter(Position = 3)]
         [Alias('lang')]
         [String]$languageTag,
         # Filter by timezone.
+        [Parameter(Position = 4)]
         [Alias('tz')]
-        [String]$timeZone,
-        # Filter by device ID.
-        [Parameter(ValueFromPipelineByPropertyName)]
-        [Alias('id')]
-        [Int]$deviceId
+        [String]$timeZone
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters

@@ -4,6 +4,8 @@ function Remove-NinjaOneDeviceMaintenance {
             Cancels scheduled maintenance for the given device.
         .DESCRIPTION
             Cancels scheduled maintenance for the given device using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Maintenance
         .OUTPUTS
             A powershell object containing the response.
     #>

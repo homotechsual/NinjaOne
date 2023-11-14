@@ -4,6 +4,8 @@ function Get-NinjaOneAntivirusStatus {
             Gets the antivirus status from the NinjaOne API.
         .DESCRIPTION
             Retrieves the antivirus status from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Antivirus Status Query
         .EXAMPLE
             PS> Get-NinjaOneAntivirusStatus -deviceFilter 'org = 1'
 
@@ -32,7 +34,9 @@ function Get-NinjaOneAntivirusStatus {
         [String]$deviceFilter,
         # Monitoring timestamp filter.
         [Alias('ts')]
-        [Int]$timeStamp,
+        [DatTime]$timeStamp,
+        # Monitoring timestamp filter in unix time.
+        [int]$timeStampUnix,
         # Filter by product state.
         [String]$productState,
         # Filter by product name.
@@ -44,6 +48,14 @@ function Get-NinjaOneAntivirusStatus {
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
+    # If the [DateTime] parameter $timeStamp is set convert the value to a Unix Epoch.
+    if ($timeStamp) {
+        [int]$Parameters.timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
+    }
+    # If the Unix Epoch parameter $timeStampUnixEpoch is set assign the value to the $timeStamp variable and null $timeStampUnixEpoch.
+    if ($timeStampUnixEpoch) {
+        [int]$Parameters.timeStamp = $timeStampUnixEpoch
+    }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         $Resource = 'v2/queries/antivirus-status'

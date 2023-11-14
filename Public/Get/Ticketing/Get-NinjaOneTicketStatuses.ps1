@@ -4,6 +4,8 @@ function Get-NinjaOneTicketStatuses {
             Gets ticket statuses from the NinjaOne API.
         .DESCRIPTION
             Retrieves a list of ticket statuses from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Ticket Statuses
         .EXAMPLE
             PS> Get-NinjaOneTicketStatuses
 

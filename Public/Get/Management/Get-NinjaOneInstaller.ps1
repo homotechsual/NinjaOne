@@ -5,6 +5,8 @@ function Get-NinjaOneInstaller {
             Gets agent installer URL from the NinjaOne API.
         .DESCRIPTION
             Retrieves agent installer URL from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Installer
         .EXAMPLE
             PS> Get-NinjaOneInstaller -organisationID 1 -locationID 1 -installerType WINDOWS_MSI
 
@@ -20,15 +22,15 @@ function Get-NinjaOneInstaller {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # Organisation ID
-        [Parameter(Mandatory = $True)]
+        # The organisation id to get the installer for.
+        [Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationId')]
         [Int]$organisationId,
-        # Location ID
-        [Parameter(Mandatory = $True)]
+        # The location id to get the installer for.
+        [Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
         [Int]$locationId,
         # Installer type/platform.
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory, Position = 2, ValueFromPipelineByPropertyName)]
         [ValidateSet(
             'WINDOWS_MSI',
             'MAC_DMG',
@@ -41,27 +43,19 @@ function Get-NinjaOneInstaller {
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'organisationid=' parameter by removing it from the set parameters.
-    if ($organisationID) {
-        $Parameters.Remove('organisationID') | Out-Null
-    }
+    $Parameters.Remove('organisationId') | Out-Null
     # Workaround to prevent the query string processor from adding a 'locationid=' parameter by removing it from the set parameters.
-    if ($locationID) {
-        $Parameters.Remove('locationID') | Out-Null
-    }
+    $Parameters.Remove('locationId') | Out-Null
     # Workaround to prevent the query string processor from adding an 'installertype=' parameter by removing it from the set parameters.
-    if ($installerType) {
-        $Parameters.Remove('installerType') | Out-Null
-    }
+    $Parameters.Remove('installerType') | Out-Null
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        if ($organisationID -and $locationID) {
-            Write-Verbose 'Getting device from NinjaOne API.'
-            $Organisation = Get-NinjaOneOrganisations -organisationID $organisationID
-            $Location = Get-NinjaOneLocations -organisationID $organisationID | Where-Object { $_.id -eq $locationID }
-            if ($Organisation -and $Location) {
-                Write-Verbose "Retrieving installer for $($Organisation.Name) - $($Location.Name) `($installerType`)."
-                $Resource = "v2/organization/$($organisationID)/location/$($locationID)/installer/$($installerType)"
-            }
+        Write-Verbose 'Getting device from NinjaOne API.'
+        $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
+        $Location = Get-NinjaOneLocations -organisationId $organisationId | Where-Object { $_.id -eq $locationId }
+        if ($Organisation -and $Location) {
+            Write-Verbose "Retrieving installer for $($Organisation.Name) - $($Location.Name) `($installerType`)."
+            $Resource = "v2/organization/$($organisationId)/location/$($locationId)/installer/$($installerType)"
         }
         $RequestParams = @{
             Resource = $Resource

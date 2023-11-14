@@ -5,6 +5,8 @@ function Get-NinjaOnePolicies {
             Gets policies from the NinjaOne API.
         .DESCRIPTION
             Retrieves policies from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Policies
         .EXAMPLE
             PS> Get-NinjaOnePolicies
 

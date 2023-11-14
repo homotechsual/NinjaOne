@@ -5,6 +5,8 @@ function Get-NinjaOneDeviceLastLoggedOnUser {
             Gets device last logged on user from the NinjaOne API.
         .DESCRIPTION
             Retrieves device last logged on user from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Device Last Logged On User
         .EXAMPLE
             PS> Get-NinjaOneDeviceLastLoggedOnUser -deviceId 1
 
@@ -19,25 +21,21 @@ function Get-NinjaOneDeviceLastLoggedOnUser {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Device id to get the last logged on user for.
-        [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id')]
         [Int]$deviceId
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    if ($deviceId) {
-        $Parameters.Remove('deviceID') | Out-Null
-    }
+    $Parameters.Remove('deviceID') | Out-Null
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        if ($deviceId) {
-            Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceID $deviceId
-            if ($Device) {
-                Write-Verbose "Retrieving last logged on user for $($Device.SystemName)."
-                $Resource = "v2/device/$($deviceId)/last-logged-on-user"
-            }
+        Write-Verbose 'Getting device from NinjaOne API.'
+        $Device = Get-NinjaOneDevices -deviceID $deviceId
+        if ($Device) {
+            Write-Verbose ('Getting last logged on user for device {0}.' -f $Device.Name)
+            $Resource = ('v2/device/{0}/last-logged-on-user' -f $deviceId)
         }
         $RequestParams = @{
             Resource = $Resource

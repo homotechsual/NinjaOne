@@ -4,6 +4,8 @@ function New-NinjaOneOrganisation {
             Creates a new organisation using the NinjaOne API.
         .DESCRIPTION
             Create an organisation using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Create Organisation
         .OUTPUTS
             A powershell object containing the response.
     #>

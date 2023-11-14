@@ -4,6 +4,8 @@ function Get-NinjaOneContacts {
             Gets contacts from the NinjaOne API.
         .DESCRIPTION
             Retrieves contacts from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Contacts
         .EXAMPLE
             PS> Get-NinjaOneContacts
             

@@ -4,6 +4,8 @@ function Reset-NinjaOneAlert {
             Resets alerts using the NinjaOne API.
         .DESCRIPTION
             Resets the status of alerts using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Alert
         .OUTPUTS
             A powershell object containing the response.
     #>

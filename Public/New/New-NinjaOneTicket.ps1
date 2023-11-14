@@ -4,6 +4,8 @@ function New-NinjaOneTicket {
             Creates a new ticket using the NinjaOne API.
         .DESCRIPTION
             Create a ticket using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Create Ticket
         .OUTPUTS
             A powershell object containing the response.
     #>

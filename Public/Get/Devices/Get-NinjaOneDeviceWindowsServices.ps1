@@ -5,6 +5,8 @@ function Get-NinjaOneDeviceWindowsServices {
             Gets device windows services from the NinjaOne API.
         .DESCRIPTION
             Retrieves device windows services from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Device Windows SErvices
         .EXAMPLE
             PS> Get-NinjaOneDeviceWindowsServices -deviceId 1
 
@@ -24,13 +26,15 @@ function Get-NinjaOneDeviceWindowsServices {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # Device ID
-        [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
+        # Device id to get windows services for.
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id')]
         [Int]$deviceId,
         # Filter by service name.
+        [Parameter(Position = 1)]
         [String]$name,
         # Filter by service state.
+        [Parameter(Position = 2)]
         [ValidateSet(
             'UNKNOWN',
             'STOPPED',
@@ -46,18 +50,14 @@ function Get-NinjaOneDeviceWindowsServices {
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    if ($deviceId) {
-        $Parameters.Remove('deviceID') | Out-Null
-    }
+    $Parameters.Remove('deviceID') | Out-Null
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        if ($deviceId) {
-            Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceID $deviceId
-            if ($Device) {
-                Write-Verbose "Retrieving windows services for $($Device.SystemName)."
-                $Resource = "v2/device/$($deviceId)/windows-services"
-            }
+        Write-Verbose 'Getting device from NinjaOne API.'
+        $Device = Get-NinjaOneDevices -deviceID $deviceId
+        if ($Device) {
+            Write-Verbose "Retrieving windows services for $($Device.SystemName)."
+            $Resource = "v2/device/$($deviceId)/windows-services"
         }
         $RequestParams = @{
             Resource = $Resource

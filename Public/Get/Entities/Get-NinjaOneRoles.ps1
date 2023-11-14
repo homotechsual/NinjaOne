@@ -5,6 +5,8 @@ function Get-NinjaOneRoles {
             Gets device roles from the NinjaOne API.
         .DESCRIPTION
             Retrieves device roles from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Device Roles
         .EXAMPLE
             PS> Get-NinjaOneRoles
 

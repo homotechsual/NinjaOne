@@ -5,6 +5,8 @@ function Get-NinjaOneDeviceProcessors {
             Gets device processors from the NinjaOne API.
         .DESCRIPTION
             Retrieves device processors from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Device Processors
         .EXAMPLE
             PS> Get-NinjaOneDeviceProcessors -deviceId 1
             
@@ -17,25 +19,21 @@ function Get-NinjaOneDeviceProcessors {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Device id to get processor information for.
-        [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id')]
         [Int]$deviceId
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    if ($deviceId) {
-        $Parameters.Remove('deviceID') | Out-Null
-    }
+    $Parameters.Remove('deviceID') | Out-Null
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        if ($deviceId) {
-            Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceID $deviceId
-            if ($Device) {
-                Write-Verbose "Retrieving processors for $($Device.SystemName)."
-                $Resource = "v2/device/$($deviceId)/processors"
-            }
+        Write-Verbose 'Getting device from NinjaOne API.'
+        $Device = Get-NinjaOneDevices -deviceID $deviceId
+        if ($Device) {
+            Write-Verbose "Retrieving processors for $($Device.SystemName)."
+            $Resource = "v2/device/$($deviceId)/processors"
         }
         $RequestParams = @{
             Resource = $Resource

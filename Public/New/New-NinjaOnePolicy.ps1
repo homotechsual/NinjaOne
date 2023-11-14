@@ -4,6 +4,8 @@ function New-NinjaOnePolicy {
             Creates a new policy using the NinjaOne API.
         .DESCRIPTION
             Create a new policy using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Create Policy
         .OUTPUTS
             A powershell object containing the response.
     #>

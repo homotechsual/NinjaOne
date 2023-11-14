@@ -4,6 +4,8 @@ function Get-NinjaOneTickets {
             Gets tickets from the NinjaOne API.
         .DESCRIPTION
             Retrieves tickets from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Tickets
         .EXAMPLE
             PS> Get-NinjaOneTickets -ticketId 1
 

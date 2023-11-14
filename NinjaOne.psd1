@@ -12,7 +12,7 @@
     RootModule = '.\NinjaOne.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.12.3'
+    ModuleVersion = '2.0.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -33,7 +33,7 @@
     Description = 'This module provides an interface to the NinjaOne API.'
 
     # Minimum version of the PowerShell engine required by this module
-    PowerShellVersion = '7.0'
+    PowerShellVersion = '5.1'
 
     # Name of the PowerShell host required by this module
     # PowerShellHostName = ''
@@ -269,10 +269,10 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Fix broken template policy id parameter handling in New-NinjaOneOrganisation.'
+            ReleaseNotes = 'PowerShell 5, various bugfixes and enhancements.'
 
             # Prerelease string of this module
-            # Prerelease = 'Beta1'
+            Prerelease = 'Beta1'
 
             # Flag to indicate whether the module requires explicit user acceptance for install/update/save
             # RequireLicenseAcceptance = $false

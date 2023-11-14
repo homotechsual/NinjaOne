@@ -5,6 +5,8 @@ function Invoke-NinjaOneRequest {
             Sends a request to the NinjaOne API.
         .DESCRIPTION
             Wrapper function to send web requests to the NinjaOne API.
+        .FUNCTIONALITY
+            Invoke API Request
         .EXAMPLE
             PS> Invoke-NinjaOneRequest -Method 'GET' -Uri 'https://eu.ninjarmm.com/v2/activities'
             

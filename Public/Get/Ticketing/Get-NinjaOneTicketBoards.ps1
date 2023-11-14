@@ -4,6 +4,8 @@ function Get-NinjaOneTicketBoards {
             Gets boards from the NinjaOne API.
         .DESCRIPTION
             Retrieves boards from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Ticket Boards
         .EXAMPLE
             PS> Get-NinjaOneTicketBoards
 

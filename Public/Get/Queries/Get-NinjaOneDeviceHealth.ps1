@@ -4,6 +4,8 @@ function Get-NinjaOneDeviceHealth {
             Gets the device health from the NinjaOne API.
         .DESCRIPTION
             Retrieves the device health from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Device Health Query
         .EXAMPLE
             PS> Get-NinjaOneDeviceHealth
 

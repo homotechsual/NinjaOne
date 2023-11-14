@@ -4,6 +4,8 @@ function Get-NinjaOneWindowsServices {
             Gets the windows services from the NinjaOne API.
         .DESCRIPTION
             Retrieves the windows services from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Windows Services Query
         .EXAMPLE
             PS> Get-NinjaOneWindowsServices
 

@@ -3,7 +3,9 @@ function Set-NinjaOneDeviceMaintenance {
         .SYNOPSIS
             Sets a new maintenance window for the specified device(s)
         .DESCRIPTION
-            Create a new maintenance window for the given device(s) using the NinjaOne v2 API.
+            Schedule a new maintenance window for the given device(s) using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Maintenance
         .OUTPUTS
             A powershell object containing the response.
     #>

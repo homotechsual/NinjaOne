@@ -4,6 +4,8 @@ function New-NinjaOneLocation {
             Creates a new location using the NinjaOne API.
         .DESCRIPTION
             Create an location using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Create Location
         .OUTPUTS
             A powershell object containing the response.
     #>

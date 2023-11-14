@@ -4,6 +4,8 @@ function Get-NinjaOneBackupUsage {
             Gets the backup usage by device from the NinjaOne API.
         .DESCRIPTION
             Retrieves the backup usage by device from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Backup Usage Query
         .EXAMPLE
             PS> Get-NinjaOneBackupUsage
 

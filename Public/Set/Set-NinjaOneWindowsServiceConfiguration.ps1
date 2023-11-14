@@ -4,6 +4,8 @@ function Set-NinjaOneWindowsServiceConfiguration {
             Sets the configuration of the given Windows Service for the given device.
         .DESCRIPTION
             Sets the configuration of the Windows Service for a single device using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Windows Service Configuration
         .OUTPUTS
             A powershell object containing the response.
         .EXAMPLE

@@ -4,6 +4,8 @@ function New-NinjaOneInstaller {
             Creates a new installer using the NinjaOne API.
         .DESCRIPTION
             Create a new installer download link using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Create Installer
         .OUTPUTS
             A powershell object containing the response.
     #>
@@ -23,7 +25,10 @@ function New-NinjaOneInstaller {
         [ValidateSet('WINDOWS_MSI', 'MAC_DMG', 'MAC_PKG', 'LINUX_DEB', 'LINUX_RPM')]
         [String]$installerType,
         # The number of uses permitted for the installer.
-        [Int]$usageLimit
+        [Int]$usageLimit,
+        # The node role id to use when creating the installer.
+        [ValidateNodeRoleId()]
+        [object]$nodeRoleId = 'auto'
     )
     try {
         $Resource = 'v2/organization/generate-installer'
@@ -32,7 +37,9 @@ function New-NinjaOneInstaller {
             location_id = $locationId
             installer_type = $installerType
             usage_limit = $usageLimit
-            content = @{} 
+            content = @{
+                nodeRoleId = $nodeRoleId
+            }
         }
         $RequestParams = @{
             Resource = $Resource

@@ -5,6 +5,8 @@ function Get-NinjaOneDeviceOSPatches {
             Gets device OS patches from the NinjaOne API.
         .DESCRIPTION
             Retrieves device OS patches from the NinjaOne v2 API. If you want patch information for multiple devices please check out the related 'queries' commandlet `Get-NinjaOneOSPatches`.
+        .FUNCTIONALITY
+            Device OS Patches
         .EXAMPLE
             PS> Get-NinjaOneDeviceOSPatches -deviceId 1
 
@@ -21,34 +23,35 @@ function Get-NinjaOneDeviceOSPatches {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Device id to get OS patch information for.
-        [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id')]
         [Int]$deviceId,
         # Filter returned patches by patch status.
+        [Parameter(Position = 1)]
         [ValidateSet('MANUAL', 'APPROVED', 'FAILED', 'REJECTED')]
         [String[]]$status,
         # Filter returned patches by type.
+        [Parameter(Position = 2)]
         [ValidateSet('UPDATE_ROLLUPS', 'SECURITY_UPDATES', 'DEFINITION_UPDATES', 'CRITICAL_UPDATES', 'REGULAR_UPDATES', 'FEATURE_PACKS', 'DRIVER_UPDATES')]
         [String[]]$type,
         # Filter returned patches by severity.
+        [Parameter(Position = 3)]
         [ValidateSet('OPTIONAL', 'MODERATE', 'IMPORTANT', 'CRITICAL')]
         [String[]]$severity
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    if ($deviceId) {
-        $Parameters.Remove('deviceID') | Out-Null
-    }
+    $Parameters.Remove('deviceID') | Out-Null
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        if ($deviceId) {
-            Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceID $deviceId
-            if ($Device) {
-                Write-Verbose "Retrieving OS patches for $($Device.SystemName)."
-                $Resource = "v2/device/$($deviceId)/os-patches"
-            }
+        Write-Verbose 'Getting device from NinjaOne API.'
+        $Device = Get-NinjaOneDevices -deviceID $deviceId
+        if ($Device) {
+            Write-Verbose ('Getting OS patches for device {0}.' -f $Device.SystemName)
+            $Resource = ('v2/device/{0}/os-patches' -f $deviceId)
+        } else {
+            throw ('Device with id {0} not found.' -f $deviceId)
         }
         $RequestParams = @{
             Resource = $Resource

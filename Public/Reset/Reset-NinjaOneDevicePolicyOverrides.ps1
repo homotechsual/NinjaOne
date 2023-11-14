@@ -4,6 +4,8 @@ function Reset-NinjaOneDevicePolicyOverrides {
             Resets (removes) device policy overrides using the NinjaOne API.
         .DESCRIPTION
             Resets (removes) all configured device policy overrides using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Device Policy Overrides
         .OUTPUTS
             A powershell object containing the response.
     #>

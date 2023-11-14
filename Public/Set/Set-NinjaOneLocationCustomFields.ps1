@@ -1,9 +1,11 @@
 function Set-NinjaOneLocationCustomFields {
     <#
         .SYNOPSIS
-            Updates an location's custom fields.
+            Sets an location's custom fields.
         .DESCRIPTION
-            Updates location custom field values using the NinjaOne v2 API.
+            Sets location custom field values using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Location Custom Fields
         .EXAMPLE
             PS> $LocationCustomFields = @{
                 field1 = 'value1'

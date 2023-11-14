@@ -4,6 +4,8 @@ function Restart-NinjaOneDevice {
             Reboots a device using the NinjaOne API.
         .DESCRIPTION
             Triggers a device reboot using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Device
         .OUTPUTS
             A powershell object containing the response.
     #>

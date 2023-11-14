@@ -4,6 +4,8 @@ function Get-NinjaOneSoftwareInventory {
             Gets the software inventory from the NinjaOne API.
         .DESCRIPTION
             Retrieves the software inventory from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Software Inventory Query
         .EXAMPLE
             PS> Get-NinjaOneSoftwareInventory
 

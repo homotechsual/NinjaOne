@@ -4,6 +4,8 @@ function Get-NinjaOneLocationCustomFields {
             Gets location custom fields from the NinjaOne API.
         .DESCRIPTION
             Retrieves location custom fields from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Location Custom Fields
         .EXAMPLE
             Get-NinjaOneLocationCustomFields organisationId 1 -locationId 2
 
@@ -19,27 +21,24 @@ function Get-NinjaOneLocationCustomFields {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # Filter by organisation ID.
-        [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
+        # Filter by organisation Id.
+        [Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationId')]
         [Int]$organisationId,
-        # Filter by location ID.
-        [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
+        # Filter by location Id.
+        [Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
         [Int]$locationId,
         # Inherit custom field values from parent organisation.
+        [Parameter(Position = 2, ValueFromPipelineByPropertyName)]
         [Boolean]$withInheritance
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     try {
         # Workaround to prevent the query string processor from adding an 'organisationid=' parameter by removing it from the set parameters.
-        if ($organisationId) {
-            $Parameters.Remove('organisationId') | Out-Null
-        }
+        $Parameters.Remove('organisationId') | Out-Null
         # Workaround to prevent the query string processor from adding an 'locationid=' parameter by removing it from the set parameters.
-        if ($locationId) {
-            $Parameters.Remove('locationId') | Out-Null
-        }
+        $Parameters.Remove('locationId') | Out-Null
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         Write-Verbose 'Getting organisation custom fields from NinjaOne API.'
         $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId

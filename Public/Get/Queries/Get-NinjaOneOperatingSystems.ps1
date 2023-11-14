@@ -4,6 +4,8 @@ function Get-NinjaOneOperatingSystems {
             Gets the operating systems from the NinjaOne API.
         .DESCRIPTION
             Retrieves the operating systems from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Operating Systems Query
         .EXAMPLE
             PS> Get-NinjaOneOperatingSystems
  
@@ -28,7 +30,9 @@ function Get-NinjaOneOperatingSystems {
         [String]$deviceFilter,
         # Monitoring timestamp filter.
         [Alias('ts')]
-        [string]$timeStamp,
+        [DateTime]$timeStamp,
+        # Monitoring timestamp filter in unix time.
+        [Int]$timeStampUnix,
         # Cursor name.
         [String]$cursor,
         # Number of results per page.
@@ -36,6 +40,14 @@ function Get-NinjaOneOperatingSystems {
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
+    # If the [DateTime] parameter $timeStamp is set convert the value to a Unix Epoch.
+    if ($timeStamp) {
+        [int]$Parameters.timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
+    }
+    # If the Unix Epoch parameter $timeStampUnixEpoch is set assign the value to the $timeStamp variable and null $timeStampUnixEpoch.
+    if ($timeStampUnixEpoch) {
+        [int]$Parameters.timeStamp = $timeStampUnixEpoch
+    }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         $Resource = 'v2/queries/operating-systems'

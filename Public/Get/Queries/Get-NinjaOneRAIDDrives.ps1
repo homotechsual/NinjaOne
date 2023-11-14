@@ -4,6 +4,8 @@ function Get-NinjaOneRAIDDrives {
             Gets the RAID drives from the NinjaOne API.
         .DESCRIPTION
             Retrieves the RAID drives from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            RAID Drives Query
         .EXAMPLE
             PS> Get-NinjaOneRAIDDrives
 

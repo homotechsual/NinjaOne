@@ -6,6 +6,8 @@ function New-NinjaOneTicketComment {
             Creates a new ticket comment using the NinjaOne API.
         .DESCRIPTION
             Create a ticket comment using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Create Ticket Comment
         .OUTPUTS
             A powershell object containing the response.
     #>

@@ -4,6 +4,8 @@ function Get-NinjaOneTicketAttributes {
             Gets ticket attributes from the NinjaOne API.
         .DESCRIPTION
             Retrieves a list of the ticket attributes from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Ticket Attributes
         .EXAMPLE
             PS> Get-NinjaOneTicketAttributes
 

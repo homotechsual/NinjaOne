@@ -5,6 +5,8 @@ function Get-NinjaOneUsers {
             Gets users from the NinjaOne API.
         .DESCRIPTION
             Retrieves users from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Users
         .EXAMPLE
             PS> Get-NinjaOneUsers
             
@@ -20,24 +22,28 @@ function Get-NinjaOneUsers {
         .OUTPUTS
             A powershell object containing the response.
     #>
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'Default')]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by user type. This can be one of "TECHNICIAN" or "END_USER".
-        [Parameter()]
+        [Parameter(ParameterSetName = 'Default')]
         [ValidateSet(
             'TECHNICIAN',
             'END_USER'
         )]
         [String]$userType,
-        # Filter by organisation ID.
-        [Parameter(ValueFromPipelineByPropertyName)]
+        # Get users for this organisation id.
+        [Parameter(Mandatory, ParameterSetName = 'Organisation', Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationId')]
         [Int]$organisationId
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
+    # Workaround to prevent the query string processor from adding an 'organisationid=' parameter by removing it from the set parameters.
+    if ($organisationId) {
+        $Parameters.Remove('organisationId') | Out-Null
+    }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         if ($organisationID) {
@@ -45,7 +51,7 @@ function Get-NinjaOneUsers {
             $Organisation = Get-NinjaOneOrganisations -organisationID $organisationID
             if ($Organisation) {
                 Write-Verbose "Retrieving users for $($Organisation.Name)."
-                $Resource = "v2/organization/$($organisationID)/end-users"
+                $Resource = "v2/organization/$($organisationId)/end-users"
             } 
         } else {
             Write-Verbose 'Retrieving all users.'

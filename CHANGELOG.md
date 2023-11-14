@@ -1,5 +1,7 @@
 # Changelog
 
+## 2023-10-31 - Version 2.0.0-beta1
+
 ## 2023-10-25 - Version 1.12.3
 
 * Fix broken template policy id parameter handling in `New-NinjaOneOrganisation`.

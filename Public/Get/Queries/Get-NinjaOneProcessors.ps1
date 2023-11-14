@@ -4,6 +4,8 @@ function Get-NinjaOneProcessors {
             Gets the processors from the NinjaOne API.
         .DESCRIPTION
             Retrieves the processors from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Processors Query
         .EXAMPLE
             PS> Get-NinjaOneProcessors
 

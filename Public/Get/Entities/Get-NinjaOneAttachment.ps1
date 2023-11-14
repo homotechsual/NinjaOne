@@ -5,6 +5,8 @@ function Get-NinjaOneAttachment {
             Gets an attachment from the NinjaOne API.
         .DESCRIPTION
             Retrieves an attachment from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Attachment
         .OUTPUTS
             A powershell object containing the response.
     #>
@@ -12,16 +14,16 @@ function Get-NinjaOneAttachment {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # Filter by device ID.
-        [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
+        # The attachment id to retrieve.
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id')]
-        [String]$attachmentID
+        [String]$attachmentId
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'attachmentid=' parameter by removing it from the set parameters.
     if ($attachmentID) {
-        $Parameters.Remove('attachmentID') | Out-Null
+        $Parameters.Remove('attachmentId') | Out-Null
     }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters

@@ -5,6 +5,8 @@ function Get-NinjaOneActivities {
             Gets activities from the NinjaOne API.
         .DESCRIPTION
             Retrieves activities from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Activities
         .EXAMPLE
             PS> Get-NinjaOneActivities
 
@@ -57,56 +59,91 @@ function Get-NinjaOneActivities {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by device ID.
-        [Parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id')]
         [Int]$deviceId,
         # Activity class.
+        [Parameter(Position = 1)]
         [ValidateSet('SYSTEM', 'DEVICE', 'USER', 'ALL')]
         [String]$class,
         # Return activities from before this date. PowerShell DateTime object.
+        [Parameter(Position = 2)]
         [DateTime]$before,
         # Return activities from before this date. Unix Epoch time.
+        [Parameter(Position = 2)]
         [Int]$beforeUnixEpoch,
         # Return activities from after this date. PowerShell DateTime object.
+        [Parameter(Position = 3)]
         [DateTime]$after,
         # Return activities from after this date. Unix Epoch time.
+        [Parameter(Position = 3)]
         [Int]$afterUnixEpoch,
         # Return activities older than this activity ID.
+        [Parameter(Position = 4)]
         [Int]$olderThan,
         # Return activities newer than this activity ID.
+        [Parameter(Position = 5)]
         [Int]$newerThan,
         # Return activities of this type.
+        [Parameter(Position = 6)]
         [String]$type,
+        # Return activities of this type.
+        [Parameter(Position = 6)]
+        [String]$activityType,
         # Return activities with this status.
+        [Parameter(Position = 7)]
         [String]$status,
         # Return activities for this user.
+        [Parameter(Position = 8)]
         [String]$user,
         # Return activities for this alert series.
+        [Parameter(Position = 9)]
         [String]$seriesUid,
         # Return activities matching this device filter.
+        [Parameter(Position = 10)]
         [Alias('df')]
         [String]$deviceFilter,
         # Number of results per page.
+        [Parameter(Position = 11)]
         [Int]$pageSize,
         # Filter by language tag.
+        [Parameter(Position = 12)]
         [Alias('lang')]
         [String]$languageTag,
         # Filter by timezone.
+        [Parameter(Position = 13)]
         [Alias('tz')]
         [String]$timeZone
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
+    # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
+    if ($deviceId) {
+        $Parameters.Remove('deviceID')
+        if ($type) {
+            $Parameters.Remove('type')
+            [string]$activityType = $type
+        }
+    } else {
+        if ($activityType) {
+            $Parameters.Remove('activityType')
+            [string]$type = $activityType
+        }
+    }
+    # If the [DateTime] parameter $before is set convert the value to a Unix Epoch.
     if ($before) {
         [Int]$before = ConvertTo-UnixEpoch -DateTime $before
     }
+    # If the Unix Epoch parameter $beforeUnixEpoch is set assign the value to the $before variable and null $beforeUnixEpoch.
     if ($beforeUnixEpoch) {
         $Parameters.Remove('beforeUnixEpoch') | Out-Null
         [Int]$before = $beforeUnixEpoch
     }
+    # If the [DateTime] parameter $after is set convert the value to a Unix Epoch.
     if ($after) {
         [Int]$after = ConvertTo-UnixEpoch -DateTime $after
     }
+    # If the Unix Epoch parameter $afterUnixEpoch is set assign the value to the $after variable and null $afterUnixEpoch.
     if ($afterUnixEpoch) {
         $Parameters.Remove('afterUnixEpoch') | Out-Null
         [Int]$after = $afterUnixEpoch
@@ -125,7 +162,7 @@ function Get-NinjaOneActivities {
             $Resource = 'v2/activities'
         }
         $RequestParams = @{
-            Resource = $Resource
+            Resource     = $Resource
             QSCollection = $QSCollection
         }
         $ActivityResults = New-NinjaOneGETRequest @RequestParams

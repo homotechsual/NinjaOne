@@ -6,6 +6,8 @@ function Get-NinjaOneDevices {
             Gets devices from the NinjaOne API.
         .DESCRIPTION
             Retrieves devices from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Devices
         .EXAMPLE
             PS> Get-NinjaOneDevices
 
@@ -35,28 +37,28 @@ function Get-NinjaOneDevices {
         .OUTPUTS
             A powershell object containing the response.
     #>
-    [CmdletBinding( DefaultParameterSetName = 'Multi' )]
+    [CmdletBinding(DefaultParameterSetName = 'Multi')]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Device id to retrieve
-        [Parameter( ParameterSetName = 'Single', Mandatory, ValueFromPipelineByPropertyName )]
+        [Parameter(Mandatory, ParameterSetName = 'Single', Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Int]$deviceId,
         # Filter devices.
-        [Parameter( ParameterSetName = 'Multi' )]
+        [Parameter(ParameterSetName = 'Multi', Position = 1)]
         [Alias('df')]
         [String]$deviceFilter,
         # Number of results per page.
-        [Parameter( ParameterSetName = 'Multi' )]
+        [Parameter(ParameterSetName = 'Multi', Position = 2)]
         [Int]$pageSize,
-        # Start results from organisation ID.
-        [Parameter( ParameterSetName = 'Multi' )]
+        # Start results from device id.
+        [Parameter(ParameterSetName = 'Multi', Position = 3)]
         [Int]$after,
         # Include locations and policy mappings.
-        [Parameter( ParameterSetName = 'Multi' )]
+        [Parameter(ParameterSetName = 'Multi', Position = 4)]
         [Switch]$detailed,
-        # Filter by Organisation ID.
-        [Parameter( ParameterSetName = 'Organisation', Mandatory, ValueFromPipelineByPropertyName )]
+        # Filter by organisation id.
+        [Parameter(Mandatory, ParameterSetName = 'Organisation', Position = 5, ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationId')]
         [Int]$organisationId
     )

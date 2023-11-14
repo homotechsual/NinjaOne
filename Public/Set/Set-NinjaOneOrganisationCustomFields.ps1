@@ -4,6 +4,8 @@ function Set-NinjaOneOrganisationCustomFields {
             Updates an organisation's custom fields.
         .DESCRIPTION
             Updates organisation custom field values using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Organisation Custom Fields
         .EXAMPLE
             PS> $OrganisationCustomFields = @{
                 field1 = 'value1'

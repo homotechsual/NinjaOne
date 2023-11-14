@@ -4,6 +4,8 @@ function Get-NinjaOneRelatedItems {
             Gets items related to an entity or entity type from the NinjaOne API.
         .DESCRIPTION
             Retrieves related items related to a given entity or entity type from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Related Items
         .EXAMPLE
             PS> Get-NinjaOneRelatedItems -all
 

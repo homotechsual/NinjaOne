@@ -5,6 +5,8 @@ function Get-NinjaOneTasks {
             Gets tasks from the NinjaOne API.
         .DESCRIPTION
             Retrieves tasks from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Scheduled Tasks
         .EXAMPLE
             PS> Get-NinjaOneTasks
             

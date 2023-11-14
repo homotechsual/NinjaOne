@@ -4,6 +4,8 @@ function Get-NinjaOneTicketLogEntries {
             Gets ticket log entries from the NinjaOne API.
         .DESCRIPTION
             Retrieves ticket log entries from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Ticket Log Entries
         .EXAMPLE
             PS> Get-NinjaOneTicketLogEntries -ticketID 1
 

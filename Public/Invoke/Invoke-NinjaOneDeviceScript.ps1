@@ -4,6 +4,8 @@ function Invoke-NinjaOneDeviceScript {
             Runs a script or built-in action against the given device.
         .DESCRIPTION
             Runs a script or built-in action against a single device using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Run Script or Action
         .OUTPUTS
             A powershell object containing the response.
     #>

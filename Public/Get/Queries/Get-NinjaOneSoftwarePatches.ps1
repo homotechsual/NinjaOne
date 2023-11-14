@@ -4,6 +4,8 @@ function Get-NinjaOneSoftwarePatches {
             Gets the software patches from the NinjaOne API.
         .DESCRIPTION
             Retrieves the software patches from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Software Patches Query
         .EXAMPLE
             PS> Get-NinjaOneSoftwarePatches
 

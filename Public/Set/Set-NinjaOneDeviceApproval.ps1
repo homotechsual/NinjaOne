@@ -4,6 +4,8 @@ function Set-NinjaOneDeviceApproval {
             Sets the approval status of the specified device(s)
         .DESCRIPTION
             Sets the approval status of the specified device(s) using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Device Approval
         .OUTPUTS
             A powershell object containing the response.
     #>

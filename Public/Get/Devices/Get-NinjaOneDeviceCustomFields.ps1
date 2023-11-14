@@ -5,6 +5,8 @@ function Get-NinjaOneDeviceCustomFields {
             Gets device custom fields from the NinjaOne API.
         .DESCRIPTION
             Retrieves device custom fields from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Device Custom Fields
         .EXAMPLE
             PS> Get-NinjaOneDeviceCustomFields
             
@@ -31,11 +33,10 @@ function Get-NinjaOneDeviceCustomFields {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Device id to get custom field values for a specific device.
-        [Parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id')]
         [Int]$deviceId,
         # Inherit custom field values from parent location and/or organisation.
-        [Parameter(ValueFromPipelineByPropertyName)]
         [Switch]$withInheritance
     )
     try {
@@ -43,8 +44,10 @@ function Get-NinjaOneDeviceCustomFields {
             Write-Verbose 'Getting device from NinjaOne API.'
             $Device = Get-NinjaOneDevices -deviceID $deviceId
             if ($Device) {
-                Write-Verbose "Retrieving custom fields for device $($Device.SystemName)."
-                $Resource = "v2/device/$($deviceId)/custom-fields"
+                Write-Verbose ('Getting custom fields for device {0}.' -f $Device.Name)
+                $Resource = ('v2/device/{0}/custom-fields' -f $deviceId)
+            } else {
+                throw ('Device with id {0} not found.' -f $deviceId)
             }
         } else {
             Write-Verbose 'Retrieving all device custom fields.'

@@ -4,6 +4,8 @@ function Get-NinjaOneOrganisationDocuments {
             Gets documents from the NinjaOne API.
         .DESCRIPTION
             Retrieves documents from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Documents
         .EXAMPLE
             Get-NinjaOneOrganisationDocuments -organisationId 1
 
@@ -15,13 +17,17 @@ function Get-NinjaOneOrganisationDocuments {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # Filter by organisation ID.
-        [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
+        # Filter by organisation Id.
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationId')]
         [Int]$organisationId
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
+    # Workaround to prevent the query string processor from adding an 'organisationid=' parameter by removing it from the set parameters.
+    if ($organisationId) {
+        $Parameters.Remove('organisationId') | Out-Null
+    }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         Write-Verbose 'Getting organisation documents from NinjaOne API.'

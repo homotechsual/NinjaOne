@@ -4,6 +4,8 @@ function Get-NinjaOneOrganisationCustomFields {
             Gets organisation custom fields from the NinjaOne API.
         .DESCRIPTION
             Retrieves organisation custom fields from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Organisation Custom Fields
         .EXAMPLE
             Get-NinjaOneOrganisationCustomFields -organisationId 1
 
@@ -15,24 +17,26 @@ function Get-NinjaOneOrganisationCustomFields {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # Filter by organisation ID.
-        [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
+        # Filter by organisation Id.
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationId')]
         [Int]$organisationId
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
+    # Workaround to prevent the query string processor from adding an 'organisationid=' parameter by removing it from the set parameters.
+    if ($organisationId) {
+        $Parameters.Remove('organisationId') | Out-Null
+    }
     try {
-        # Workaround to prevent the query string processor from adding an 'organisationid=' parameter by removing it from the set parameters.
-        if ($organisationID) {
-            $Parameters.Remove('organisationID') | Out-Null
-        }
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         Write-Verbose 'Getting organisation custom fields from NinjaOne API.'
         $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
         if ($Organisation) {
             Write-Verbose "Retrieving custom fields for organisation $($Organisation.Name)."
             $Resource = "v2/organization/$($organisationId)/custom-fields"
+        } else {
+            Throw "Organisation $($organisationId) does not exist."
         }
         $RequestParams = @{
             Resource = $Resource

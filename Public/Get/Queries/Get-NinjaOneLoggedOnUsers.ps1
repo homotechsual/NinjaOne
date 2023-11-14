@@ -4,6 +4,8 @@ function Get-NinjaOneLoggedOnUsers {
             Gets the logged on users from the NinjaOne API.
         .DESCRIPTION
             Retrieves the logged on users from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Logged On Users Query
         .EXAMPLE
             PS> Get-NinjaOneLoggedOnUsers
 

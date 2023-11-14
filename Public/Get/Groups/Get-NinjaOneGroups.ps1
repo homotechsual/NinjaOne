@@ -5,6 +5,8 @@ function Get-NinjaOneGroups {
             Gets groups from the NinjaOne API.
         .DESCRIPTION
             Retrieves groups from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Groups
         .EXAMPLE
             PS> Get-NinjaOneGroups
             
@@ -16,7 +18,8 @@ function Get-NinjaOneGroups {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # Filter by language tag.
+        # Filter by language tag. ?ToDo: Query with Ninja
+        [Parameter(Position = 0)]
         [Alias('lang')]
         [String]$languageTag
     )

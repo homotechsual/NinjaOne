@@ -4,6 +4,8 @@ function Get-NinjaOneVolumes {
             Gets the volumes from the NinjaOne API.
         .DESCRIPTION
             Retrieves the volumes from the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Volumes Query
         .EXAMPLE
             PS> Get-NinjaOneVolumes
 
@@ -26,9 +28,11 @@ function Get-NinjaOneVolumes {
         # Filter devices.
         [Alias('df')]
         [String]$deviceFilter,
-        # Monitoring timestamp filter.
+        # Monitoring timestamp filter. PowerShell DateTime object.
         [Alias('ts')]
-        [string]$timeStamp,
+        [DateTime]$timeStamp,
+        # Monitoring timestamp filter. Unix Epoch time.
+        [Int]$timeStampUnixEpoch,
         # Cursor name.
         [String]$cursor,
         # Number of results per page.
@@ -36,6 +40,14 @@ function Get-NinjaOneVolumes {
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
+    # If the [DateTime] parameter $timeStamp is set convert the value to a Unix Epoch.
+    if ($timeStamp) {
+        [int]$Parameters.timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
+    }
+    # If the Unix Epoch parameter $timeStampUnixEpoch is set assign the value to the $timeStamp variable and null $timeStampUnixEpoch.
+    if ($timeStampUnixEpoch) {
+        [int]$Parameters.timeStamp = $timeStampUnixEpoch
+    }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         $Resource = 'v2/queries/volumes'
