@@ -21,11 +21,11 @@ function Get-NinjaOneLocationCustomFields {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # Filter by organisation Id.
+        # Filter by organisation id.
         [Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationId')]
         [Int]$organisationId,
-        # Filter by location Id.
+        # Filter by location id.
         [Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
         [Int]$locationId,
         # Inherit custom field values from parent organisation.
@@ -45,20 +45,24 @@ function Get-NinjaOneLocationCustomFields {
         if ($Organisation) {
             $Location = Get-NinjaOneLocations -organisationId $organisationId | Where-Object -Property id -EQ -Value $locationId
             if ($Location) {
-                Write-Verbose "Retrieving custom fields for organisation $($Organisation.Name) location $($Location.Name)."
-                $Resource = "v2/organization/$($organisationId)/location/$($locationId)/custom-fields"
+                Write-Verbose ('Getting custom fields for organisation {0} - location {1}.' -f $Organisation.Name, $Location.Name)
+                $Resource = ('v2/organization/{0}/location/{1}/custom-fields' -f $organisationId, $locationId)
             } else {
-                Throw "Location $($locationId) does not exist for organisation $($Organisation.Name)."
+                throw ('Location with id {0} not found for organisation {1}.' -f $locationId, $Organisation.Name)
             }
         } else {
-            Throw "Organisation $($organisationId) does not exist."
+            throw ('Organisation with id {0} not found.' -f $organisationId)
         }
         $RequestParams = @{
             Resource = $Resource
             QSCollection = $QSCollection
         }
         $CustomFieldResults = New-NinjaOneGETRequest @RequestParams
-        Return $CustomFieldResults
+        if ($CustomFieldResults) {
+            return $CustomFieldResults
+        } else {
+            throw ('No custom fields found for organisation {0} - location {1}.' -f $Organisation.Name, $Location.Name)
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

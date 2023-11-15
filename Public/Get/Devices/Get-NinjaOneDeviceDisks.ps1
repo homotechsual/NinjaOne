@@ -32,9 +32,9 @@ function Get-NinjaOneDeviceDisks {
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         Write-Verbose 'Getting device from NinjaOne API.'
-        $Device = Get-NinjaOneDevices -deviceID $deviceId
+        $Device = Get-NinjaOneDevices -deviceId $deviceId
         if ($Device) {
-            Write-Verbose ('Getting disks for device {0}.' -f $Device.Name)
+            Write-Verbose ('Getting disks for device {0}.' -f $Device.SystemName)
             $Resource = ('v2/device/{0}/disks' -f $deviceId)
         } else {
             throw ('Device with id {0} not found.' -f $deviceId)
@@ -44,7 +44,7 @@ function Get-NinjaOneDeviceDisks {
             QSCollection = $QSCollection
         }
         $DeviceDiskResults = New-NinjaOneGETRequest @RequestParams
-        Return $DeviceDiskResults
+        return $DeviceDiskResults
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

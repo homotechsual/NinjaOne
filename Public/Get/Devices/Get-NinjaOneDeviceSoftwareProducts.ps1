@@ -10,7 +10,7 @@ function Get-NinjaOneSoftwareProducts {
         .EXAMPLE
             PS> Get-NinjaOneSoftwareProducts -deviceId 1
 
-            Gets all software products for the device with ID 1.
+            Gets all software products for the device with id 1.
         .OUTPUTS
             A powershell object containing the response.
     #>
@@ -30,17 +30,19 @@ function Get-NinjaOneSoftwareProducts {
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         Write-Verbose 'Getting device from NinjaOne API.'
-        $Device = Get-NinjaOneDevices -deviceID $deviceId
+        $Device = Get-NinjaOneDevices -deviceId $deviceId
         if ($Device) {
-            Write-Verbose "Retrieving software products for $($Device.SystemName)."
-            $Resource = "v2/device/$($deviceId)/software"
+            Write-Verbose ('Getting software products for device {0}.' -f $Device.SystemName)
+            $Resource = ('v2/device/{0}/software' -f $deviceId)
+        } else {
+            throw ('Device with id {0} not found.' -f $deviceId)
         }
         $RequestParams = @{
             Resource = $Resource
             QSCollection = $QSCollection
         }
         $SoftwareProductResults = New-NinjaOneGETRequest @RequestParams
-        Return $SoftwareProductResults
+        return $SoftwareProductResults
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

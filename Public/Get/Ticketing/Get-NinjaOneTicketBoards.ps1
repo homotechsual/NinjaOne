@@ -31,7 +31,11 @@ function Get-NinjaOneTicketBoards {
             QSCollection = $QSCollection
         }
         $Boards = New-NinjaOneGETRequest @RequestParams
-        Return $Boards
+        if ($Boards) {
+            return $Boards
+        } else {
+            throw 'No boards found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

@@ -11,11 +11,11 @@ function Find-NinjaOneDevices {
         .EXAMPLE
             PS> Find-NinjaOneDevices -limit 10 -searchQuery 'ABCD'
 
-            Returns an object containing the query and matching devices. Raw data return
+            returns an object containing the query and matching devices. Raw data return
         .EXAMPLE
             PS> (Find-NinjaOneDevices -limit 10 -searchQuery 'ABCD').devices
 
-            Returns an array of device objects matching the query.
+            returns an array of device objects matching the query.
         .OUTPUTS
             A powershell object containing the response.
         .LINK
@@ -43,7 +43,7 @@ function Find-NinjaOneDevices {
             QSCollection = $QSCollection
         }
         $DeviceSearchResults = New-NinjaOneGETRequest @RequestParams
-        Return $DeviceSearchResults
+        return $DeviceSearchResults
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

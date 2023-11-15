@@ -9,15 +9,15 @@ function New-NinjaOneTicket {
         .OUTPUTS
             A powershell object containing the response.
     #>
-    [CmdletBinding( SupportsShouldProcess = $true, ConfirmImpact = 'Medium' )]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # An object containing the ticket to create.
-        [Parameter(Mandatory = $true)]
-        [object]$ticket,
-        # Show the organisation that was created.
-        [switch]$show
+        [Parameter(Mandatory, Position = 0)]
+        [Object]$ticket,
+        # Show the ticket that was created.
+        [Switch]$show
     )
     if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
         throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
@@ -29,12 +29,15 @@ function New-NinjaOneTicket {
             Resource = $Resource
             Body = $ticket
         }
-        if ($PSCmdlet.ShouldProcess("Ticket '$($ticket.summary)'", 'Create')) {
+        if ($PSCmdlet.ShouldProcess(('Ticket {0}' -f $ticket.Subject), 'Create')) {
             $TicketCreate = New-NinjaOnePOSTRequest @RequestParams
             if ($show) {
-                Return $TicketCreate
+                return $TicketCreate
             } else {
-                Write-Information "Ticket '$($ticket.summary)' created."
+                $OIP = $InformationPreference
+                $InformationPreference = 'Continue'
+                Write-Information ('Ticket {0} created.' -f $TicketCreate.Subject)
+                $InformationPreference = $OIP
             }
         }
     } catch {

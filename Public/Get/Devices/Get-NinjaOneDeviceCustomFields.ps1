@@ -42,9 +42,9 @@ function Get-NinjaOneDeviceCustomFields {
     try {
         if ($deviceId) {
             Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceID $deviceId
+            $Device = Get-NinjaOneDevices -deviceId $deviceId
             if ($Device) {
-                Write-Verbose ('Getting custom fields for device {0}.' -f $Device.Name)
+                Write-Verbose ('Getting custom fields for device {0}.' -f $Device.SystemName)
                 $Resource = ('v2/device/{0}/custom-fields' -f $deviceId)
             } else {
                 throw ('Device with id {0} not found.' -f $deviceId)
@@ -57,7 +57,7 @@ function Get-NinjaOneDeviceCustomFields {
             Resource = $Resource
         }
         $DeviceCustomFieldResults = New-NinjaOneGETRequest @RequestParams
-        Return $DeviceCustomFieldResults
+        return $DeviceCustomFieldResults
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

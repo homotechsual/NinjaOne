@@ -54,16 +54,16 @@ function Get-NinjaOneJobs {
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
     if ($deviceId) {
-        $Parameters.Remove('deviceID') | Out-Null
+        $Parameters.Remove('deviceId') | Out-Null
     }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         if ($deviceId) {
             Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceID $deviceId
+            $Device = Get-NinjaOneDevices -deviceId $deviceId
             if ($Device) {
-                Write-Verbose "Retrieving jobs for $($Device.SystemName)."
-                $Resource = "v2/device/$($deviceId)/jobs"
+                Write-Verbose ('Getting jobs for device {0}.' -f $Device.SystemName)
+                $Resource = ('v2/device/{0}/jobs' -f $deviceId)
             }
         } else {
             Write-Verbose 'Retrieving all jobs.'
@@ -75,7 +75,15 @@ function Get-NinjaOneJobs {
             NoDrill = $True
         }
         $JobResults = New-NinjaOneGETRequest @RequestParams
-        Return $JobResults
+        if ($JobResults) {
+            return $JobResults
+        } else {
+            if ($Device) {
+                throw ('No jobs found for device {0}.' -f $Device.SystemName)
+            } else {
+                throw 'No jobs found.'
+            }
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

@@ -22,33 +22,33 @@ function New-NinjaOneGETRequest {
         [HashTable]$QSCollection,
         # Don't drill down into the data property.
         [Switch]$NoDrill,
-        # Return the raw response.
+        # return the raw response.
         [Switch]$Raw
     )
     if ($null -eq $Script:NRAPIConnectionInformation) {
-        Throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
+        throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
     }
     if ($null -eq $Script:NRAPIAuthenticationInformation) {
-        Throw "Missing NinjaOne authentication tokens, please run 'Connect-NinjaOne' first."
+        throw "Missing NinjaOne authentication tokens, please run 'Connect-NinjaOne' first."
     }
     try {
         if ($QSCollection) {
-            Write-Debug "Query string in New-NinjaOneGETRequest contains: $($QSCollection | Out-String)"
+            Write-Verbose "Query string in New-NinjaOneGETRequest contains: $($QSCollection | Out-String)"
             $QueryStringCollection = [System.Web.HTTPUtility]::ParseQueryString([String]::Empty)
             Write-Verbose 'Building [HttpQSCollection] for New-NinjaOneGETRequest'
             foreach ($Key in $QSCollection.Keys) {
                 $QueryStringCollection.Add($Key, $QSCollection.$Key)
             }
         } else {
-            Write-Debug 'Query string collection not present...'
+            Write-Verbose 'Query string collection not present...'
         }
-        Write-Debug "URI is $($Script:NRAPIConnectionInformation.URL)"
+        Write-Verbose "URI is $($Script:NRAPIConnectionInformation.URL)"
         $RequestUri = [System.UriBuilder]"$($Script:NRAPIConnectionInformation.URL)"
         $RequestUri.Path = $Resource
         if ($QueryStringCollection) {
             $RequestUri.Query = $QueryStringCollection.toString()
         } else {
-            Write-Debug 'No query string collection present.'
+            Write-Verbose 'No query string collection present.'
         }
         $WebRequestParams = @{
             Method = 'GET'
@@ -57,42 +57,56 @@ function New-NinjaOneGETRequest {
         if ($Raw) {
             $WebRequestParams.Add('Raw', $Raw)
         } else {
-            Write-Debug 'Raw switch not present.'
+            Write-Verbose 'Raw switch not present.'
         }
         if ($WebRequestParams) {
-            Write-Debug "WebRequestParams contains: $($WebRequestParams | Out-String)"
+            Write-Verbose "WebRequestParams contains: $($WebRequestParams | Out-String)"
         } else {
-            Write-Debug 'WebRequestParams is empty.'
+            Write-Verbose 'WebRequestParams is empty.'
         }
         try {
             $Result = Invoke-NinjaOneRequest @WebRequestParams
             if ($Result) {
-                Write-Debug "NinjaOne request returned:: $($Result | Out-String)"
+                Write-Verbose "NinjaOne request returned:: $($Result | Out-String)"
+                $Properties = ($Result | Get-Member -MemberType 'NoteProperty')
+                if ($Properties.name -contains 'results') {
+                    Write-Verbose "returning 'results' property.'"
+                    Write-Verbose "Result type is $($Result.results.GetType())"
+                    return $Result.results
+                } elseif ($Properties.name -contains 'result') {
+                    Write-Verbose "returning 'result' property."
+                    Write-Verbose "Result type is $($Result.result.GetType())"
+                    return $Result.result
+                } else {
+                    Write-Verbose 'returning raw.'
+                    Write-Verbose "Result type is $($Result.GetType())"
+                    return $Result
+                }
             } else {
-                Write-Debug 'NinjaOne request returned nothing.'
+                Write-Verbose 'NinjaOne request returned nothing.'
             }
-            $Properties = ($Result | Get-Member -MemberType 'NoteProperty')
-            if ($Properties.name -contains 'results') {
-                Write-Debug "Returning 'results' property.'"
-                Write-Debug "Result type is $($Result.results.GetType())"
-                Return $Result.results
-            } elseif ($Properties.name -contains 'result') {
-                Write-Debug "Returning 'result' property."
-                Write-Debug "Result type is $($Result.result.GetType())"
-                Return $Result.result
-            } else {
-                Write-Debug 'Returning raw.'
-                Write-Debug "Result type is $($Result.GetType())"
-                Return $Result
-            }
-        } catch [Microsoft.PowerShell.Commands.HttpResponseException] {
-            throw $_
         } catch {
+            $ExceptionType = if ($IsCoreCLR) {
+                [Microsoft.PowerShell.Commands.HttpResponseException]
+            } else {
+                [System.Net.WebException]
+            }
+            if ($_.Exception -is $ExceptionType) {
+                throw
+            } else {
+                New-NinjaOneError -ErrorRecord $_
+            }
+        }
+    } catch {
+        $ExceptionType = if ($IsCoreCLR) {
+            [Microsoft.PowerShell.Commands.HttpResponseException]
+        } else {
+            [System.Net.WebException]
+        }
+        if ($_.Exception -is $ExceptionType) {
+            throw
+        } else {
             New-NinjaOneError -ErrorRecord $_
         }
-    } catch [Microsoft.PowerShell.Commands.HttpResponseException] {
-        throw $_
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

@@ -9,33 +9,38 @@ function Set-NinjaOneDevice {
         .OUTPUTS
             A powershell object containing the response.
     #>
-    [CmdletBinding( SupportsShouldProcess = $true, ConfirmImpact = 'Medium' )]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device to set the information for.
-        [Parameter(Mandatory = $true)]
-        [int]$deviceId,
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('id')]
+        [Int]$deviceId,
         # The device information body object.
-        [Parameter(Mandatory = $true)]
-        [object]$deviceInformation
+        [Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
+        [Object]$deviceInformation
     )
     try {
-        $Resource = "v2/device/$deviceId"
+        $Device = Get-NinjaOneDevice -deviceId $deviceId
+        if ($Device) {
+            Write-Verbose ('Setting device information for device {0}.' -f $Device.SystemName)
+            $Resource = ('v2/device/{0}' -f $deviceId)
+        } else {
+            throw ('Device with id {0} not found.' -f $deviceId)
+        }
         $RequestParams = @{
             Resource = $Resource
             Body = $deviceInformation
         }
-        $DeviceExists = (Get-NinjaOneDevices -deviceId $deviceId).Count -gt 0
-        if ($DeviceExists) {
-            if ($PSCmdlet.ShouldProcess('Device information', 'Update')) {
-                $DeviceUpdate = New-NinjaOnePATCHRequest @RequestParams
-                if ($DeviceUpdate -eq 204) {
-                    Write-Information "Device information for device $($deviceId) updated successfully."
-                }
+        if ($PSCmdlet.ShouldProcess(('Device {0} information' -f $Device.SystemName), 'Update')) {
+            $DeviceUpdate = New-NinjaOnePATCHRequest @RequestParams
+            if ($DeviceUpdate -eq 204) {
+                $OIP = $InformationPreference
+                $InformationPreference = 'Continue'
+                Write-Information ('Device {0} information updated successfully.' -f $Device.SystemName)
+                $InformationPreference = $OIP
             }
-        } else {
-            throw "Device $($deviceId) does not exist."
         }
     } catch {
         New-NinjaOneError -ErrorRecord $_

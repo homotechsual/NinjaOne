@@ -18,7 +18,7 @@ function Get-NinjaOneGroups {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # Filter by language tag. ?ToDo: Query with Ninja
+        # Group names should be returned in this language.
         [Parameter(Position = 0)]
         [Alias('lang')]
         [String]$languageTag
@@ -34,7 +34,11 @@ function Get-NinjaOneGroups {
             QSCollection = $QSCollection
         }
         $GroupResults = New-NinjaOneGETRequest @RequestParams
-        Return $GroupResults
+        if ($GroupResults) {
+            return $GroupResults
+        } else {
+            throw 'No groups found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

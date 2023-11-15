@@ -9,39 +9,46 @@ function Reset-NinjaOneAlert {
         .OUTPUTS
             A powershell object containing the response.
     #>
-    [CmdletBinding( SupportsShouldProcess = $true, ConfirmImpact = 'Medium' )]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # The alert ID to reset status for.
-        [Parameter(Mandatory = $true)]
-        [string]$uid,
+        # The alert Id to reset status for.
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('id')]
+        [String]$uid,
         # The reset activity data.
-        [Parameter()]
-        [object]$activityData
+        [Parameter(Position = 1)]
+        [Object]$activityData
     )
     try {
         if ($activityData) {
-            $Resource = "v2/alert/$uid/reset"
+            $Resource = ('v2/alert/{0}/reset' -f $uid)
             $RequestParams = @{
                 Resource = $Resource
                 Body = $activityData
             }
-            if ($PSCmdlet.ShouldProcess('Alert', 'Reset')) {
+            if ($PSCmdlet.ShouldProcess(('Alert {0}' -f $uid), 'Reset')) {
                 $Alert = New-NinjaOnePOSTRequest @RequestParams
                 if ($Alert -eq 204) {
+                    $OIP = $InformationPreference
+                    $InformationPreference = 'Continue'
                     Write-Information 'Alert reset successfully.'
+                    $InformationPreference = $OIP
                 }
             }
         } else {
-            $Resource = "v2/alert/$uid"
+            $Resource = ('v2/alert/{0}' -f $uid)
             $RequestParams = @{
                 Resource = $Resource
             }
-            if ($PSCmdlet.ShouldProcess('Alert', 'Reset')) {
+            if ($PSCmdlet.ShouldProcess(('Alert {0}' -f $uid), 'Reset')) {
                 $Alert = New-NinjaOneDELETERequest @RequestParams
                 if ($Alert -eq 204) {
+                    $OIP = $InformationPreference
+                    $InformationPreference = 'Continue'
                     Write-Information 'Alert reset successfully.'
+                    $InformationPreference = $OIP
                 }
             }
         }

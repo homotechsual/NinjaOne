@@ -31,7 +31,11 @@ function Get-NinjaOneContacts {
             QSCollection = $QSCollection
         }
         $Contacts = New-NinjaOneGETRequest @RequestParams
-        Return $Contacts
+        if ($Contacts) {
+            return $Contacts
+        } else {
+            throw 'No contacts found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

@@ -18,23 +18,24 @@ function Invoke-NinjaOneRequest {
     [OutputType([Object])]
     param (
         # HTTP method to use.
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, Position = 0)]
         [ValidateSet('GET', 'POST', 'PUT', 'PATCH', 'DELETE')]
         [String]$Method,
         # The URI to send the request to.
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, Position = 1)]
         [String]$Uri,
         # The body of the request.
+        [Parameter(Position = 2)]
         [String]$Body,
         # Return the raw response - don't convert from JSON.
         [Switch]$Raw
 
     )
     if ($null -eq $Script:NRAPIConnectionInformation) {
-        Throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
+        throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
     }
     if ($null -eq $Script:NRAPIAuthenticationInformation) {
-        Throw "Missing NinjaOne authentication tokens, please run 'Connect-NinjaOne' first."
+        throw "Missing NinjaOne authentication tokens, please run 'Connect-NinjaOne' first."
     }
     $Now = Get-Date
     if ($Script:NRAPIAuthenticationInformation.Expires -le $Now) {
@@ -49,29 +50,30 @@ function Invoke-NinjaOneRequest {
         $AuthHeaders = $null
     }
     try {
-        Write-Verbose "Making a $($WebRequestParams.Method) request to $($WebRequestParams.Uri)"
+        Write-Verbose ('Making a {0} request to {1}' -f $WebRequestParams.Method, $WebRequestParams.Uri)
         $WebRequestParams = @{
             Method = $Method
             Uri = $Uri
         }
         if ($Body) {
-            Write-Debug "Body is $($Body | Out-String)"
+            Write-Verbose ('Body is {0}' -f ($Body | Out-String))
             $WebRequestParams.Add('Body', $Body)
         } else {
-            Write-Debug 'No body present.'
+            Write-Verbose 'No body present.'
         }
         $Response = Invoke-WebRequest @WebRequestParams -Headers $AuthHeaders -ContentType 'application/json'
-        Write-Debug "Response headers: $($Response.Headers | Out-String)"
-        Write-Debug "Raw response: $($Response | Out-String)"
+        Write-Verbose ('Response status code: {0}' -f $Response.StatusCode)
+        Write-Verbose ('Response headers: {0}' -f ($Response.Headers | Out-String))
+        Write-Verbose ('Raw response: {0}' -f ($Response | Out-String))
         if ($Response.Content) {
             $ResponseContent = $Response.Content
         } else {
             $ResponseContent = 'No content'
         }
         if ($Response.Content) {
-            Write-Debug "Response content: $($ResponseContent | Out-String)"
+            Write-Verbose ('Response content: {0}' -f ($ResponseContent | Out-String))
         } else {
-            Write-Debug 'No response content.'
+            Write-Verbose 'No response content.'
         }
         if ($Raw) {
             Write-Verbose 'Raw switch present, returning raw response.'
@@ -82,7 +84,7 @@ function Invoke-NinjaOneRequest {
         }
         if ($null -eq $Results) {
             if ($Response.StatusCode -and $WebRequestParams.Method -ne 'GET') {
-                Write-Verbose "Request completed with status code $($Response.StatusCode). No content in the response - returning Status Code."
+                Write-Verbose ('Request completed with status code {0}. No content in the response - returning Status Code.' -f $Response.StatusCode)
                 $Results = $Response.StatusCode
             } else {
                 Write-Verbose 'Request completed with no results and/or no status code.'

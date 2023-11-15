@@ -38,19 +38,26 @@ function Get-NinjaOneSoftwareInventory {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.
+        [Parameter(Position = 0)]
         [Alias('df')]
         [String]$deviceFilter,
         # Cursor name.
+        [Parameter(Position = 1)]
         [String]$cursor,
         # Number of results per page.
+        [Parameter(Position = 2)]
         [Int]$pageSize,
         # Filter software to those installed before this date. PowerShell DateTime object.
+        [Parameter(Position = 3)]
         [DateTime]$installedBefore,
         # Filter software to those installed after this date. Unix Epoch time.
+        [Parameter(Position = 3)]
         [Int]$installedBeforeUnixEpoch,
         # Filter software to those installed after this date. PowerShell DateTime object.
+        [Parameter(Position = 4)]
         [DateTime]$installedAfter,
         # Filter software to those installed after this date. Unix Epoch time.
+        [Parameter(Position = 4)]
         [Int]$installedAfterUnixEpoch
     )
     $CommandName = $MyInvocation.InvocationName
@@ -77,7 +84,11 @@ function Get-NinjaOneSoftwareInventory {
             QSCollection = $QSCollection
         }
         $SoftwareInventory = New-NinjaOneGETRequest @RequestParams
-        Return $SoftwareInventory
+        if ($SoftwareInventory) {
+            return $SoftwareInventory
+        } else {
+            throw 'No software inventory found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

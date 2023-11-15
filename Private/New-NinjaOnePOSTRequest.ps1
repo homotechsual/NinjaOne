@@ -24,31 +24,31 @@ function New-NinjaOnePOSTRequest {
         [Object]$Body
     )
     if ($null -eq $Script:NRAPIConnectionInformation) {
-        Throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
+        throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
     }
     if ($null -eq $Script:NRAPIAuthenticationInformation) {
-        Throw "Missing NinjaOne authentication tokens, please run 'Connect-NinjaOne' first."
+        throw "Missing NinjaOne authentication tokens, please run 'Connect-NinjaOne' first."
     }
     try {
         if ($QSCollection) {
-            Write-Debug "Query string in New-NinjaOnePOSTRequest contains: $($QSCollection | Out-String)"
+            Write-Verbose "Query string in New-NinjaOnePOSTRequest contains: $($QSCollection | Out-String)"
             $QueryStringCollection = [System.Web.HTTPUtility]::ParseQueryString([String]::Empty)
             Write-Verbose 'Building [HttpQSCollection] for New-NinjaOnePOSTRequest'
             foreach ($Key in $QSCollection.Keys) {
                 $QueryStringCollection.Add($Key, $QSCollection.$Key)
             }
         } else {
-            Write-Debug 'Query string collection not present...'
+            Write-Verbose 'Query string collection not present...'
         }
-        Write-Debug "URI is $($Script:NRAPIConnectionInformation.URL)"
+        Write-Verbose "URI is $($Script:NRAPIConnectionInformation.URL)"
         $RequestUri = [System.UriBuilder]"$($Script:NRAPIConnectionInformation.URL)"
-        Write-Debug "Path is $($Resource)"
+        Write-Verbose "Path is $($Resource)"
         $RequestUri.Path = $Resource
         if ($QueryStringCollection) {
-            Write-Debug "Query string is $($QueryStringCollection.toString())"
+            Write-Verbose "Query string is $($QueryStringCollection.toString())"
             $RequestUri.Query = $QueryStringCollection.toString()
         } else {
-            Write-Debug 'Query string not present...'
+            Write-Verbose 'Query string not present...'
         }
         $WebRequestParams = @{
             Method = 'POST'
@@ -57,29 +57,43 @@ function New-NinjaOnePOSTRequest {
         if ($Body) {
             Write-Verbose 'Building [HttpBody] for New-NinjaOnePOSTRequest'
             $WebRequestParams.Body = ($Body | ConvertTo-Json -Depth 100)
-            Write-Debug "Raw body is $($WebRequestParams.Body)"
+            Write-Verbose "Raw body is $($WebRequestParams.Body)"
         } else {
             Write-Verbose 'No body provided for New-NinjaOnePOSTRequest'
         }
-        Write-Debug "Building new NinjaOneRequest with params: $($WebRequestParams | Out-String)"
+        Write-Verbose "Building new NinjaOneRequest with params: $($WebRequestParams | Out-String)"
         try {
             $Result = Invoke-NinjaOneRequest @WebRequestParams
-            Write-Debug "NinjaOne request returned $($Result | Out-String)"
+            Write-Verbose "NinjaOne request returned $($Result | Out-String)"
             if ($Result['results']) {
-                Return $Result.results
+                return $Result.results
             } elseif ($Result['result']) {
-                Return $Result.result
+                return $Result.result
             } else {
-                Return $Result
+                return $Result
             }
-        } catch [Microsoft.PowerShell.Commands.HttpResponseException] {
-            throw $_
         } catch {
+            $ExceptionType = if ($IsCoreCLR) {
+                [Microsoft.PowerShell.Commands.HttpResponseException]
+            } else {
+                [System.Net.WebException]
+            }
+            if ($_.Exception -is $ExceptionType) {
+                throw
+            } else {
+                New-NinjaOneError -ErrorRecord $_
+            }
+        }
+    } catch {
+        $ExceptionType = if ($IsCoreCLR) {
+            [Microsoft.PowerShell.Commands.HttpResponseException]
+        } else {
+            [System.Net.WebException]
+        }
+        if ($_.Exception -is $ExceptionType) {
+            throw
+        } else {
             New-NinjaOneError -ErrorRecord $_
         }
-    } catch [Microsoft.PowerShell.Commands.HttpResponseException] {
-        throw $_
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

@@ -17,7 +17,7 @@ function Start-OAuthHTTPListener {
         [System.UriBuilder]$OpenURI
     )
     Write-Verbose 'Opening browser to authenticate.'
-    Write-Debug "Authentication URL: $($OpenURI.ToString())"
+    Write-Verbose "Authentication URL: $($OpenURI.ToString())"
     $HTTP = [System.Net.HttpListener]::new()
     $HTTP.Prefixes.Add("http://localhost:$Port/")
     $HTTP.Start()
@@ -27,7 +27,7 @@ function Start-OAuthHTTPListener {
         $Context = $HTTP.GetContext()
         if ($Context.Request.QueryString -and $Context.Request.QueryString['Code']) {
             $Result.Code = $Context.Request.QueryString['Code']
-            Write-Debug "Authorisation code received: $($Result.Code)"
+            Write-Verbose "Authorisation code received: $($Result.Code)"
             if ($null -ne $Result.Code) {
                 $Result.GotAuthorisationCode = $True
             }
@@ -40,5 +40,5 @@ function Start-OAuthHTTPListener {
             $HTTP.Stop()
         }
     }
-    Return $Result
+    return $Result
 }

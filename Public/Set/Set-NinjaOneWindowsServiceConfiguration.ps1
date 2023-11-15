@@ -11,30 +11,34 @@ function Set-NinjaOneWindowsServiceConfiguration {
         .EXAMPLE
             Set-NinjaOneWindowsServiceConfiguration -deviceId "12345" -serviceId "NinjaRMMAgent" -Configuration @{ startType = "AUTO_START"; userName = "LocalSystem" }
     #>
-    [CmdletBinding( SupportsShouldProcess = $true, ConfirmImpact = 'Medium' )]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device to change servce configuration for.
-        [Parameter(Mandatory = $true)]
-        [string[]]$deviceId,
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('id')]
+        [Int]$deviceId,
         # The service to alter configuration for.
-        [Parameter(Mandatory = $true)]
-        [object]$serviceId,
+        [Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
+        [Int]$serviceId,
         # The configuration to set.
-        [Parameter(Mandatory = $true)]
-        [object]$configuration
+        [Parameter(Mandatory, Position = 2, ValueFromPipelineByPropertyName)]
+        [Object]$configuration
     )
     try {
-        $Resource = "v2/device/$deviceId/windows-service/$serviceId/configure"
+        $Resource = ('v2/device/{0}/windows-service/{1}/configure' -f $deviceId, $serviceId)
         $RequestParams = @{
             Resource = $Resource
             Body = $configuration
         }
-        if ($PSCmdlet.ShouldProcess("Service $serviceId configuration", 'Set')) {
+        if ($PSCmdlet.ShouldProcess(('Service {0} configuration' -f $serviceId), 'Set')) {
             $ServiceConfiguration = New-NinjaOnePOSTRequest @RequestParams
-            if ($InformationPreference -eq 'Continue' -and $ServiceConfiguration -eq 204) {
-                Write-Information "Service configuration for service $($serviceId) on device $($deviceId) updated successfully." -InformationAction Continue
+            if ($ServiceConfiguration -eq 204) {
+                $OIP = $InformationPreference
+                $InformationPreference = 'Continue'
+                Write-Information ('Service {0} configuration updated successfully.' -f $serviceId)
+                $InformationPreference = $OIP
             }
         }
     } catch {

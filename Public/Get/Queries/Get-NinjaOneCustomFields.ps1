@@ -38,32 +38,32 @@ function Get-NinjaOneCustomFields {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.
-        [Parameter(ParameterSetName = 'Default')]
+        [Parameter(ParameterSetName = 'Default', Position = 0)]
         [Alias('df')]
         [String]$deviceFilter,
         # Cursor name.
-        [Parameter(ParameterSetName = 'Default')]
-        [Parameter(ParameterSetName = 'Scoped')]
+        [Parameter(ParameterSetName = 'Default', Position = 1)]
+        [Parameter(ParameterSetName = 'Scoped', Position = 0)]
         [String]$cursor,
         # Number of results per page.
-        [Parameter(ParameterSetName = 'Default')]
-        [Parameter(ParameterSetName = 'Scoped')]
+        [Parameter(ParameterSetName = 'Default', Position = 2)]
+        [Parameter(ParameterSetName = 'Scoped', Position = 1)]
         [Int]$pageSize,
         # Custom field scopes to filter by.
-        [Parameter(ParameterSetName = 'Scoped')]
+        [Parameter(ParameterSetName = 'Scoped', Position = 2, ValueFromPipeline)]
         [ValidateSet('NODE', 'ORGANIZATION', 'LOCATION', 'ALL')]
         [String[]]$scopes,
         # Custom fields updated after the specified date. PowerShell DateTime object.
-        [Parameter(ParameterSetName = 'Default')]
-        [Parameter(ParameterSetName = 'Scoped')]
+        [Parameter(ParameterSetName = 'Default', Position = 3)]
+        [Parameter(ParameterSetName = 'Scoped', Position = 3)]
         [DateTime]$updatedAfter,
         # Custom fields updated after the specified date. Unix Epoch time.
-        [Parameter(ParameterSetName = 'Default')]
-        [Parameter(ParameterSetName = 'Scoped')]
+        [Parameter(ParameterSetName = 'Default', Position = 3)]
+        [Parameter(ParameterSetName = 'Scoped', Position = 3)]
         [Int]$updatedAfterUnixEpoch,
         # Array of fields.
-        [Parameter(ParameterSetName = 'Default')]
-        [Parameter(ParameterSetName = 'Scoped')]
+        [Parameter(ParameterSetName = 'Default', Position = 4)]
+        [Parameter(ParameterSetName = 'Scoped', Position = 4)]
         [String[]]$fields,
         # Get the detailed custom fields report(s).
         [Parameter(ParameterSetName = 'Default')]
@@ -78,11 +78,12 @@ function Get-NinjaOneCustomFields {
     }
     # If the [DateTime] parameter $updatedAfter is set convert the value to a Unix Epoch.
     if ($updatedAfter) {
-        [int]$Parameters.updatedAfter = ConvertTo-UnixEpoch -DateTime $updatedAfter
+        [Int]$updatedAfter = ConvertTo-UnixEpoch -DateTime $updatedAfter
     }
     # If the Unix Epoch parameter $updatedAfterUnixEpoch is set assign the value to the $updatedAfter variable and null $updatedAfterUnixEpoch.
     if ($updatedAfterUnixEpoch) {
-        [int]$Parameters.updatedAfter = $updatedAfterUnixEpoch
+        $Parameters.Remove('updatedAfterUnixEpoch') | Out-Null
+        [Int]$updatedAfter = $updatedAfterUnixEpoch
     }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters -CommaSeparatedArrays
@@ -104,7 +105,11 @@ function Get-NinjaOneCustomFields {
             QSCollection = $QSCollection
         }
         $CustomFields = New-NinjaOneGETRequest @RequestParams
-        Return $CustomFields
+        if ($CustomFields) {
+            return $CustomFields
+        } else {
+            throw 'No custom fields found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

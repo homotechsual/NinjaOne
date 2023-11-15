@@ -58,7 +58,7 @@ function Get-NinjaOneActivities {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # Filter by device ID.
+        # Filter by device id.
         [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id')]
         [Int]$deviceId,
@@ -66,40 +66,40 @@ function Get-NinjaOneActivities {
         [Parameter(Position = 1)]
         [ValidateSet('SYSTEM', 'DEVICE', 'USER', 'ALL')]
         [String]$class,
-        # Return activities from before this date. PowerShell DateTime object.
+        # return activities from before this date. PowerShell DateTime object.
         [Parameter(Position = 2)]
         [DateTime]$before,
-        # Return activities from before this date. Unix Epoch time.
+        # return activities from before this date. Unix Epoch time.
         [Parameter(Position = 2)]
         [Int]$beforeUnixEpoch,
-        # Return activities from after this date. PowerShell DateTime object.
+        # return activities from after this date. PowerShell DateTime object.
         [Parameter(Position = 3)]
         [DateTime]$after,
-        # Return activities from after this date. Unix Epoch time.
+        # return activities from after this date. Unix Epoch time.
         [Parameter(Position = 3)]
         [Int]$afterUnixEpoch,
-        # Return activities older than this activity ID.
+        # return activities older than this activity id.
         [Parameter(Position = 4)]
         [Int]$olderThan,
-        # Return activities newer than this activity ID.
+        # return activities newer than this activity id.
         [Parameter(Position = 5)]
         [Int]$newerThan,
-        # Return activities of this type.
+        # return activities of this type.
         [Parameter(Position = 6)]
         [String]$type,
-        # Return activities of this type.
+        # return activities of this type.
         [Parameter(Position = 6)]
         [String]$activityType,
-        # Return activities with this status.
+        # return activities with this status.
         [Parameter(Position = 7)]
         [String]$status,
-        # Return activities for this user.
+        # return activities for this user.
         [Parameter(Position = 8)]
         [String]$user,
-        # Return activities for this alert series.
+        # return activities for this alert series.
         [Parameter(Position = 9)]
         [String]$seriesUid,
-        # Return activities matching this device filter.
+        # return activities matching this device filter.
         [Parameter(Position = 10)]
         [Alias('df')]
         [String]$deviceFilter,
@@ -113,13 +113,15 @@ function Get-NinjaOneActivities {
         # Filter by timezone.
         [Parameter(Position = 13)]
         [Alias('tz')]
-        [String]$timeZone
+        [String]$timeZone,
+        # return the activities object instead of the default return with `lastActivityId` and `activities` properties.
+        [Switch]$expandActivities
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
     if ($deviceId) {
-        $Parameters.Remove('deviceID')
+        $Parameters.Remove('deviceId')
         if ($type) {
             $Parameters.Remove('type')
             [string]$activityType = $type
@@ -152,21 +154,35 @@ function Get-NinjaOneActivities {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         if ($deviceId) {
             Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceID $deviceId
+            $Device = Get-NinjaOneDevices -deviceId $deviceId
             if ($Device) {
-                Write-Verbose "Retrieving activities for $($Device.SystemName)."
-                $Resource = "v2/device/$($deviceId)/activities"
+                Write-Verbose ('Getting activities for device {0}.' -f $Device.SystemName)
+                $Resource = ('v2/device/{0}/activities' -f $deviceId)
+            } else {
+                throw ('Device with id {0} not found.' -f $deviceId)
             }
         } else {
             Write-Verbose 'Retrieving all device activities.'
             $Resource = 'v2/activities'
         }
         $RequestParams = @{
-            Resource     = $Resource
+            Resource = $Resource
             QSCollection = $QSCollection
         }
         $ActivityResults = New-NinjaOneGETRequest @RequestParams
-        Return $ActivityResults
+        if ($ActivityResults) {
+            if ($expandActivities) {
+                return $ActivityResults.activities
+            } else {
+                return $ActivityResults
+            }
+        } else {
+            if ($Device) {
+                throw ('No activities found for device {0}.' -f $Device.SystemName)
+            } else {
+                throw 'No activities found.'
+            }
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

@@ -17,7 +17,7 @@ function Get-NinjaOneOrganisationDocuments {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # Filter by organisation Id.
+        # Filter by organisation id.
         [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationId')]
         [Int]$organisationId
@@ -33,15 +33,21 @@ function Get-NinjaOneOrganisationDocuments {
         Write-Verbose 'Getting organisation documents from NinjaOne API.'
         $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
         if ($Organisation) {
-            Write-Verbose "Retrieving organisation documents for $($Organisation.Name)."
-            $Resource = "v2/organization/$($organisationId)/documents"
+            Write-Verbose ('Getting documents for organisation {0}.' -f $Organisation.Name)
+            $Resource = ('v2/organization/{0}/documents' -f $organisationId)
+        } else {
+            throw ('Organisation with id {0} not found.' -f $organisationId)
         }
         $RequestParams = @{
             Resource = $Resource
             QSCollection = $QSCollection
         }
         $ActivityResults = New-NinjaOneGETRequest @RequestParams
-        Return $ActivityResults
+        if ($ActivityResults) {
+            return $ActivityResults
+        } else {
+            throw ('No documents found for organisation {0}.' -f $Organisation.Name)
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

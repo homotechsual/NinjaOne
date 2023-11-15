@@ -30,11 +30,14 @@ function Get-NinjaOneWindowsServices {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.
+        [Parameter(Position = 0)]
         [Alias('df')]
         [String]$deviceFilter,
         # Filter by service name.
+        [Parameter(Position = 1, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [String]$name,
         # Filter by service state.
+        [Parameter(Position = 2, ValueFromPipelineByPropertyName)]
         [ValidateSet(
             'UNKNOWN',
             'STOPPED',
@@ -47,8 +50,10 @@ function Get-NinjaOneWindowsServices {
         )]
         [String]$state,
         # Cursor name.
+        [Parameter(Position = 3)]
         [String]$cursor,
         # Number of results per page.
+        [Parameter(Position = 4)]
         [Int]$pageSize
     )
     $CommandName = $MyInvocation.InvocationName
@@ -61,7 +66,11 @@ function Get-NinjaOneWindowsServices {
             QSCollection = $QSCollection
         }
         $WindowsServices = New-NinjaOneGETRequest @RequestParams
-        Return $WindowsServices
+        if ($WindowsServices) {
+            return $WindowsServices
+        } else {
+            throw 'No windows services found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

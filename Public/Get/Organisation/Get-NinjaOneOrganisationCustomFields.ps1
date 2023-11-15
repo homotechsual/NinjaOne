@@ -17,7 +17,7 @@ function Get-NinjaOneOrganisationCustomFields {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # Filter by organisation Id.
+        # Filter by organisation id.
         [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationId')]
         [Int]$organisationId
@@ -33,17 +33,21 @@ function Get-NinjaOneOrganisationCustomFields {
         Write-Verbose 'Getting organisation custom fields from NinjaOne API.'
         $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
         if ($Organisation) {
-            Write-Verbose "Retrieving custom fields for organisation $($Organisation.Name)."
-            $Resource = "v2/organization/$($organisationId)/custom-fields"
+            Write-Verbose ('Getting custom fields for organisation {0}.' -f $Organisation.Name)
+            $Resource = ('v2/organization/{0}/custom-fields' -f $organisationId)
         } else {
-            Throw "Organisation $($organisationId) does not exist."
+            throw ('Organisation with id {0} not found.' -f $organisationId)
         }
         $RequestParams = @{
             Resource = $Resource
             QSCollection = $QSCollection
         }
         $CustomFieldResults = New-NinjaOneGETRequest @RequestParams
-        Return $CustomFieldResults
+        if ($CustomFieldResults) {
+            return $CustomFieldResults
+        } else {
+            throw ('No custom fields found for organisation {0}.' -f $Organisation.Name)
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

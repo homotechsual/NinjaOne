@@ -29,5 +29,5 @@ function ConvertTo-UnixEpoch {
     $UniversalDateTime = $DateTime.ToUniversalTime()
     $UnixEpochTimestamp = Get-Date -Date $UniversalDateTime -UFormat %s
     Write-Verbose "Converted $DateTime to Unix Epoch timestamp $UnixEpochTimestamp"
-    Return $UnixEpochTimestamp
+    return $UnixEpochTimestamp
 }

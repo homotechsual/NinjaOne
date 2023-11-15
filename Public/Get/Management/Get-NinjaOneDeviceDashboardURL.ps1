@@ -10,7 +10,7 @@ function Get-NinjaOneDeviceDashboardURL {
         .EXAMPLE
             PS> Get-NinjaOneDeviceDashboardURL -deviceId 1
 
-            Gets the device dashboard URL for the device with ID 1.
+            Gets the device dashboard URL for the device with id 1.
         .OUTPUTS
             A powershell object containing the response.
     #>
@@ -22,7 +22,7 @@ function Get-NinjaOneDeviceDashboardURL {
         [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id')]
         [Int]$deviceId,
-        # Return redirect response. This is largely useless as it will return a HTML redirect page source.
+        # return redirect response. This is largely useless as it will return a HTML redirect page source.
         [Parameter(Position = 1)]
         [Switch]$redirect
     )
@@ -35,8 +35,8 @@ function Get-NinjaOneDeviceDashboardURL {
         Write-Verbose 'Getting device from NinjaOne API.'
         $Device = Get-NinjaOneDevices -deviceId $deviceId
         if ($Device) {
-            Write-Verbose "Retrieving dashboard URL for $($Device.SystemName)."
-            $Resource = "v2/device/$($deviceId)/dashboard-url"
+            Write-Verbose ('Getting dashboard URL for device {0}.' -f $Device.SystemName)
+            $Resource = ('v2/device/{0}/dashboard-url' -f $deviceId)
         }
         $RequestParams = @{
             Resource = $Resource
@@ -46,7 +46,11 @@ function Get-NinjaOneDeviceDashboardURL {
             $RequestParams.Add('Raw', $true)
         }
         $DeviceDashboardURLResults = New-NinjaOneGETRequest @RequestParams
-        Return $DeviceDashboardURLResults
+        if ($DeviceDashboardURLResults) {
+            return $DeviceDashboardURLResults
+        } else {
+            throw ('No dashboard URL found for device {0}.' -f $Device.SystemName)
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

@@ -22,11 +22,14 @@ function Get-NinjaOnePolicyOverrides {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Cursor name.
+        [Parameter(Position = 0)]
         [String]$cursor,
         # Device filter.
+        [Parameter(Position = 1)]
         [Alias('df')]
         [String]$deviceFilter,
         # Number of results per page.
+        [Parameter(Position = 2)]
         [Int]$pageSize
     )
     $CommandName = $MyInvocation.InvocationName
@@ -39,7 +42,11 @@ function Get-NinjaOnePolicyOverrides {
             QSCollection = $QSCollection
         }
         $PolicyOverrides = New-NinjaOneGETRequest @RequestParams
-        Return $PolicyOverrides
+        if ($PolicyOverrides) {
+            return $PolicyOverrides
+        } else {
+            throw 'No policy overrides found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

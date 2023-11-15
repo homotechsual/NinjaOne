@@ -10,7 +10,7 @@ function New-NinjaOneError {
         [switch]$HasResponse
 
     )
-    if ($Error.Exception -is [System.Net.Http.HttpRequestException]) {
+    if (($Error.Exception -is [System.Net.Http.HttpRequestException]) -or ($Error.Exception -is [System.Net.WebException])) {
         Write-Verbose 'Generating NinjaOne error output.'
         $ExceptionMessage = [Hashset[String]]::New()
         $APIResultMatchString = '*The NinjaOne API said*'
@@ -21,7 +21,7 @@ function New-NinjaOneError {
             if ($ErrorDetailsIsJson) {
                 Write-Verbose 'ErrorDetails is JSON.'
                 $ErrorDetails = $ErrorRecord.ErrorDetails | ConvertFrom-Json
-                Write-Debug "Raw error details: $($ErrorDetails | Out-String)"
+                Write-Verbose "Raw error details: $($ErrorDetails | Out-String)"
                 if ($null -ne $ErrorDetails) {
                     if (($null -ne $ErrorDetails.resultCode) -and ($null -ne $ErrorDetails.errorMessage)) {
                         Write-Verbose 'ErrorDetails contains resultCode and errorMessage.'
@@ -55,7 +55,7 @@ function New-NinjaOneError {
         }
         if (($ErrorRecord.Exception.Response -and $HasResponse) -or $ExceptionMessage -notlike $HTTPResponseMatchString) {
             $Response = $ErrorRecord.Exception.Response
-            Write-Debug "Raw HTTP response: $($Response | Out-String)"
+            Write-Verbose "Raw HTTP response: $($Response | Out-String)"
             if ($Response.StatusCode.value__ -and $Response.ReasonPhrase) {
                 $ExceptionMessage.Add("The API returned the following HTTP error response: $($Response.StatusCode.value__) $($Response.ReasonPhrase)") | Out-Null
             } else {
@@ -78,5 +78,5 @@ function New-NinjaOneError {
         Write-Verbose 'Not generating NinjaOne error output.'
         $NinjaOneError = $ErrorRecord
     }
-    $PSCmdlet.ThrowTerminatingError($NinjaOneError)
+    $PSCmdlet.throwTerminatingError($NinjaOneError)
 }

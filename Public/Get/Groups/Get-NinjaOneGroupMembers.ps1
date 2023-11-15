@@ -34,17 +34,22 @@ function Get-NinjaOneGroupMembers {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         Write-Verbose 'Getting group from NinjaOne API.'
         $Groups = Get-NinjaOneGroups
-        $Group = $Groups | Where-Object { $_.id -eq $groupID }
+        $Group = $Groups | Where-Object { $_.id -eq $groupId }
         if ($Group) {
             Write-Verbose "Retrieving group members for $($Group.Name)."
-            $Resource = "v2/group/$($groupID)/device-ids"
+            $Resource = "v2/group/$($groupId)/device-ids"
         }
         $RequestParams = @{
             Resource = $Resource
             QSCollection = $QSCollection
         }
         $GroupMemberResults = New-NinjaOneGETRequest @RequestParams
-        Return $GroupMemberResults
+        if ($GroupMemberResults) {
+            return $GroupMemberResults
+        } else {
+            throw ('No group members found for group {0}.' -f $Group.Name)
+        }
+        return $GroupMemberResults
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

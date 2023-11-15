@@ -9,23 +9,41 @@ function Update-NinjaOneNodeRolePolicyAssignment {
         .OUTPUTS
             A powershell object containing the response.
     #>
-    [CmdletBinding( SupportsShouldProcess = $true, ConfirmImpact = 'Medium' )]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Array])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The organisation to update the policy assignment for.
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationId')]
         [Int]$organisationId,
         # The node role id to update the policy assignment for.
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
         [Int]$nodeRoleId,
         # The policy id to assign to the node role.
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory, Position = 2, ValueFromPipelineByPropertyName)]
         [Int]$policyId
     )
     try {
-        $Resource = "v2/organization/$organisationId/policies"
+        $Organisation = Get-NinjaOneOrganisations -OrganisationId $organisationId
+        if ($Organisation) {
+            Write-Verbose ('Getting node role {0} from NinjaOne API.' -f $nodeRoleId)
+            $Role = Get-NinjaOneRoles | Where-Object { $_.id -eq $nodeRoleId }
+            if ($Role) {
+                Write-Verbose ('Getting policy {0} from NinjaOne API.' -f $policyId)
+                $Policy = Get-NinjaOnePolicies | Where-Object { $_.id -eq $policyId }
+                if ($Policy) {
+                    Write-Verbose ('Setting policy assignment for node role {0}.' -f $Role.name)
+                    $Resource = ('v2/organization/{0}/policies' -f $organisationId)
+                } else {
+                    throw ('Policy with id {0} not found.' -f $policyId)
+                }
+            } else {
+                throw ('Node role with id {0} not found in organisation {1}' -f $nodeRoleId, $Organisation.Name)
+            }
+        } else {
+            throw ('Organisation with id {0} not found.' -f $organisationId)
+        }
         $RequestParams = @{
             Resource = $Resource
             Body = @{
@@ -34,16 +52,14 @@ function Update-NinjaOneNodeRolePolicyAssignment {
             }
             AsArray = $true
         }
-        $OrganisationExists = (Get-NinjaOneOrganisations -OrganisationId $organisationId).Count -gt 0
-        if ($OrganisationExists) {
-            if ($PSCmdlet.ShouldProcess('Node Role Policy Assignment', 'Update')) {
-                $NodeRolePolicyAssignment = New-NinjaOnePUTRequest @RequestParams
-                if ($NodeRolePolicyAssignment -eq 204) {
-                    Write-Information 'Node Role Policy Assignment updated successfully.'
-                }
+        if ($PSCmdlet.ShouldProcess(('Assign policy {0} to role {1} for {2}.' -f $Policy.Name, $Role.Name, $Organisation.Name), 'Update')) {
+            $NodeRolePolicyAssignment = New-NinjaOnePUTRequest @RequestParams
+            if ($NodeRolePolicyAssignment -eq 204) {
+                $OIP = $InformationPreference
+                $InformationPreference = 'Continue'
+                Write-Information ('Policy {0} assigned to role {1} for {2}.' -f $Policy.Name, $Role.Name, $Organisation.Name)
+                $InformationPreference = $OIP
             }
-        } else {
-            Throw "Organisation $($organisationId) does not exist."
         }
     } catch {
         New-NinjaOneError -ErrorRecord $_

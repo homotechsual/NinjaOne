@@ -9,38 +9,47 @@ function Update-NinjaOneLocation {
         .OUTPUTS
             A powershell object containing the response.
     #>
-    [CmdletBinding( SupportsShouldProcess = $true, ConfirmImpact = 'Medium' )]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The organisation to set the location information for.
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationId')]
         [Int]$organisationId,
         # The location to set the information for.
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
         [Int]$locationId,
         # The location information body object.
-        [Parameter(Mandatory = $true)]
-        [object]$locationInformation
+        [Parameter(Mandatory, Position = 2, ValueFromPipelineByPropertyName)]
+        [Object]$locationInformation
     )
     try {
-        $Resource = "v2/organization/$organisationId/locations/$locationId"
+        $Organisation = Get-NinjaOneOrganisations -OrganisationId $organisationId
+        if ($Organisation) {
+            Write-Verbose ('Getting location {0} from NinjaOne API.' -f $locationId)
+            $Location = Get-NinjaOneLocations -OrganisationId $organisationId | Where-Object { $_.id -eq $locationId }
+            if ($Location) {
+                Write-Verbose ('Setting location information for location {0}.' -f $Location.name)
+                $Resource = ('v2/organization/{0}/locations/{1}' -f $organisationId, $locationId)
+            } else {
+                throw ('Location with id {0} not found in organisation {1}' -f $locationId, $Organisation.Name)
+            }
+        } else {
+            throw ('Organisation with id {0} not found.' -f $organisationId)
+        }
         $RequestParams = @{
             Resource = $Resource
             Body = $locationInformation
         }
-        $OrganisationExists = (Get-NinjaOneOrganisations -OrganisationId $organisationId).Count -gt 0
-        $LocationExists = $(Get-NinjaOneLocations -OrganisationId $organisationId | Where-Object { $_.id -eq $locationId }).Count -gt 0
-        if ($OrganisationExists -and $LocationExists) {
-            if ($PSCmdlet.ShouldProcess('Location information', 'Update')) {
-                $LocationUpdate = New-NinjaOnePATCHRequest @RequestParams
-                if ($LocationUpdate -eq 204) {
-                    Write-Information "Location information for location $($locationId) updated successfully."
-                }
+        if ($PSCmdlet.ShouldProcess(('Location information for {0} in {1}' -f $Location.Name, $Organisation.Name), 'Update')) {
+            $LocationUpdate = New-NinjaOnePATCHRequest @RequestParams
+            if ($LocationUpdate -eq 204) {
+                $OIP = $InformationPreference
+                $InformationPreference = 'Continue'
+                Write-Information ('Location {0} information updated successfully.' -f $Location.Name)
+                $InformationPreference = $OIP
             }
-        } else {
-            Throw "Organisation $($organisationId) or location $($locationId) does not exist."
         }
     } catch {
         New-NinjaOneError -ErrorRecord $_

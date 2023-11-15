@@ -16,9 +16,9 @@ function Get-NinjaOneUsers {
             
             Gets all technicians (users with the TECHNICIAN user type).
         .EXAMPLE
-            PS> Get-NinjaOneUsers -organisationID 1
+            PS> Get-NinjaOneUsers -organisationId 1
             
-            Gets all users for the organisation with ID 1 (only works for users with the END_USER user type).
+            Gets all users for the organisation with id 1 (only works for users with the END_USER user type).
         .OUTPUTS
             A powershell object containing the response.
     #>
@@ -46,12 +46,12 @@ function Get-NinjaOneUsers {
     }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        if ($organisationID) {
+        if ($organisationId) {
             Write-Verbose 'Getting organisation from NinjaOne API.'
-            $Organisation = Get-NinjaOneOrganisations -organisationID $organisationID
+            $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
             if ($Organisation) {
-                Write-Verbose "Retrieving users for $($Organisation.Name)."
-                $Resource = "v2/organization/$($organisationId)/end-users"
+                Write-Verbose ('Getting users for organisation {0}.' -f $Organisation.Name)
+                $Resource = ('v2/organization/{0}/end-users' -f $organisationId)
             } 
         } else {
             Write-Verbose 'Retrieving all users.'
@@ -62,7 +62,15 @@ function Get-NinjaOneUsers {
             QSCollection = $QSCollection
         }
         $UserResults = New-NinjaOneGETRequest @RequestParams
-        Return $UserResults
+        if ($UserResults) {
+            return $UserResults
+        } else {
+            if ($Organisation) {
+                throw ('No users found for organisation {0}.' -f $Organisation.Name)
+            } else {
+                throw 'No users found.'
+            }
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

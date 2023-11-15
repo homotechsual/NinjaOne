@@ -28,21 +28,23 @@ function Get-NinjaOneDeviceLastLoggedOnUser {
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    $Parameters.Remove('deviceID') | Out-Null
+    $Parameters.Remove('deviceId') | Out-Null
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         Write-Verbose 'Getting device from NinjaOne API.'
-        $Device = Get-NinjaOneDevices -deviceID $deviceId
+        $Device = Get-NinjaOneDevices -deviceId $deviceId
         if ($Device) {
-            Write-Verbose ('Getting last logged on user for device {0}.' -f $Device.Name)
+            Write-Verbose ('Getting last logged on user for device {0}.' -f $Device.SystemName)
             $Resource = ('v2/device/{0}/last-logged-on-user' -f $deviceId)
+        } else {
+            throw ('Device with id {0} not found.' -f $deviceId)
         }
         $RequestParams = @{
             Resource = $Resource
             QSCollection = $QSCollection
         }
         $DeviceLastLoggedOnUserResults = New-NinjaOneGETRequest @RequestParams
-        Return $DeviceLastLoggedOnUserResults
+        return $DeviceLastLoggedOnUserResults
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

@@ -27,7 +27,7 @@ function Get-NinjaOneAlerts {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # Filter by device ID.
+        # Filter by device id.
         [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id')]
         [Int]$deviceId,
@@ -51,16 +51,18 @@ function Get-NinjaOneAlerts {
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
     if ($deviceId) {
-        $Parameters.Remove('deviceID') | Out-Null
+        $Parameters.Remove('deviceId') | Out-Null
     }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         if ($deviceId) {
             Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceID $deviceId
+            $Device = Get-NinjaOneDevices -deviceId $deviceId
             if ($Device) {
-                Write-Verbose "Retrieving alerts for $($Device.SystemName)."
-                $Resource = "v2/device/$($deviceId)/alerts"
+                Write-Verbose ('Getting alerts for device {0}.' -f $Device.SystemName)
+                $Resource = ('v2/device/{0}/alerts' -f $deviceId)
+            } else {
+                throw ('Device with id {0} not found.' -f $deviceId)
             }
         } else {
             Write-Verbose 'Retrieving all alerts.'
@@ -70,8 +72,18 @@ function Get-NinjaOneAlerts {
             Resource = $Resource
             QSCollection = $QSCollection
         }
-        $AlertResults = New-NinjaOneGETRequest @RequestParams
-        Return $AlertResults
+        try {
+            $AlertResults = New-NinjaOneGETRequest @RequestParams
+            return $AlertResults
+        } catch {
+            if (-not $AlertResults) {
+                if ($Device) {
+                    throw ('No alerts found for device {0}.' -f $Device.SystemName)
+                } else {
+                    throw 'No alerts found.'
+                }
+            }
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

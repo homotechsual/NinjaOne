@@ -7,11 +7,11 @@ function Get-NinjaOneTicketLogEntries {
         .FUNCTIONALITY
             Ticket Log Entries
         .EXAMPLE
-            PS> Get-NinjaOneTicketLogEntries -ticketID 1
+            PS> Get-NinjaOneTicketLogEntries -ticketId 1
 
             Gets all ticket log entries for ticket with id 1.
         .EXAMPLE
-            PS> Get-NinjaOneTicketLogEntries -ticketID 1 -type DESCRIPTION
+            PS> Get-NinjaOneTicketLogEntries -ticketId 1 -type DESCRIPTION
 
             Gets all ticket log entries for ticket with id 1 with type DESCRIPTION.
         .OUTPUTS
@@ -21,10 +21,10 @@ function Get-NinjaOneTicketLogEntries {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # Filter by ticket ID.
+        # Filter by ticket id.
         [Parameter(Mandatory)]
         [Alias('id')]
-        [String]$ticketID,
+        [String]$ticketId,
         # Filter log entries by type.
         [ValidateSet('DESCRIPTION', 'COMMENT', 'CONDITION', 'SAVE', 'DELETE')]
         [String]$type
@@ -36,18 +36,24 @@ function Get-NinjaOneTicketLogEntries {
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'ticketid=' parameter by removing it from the set parameters.
-    if ($boardID) {
-        $Parameters.Remove('ticketID') | Out-Null
-    }
+    $Parameters.Remove('ticketId') | Out-Null
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        $Resource = "v2/ticketing/ticket/$ticketID/log-entry"
+        $Resource = ('v2/ticketing/ticket/{0}/log-entries' -f $ticketId)
         $RequestParams = @{
             Resource = $Resource
             QSCollection = $QSCollection
         }
         $TicketLogEntries = New-NinjaOneGETRequest @RequestParams
-        Return $TicketLogEntries
+        if ($TicketLogEntries) {
+            return $TicketLogEntries
+        } else {
+            if ($type) {
+                throw ('No ticket log entries found for ticket {0} with type {1}.' -f $ticketId, $type)
+            } else {
+                throw ('No ticket log entries found for ticket {0}.' -f $ticketId)
+            }
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

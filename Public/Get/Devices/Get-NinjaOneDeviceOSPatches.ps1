@@ -42,11 +42,11 @@ function Get-NinjaOneDeviceOSPatches {
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    $Parameters.Remove('deviceID') | Out-Null
+    $Parameters.Remove('deviceId') | Out-Null
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         Write-Verbose 'Getting device from NinjaOne API.'
-        $Device = Get-NinjaOneDevices -deviceID $deviceId
+        $Device = Get-NinjaOneDevices -deviceId $deviceId
         if ($Device) {
             Write-Verbose ('Getting OS patches for device {0}.' -f $Device.SystemName)
             $Resource = ('v2/device/{0}/os-patches' -f $deviceId)
@@ -58,7 +58,7 @@ function Get-NinjaOneDeviceOSPatches {
             QSCollection = $QSCollection
         }
         $DeviceOSPatchResults = New-NinjaOneGETRequest @RequestParams
-        Return $DeviceOSPatchResults
+        return $DeviceOSPatchResults
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

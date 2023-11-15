@@ -13,7 +13,7 @@ function Set-NinjaOneWebhook {
     Param(
         # The webhook configuration object.
         [Parameter( Mandatory )]
-        [object]$webhookConfiguration
+        [Object]$webhookConfiguration
     )
     try {
         $Resource = 'v2/webhook'

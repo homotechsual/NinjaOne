@@ -30,31 +30,39 @@ function Get-NinjaOneAntivirusStatus {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.
+        [Parameter(Position = 0)]
         [Alias('df')]
         [String]$deviceFilter,
         # Monitoring timestamp filter.
+        [Parameter(Position = 1)]
         [Alias('ts')]
-        [DatTime]$timeStamp,
+        [DateTime]$timeStamp,
         # Monitoring timestamp filter in unix time.
-        [int]$timeStampUnix,
+        [Parameter(Position = 1)]
+        [int]$timeStampUnixEpoch,
         # Filter by product state.
+        [Parameter(Position = 2)]
         [String]$productState,
         # Filter by product name.
+        [Parameter(Position = 3, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [string]$productName,
         # Cursor name.
+        [Parameter(Position = 4)]
         [String]$cursor,
         # Number of results per page.
+        [Parameter(Position = 5)]
         [Int]$pageSize
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # If the [DateTime] parameter $timeStamp is set convert the value to a Unix Epoch.
     if ($timeStamp) {
-        [int]$Parameters.timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
+        [int]$timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
     }
     # If the Unix Epoch parameter $timeStampUnixEpoch is set assign the value to the $timeStamp variable and null $timeStampUnixEpoch.
     if ($timeStampUnixEpoch) {
-        [int]$Parameters.timeStamp = $timeStampUnixEpoch
+        $Parameters.Remove('timeStampUnixEpoch') | Out-Null
+        [int]$timeStamp = $timeStampUnixEpoch
     }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
@@ -64,7 +72,11 @@ function Get-NinjaOneAntivirusStatus {
             QSCollection = $QSCollection
         }
         $AntivirusStatus = New-NinjaOneGETRequest @RequestParams
-        Return $AntivirusStatus
+        if ($AntivirusStatus) {
+            return $AntivirusStatus
+        } else {
+            throw 'No antivirus status found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

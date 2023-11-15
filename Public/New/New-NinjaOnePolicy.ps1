@@ -14,16 +14,17 @@ function New-NinjaOnePolicy {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The mode to run in, new, child or copy.
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, Position = 0)]
         [ValidateSet('NEW', 'CHILD', 'COPY')]
-        [string]$mode,
+        [String]$mode,
         # An object containing the policy to create.
-        [Parameter(Mandatory)]
-        [object]$policy,
-        # The ID of the template policy to copy from.
-        [int]$templatePolicyId,
+        [Parameter(Mandatory, Position = 1)]
+        [Object]$policy,
+        # The Id of the template policy to copy from.
+        [Parameter(Position = 2)]
+        [Int]$templatePolicyId,
         # Show the policy that was created.
-        [switch]$show
+        [Switch]$show
     )
     if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
         throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
@@ -53,12 +54,15 @@ function New-NinjaOnePolicy {
             Body = $policy
             QSCollection = $QSCollection
         }
-        if ($PSCmdlet.ShouldProcess("Policy '$($policy.name)'", 'Create')) {
+        if ($PSCmdlet.ShouldProcess(('Policy {0}' -f $policy.Name), 'Create')) {
             $PolicyCreate = New-NinjaOnePOSTRequest @RequestParams
             if ($show) {
-                Return $PolicyCreate
+                return $PolicyCreate
             } else {
-                Write-Information "Policy '$($PolicyCreate.name)' created."
+                $OIP = $InformationPreference
+                $InformationPreference = 'Continue'
+                Write-Information ('Policy {0} created.' -f $PolicyCreate.name)
+                $InformationPreference = $OIP
             }
         }
     } catch {

@@ -25,27 +25,28 @@ function Get-NinjaOneTickets {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # The ticket ID to get.
-        [Parameter(ParameterSetName = 'Single', Mandatory)]
-        [int]$ticketId,
-        # The board ID to get tickets for.
-        [Parameter(ParameterSetName = 'Board', Mandatory)]
-        [string]$boardId,
-        # The sort rules to apply to the request.
-        [Parameter(ParameterSetName = 'Board')]
+        # The ticket id to get.
+        [Parameter(Mandatory, ParameterSetName = 'Single', Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('id')]
+        [Int]$ticketId,
+        # The board id to get tickets for.
+        [Parameter(Mandatory, ParameterSetName = 'Board', Position = 0, ValueFromPipeline)]
+        [String]$boardId,
+        # The sort rules to apply to the request. Create these using `[NinjaOneTicketBoardSort]::new()`.
+        [Parameter(ParameterSetName = 'Board', Position = 1)]
         [NinjaOneTicketBoardSort[]]$sort,
-        # Any filters to apply to the request.
-        [Parameter(ParameterSetName = 'Board')]
+        # Any filters to apply to the request. Create these using `[NinjaOneTicketBoardFilter]::new()`.
+        [Parameter(ParameterSetName = 'Board', Position = 2)]
         [NinjaOneTicketBoardFilter[]]$filters,
         # The last cursor id to use for the request.
-        [Parameter(ParameterSetName = 'Board')]
-        [string]$lastCursorId,
+        [Parameter(ParameterSetName = 'Board', Position = 3)]
+        [String]$lastCursorId,
         # The number of results to return.
-        [Parameter(ParameterSetName = 'Board')]
-        [int]$pageSize,
+        [Parameter(ParameterSetName = 'Board', Position = 4)]
+        [Int]$pageSize,
         # The search criteria to apply to the request.
-        [Parameter(ParameterSetName = 'Board')]
-        [string]$searchCriteria
+        [Parameter(ParameterSetName = 'Board', Position = 5)]
+        [String]$searchCriteria
     )
     if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
         throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
@@ -53,12 +54,12 @@ function Get-NinjaOneTickets {
     }
     try {
         if ($ticketId) {
-            Write-Verbose "Retrieving information on ticket with id $($deviceId)"
-            $Resource = "v2/ticketing/ticket/$($ticketId)"
+            Write-Verbose ('Getting ticket with id {0}.' -f $ticketId)
+            $Resource = ('v2/ticketing/ticket/{0}' -f $ticketId)
             $Method = 'GET'
         } else {
-            Write-Verbose 'Retrieving tickets for board with id $($boardId)'
-            $Resource = "v2/ticketing/trigger/board/$($boardId)/run"
+            Write-Verbouse ('Getting tickets for board with id {0}.' -f $boardId)
+            $Resource = ('v2/ticketing/trigger/board/{0}/run' -f $boardId)
             $Method = 'POST'
         }
         $RequestParams = @{
@@ -87,11 +88,15 @@ function Get-NinjaOneTickets {
         } elseif ($Method -eq 'POST') {
             $Tickets = New-NinjaOnePOSTRequest @RequestParams
         }
-        if ($includeMetadata) {
-            Return $Tickets
+        if ($Tickets) {
+            if ($includeMetadata) {
+                return $Tickets
+            } else {
+                # Return just the `data` property which lists the tickets.
+                return $Tickets.data
+            }
         } else {
-            # Return just the `data` property which lists the tickets.
-            Return $Tickets.data
+            throw 'No tickets found.'
         }
     } catch {
         New-NinjaOneError -ErrorRecord $_

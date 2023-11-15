@@ -43,6 +43,7 @@ function Get-NinjaOneDevices {
     Param(
         # Device id to retrieve
         [Parameter(Mandatory, ParameterSetName = 'Single', Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('id')]
         [Int]$deviceId,
         # Filter devices.
         [Parameter(ParameterSetName = 'Multi', Position = 1)]
@@ -59,7 +60,7 @@ function Get-NinjaOneDevices {
         [Switch]$detailed,
         # Filter by organisation id.
         [Parameter(Mandatory, ParameterSetName = 'Organisation', Position = 5, ValueFromPipelineByPropertyName)]
-        [Alias('id', 'organizationId')]
+        [Alias('organizationId')]
         [Int]$organisationId
     )
     $CommandName = $MyInvocation.InvocationName
@@ -73,20 +74,22 @@ function Get-NinjaOneDevices {
         $Parameters.Remove('detailed') | Out-Null
     }
     # Similarly we don't want an `organisationid=` parameter since we're targetting a different resource.
-    if ($organisationID) {
+    if ($organisationId) {
         $Parameters.Remove('organisationId') | Out-Null
     }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         if ($deviceId) {
-            Write-Verbose "Retrieving information on device with ID $($deviceId)"
-            $Resource = "v2/device/$($deviceId)"
-        } elseif ($organisationID) {
+            Write-Verbose ('Getting device with id {0}.' -f $deviceId)
+            $Resource = ('v2/device/{0}' -f $deviceId)
+        } elseif ($organisationId) {
             Write-Verbose 'Getting organisation from NinjaOne API.'
-            $Organisation = Get-NinjaOneOrganisations -organisationId $organisationID
+            $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
             if ($Organisation) {
-                Write-Verbose "Retrieving devices for $($Organisation.Name)."
-                $Resource = "v2/organization/$($organisationID)/devices"
+                Write-Verbose ('Getting devices for organisation with id {0}.' -f $organisationId)
+                $Resource = ('v2/organization/{0}/devices' -f $organisationId)
+            } else {
+                throw ('Organisation with id {0} not found.' -f $organisationId)
             }
         } else {
             if ($Detailed) {
@@ -101,8 +104,18 @@ function Get-NinjaOneDevices {
             Resource = $Resource
             QSCollection = $QSCollection
         }
-        $DeviceResults = New-NinjaOneGETRequest @RequestParams
-        Return $DeviceResults
+        try {
+            $DeviceResults = New-NinjaOneGETRequest @RequestParams
+            return $DeviceResults
+        } catch {
+            if (-not $DeviceResults) {
+                if ($deviceId) {
+                    throw ('Device with id {0} not found.' -f $deviceId)
+                } else {
+                    throw 'No devices found.'
+                }
+            }
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

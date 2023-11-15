@@ -226,7 +226,7 @@ if ($UpdateManifest) {
     [System.Version]$Version = $Manifest.Version
 
     if ($ChangeLogVersion -eq $Version) {
-        Throw 'No new version found in CHANGELOG.md'
+        throw 'No new version found in CHANGELOG.md'
     }
 
     Write-Output -InputObject ("Current Module Version: $($Version)")
@@ -257,7 +257,7 @@ if ($PublishModule -and $Configuration -eq 'Production') {
         Publish-Module @params
         Write-Output -InputObject ("$ModuleName PowerShell Module version $($Version) published to the PowerShell Gallery")
     } Catch {
-        Throw $_
+        throw $_
     }
 }
 

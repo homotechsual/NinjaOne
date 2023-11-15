@@ -61,7 +61,7 @@ function Get-NinjaOneLocationBackupUsage {
             Resource = $Resource
         }
         $LocationBackupUsageResults = New-NinjaOneGETRequest @RequestParams
-        Return $LocationBackupUsageResults
+        return $LocationBackupUsageResults
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

@@ -15,31 +15,40 @@ function New-NinjaOneTicketComment {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # The ticket ID to use when creating the comment.
-        [Parameter(Mandatory)]
-        [int]$ticketId,
-        # An object containing the ticket to create.
-        [Parameter(Mandatory)]
-        [object]$comment,
-        # Show the organisation that was created.
-        [switch]$show
+        # The ticket Id to use when creating the ticket comment.
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('id')]
+        [Int]$ticketId,
+        # An object containing the ticket comment to create.
+        [Parameter(Mandatory, Position = 1)]
+        [Object]$comment,
+        # Show the ticket comment that was created.
+        [Switch]$show
     )
     if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
         throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
         exit 1
     }
     try {
-        $Resource = "v2/ticketing/ticket/$($ticketId)/comment"
+        $Ticket = Get-NinjaOneTicket -ticketId $ticketId
+        if ($Ticket) {
+            $Resource = ('v2/ticketing/ticket/{0}/comment' -f $ticketId)
+        } else {
+            throw ('Ticket with id {0} not found.' -f $ticketId)
+        }
         $RequestParams = @{
             Resource = $Resource
             Body = $ticket
         }
-        if ($PSCmdlet.ShouldProcess("Ticket '$($ticket.summary)'", 'Create')) {
+        if ($PSCmdlet.ShouldProcess(('Ticket comment on ticket {0} ({1})' -f $Ticket.id, $Ticket.summary), 'Create')) {
             $TicketCreate = New-NinjaOnePOSTRequest @RequestParams
             if ($show) {
-                Return $TicketCreate
+                return $TicketCreate
             } else {
-                Write-Information "Ticket '$($ticket.summary)' created."
+                $OIP = $InformationPreference
+                $InformationPreference = 'Continue'
+                Write-Information ('Ticket comment on ticket {0} ({1}) created.' -f $Ticket.id, $Ticket.summary)
+                $InformationPreference = $OIP
             }
         }
     } catch {

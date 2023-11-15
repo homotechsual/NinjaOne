@@ -29,7 +29,11 @@ function Get-NinjaOneRoles {
             QSCollection = $QSCollection
         }
         $RoleResults = New-NinjaOneGETRequest @RequestParams
-        Return $RoleResults
+        if ($RoleResults) {
+            return $RoleResults
+        } else {
+            throw 'No roles found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

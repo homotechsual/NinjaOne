@@ -25,7 +25,15 @@
     "powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
     "powershell.codeFormatting.whitespaceBeforeOpenParen": true,
     "powershell.codeFormatting.whitespaceBetweenParameters": false,
-    "powershell.codeFormatting.whitespaceInsideBrace": true
+    "powershell.codeFormatting.whitespaceInsideBrace": true,
+    "cSpell.words": [
+      "hashtable",
+      "homotechsual",
+      "Homotechsual",
+      "organisation",
+      "Organisation",
+      "pluralised"
+    ]
   },
   "launch": {
     "version": "0.2.0",

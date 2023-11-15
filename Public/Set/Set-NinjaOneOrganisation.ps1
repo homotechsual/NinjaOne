@@ -9,35 +9,39 @@ function Set-NinjaOneOrganisation {
         .OUTPUTS
             A powershell object containing the response.
     #>
-    [CmdletBinding( SupportsShouldProcess = $true, ConfirmImpact = 'Medium' )]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The organisation to set the information for.
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationId')]
-        [int]$organisationId,
+        [Int]$organisationId,
         # The organisation information body object.
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
         [Alias('organizationInformation', 'body')]
-        [object]$organisationInformation
+        [Object]$organisationInformation
     )
     try {
-        $Resource = "v2/organization/$organisationId"
+        $Organisation = Get-NinjaOneOrganisations -OrganisationId $organisationId
+        if ($Organisation) {
+            Write-Verbose ('Setting organisation information for organisation {0}.' -f $Organisation.Name)
+            $Resource = ('v2/organization/{0}' -f $organisationId)
+        } else {
+            throw ('Organisation with id {0} not found.' -f $organisationId)
+        }
         $RequestParams = @{
             Resource = $Resource
             Body = $organisationInformation
         }
-        $OrganisationExists = (Get-NinjaOneOrganisations -OrganisationId $organisationId).Count -gt 0
-        if ($OrganisationExists) {
-            if ($PSCmdlet.ShouldProcess('Organisation information', 'Update')) {
-                $OrganisationUpdate = New-NinjaOnePATCHRequest @RequestParams
-                if ($OrganisationUpdate -eq 204) {
-                    Write-Information "Organisation information for organisation $($organisationId) updated successfully."
-                }
+        if ($PSCmdlet.ShouldProcess(('Organisation {0} information' -f $Organisation.Name), 'Update')) {
+            $OrganisationUpdate = New-NinjaOnePATCHRequest @RequestParams
+            if ($OrganisationUpdate -eq 204) {
+                $OIP = $InformationPreference
+                $InformationPreference = 'Continue'
+                Write-Information ('Organisation {0} information updated successfully.' -f $Organisation.Name)
+                $InformationPreference = $OIP
             }
-        } else {
-            Throw "Organisation $($organisationId) does not exist."
         }
     } catch {
         New-NinjaOneError -ErrorRecord $_

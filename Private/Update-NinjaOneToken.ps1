@@ -8,7 +8,7 @@ function Update-NinjaOneToken {
         if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
             $ReauthParams = @{
                 Instance = $Script:NRAPIConnectionInformation.Instance
-                ClientID = $Script:NRAPIConnectionInformation.ClientID
+                ClientId = $Script:NRAPIConnectionInformation.ClientId
                 ClientSecret = $Script:NRAPIConnectionInformation.ClientSecret
                 UseClientAuth = $True
                 ShowTokens = $False
@@ -16,7 +16,7 @@ function Update-NinjaOneToken {
         } else {
             $ReauthParams = @{
                 Instance = $Script:NRAPIConnectionInformation.Instance
-                ClientID = $Script:NRAPIConnectionInformation.ClientID
+                ClientId = $Script:NRAPIConnectionInformation.ClientId
                 ClientSecret = $Script:NRAPIConnectionInformation.ClientSecret
                 RefreshToken = $Script:NRAPIAuthenticationInformation.Refresh
                 UseTokenAuth = $True
@@ -25,7 +25,7 @@ function Update-NinjaOneToken {
         }
         Connect-NinjaOne @ReauthParams
         Write-Verbose 'Refreshed authentication token information from NinjaOne.'
-        Write-Debug "Authentication information now set to: $($Script:NRAPIAuthenticationInformation | Out-String -Width 2048)"
+        Write-Verbose "Authentication information now set to: $($Script:NRAPIAuthenticationInformation | Out-String -Width 2048)"
     } catch {
         New-NinjaOneError $_
     }

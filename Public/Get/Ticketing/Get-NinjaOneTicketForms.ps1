@@ -21,7 +21,7 @@ function Get-NinjaOneTicketForms {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # Ticket form ID.
+        # Ticket form id.
         [Parameter(ValueFromPipelineByPropertyName)]
         [Alias('id')]
         [Int]$ticketFormId
@@ -30,19 +30,27 @@ function Get-NinjaOneTicketForms {
         throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
         exit 1
     }
+    $CommandName = $MyInvocation.InvocationName
+    $Parameters = (Get-Command -Name $CommandName).Parameters
     try {
+        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         if ($ticketFormId) {
-            Write-Verbose "Retrieving information on ticket form with id $($ticketFormId)"
-            $Resource = "/v2/ticketing/ticket-form/$($ticketFormId)"
+            Write-Verbose ('Getting ticket form with id {0}.' -f $ticketFormId)
+            $Resource = ('/v2/ticketing/ticket-form/{0}' -f $ticketFormId)
         } else {
             Write-Verbose 'Retrieving ticket forms'
             $Resource = '/v2/ticketing/ticket-form'
         }
         $RequestParams = @{
+            QSCollection = $QSCollection
             Resource = $Resource
         }
         $TicketForms = New-NinjaOneGETRequest @RequestParams
-        Return $TicketForms
+        if ($TicketForms) {
+            return $TicketForms
+        } else {
+            throw 'No ticket forms found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

@@ -1,6 +1,24 @@
 # Changelog
 
-## 2023-10-31 - Version 2.0.0-beta1
+Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
+
+## 2023-11-15 - Version 2.0.0-beta1
+
+* {"BC"} Refactoring of error handling to allow PowerShell 5.1 compatibility.
+* {"BC"} Removal / change of the `id` alias on some parameters.
+* {"BC"} Each commandlet now supports pipelining of the "primary" id value. Commandlets which require more than one `id` parameter do not support pipelining except by property name.
+* {"BC"} Rename most `Update-*` commandlets to `Set-*`. Aliases are in place.
+* {"BC"} Removal of all `*-NinjaRMM*` aliases to their `*-NinjaOne*` commandlets.
+* {"BC"} All `Write-Debug` statements are now `Write-Verbose`.
+* Add `-expandActivities` parameter to `Get-NinjaOneActivities`.
+* Add `-expandOverrides` parameter to `Get-NinjaOneDevicePolicyOverrides`.
+* Implement the framework for adding classes to build objects for `POST` endpoints.
+* All commandlets which require an entity to exist will throw an error if the entity with the given id doesn't exist.
+* The base `Get-*` commands for the core entities now throw if no results are returned.
+* Refactor exception catches in Private utility commandlets.
+* Reword error and verbose messaging throughout.
+* Switch all string/variable interpolation to use the `-f` format string operator with single-quoted strings.
+* Add `us2` instance.
 
 ## 2023-10-25 - Version 1.12.3
 

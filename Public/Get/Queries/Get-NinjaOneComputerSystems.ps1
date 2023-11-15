@@ -26,27 +26,33 @@ function Get-NinjaOneComputerSystems {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.
+        [Parameter(Position = 0)]
         [Alias('df')]
         [String]$deviceFilter,
         # Monitoring timestamp filter.
+        [Parameter(Position = 1)]
         [Alias('ts')]
-        [DatTime]$timeStamp,
+        [DateTime]$timeStamp,
         # Monitoring timestamp filter in unix time.
+        [Parameter(Position = 1)]
         [int]$timeStampUnixEpoch,
         # Cursor name.
+        [Parameter(Position = 2)]
         [String]$cursor,
         # Number of results per page.
+        [Parameter(Position = 3)]
         [Int]$pageSize
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # If the [DateTime] parameter $timeStamp is set convert the value to a Unix Epoch.
     if ($timeStamp) {
-        [int]$Parameters.timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
+        [int]$timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
     }
     # If the Unix Epoch parameter $timeStampUnixEpoch is set assign the value to the $timeStamp variable and null $timeStampUnixEpoch.
     if ($timeStampUnixEpoch) {
-        [int]$Parameters.timeStamp = $timeStampUnixEpoch
+        $Parameters.Remove('timeStampUnixEpoch') | Out-Null
+        [int]$timeStamp = $timeStampUnixEpoch
     }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
@@ -56,7 +62,11 @@ function Get-NinjaOneComputerSystems {
             QSCollection = $QSCollection
         }
         $ComputerSystems = New-NinjaOneGETRequest @RequestParams
-        Return $ComputerSystems
+        if ($ComputerSystems) {
+            return $ComputerSystems
+        } else {
+            throw 'No computer systems found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

@@ -29,14 +29,14 @@ function Get-NinjaOneOrganisations {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # Organisation Id
+        # Organisation id
         [Parameter(ParameterSetName = 'Single', Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationId')]
         [Int]$organisationId,
         # Number of results per page.
         [Parameter(ParameterSetName = 'Multi', Position = 1)]
         [Int]$pageSize,
-        # Start results from organisation ID.
+        # Start results from organisation id.
         [Parameter(ParameterSetName = 'Multi', Position = 2)]
         [Int]$after,
         # Include locations and policy mappings.
@@ -56,8 +56,8 @@ function Get-NinjaOneOrganisations {
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         if ($organisationId) {
-            Write-Verbose "Retrieving information on organisation with ID $($organisationId)"
-            $Resource = "v2/organization/$($organisationId)"
+            Write-Verbose ('Getting organisation with id {0}.' -f $organisationId)
+            $Resource = ('v2/organization/{0}' -f $organisationId)
             $RequestParams = @{
                 Resource = $Resource
                 QSCollection = $QSCollection

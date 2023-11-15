@@ -42,29 +42,49 @@ function Get-NinjaOneSoftwarePatches {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.
+        [Parameter(Position = 0)]
         [Alias('df')]
         [String]$deviceFilter,
-        # Monitoring timestamp filter.
+        # Monitoring timestamp filter. PowerShell DateTime object.
+        [Parameter(Position = 1)]
         [Alias('ts')]
-        [string]$timeStamp,
+        [DateTime]$timeStamp,
+        # Monitoring timestamp filter. Unix Epoch time.
+        [Parameter(Position = 1)]
+        [Int]$timeStampUnixEpoch,
         # Filter patches by patch status.
+        [Parameter(Position = 2, ValueFromPipelineByPropertyName)]
         [ValidateSet('MANUAL', 'APPROVED', 'FAILED', 'REJECTED')]
         [String]$status,
         # Filter patches by product identifier.
+        [Parameter(Position = 3, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [string]$productIdentifier,
         # Filter patches by type.
+        [Parameter(Position = 4, ValueFromPipelineByPropertyName)]
         [ValidateSet('PATCH', 'INSTALLER')]
         [String]$type,
         # Filter patches by impact.
+        [Parameter(Position = 5, ValueFromPipelineByPropertyName)]
         [ValidateSet('OPTIONAL', 'RECOMMENDED', 'CRITICAL')]
         [String]$impact,
         # Cursor name.
+        [Parameter(Position = 6)]
         [String]$cursor,
         # Number of results per page.
+        [Parameter(Position = 7)]
         [Int]$pageSize
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
+    # If the [DateTime] parameter $timeStamp is set convert the value to a Unix Epoch.
+    if ($timeStamp) {
+        [int]$timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
+    }
+    # If the Unix Epoch parameter $timeStampUnixEpoch is set assign the value to the $timeStamp variable and null $timeStampUnixEpoch.
+    if ($timeStampUnixEpoch) {
+        $Parameters.Remove('timeStampUnixEpoch') | Out-Null
+        [int]$timeStamp = $timeStampUnixEpoch
+    }
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         $Resource = 'v2/queries/software-patches'
@@ -73,7 +93,11 @@ function Get-NinjaOneSoftwarePatches {
             QSCollection = $QSCollection
         }
         $SoftwarePatches = New-NinjaOneGETRequest @RequestParams
-        Return $SoftwarePatches
+        if ($SoftwarePatches) {
+            return $SoftwarePatches
+        } else {
+            throw 'No software patches found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

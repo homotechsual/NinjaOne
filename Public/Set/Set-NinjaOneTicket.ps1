@@ -9,15 +9,16 @@ function Set-NinjaOneTicket {
         .OUTPUTS
             A powershell object containing the response.
     #>
-    [CmdletBinding( SupportsShouldProcess = $true, ConfirmImpact = 'Medium' )]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The ticket Id.
-        [Parameter(Mandatory = $true)]
-        [int]$ticketId,
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('id')]
+        [Int]$ticketId,
         # The ticket object.
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
         [Object]$ticket 
     )
     if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
@@ -25,21 +26,25 @@ function Set-NinjaOneTicket {
         exit 1
     }
     try {
-        $Resource = "v2/ticketing/ticket/$ticketId"
+        $Ticket = Get-NinjaOneTickets -ticketId $ticketId
+        if ($Ticket) {
+            Write-Verbose ('Updating ticket {0}.' -f $Ticket.Subject)
+            $Resource = "v2/ticketing/ticket/$ticketId"
+        } else {
+            throw ('Ticket with id { 0 } not found.' -f $ticketId)
+        }
         $RequestParams = @{
             Resource = $Resource
             Body = $ticket
         }
-        $TicketExists = (Get-NinjaOneTickets -ticketId $ticketId).Count -gt 0
-        if ($TicketExists) {
-            if ($PSCmdlet.ShouldProcess('Ticket', 'Update')) {
-                $TicketUpdate = New-NinjaOnePUTRequest @RequestParams
-                if ($TicketUpdate -eq 204) {
-                    Write-Information 'Ticket updated successfully.'
-                }
+        if ($PSCmdlet.ShouldProcess(('Ticket {0} ({1})' -f $Ticket.Subject, $ticketId), 'Update')) {
+            $TicketUpdate = New-NinjaOnePUTRequest @RequestParams
+            if ($TicketUpdate -eq 204) {
+                $OIP = $InformationPreference
+                $InformationPreference = 'Continue'
+                Write-Information ('Ticket {0} ({1}) updated successfully.' -f $Ticket.Subject, $ticketId)
+                $InformationPreference = $OIP
             }
-        } else {
-            throw "Ticket $ticketId does not exist."
         }
     } catch {
         New-NinjaOneError -ErrorRecord $_

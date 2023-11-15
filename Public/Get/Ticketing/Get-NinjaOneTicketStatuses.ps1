@@ -24,7 +24,11 @@ function Get-NinjaOneTicketStatuses {
             Resource = $Resource
         }
         $TicketStatuses = New-NinjaOneGETRequest @RequestParams
-        Return $TicketStatuses
+        if ($TicketStatuses) {
+            return $TicketStatuses
+        } else {
+            throw 'No ticket statuses found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

@@ -26,7 +26,7 @@ function Get-NinjaOneDeviceScriptingOptions {
         [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id')]
         [Int]$deviceId,
-        # Filter by language tag. ?ToDo: Query with Ninja
+        # Built in scripts / job names should be returned in the specified language.
         [Parameter(Position = 1)]
         [Alias('lang')]
         [String]$LanguageTag
@@ -38,17 +38,21 @@ function Get-NinjaOneDeviceScriptingOptions {
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         Write-Verbose 'Getting device from NinjaOne API.'
-        $Device = Get-NinjaOneDevices -deviceID $deviceId
+        $Device = Get-NinjaOneDevices -deviceId $deviceId
         if ($Device) {
-            Write-Verbose "Retrieving scripting options for $($Device.SystemName)."
-            $Resource = "v2/device/$($deviceId)/scripting/options"
+            Write-Verbose ('Getting scripting options for device {0}.' -f $Device.SystemName)
+            $Resource = ('v2/device/{0}/scripting/options' -f $deviceId)
         }
         $RequestParams = @{
             Resource = $Resource
             QSCollection = $QSCollection
         }
         $DeviceScriptingOptionResults = New-NinjaOneGETRequest @RequestParams
-        Return $DeviceScriptingOptionResults
+        if ($DeviceScriptingOptionResults) {
+            return $DeviceScriptingOptionResults
+        } else {
+            throw ('No scripting options found for device {0}.' -f $Device.SystemName)
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

@@ -45,9 +45,9 @@ function Get-NinjaOneDeviceOSPatchInstalls {
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
-    Write-Debug ('Parameters: {0}' -f ($Parameters | Out-String))
+    Write-Verbose ('Parameters: {0}' -f ($Parameters | Out-String))
     # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    $Parameters.Remove('deviceID') | Out-Null
+    $Parameters.Remove('deviceId') | Out-Null
     # If the [DateTime] parameter $installedBefore is set convert the value to a Unix Epoch.
     if ($installedBefore) {
         [Int]$installedBefore = ConvertTo-UnixEpoch -DateTime $installedBefore
@@ -78,7 +78,7 @@ function Get-NinjaOneDeviceOSPatchInstalls {
                 QSCollection = $QSCollection
             }
             $DeviceOSPatchInstallResults = New-NinjaOneGETRequest @RequestParams
-            Return $DeviceOSPatchInstallResults
+            return $DeviceOSPatchInstallResults
         } else {
             throw ('Device with id {0} not found.' -f $deviceId)
         }

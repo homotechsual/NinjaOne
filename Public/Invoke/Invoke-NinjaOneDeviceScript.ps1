@@ -38,35 +38,44 @@ function Invoke-NinjaOneDeviceScript {
         exit 1
     }
     try {
-        $Resource = "v2/device/$($deviceId)/script/run"
-        $RunRequest = @{
-            type = $action
+        $Device = Get-NinjaOneDevice -deviceId $deviceId
+        if ($Device) {
+            $Resource = ('v2/device/{0}/script/run' -f $deviceId)
+            $RunRequest = @{
+                type = $action
+            }
+            if ($scriptId) {
+                $RunRequest.id = $scriptId
+            }
+            if ($actionId) {
+                $RunRequest.uid = $actionId
+            }
+            if ($parameters) {
+                $RunRequest.parameters = $parameters
+            }
+            if ($runAs) {
+                $RunRequest.runAs = $runAs
+            }
+            Write-Verbose ('Raw run request: {0}' -f ($RunRequest | Out-String))
+        } else {
+            throw ('Device with id {0} not found.' -f $deviceId)
         }
-        if ($scriptId) {
-            $RunRequest.id = $scriptId
-        }
-        if ($actionId) {
-            $RunRequest.uid = $actionId
-        }
-        if ($parameters) {
-            $RunRequest.parameters = $parameters
-        }
-        if ($runAs) {
-            $RunRequest.runAs = $runAs
-        }
-        Write-Verbose "Raw run request: $($RunRequest | Out-String)"
         $RequestParams = @{
             Resource = $Resource
             Body = $RunRequest
         }
-        $ServiceAction = New-NinjaOnePOSTRequest @RequestParams
-        if ($ServiceAction -eq 204) {
+        $ScriptRun = New-NinjaOnePOSTRequest @RequestParams
+        if ($ScriptRun -eq 204) {
             if ($action -eq 'SCRIPT') {
                 $actionResult = 'script'
             } else {
                 $actionResult = 'action'
             }
             Write-Information "Requested run for $($actionResult) on device $($deviceId) successfully."
+            $OIP = $InformationPreference
+            $InformationPreference = 'Continue'
+            Write-Information ('Requested run for {0} on device {1} successfully.' -f $actionResult, $deviceId)
+            $InformationPreference = $OIP
         }
     } catch {
         New-NinjaOneError -ErrorRecord $_

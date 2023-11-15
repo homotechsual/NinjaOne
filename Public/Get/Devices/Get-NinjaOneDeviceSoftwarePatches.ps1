@@ -51,15 +51,17 @@ function Get-NinjaOneDeviceSoftwarePatches {
         Write-Verbose 'Getting device from NinjaOne API.'
         $Device = Get-NinjaOneDevices -deviceId $deviceId
         if ($Device) {
-            Write-Verbose "Retrieving software patches for $($Device.SystemName)."
-            $Resource = "v2/device/$($deviceId)/software-patches"
+            Write-Verbose ('Getting software patches for device {0}.' -f $Device.SystemName)
+            $Resource = ('v2/device/{0}/software-patches' -f $deviceId)
+        } else {
+            throw ('Device with id {0} not found.' -f $deviceId)
         }
         $RequestParams = @{
             Resource = $Resource
             QSCollection = $QSCollection
         }
         $DeviceSoftwarePatchResults = New-NinjaOneGETRequest @RequestParams
-        Return $DeviceSoftwarePatchResults
+        return $DeviceSoftwarePatchResults
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

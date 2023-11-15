@@ -29,7 +29,11 @@ function Get-NinjaOnePolicies {
             QSCollection = $QSCollection
         }
         $PolicyResults = New-NinjaOneGETRequest @RequestParams
-        Return $PolicyResults
+        if ($PolicyResults) {
+            return $PolicyResults
+        } else {
+            throw 'No policies found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

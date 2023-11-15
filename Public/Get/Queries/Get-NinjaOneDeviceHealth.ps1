@@ -26,14 +26,18 @@ function Get-NinjaOneDeviceHealth {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.
+        [Parameter(Position = 0)]
         [Alias('df')]
         [String]$deviceFilter,
         # Filter by health status.
+        [Parameter(Position = 1, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [ValidateSet('UNHEALTHY', 'HEALTHY', 'UNKNOWN', 'NEEDS_ATTENTION')]
         [String]$health,
         # Cursor name.
+        [Parameter(Position = 2)]
         [String]$cursor,
         # Number of results per page.
+        [Parameter(Position = 3)]
         [Int]$pageSize
     )
     $CommandName = $MyInvocation.InvocationName
@@ -46,7 +50,11 @@ function Get-NinjaOneDeviceHealth {
             QSCollection = $QSCollection
         }
         $DeviceHealth = New-NinjaOneGETRequest @RequestParams
-        Return $DeviceHealth
+        if ($DeviceHealth) {
+            return $DeviceHealth
+        } else {
+            throw 'No device health found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

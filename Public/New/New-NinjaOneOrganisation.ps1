@@ -9,19 +9,20 @@ function New-NinjaOneOrganisation {
         .OUTPUTS
             A powershell object containing the response.
     #>
-    [CmdletBinding( SupportsShouldProcess = $true, ConfirmImpact = 'Medium' )]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # The ID of the organisation to use as a template.
+        # The Id of the organisation to use as a template.
+        [Parameter(Position = 0)]
         [Alias('templateOrganizationId')]
-        [string]$templateOrganisationId,
+        [String]$templateOrganisationId,
         # An object containing the organisation to create.
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory, Position = 1)]
         [Alias('organization', 'body')]
-        [object]$organisation,
+        [Object]$organisation,
         # Show the organisation that was created.
-        [switch]$show
+        [Switch]$show
     )
     try {
         $CommandName = $MyInvocation.InvocationName
@@ -39,12 +40,15 @@ function New-NinjaOneOrganisation {
             Body = $organisation
             QSCollection = $QSCollection
         }
-        if ($PSCmdlet.ShouldProcess("Organisation '$($organisation.name)'", 'Create')) {
+        if ($PSCmdlet.ShouldProcess(('Organisation {0}' -f $organisation.name), 'Create')) {
             $OrganisationCreate = New-NinjaOnePOSTRequest @RequestParams
             if ($show) {
-                Return $OrganisationCreate
+                return $OrganisationCreate
             } else {
-                Write-Information "Organisation '$($OrganisationCreate.name)' created."
+                $OIP = $InformationPreference
+                $InformationPreference = 'Continue'
+                Write-Information ('Organisation {0} created.' -f $OrganisationCreate.name)
+                $InformationPreference = $OIP
             }
         }
     } catch {

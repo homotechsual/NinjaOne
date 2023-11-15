@@ -8,11 +8,11 @@ function Get-NinjaOneInstaller {
         .FUNCTIONALITY
             Installer
         .EXAMPLE
-            PS> Get-NinjaOneInstaller -organisationID 1 -locationID 1 -installerType WINDOWS_MSI
+            PS> Get-NinjaOneInstaller -organisationId 1 -locationId 1 -installerType WINDOWS_MSI
 
             Gets the agent installer URL for the location with id 1 in the organisation with id 1 for the Windows MSI installer.
         .EXAMPLE
-            PS> Get-NinjaOneInstaller -organisationID 1 -locationID 1 -installerType MAC_PKG
+            PS> Get-NinjaOneInstaller -organisationId 1 -locationId 1 -installerType MAC_PKG
 
             Gets the agent installer URL for the location with id 1 in the organisation with id 1 for the Mac PKG installer.
         .OUTPUTS
@@ -54,15 +54,19 @@ function Get-NinjaOneInstaller {
         $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
         $Location = Get-NinjaOneLocations -organisationId $organisationId | Where-Object { $_.id -eq $locationId }
         if ($Organisation -and $Location) {
-            Write-Verbose "Retrieving installer for $($Organisation.Name) - $($Location.Name) `($installerType`)."
-            $Resource = "v2/organization/$($organisationId)/location/$($locationId)/installer/$($installerType)"
+            Write-Verbose ('Getting installer for organisation {0} - location {1} ({2}).' -f $Organisation.Name, $Location.Name, $installerType)
+            $Resource = ('v2/organization/{0}/location/{1}/installer/{2}' -f $organisationId, $locationId, $installerType)
         }
         $RequestParams = @{
             Resource = $Resource
             QSCollection = $QSCollection
         }
         $AgentInstallerResults = New-NinjaOneGETRequest @RequestParams
-        Return $AgentInstallerResults
+        if ($AgentInstallerResults) {
+            return $AgentInstallerResults
+        } else {
+            throw ('No agent installer found for organisation { 0 } - location { 1 } ({ 2 }).' -f $Organisation.Name, $Location.Name, $installerType)
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

@@ -13,7 +13,7 @@ function Get-NinjaOneLocations {
         .EXAMPLE
             PS> Get-NinjaOneLocations -after 1
 
-            Gets all locations after location Id 1.
+            Gets all locations after location id 1.
         .EXAMPLE
             PS> Get-NinjaOneLocations -organisationId 1
             
@@ -26,11 +26,13 @@ function Get-NinjaOneLocations {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Number of results per page.
+        [Parameter(Position = 0)]
         [Int]$pageSize,
-        # Start results from location Id.
+        # Start results from location id.
+        [Parameter(Position = 1)]
         [Int]$after,
-        # Filter by organisation Id.
-        [Parameter(ValueFromPipelineByPropertyName)]
+        # Filter by organisation id.
+        [Parameter(Position = 2, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationId')]
         [Int]$organisationId
     )
@@ -46,8 +48,8 @@ function Get-NinjaOneLocations {
             Write-Verbose 'Getting organisation from NinjaOne API.'
             $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
             if ($Organisation) {
-                Write-Verbose "Retrieving locations for $($Organisation.Name)."
-                $Resource = "v2/organization/$($organisationId)/locations"
+                Write-Verbose ('Getting locations for organisation {0}.' -f $Organisation.Name)
+                $Resource = ('v2/organization/{0}/locations' -f $organisationId)
             }
         } else {
             Write-Verbose 'Retrieving all locations.'
@@ -58,7 +60,11 @@ function Get-NinjaOneLocations {
             QSCollection = $QSCollection
         }
         $LocationResults = New-NinjaOneGETRequest @RequestParams
-        Return $LocationResults
+        if ($LocationResults) {
+            return $LocationResults
+        } else {
+            throw ('No locations found for organisation {0}.' -f $Organisation.Name)
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

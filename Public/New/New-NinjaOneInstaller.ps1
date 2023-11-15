@@ -13,22 +13,24 @@ function New-NinjaOneInstaller {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # The organization ID to use when creating the installer.
-        [Parameter(Mandatory)]
+        # The organization id to use when creating the installer.
+        [Parameter(Mandatory, Position = 0)]
         [Alias('id', 'organizationId')]
         [Int]$organisationId,
-        # The location ID to use when creating the installer.
-        [Parameter(Mandatory)]
+        # The location id to use when creating the installer.
+        [Parameter(Mandatory, Position = 1)]
         [Int]$locationId,
         # The installer type to use when creating the installer.
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, Position = 2)]
         [ValidateSet('WINDOWS_MSI', 'MAC_DMG', 'MAC_PKG', 'LINUX_DEB', 'LINUX_RPM')]
         [String]$installerType,
         # The number of uses permitted for the installer.
+        [Parameter(Position = 3)]
         [Int]$usageLimit,
         # The node role id to use when creating the installer.
+        [Parameter(Position = 4)]
         [ValidateNodeRoleId()]
-        [object]$nodeRoleId = 'auto'
+        [Object]$nodeRoleId = 'auto'
     )
     try {
         $Resource = 'v2/organization/generate-installer'
@@ -50,7 +52,7 @@ function New-NinjaOneInstaller {
         if ($OrganisationExists -and $LocationExists) {
             if ($PSCmdlet.ShouldProcess('Installer', 'Create')) {
                 $InstallerCreate = New-NinjaOnePOSTRequest @RequestParams
-                Return $InstallerCreate.url
+                return $InstallerCreate.url
             }
         } else {
             throw "Organisation '$organisationId' or location '$locationId' does not exist."

@@ -18,6 +18,10 @@ function Get-NinjaOneBackupUsage {
             PS> Get-NinjaOneBackupUsage | Where-Object { ($_.references.backupUsage.cloudTotalSize -ne 0) -or ($_.references.backupUsage.localTotalSize -ne 0) }
 
             Gets the backup usage by device where the cloud or local total size is not 0.
+        .EXAMPLE
+            PS> Get-NinjaOneBackupUsage -includeDeleted | Where-Object { ($_.references.backupUsage.cloudTotalSize -ne 0) -and ($_.references.backupUsage.localTotalSize -ne 0) -and ($_.references.backupUsage.revisionsTotalSize -ne 0) }
+
+            Gets the backup usage where the cloud, local and revisions total size is not 0 including deleted devices.
         .OUTPUTS
             A powershell object containing the response.
     #>
@@ -26,12 +30,14 @@ function Get-NinjaOneBackupUsage {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Cursor name.
+        [Parameter(Position = 0)]
         [String]$cursor,
+        # Number of results per page.
+        [Parameter(Position = 1)]
+        [Int]$pageSize,
         # Include deleted devices.
         [Alias('includeDeletedDevices')]
-        [Switch]$includeDeleted,
-        # Number of results per page.
-        [Int]$pageSize
+        [Switch]$includeDeleted
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
@@ -43,7 +49,11 @@ function Get-NinjaOneBackupUsage {
             QSCollection = $QSCollection
         }
         $BackupUsage = New-NinjaOneGETRequest @RequestParams
-        Return $BackupUsage
+        if ($BackupUsage) {
+            return $BackupUsage
+        } else {
+            throw 'No backup usage found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

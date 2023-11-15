@@ -9,38 +9,41 @@ function New-NinjaOneLocation {
         .OUTPUTS
             A powershell object containing the response.
     #>
-    [CmdletBinding( SupportsShouldProcess = $true, ConfirmImpact = 'Medium' )]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # The organization ID to use when creating the location.
-        [Parameter(Mandatory = $true)]
+        # The organization Id to use when creating the location.
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationId')]
-        [int]$organisationId,
-        # An object containing the location  to create.
-        [Parameter(Mandatory = $true)]
-        [object]$location,
+        [Int]$organisationId,
+        # An object containing the location to create.
+        [Parameter(Mandatory, Position = 1)]
+        [Object]$location,
         # Show the location that was created.
-        [switch]$show
+        [Switch]$show
     )
     try {
-        $Resource = "v2/organization/$($organisationId)/locations"
+        $Resource = ('v2/organization/{0}/locations' -f $organisationId)
         $RequestParams = @{
             Resource = $Resource
             Body = $location
         }
         $OrganisationExists = (Get-NinjaOneOrganisations -organisationId $organisationId).Count -gt 0
         if ($OrganisationExists) {
-            if ($PSCmdlet.ShouldProcess("Location '$($location.name)'", 'Create')) {
+            if ($PSCmdlet.ShouldProcess(('Location {0}' -f $location.name), 'Create')) {
                 $LocationCreate = New-NinjaOnePOSTRequest @RequestParams
                 if ($show) {
-                    Return $LocationCreate
+                    return $LocationCreate
                 } else {
-                    Write-Information "Location '$($LocationCreate.name)' created."
+                    $OIP = $InformationPreference
+                    $InformationPreference = 'Continue'
+                    Write-Information ('Location {0} created.' -f $LocationCreate.name)
+                    $InformationPreference = $OIP
                 }
             }
         } else {
-            throw "Organisation '$organisationId' does not exist."
+            throw ('Organisation with id {0} not found.' -f $organisationId)
         }
     } catch {
         New-NinjaOneError -ErrorRecord $_

@@ -9,29 +9,33 @@ function Remove-NinjaOneDeviceMaintenance {
         .OUTPUTS
             A powershell object containing the response.
     #>
-    [CmdletBinding( SupportsShouldProcess = $true, ConfirmImpact = 'Medium' )]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # The device ID to cancel maintenance for.
-        [Parameter(Mandatory = $true)]
+        # The device Id to cancel maintenance for.
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('id')]
         [Int]$deviceId
     )
     try {
-        $Resource = "v2/device/$deviceId/maintenance"
+        $Device = Get-NinjaOneDevice -deviceId $deviceId
+        if ($Device) {
+            $Resource = ('v2/device/{0}/maintenance' -f $deviceId)
+        } else {
+            throw ('Device with id {0} not found.' -f $deviceId)
+        }
         $RequestParams = @{
             Resource = $Resource
         }
-        $DeviceExists = (Get-NinjaOneDevices -deviceId $deviceId).Count -gt 0
-        if ($DeviceExists) {
-            if ($PSCmdlet.ShouldProcess('Device Maintenance', 'Delete')) {
-                $DeviceMaintenance = New-NinjaOneDELETERequest @RequestParams
-                if ($DeviceMaintenance -eq 204) {
-                    Write-Information 'Scheduled device maintenance deleted successfully.'
-                }
+        if ($PSCmdlet.ShouldProcess(('{0} Maintenance' -f $Device.SystemName), 'Delete')) {
+            $DeviceMaintenance = New-NinjaOneDELETERequest @RequestParams
+            if ($DeviceMaintenance -eq 204) {
+                $OIP = $InformationPreference
+                $InformationPreference = 'Continue'
+                Write-Information ('Scheduled device maintenance for device {0} deleted successfully.' -f $Device.SystemName)
+                $InformationPreference = $OIP
             }
-        } else {
-            throw "Device with ID $deviceId does not exist."
         }
     } catch {
         New-NinjaOneError -ErrorRecord $_

@@ -45,7 +45,7 @@
         'PSUseDeclaredVarsMoreThanAssignments',
         'PSUsePSCredentialType',
         'PSUseShouldProcessForStateChangingFunctions',
-        'PSUseSingularNouns',
+        #'PSUseSingularNouns',
         'PSUseLowerCaseForBooleanVariables',
         'PSUseLowerCaseForBuiltInFunctions',
         'PSUseLowerCaseForParameters',

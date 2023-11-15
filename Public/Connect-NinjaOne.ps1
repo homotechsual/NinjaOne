@@ -21,29 +21,29 @@ function Connect-NinjaOne {
     [OutputType([System.Void])]
     Param (
         # Use the "Authorisation Code" flow with your web browser.
-        [Parameter( ParameterSetName = 'Authorisation Code', Mandatory = $True )]
+        [Parameter( Mandatory, ParameterSetName = 'Authorisation Code')]
         [Switch]$UseWebAuth,
         # Use the "Token Authentication" flow - useful if you already have a refresh token.
-        [Parameter( ParameterSetName = 'Token Authentication', Mandatory = $True )]
+        [Parameter( Mandatory, ParameterSetName = 'Token Authentication' )]
         [switch]$UseTokenAuth,
         # Use the "Client Credentials" flow - useful if you already have a client ID and secret.
-        [Parameter( ParameterSetName = 'Client Credentials', Mandatory = $True )]
+        [Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
         [switch]$UseClientAuth,
         # The NinjaOne instance to connect to. Choose from 'eu', 'oc' or 'us'.
-        [Parameter( ParameterSetName = 'Authorisation Code', Mandatory = $True )]
-        [Parameter( ParameterSetName = 'Token Authentication', Mandatory = $True )]
-        [Parameter( ParameterSetName = 'Client Credentials', Mandatory = $True )]
-        [ValidateSet('eu', 'oc', 'us', 'ca')]
+        [Parameter( Mandatory, ParameterSetName = 'Authorisation Code' )]
+        [Parameter( Mandatory, ParameterSetName = 'Token Authentication' )]
+        [Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
+        [ValidateSet('eu', 'oc', 'us', 'ca', 'us2')]
         [string]$Instance,
-        # The Client ID for the application configured in NinjaOne.
-        [Parameter( ParameterSetName = 'Authorisation Code', Mandatory = $True )]
-        [Parameter( ParameterSetName = 'Token Authentication', Mandatory = $True )]
-        [Parameter( ParameterSetName = 'Client Credentials', Mandatory = $True )]
-        [String]$ClientID,
+        # The Client Id for the application configured in NinjaOne.
+        [Parameter( Mandatory, ParameterSetName = 'Authorisation Code' )]
+        [Parameter( Mandatory, ParameterSetName = 'Token Authentication' )]
+        [Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
+        [String]$ClientId,
         # The Client Secret for the application configured in NinjaOne.
-        [Parameter( ParameterSetName = 'Authorisation Code', Mandatory = $True )]
-        [Parameter( ParameterSetName = 'Token Authentication', Mandatory = $True )]
-        [Parameter( ParameterSetName = 'Client Credentials', Mandatory = $True )]
+        [Parameter( Mandatory, ParameterSetName = 'Authorisation Code' )]
+        [Parameter( Mandatory, ParameterSetName = 'Token Authentication' )]
+        [Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
         [String]$ClientSecret,
         # The API scopes to request, if this isn't passed the scope is assumed to be "all". Pass a string or array of strings. Limited by the scopes granted to the application in NinjaOne.
         [Parameter( ParameterSetName = 'Authorisation Code' )]
@@ -66,6 +66,9 @@ function Connect-NinjaOne {
         [Parameter( ParameterSetName = 'Client Credentials' )]
         [Switch]$ShowTokens
     )
+    # Run the pre-flight check.
+    Invoke-NinjaOnePreFlightCheck -SkipConnectionChecks
+    # Set the default scopes if they're not passed.
     if ($PSCmdlet.ParameterSetName -eq 'Client Credentials' -and $null -eq $Scopes) {
         $Scopes = @('monitoring', 'management', 'control')
     } elseif (($PSCmdlet.ParameterSetName -eq 'Authorisation Code' -or $PSCmdlet.ParameterSetName -eq 'Token Authentication') -and $null -eq $Scopes) {
@@ -95,14 +98,14 @@ function Connect-NinjaOne {
         AuthMode = $PSCmdlet.ParameterSetName
         URL = $URL
         Instance = $Instance
-        ClientID = $ClientID
+        ClientId = $ClientId
         ClientSecret = $ClientSecret
         AuthListenerPort = $Port
         AuthScopes = $AuthScopes
         RedirectURI = $RedirectURI
     }
     Set-Variable -Name 'NRAPIConnectionInformation' -Value $ConnectionInformation -Visibility Private -Scope Script -Force
-    Write-Debug "Connection information set to: $($Script:NRAPIConnectionInformation | Out-String)"
+    Write-Verbose "Connection information set to: $($Script:NRAPIConnectionInformation | Format-List | Out-String)"
     $AuthenticationInformation = [HashTable]@{}
     # Set a script-scoped variable to hold authentication information.
     Set-Variable -Name 'NRAPIAuthenticationInformation' -Value $AuthenticationInformation -Visibility Private -Scope Script -Force
@@ -110,10 +113,10 @@ function Connect-NinjaOne {
         # NinjaOne authorisation request query params.
         $AuthRequestParams = @{
             response_type = 'code'
-            client_id = $Script:NRAPIConnectionInformation.ClientID
+            client_id = $Script:NRAPIConnectionInformation.ClientId
             client_secret = $Script:NRAPIConnectionInformation.ClientSecret
             redirect_uri = $Script:NRAPIConnectionInformation.RedirectURI.ToString()
-            state = $GUID
+            state = $GUId
         }
         if ($Script:NRAPIConnectionInformation.AuthScopes) {
             $AuthRequestParams.scope = $Script:NRAPIConnectionInformation.AuthScopes
@@ -128,13 +131,17 @@ function Connect-NinjaOne {
         $AuthRequestURI = [System.UriBuilder]$URL
         $AuthRequestURI.Path = 'oauth/authorize'
         $AuthRequestURI.Query = $AuthRequestQuery.ToString()
-        Write-Debug "Authentication request query string is $($AuthRequestQuery.ToString())"
+        Write-Verbose "Authentication request query string is $($AuthRequestQuery.ToString())"
         try {
             $OAuthListenerParams = @{
                 OpenURI = $AuthRequestURI
             }
-            $OAuthListenerParams.Verbose = $VerbosePreference
-            $OAuthListenerParams.Debug = $DebugPreference
+            if ($VerbosePreference = 'Continue') {
+                $OAuthListenerParams.Verbose = $true
+            }
+            if ($DebugPreference = 'Continue') {
+                $OAuthListenerParams.Debug = $true
+            }
             $OAuthListenerResponse = Start-OAuthHTTPListener @OAuthListenerParams
             $Script:NRAPIAuthenticationInformation.Code = $OAuthListenerResponse.Code
         } catch {
@@ -148,7 +155,7 @@ function Connect-NinjaOne {
                 Write-Verbose 'Using token authentication.'
                 $TokenRequestBody = @{
                     grant_type = 'authorization_code'
-                    client_id = $Script:NRAPIConnectionInformation.ClientID
+                    client_id = $Script:NRAPIConnectionInformation.ClientId
                     client_secret = $Script:NRAPIConnectionInformation.ClientSecret
                     code = $Script:NRAPIAuthenticationInformation.Code
                     redirect_uri = $Script:NRAPIConnectionInformation.RedirectURI.toString()
@@ -158,7 +165,7 @@ function Connect-NinjaOne {
                 Write-Verbose 'Using refresh token.'
                 $TokenRequestBody = @{
                     grant_type = 'refresh_token'
-                    client_id = $Script:NRAPIConnectionInformation.ClientID
+                    client_id = $Script:NRAPIConnectionInformation.ClientId
                     client_secret = $Script:NRAPIConnectionInformation.ClientSecret
                     refresh_token = $RefreshToken
                     scope = $Script:NRAPIConnectionInformation.AuthScopes
@@ -167,13 +174,13 @@ function Connect-NinjaOne {
                 Write-Verbose 'Using client authentication.'
                 $TokenRequestBody = @{
                     grant_type = 'client_credentials'
-                    client_id = $Script:NRAPIConnectionInformation.ClientID
+                    client_id = $Script:NRAPIConnectionInformation.ClientId
                     client_secret = $Script:NRAPIConnectionInformation.ClientSecret
                     redirect_uri = $Script:NRAPIConnectionInformation.RedirectURI.toString()
                     scope = $Script:NRAPIConnectionInformation.AuthScopes
                 }
             }
-            Write-Debug "Token request body is $($TokenRequestBody | Out-String)"
+            Write-Verbose "Token request body is $($TokenRequestBody | Format-List | Out-String)"
             # Using our authorisation code or refresh token let's get an auth token.
             $TokenRequestUri = [System.UriBuilder]$URL
             $TokenRequestUri.Path = 'oauth/token'
@@ -186,21 +193,21 @@ function Connect-NinjaOne {
             }
             $TokenResult = Invoke-WebRequest @TokenRequestParams
             $TokenPayload = $TokenResult.Content | ConvertFrom-Json
-            Write-Debug "Token payload is $($TokenPayload | Format-List | Out-String)"
+            Write-Verbose "Token payload is $($TokenPayload | Format-List | Out-String)"
             # Update our script-scoped NRAPIAuthenticationInformation variable with the token.
             $Script:NRAPIAuthenticationInformation.Type = $TokenPayload.token_type
             $Script:NRAPIAuthenticationInformation.Access = $TokenPayload.access_token
             $Script:NRAPIAuthenticationInformation.Expires = Get-TokenExpiry -ExpiresIn $TokenPayload.expires_in
             $Script:NRAPIAuthenticationInformation.Refresh = $TokenPayload.refresh_token
             Write-Verbose 'Got authentication token information from NinjaOne.'
-            Write-Debug "Authentication information set to: $($Script:NRAPIAuthenticationInformation | Out-String -Width 2048)"
+            Write-Verbose "Authentication information set to: $($Script:NRAPIAuthenticationInformation | Format-List | Out-String)"
             if ($ShowTokens) {
                 Write-Output '================ Auth Tokens ================'
-                Write-Output $($Script:NRAPIAuthenticationInformation | Format-Table)
+                Write-Output $($Script:NRAPIAuthenticationInformation | Format-Table -AutoSize)
                 Write-Output '       SAVE THESE IN A SECURE LOCATION       '
             }
         } catch {
-            throw $_
+            throw
         }
     }
 }

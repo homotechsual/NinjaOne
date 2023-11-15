@@ -20,12 +20,18 @@ function Get-NinjaOneTicketAttributes {
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     try {
+        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         $Resource = 'v2/ticketing/attributes'
         $RequestParams = @{
+            QSCollection = $QSCollection
             Resource = $Resource
         }
         $TicketAttributes = New-NinjaOneGETRequest @RequestParams
-        return $TicketAttributes
+        if ($TicketAttributes) {
+            return $TicketAttributes
+        } else {
+            throw 'No ticket attributes found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

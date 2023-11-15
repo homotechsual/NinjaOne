@@ -9,23 +9,30 @@ function Restart-NinjaOneDevice {
         .OUTPUTS
             A powershell object containing the response.
     #>
-    [CmdletBinding( SupportsShouldProcess = $true, ConfirmImpact = 'Medium' )]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
-        # The device ID to reset status for.
-        [Parameter(Mandatory = $true)]
-        [string]$deviceId,
+        # The device Id to reset status for.
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('id')]
+        [Int]$deviceId,
         # The reboot mode.
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
         [ValidateSet('NORMAL', 'FORCED')]
-        [string]$mode,
+        [String]$mode,
         # The reboot reason.
         [Parameter()]
-        [string]$reason
+        [String]$reason
     )
     try {
-        $Resource = "v2/device/$deviceId/reboot/$mode"
+        $Device = Get-NinjaOneDevice -deviceId $deviceId
+        if ($Device) {
+            Write-Verbose ('Rebooting device {0}.' -f $Device.SystemName)
+            $Resource = ('v2/device/{0}/reboot/{1}' -f $deviceId, $mode)
+        } else {
+            throw ('Device with id {0} not found.' -f $deviceId)
+        }
         $RequestParams = @{
             Resource = $Resource
         }
@@ -35,10 +42,13 @@ function Restart-NinjaOneDevice {
             }
             $RequestParams.Add('body', $reasonObject)
         }
-        if ($PSCmdlet.ShouldProcess("Device $deviceId", 'Reboot')) {
+        if ($PSCmdlet.ShouldProcess(('Device' -f $Device.SystemName), 'Reboot')) {
             $Alert = New-NinjaOnePOSTRequest @RequestParams
             if ($Alert -eq 204) {
-                Write-Information "Device $deviceId reboot command sent successfully."
+                $OIP = $InformationPreference
+                $InformationPreference = 'Continue'
+                Write-Information ('Device {0} rebooted command sent successfully.' -f $Device.SystemName)
+                $InformationPreference = $OIP
             }
         }
     } catch {

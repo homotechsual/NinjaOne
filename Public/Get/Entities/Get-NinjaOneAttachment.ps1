@@ -2,9 +2,9 @@
 function Get-NinjaOneAttachment {
     <#
         .SYNOPSIS
-            Gets an attachment from the NinjaOne API.
+            Gets a help request form / systray help form attachment from the NinjaOne API.
         .DESCRIPTION
-            Retrieves an attachment from the NinjaOne v2 API.
+            Retrieves a help request form / systray help form attachment from the NinjaOne v2 API.
         .FUNCTIONALITY
             Attachment
         .OUTPUTS
@@ -22,19 +22,21 @@ function Get-NinjaOneAttachment {
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'attachmentid=' parameter by removing it from the set parameters.
-    if ($attachmentID) {
-        $Parameters.Remove('attachmentId') | Out-Null
-    }
+    $Parameters.Remove('attachmentId') | Out-Null
     try {
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         Write-Verbose 'Retrieving attachment.'
-        $Resource = "v2/attachment/$($attachmentID)"
+        $Resource = ('v2/attachment/{0}' -f $attachmentId)
         $RequestParams = @{
             Resource = $Resource
             QSCollection = $QSCollection
         }
         $AttachmentResults = New-NinjaOneGETRequest @RequestParams
-        Return $AttachmentResults
+        if ($AttachmentResults) {
+            return $AttachmentResults   
+        } else {
+            throw ('Attachment with id {0} not found.' -f $attachmentId)
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

@@ -29,7 +29,11 @@ function Get-NinjaOneTasks {
             QSCollection = $QSCollection
         }
         $TaskResults = New-NinjaOneGETRequest @RequestParams
-        Return $TaskResults
+        if ($TaskResults) {
+            return $TaskResults
+        } else {
+            throw 'No tasks found.'
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }

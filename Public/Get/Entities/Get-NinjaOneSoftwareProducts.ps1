@@ -14,27 +14,51 @@ function Get-NinjaOneSoftwareProducts {
         .EXAMPLE
             PS> Get-NinjaOneSoftwareProducts -deviceId 1
 
-            Gets all software products for the device with ID 1.
+            Gets all software products for the device with id 1.
         .OUTPUTS
             A powershell object containing the response.
     #>
     [CmdletBinding()]
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-    Param()
-    # $CommandName = $MyInvocation.InvocationName
-    # $Parameters = (Get-Command -Name $CommandName).Parameters
+    Param(
+        # The device id to get software products for.
+        [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('id')]
+        [Int]$deviceId
+    )
+    $CommandName = $MyInvocation.InvocationName
+    $Parameters = (Get-Command -Name $CommandName).Parameters
     # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
+    $Parameters.Remove('deviceId') | Out-Null
     try {
-        # $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        Write-Verbose 'Retrieving all software products.'
-        $Resource = 'v2/software-products'
+        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
+        if ($deviceId) {
+            $Device = Get-NinjaOneDevices -deviceId $deviceId
+            if ($Device) {
+                Write-Verbose ('Getting software products for device {0}.' -f $Device.SystemName)
+                $Resource = ('v2/device/{0}/software' -f $deviceId)
+            } else {
+                throw ('Device with id {0} not found.' -f $deviceId)
+            }
+        } else {
+            Write-Verbose 'Retrieving all software products.'
+            $Resource = 'v2/software-products'
+        }
         $RequestParams = @{
             Resource = $Resource
-            # QSCollection = $QSCollection
+            QSCollection = $QSCollection
         }
         $SoftwareProductResults = New-NinjaOneGETRequest @RequestParams
-        Return $SoftwareProductResults
+        if ($SoftwareProductResults) {
+            return $SoftwareProductResults
+        } else {
+            if ($Device) {
+                throw ('No software products found for device {0}.' -f $Device.SystemName)
+            } else {
+                throw 'No software products found.'
+            }
+        }
     } catch {
         New-NinjaOneError -ErrorRecord $_
     }
