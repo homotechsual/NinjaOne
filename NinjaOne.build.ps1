@@ -14,7 +14,8 @@ Param (
     [Switch]$Test,
     [Switch]$UpdateManifest,
     [Switch]$PublishModule,
-    [Switch]$Clean
+    [Switch]$Clean,
+    [Switch]$GenerateShortNamesMapping
 )
 
 $ModuleName = 'NinjaOne'
@@ -36,6 +37,33 @@ if ($Push) {
     }
 }
 
+# (Re)Generate the mapping file for the short names of the commandlets. Stored in the Functionality item of the comment based help. The file will be stored in .\.build\CommandletShortNames.yaml
+## Requres YAYAML installed.
+
+if ($GenerateShortNamesMapping) {
+    $OutputFilePath = [System.IO.FileInfo]'.\.build\CommandletShortNames.yaml'
+    $ShortNameOutput = [System.Collections.Generic.Dictionary[String, String]]::new()
+    Import-Module ('.\{0}.psd1' -f $ModuleName) -Force
+    $Module = Get-Module -Name $ModuleName
+    $CommandletList = [System.Collections.Generic.List[String]]::new()
+    $CommandletList.AddRange($Module.ExportedFunctions.Keys)
+    foreach ($Commandlet in $CommandletList) {
+        $AST = (Get-Content -Path ('function:/{0}' -f $Commandlet) -ErrorAction Ignore).AST
+        $ShortName = $AST.GetHelpContent().Functionality
+        if ($ShortName) {
+            $ShortNameOutput.Add($Commandlet, $ShortName)
+        } else {
+            throw ('Commandlet {0} does not have a short name.' -f $Commandlet)
+        }
+    }
+    if ($ShortNameOutput.Count -eq $CommandletList.Count) {
+        $ShortNameOutput | ConvertTo-Yaml | Out-File -FilePath $OutputFilePath -Force
+    } else {
+        $CommandletList | Where-Object { -not $ShortNameOutput.ContainsKey($_) } | ForEach-Object { Write-Warning -Message ('Commandlet {0} not present in the short name list.' -f $_) }
+        throw 'Not all commandlets have a short name.'
+    }
+}
+
 # Update the PowerShell Module Help Files.
 ## Requires PlatyPS, Pester, PSScriptAnalyzer and Alt3.Docusaurus.PowerShell installed.
 
@@ -45,15 +73,25 @@ if ($UpdateHelp) {
     } elseif (-Not(Resolve-Path -Path $DocusaurusPath)) {
         throw 'DocusaurusPath does not resolve to a valid path'
     }
+    $DocsFolderPath = Join-Path -Path $DocusaurusPath -ChildPath 'docs' -AdditionalChildPath $ModuleName
+    if (-Not(Test-Path -Path $DocsFolderPath)) {
+        New-Item -Path $DocsFolderPath -ItemType Directory | Out-Null
+    }
+    $ShortNamesFilePath = [System.IO.FileInfo]'.\.build\CommandletShortNames.yaml'
+    $ShortNamesYAML = Get-Content -Path $ShortNamesFilePath
+    $ShortNamesDictionary = ConvertFrom-Yaml -InputObject $ShortNamesYAML
     $ExcludeFiles = Get-ChildItem -Path "$($PSScriptRoot)\Private" -Filter '*.ps1' -Recurse | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_.FullName) }
     $NewDocusaurusHelpParams = @{
         Module = ('.\{0}.psm1' -f $ModuleName)
-        DocsFolder = Join-Path -Path $DocusaurusPath -ChildPath 'docs' -AdditionalChildPath $ModuleName
+        DocsFolder = $DocsFolderPath
         Exclude = $ExcludeFiles
         Sidebar = 'commandlets'
         # MetaDescription = 'Generated cmdlet help for the %1 commandlet.'
         GroupByVerb = $true
         UseDescriptionFromHelp = $true
+        NoPlaceHolderExamples = $true
+        UseCustomShortTitles = $true
+        ShortTitles = $ShortNamesDictionary
     }
     New-DocusaurusHelp @NewDocusaurusHelpParams | Out-Null
     $CommandletDocsFolder = Join-Path -Path $DocusaurusPath -ChildPath 'docs' -AdditionalChildPath @($ModuleName, 'commandlets')

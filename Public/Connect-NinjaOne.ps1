@@ -4,6 +4,8 @@ function Connect-NinjaOne {
             Creates a new connection to a NinjaOne instance.
         .DESCRIPTION
             Creates a new connection to a NinjaOne instance and stores this in a PowerShell Session.
+        .FUNCTIONALITY
+            Connect
         .EXAMPLE
             PS> Connect-NinjaOne -Instance 'eu' -ClientId 'AAaaA1aaAaAA-aaAaaA11a1A-aA' -ClientSecret '00Z00zzZzzzZzZzZzZzZZZ0zZ0zzZ_0zzz0zZZzzZz0Z0ZZZzz0z0Z' -UseClientAuth
 

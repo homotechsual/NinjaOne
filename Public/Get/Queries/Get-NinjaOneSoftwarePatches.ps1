@@ -58,7 +58,7 @@ function Get-NinjaOneSoftwarePatches {
         [String]$status,
         # Filter patches by product identifier.
         [Parameter(Position = 3, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [string]$productIdentifier,
+        [String]$productIdentifier,
         # Filter patches by type.
         [Parameter(Position = 4, ValueFromPipelineByPropertyName)]
         [ValidateSet('PATCH', 'INSTALLER')]

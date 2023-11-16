@@ -152,12 +152,12 @@
         'Set-NinjaOneLocationCustomFields',
         'Set-NinjaOneOrganisationCustomFields',
         'Set-NinjaOneWindowsServiceConfiguration',
-        'Update-NinjaOneDevice',
-        'Update-NinjaOneLocation',
-        'Update-NinjaOneNodeRolePolicyAssignment',
-        'Update-NinjaOneOrganisation',
-        'Update-NinjaOneOrganisationDocument',
-        'Update-NinjaOneTicket',
+        'Set-NinjaOneDevice',
+        'Set-NinjaOneLocation',
+        'Set-NinjaOneNodeRolePolicyAssignment',
+        'Set-NinjaOneOrganisation',
+        'Set-NinjaOneOrganisationDocument',
+        'Set-NinjaOneTicket',
         'Update-NinjaOneWebhook'
     )
 
