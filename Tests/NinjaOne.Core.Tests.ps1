@@ -3,6 +3,8 @@
         Core test suite for the NinjaOne module.
 #>
 
+$ModuleName = 'NinjaOne'
+
 BeforeAll {
     $ModulePath = Split-Path -Parent -Path (Split-Path -Parent -Path $PSCommandPath)
     $ModuleName = 'NinjaOne'
@@ -15,8 +17,7 @@ BeforeAll {
 
 }
 
-# Test that the manifest is generally correct. Not a functional test.
-Describe 'Core' {
+Describe ('{0} - Core Tests' -f $ModuleName) -Tags 'Module' {
     It 'Manifest is valid' {
         {
             Test-ModuleManifest -Path $ManifestPath -ErrorAction Stop -WarningAction SilentlyContinue

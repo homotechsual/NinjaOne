@@ -9,6 +9,10 @@ function Get-NinjaOneAttachment {
             Attachment
         .OUTPUTS
             A powershell object containing the response.
+        .EXAMPLE
+            PS> Get-NinjaOneAttachment -attachmentId 'somethinggoesherebutidontknowwhatandneitherdoninja'
+
+            Retrieves the attachment with id 'somethinggoesherebutidontknowwhatandneitherdoninja'.
         .LINK
             https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/attachment
     #>

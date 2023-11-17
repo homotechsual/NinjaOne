@@ -8,6 +8,16 @@ function Invoke-NinjaOneDeviceScript {
             Script or Action
         .OUTPUTS
             A powershell object containing the response.
+        .EXAMPLE
+            PS> Invoke-NinjaOneDeviceScript -deviceId 1 -type 'SCRIPT' -scriptId 1
+            
+            Runs the script with id 1 against the device with id 1.
+        .EXAMPLE
+            PS> Invoke-NinjaOneDeviceScript -deviceId 1 -type 'ACTION' -actionUId '00000000-0000-0000-0000-000000000000'
+
+            Runs the built-in action with uid 00000000-0000-0000-0000-000000000000 against the device with id 1.
+        .EXAMPLE
+
         .LINK
             https://docs.homotechsual.dev/modules/ninjaone/commandlets/Invoke/scriptoraction
     #>
@@ -16,49 +26,78 @@ function Invoke-NinjaOneDeviceScript {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device to run a script on.
-        [Parameter(Mandatory = $true)]
-        [string[]]$deviceId,
+        [Parameter(Mandatory, ParameterSetName = 'SCRIPT', Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Parameter(Mandatory, ParameterSetName = 'ACTION', Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('id')]
+        [Int]$deviceId,
         # The type - script or action.
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory, ParameterSetName = 'SCRIPT', Position = 1, ValueFromPipelineByPropertyName)]
+        [Parameter(Mandatory, ParameterSetName = 'ACTION', Position = 1, ValueFromPipelineByPropertyName)]
         [ValidateSet('SCRIPT', 'ACTION')]
-        [object]$type,
+        [String]$type,
         # The id of the script to run. Only used if the type is script.
-        [Parameter()]
-        [int]$scriptId,
-        # The unique id of the action to run. Only used if the type is action.
-        [Parameter()]
-        [string]$actionId,
+        [Parameter(Mandatory, ParameterSetName = 'SCRIPT', Position = 2, ValueFromPipelineByPropertyName)]
+        [Int]$scriptId,
+        # The unique uid of the action to run. Only used if the type is action.
+        [Parameter(Mandatory, ParameterSetName = 'ACTION', Position = 2, ValueFromPipelineByPropertyName)]
+        [GUID]$actionUId,
         # The parameters to pass to the script or action.
-        [Parameter()]
-        [string]$parameters,
+        [Parameter(ParameterSetName = 'SCRIPT', Position = 3, ValueFromPipelineByPropertyName)]
+        [Parameter(ParameterSetName = 'ACTION', Position = 3, ValueFromPipelineByPropertyName)]
+        [String]$parameters,
         # The credential/role identifier to use when running the script.
-        [Parameter()]
-        [string]$runAs
+        [Parameter(ParameterSetName = 'SCRIPT', Position = 4, ValueFromPipelineByPropertyName)]
+        [Parameter(ParameterSetName = 'ACTION', Position = 4, ValueFromPipelineByPropertyName)]
+        [String]$runAs
     )
     if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
         throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
         exit 1
     }
     try {
+        if ($type -eq 'SCRIPT') {
+            $prettyAction = 'script'
+        } else {
+            $prettyAction = 'action'
+        }
         $Device = Get-NinjaOneDevice -deviceId $deviceId
         if ($Device) {
-            $Resource = ('v2/device/{0}/script/run' -f $deviceId)
-            $RunRequest = @{
-                type = $action
+            Write-Verbose ('Getting device scripting options for device {0}.' -f $Device.SystemName)
+            if ($type -eq 'SCRIPT') {
+                $ScriptOrAction = Get-NinjaOneDeviceScriptingOptions -deviceId $deviceId -Scripts | Where-Object { $_.id -eq $scriptId -AND $_.type -eq $type }
+            } else {
+                $ScriptOrAction = Get-NinjaOneDeviceScriptingOptions -deviceId $deviceId -Scripts | Where-Object { $_.uid -eq $actionUId -AND $_.type -eq $type }
             }
-            if ($scriptId) {
-                $RunRequest.id = $scriptId
+            if ($ScriptOrAction.Count -gt 1) {
+                Write-Warning ('More than one {0} matched for device {1}.' -f $prettyAction, $Device.SystemName)
+                Write-Verbose ('Raw {0} options: {1}' -f $prettyAction, ($ScriptOrAction | Out-String))
             }
-            if ($actionId) {
-                $RunRequest.uid = $actionId
+            if ($ScriptOrAction) {
+                Write-Verbose ('Running {0} {1} on device {2}.' -f $prettyAction, $ScriptOrAction.Name, $Device.SystemName)
+                $Resource = ('v2/device/{0}/script/run' -f $deviceId)
+                $RunRequest = @{
+                    type = $type
+                }
+                if ($scriptId) {
+                    $RunRequest.id = $scriptId
+                }
+                if ($actionUId) {
+                    $RunRequest.uid = $actionUId
+                }
+                if ($parameters) {
+                    $RunRequest.parameters = $parameters
+                }
+                if ($runAs) {
+                    $RunRequest.runAs = $runAs
+                }
+                Write-Verbose ('Raw run request: {0}' -f ($RunRequest | Out-String))
+            } else {
+                if ($scriptId) {
+                    throw ('Script with id {0} not found for device {1}.' -f $scriptId, $Device.SystemName)
+                } elseif ($actionUId) {
+                    throw ('Action with uid {0} not found for device {1}.' -f $actionUId, $Device.SystemName)
+                }
             }
-            if ($parameters) {
-                $RunRequest.parameters = $parameters
-            }
-            if ($runAs) {
-                $RunRequest.runAs = $runAs
-            }
-            Write-Verbose ('Raw run request: {0}' -f ($RunRequest | Out-String))
         } else {
             throw ('Device with id {0} not found.' -f $deviceId)
         }
@@ -68,15 +107,9 @@ function Invoke-NinjaOneDeviceScript {
         }
         $ScriptRun = New-NinjaOnePOSTRequest @RequestParams
         if ($ScriptRun -eq 204) {
-            if ($action -eq 'SCRIPT') {
-                $actionResult = 'script'
-            } else {
-                $actionResult = 'action'
-            }
-            Write-Information "Requested run for $($actionResult) on device $($deviceId) successfully."
             $OIP = $InformationPreference
             $InformationPreference = 'Continue'
-            Write-Information ('Requested run for {0} on device {1} successfully.' -f $actionResult, $deviceId)
+            Write-Information ('Requested run for {0} {1} on device {2} successfully.' -f $prettyAction, $ScriptOrAction.Name, $Device.SystemName)
             $InformationPreference = $OIP
         }
     } catch {

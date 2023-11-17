@@ -8,6 +8,8 @@ function Set-NinjaOneNodeRolePolicyAssignment {
             Node Role Policy Assignment
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/noderolepolicyassignment
     #>
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Array])]

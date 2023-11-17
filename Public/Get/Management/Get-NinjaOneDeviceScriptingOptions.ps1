@@ -12,9 +12,13 @@ function Get-NinjaOneDeviceScriptingOptions {
 
             Gets the device scripting options for the device with id 1.
         .EXAMPLE
-            PS> (Get-NinjaOneDeviceScriptingOptions -deviceId 1).scripts
+            PS> Get-NinjaOneDeviceScriptingOptions -deviceId 1 -Scripts
 
             Gets the scripts for the device with id 1.
+        .EXAMPLE
+            PS> Get-NinjaOneDeviceScriptingOptions -deviceId 1 -Categories
+
+            Gets the categories for the device with id 1.
         .OUTPUTS
             A powershell object containing the response.
         .LINK
@@ -31,7 +35,11 @@ function Get-NinjaOneDeviceScriptingOptions {
         # Built in scripts / job names should be returned in the specified language.
         [Parameter(Position = 1)]
         [Alias('lang')]
-        [String]$LanguageTag
+        [String]$LanguageTag,
+        # Return the categories list only.
+        [Switch]$Categories,
+        # Return the scripts list only.
+        [Switch]$Scripts
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
@@ -51,7 +59,13 @@ function Get-NinjaOneDeviceScriptingOptions {
         }
         $DeviceScriptingOptionResults = New-NinjaOneGETRequest @RequestParams
         if ($DeviceScriptingOptionResults) {
-            return $DeviceScriptingOptionResults
+            if ($Categories) {
+                return $DeviceScriptingOptionResults.Categories
+            } elseif ($Scripts) {
+                return $DeviceScriptingOptionResults.Scripts
+            } else {
+                return $DeviceScriptingOptionResults
+            }
         } else {
             throw ('No scripting options found for device {0}.' -f $Device.SystemName)
         }
