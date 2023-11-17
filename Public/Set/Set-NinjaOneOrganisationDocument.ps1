@@ -35,7 +35,7 @@ function Set-NinjaOneOrganisationDocument {
         $Organisation = Get-NinjaOneOrganisations -OrganisationId $organisationId
         if ($Organisation) {
             Write-Verbose ('Getting organisation document {0} from NinjaOne API.' -f $documentId)
-            $Document = Get-NinjaOneOrganisationDocuments -OrganisationId $organisationId | Where-Object { $_.id -eq $documentId }
+            $Document = Get-NinjaOneOrganisationDocuments -OrganisationId $organisationId | Where-Object { $_.documentId -eq $documentId }
             if ($Document) {
                 Write-Verbose ('Setting organisation custom fields for organisation {0}.' -f $Organisation.Name)
                 $Resource = ('v2/organization/{0}/document/{1}' -f $organisationId, $documentId)
