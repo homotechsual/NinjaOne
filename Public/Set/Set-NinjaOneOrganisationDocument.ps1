@@ -5,9 +5,11 @@ function Set-NinjaOneOrganisationDocument {
         .DESCRIPTION
             Sets organisation documents using the NinjaOne v2 API.
         .FUNCTIONALITY
-            Document
+            Organisation Document
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/organisationdocument
     #>
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]

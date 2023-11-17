@@ -12,6 +12,8 @@ function Get-NinjaOneOrganisationDocuments {
             Gets documents for the organisation with id 1.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/documents
     #>
     [CmdletBinding()]
     [OutputType([Object])]

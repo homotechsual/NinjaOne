@@ -16,6 +16,8 @@ function Get-NinjaOneTicketLogEntries {
             Gets all ticket log entries for ticket with id 1 with type DESCRIPTION.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/ticketlogentries
     #>
     [CmdletBinding()]
     [OutputType([Object])]

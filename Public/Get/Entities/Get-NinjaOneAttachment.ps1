@@ -9,6 +9,8 @@ function Get-NinjaOneAttachment {
             Attachment
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/attachment
     #>
     [CmdletBinding()]
     [OutputType([Object])]

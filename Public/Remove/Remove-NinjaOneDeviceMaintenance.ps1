@@ -8,6 +8,8 @@ function Remove-NinjaOneDeviceMaintenance {
             Maintenance
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Remove/maintenance
     #>
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]

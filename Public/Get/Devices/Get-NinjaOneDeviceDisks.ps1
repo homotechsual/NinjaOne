@@ -14,7 +14,7 @@ function Get-NinjaOneDeviceDisks {
         .OUTPUTS
             A powershell object containing the response.
         .LINK
-            https://docs.homotechsual.dev/modules/ninjaone/get/devices/get-ninjaonedevicedisks
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/devicedisks
     #>
     [CmdletBinding()]
     [OutputType([Object])]

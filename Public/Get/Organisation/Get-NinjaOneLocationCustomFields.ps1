@@ -16,6 +16,8 @@ function Get-NinjaOneLocationCustomFields {
             Gets custom field details for the location with id 2 belonging to the organisation with id 1 and inherits values from parent organisation, if no value is set for the location you will get the value from the parent organisation.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/locationcustomfields
     #>
     [CmdletBinding()]
     [OutputType([Object])]

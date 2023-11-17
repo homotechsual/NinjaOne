@@ -1,4 +1,4 @@
-function Update-NinjaOneLocation {
+function Set-NinjaOneLocation {
     <#
         .SYNOPSIS
             Sets location information, like name, address, description etc.
@@ -8,6 +8,8 @@ function Update-NinjaOneLocation {
             Location
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/location
     #>
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]

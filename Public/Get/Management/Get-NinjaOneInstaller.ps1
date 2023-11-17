@@ -17,6 +17,8 @@ function Get-NinjaOneInstaller {
             Gets the agent installer URL for the location with id 1 in the organisation with id 1 for the Mac PKG installer.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/installer
     #>
     [CmdletBinding()]
     [OutputType([Object])]

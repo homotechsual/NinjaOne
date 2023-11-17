@@ -12,6 +12,8 @@ function Set-NinjaOneDeviceCustomFields {
             PS> Set-NinjaOneDeviceCustomFields -deviceId 1 -customFields @{ CustomField1 = 'Value1'; CustomField2 = 'Value2' }
             
             Set `CustomField1` to `Value1` and `CustomField2` to `Value2` respectively for the device with id 1.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/devicecustomfields
     #>
     [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
     [OutputType([Object])]

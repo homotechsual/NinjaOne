@@ -32,6 +32,8 @@ function Get-NinjaOneOSPatches {
             Gets the OS patches with a severity of CRITICAL.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/ospatchesquery
     #>
     [CmdletBinding()]
     [OutputType([Object])]

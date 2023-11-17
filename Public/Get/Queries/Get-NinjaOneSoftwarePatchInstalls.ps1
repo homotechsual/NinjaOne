@@ -52,6 +52,8 @@ function Get-NinjaOneSoftwarePatchInstalls {
             Gets the software patch installs installed after 1619712000.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/softwarepatchinstallsquery
     #>
     [CmdletBinding()]
     [OutputType([Object])]

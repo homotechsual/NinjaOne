@@ -32,6 +32,8 @@ function Get-NinjaOneSoftwareInventory {
             Gets the software inventory for software installed after 1619712000.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/softwareinventoryquery
     #>
     [CmdletBinding()]
     [OutputType([Object])]

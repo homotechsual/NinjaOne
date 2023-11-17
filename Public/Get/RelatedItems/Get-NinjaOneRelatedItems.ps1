@@ -28,6 +28,8 @@ function Get-NinjaOneRelatedItems {
             Gets all items which have a relation from the organization with id 1.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/relateditems
     #>
     [CmdletBinding()]
     [OutputType([Object])]

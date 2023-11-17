@@ -32,6 +32,8 @@ function Get-NinjaOneCustomFields {
             Gets the detailed version of the custom field values.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/customfieldsquery
     #>
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     [OutputType([Object])]

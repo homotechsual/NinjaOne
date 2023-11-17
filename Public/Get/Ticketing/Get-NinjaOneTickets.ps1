@@ -20,6 +20,8 @@ function Get-NinjaOneTickets {
             Gets all open tickets for the board with id 1.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/tickets
     #>
     [CmdletBinding()]
     [OutputType([Object])]

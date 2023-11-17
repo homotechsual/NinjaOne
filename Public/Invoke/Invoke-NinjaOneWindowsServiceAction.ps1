@@ -5,9 +5,11 @@ function Invoke-NinjaOneWindowsServiceAction {
         .DESCRIPTION
             Runs an action against a windows service on a single device using the NinjaOne v2 API.
         .FUNCTIONALITY
-            Invoke Windows Service Action
+            Windows Service Action
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Invoke/windowsserviceaction
     #>
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]

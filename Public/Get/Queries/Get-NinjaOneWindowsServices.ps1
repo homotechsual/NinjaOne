@@ -24,6 +24,8 @@ function Get-NinjaOneWindowsServices {
             Gets the windows services with the state 'RUNNING'.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/windowsservicesquery
     #>
     [CmdletBinding()]
     [OutputType([Object])]

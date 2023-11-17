@@ -8,6 +8,7 @@ function Set-NinjaOneDeviceApproval {
             Device Approval
         .OUTPUTS
             A powershell object containing the response.
+        .EXAMPLE
     #>
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]

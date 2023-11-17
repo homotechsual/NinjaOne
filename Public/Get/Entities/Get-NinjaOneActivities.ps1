@@ -53,6 +53,8 @@ function Get-NinjaOneActivities {
             Gets activities for devices in organisations 1, 2 and 3.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/activities
     #>
     [CmdletBinding()]
     [OutputType([Object])]

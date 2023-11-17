@@ -5,9 +5,11 @@ function New-NinjaOneOrganisation {
         .DESCRIPTION
             Create an organisation using the NinjaOne v2 API.
         .FUNCTIONALITY
-            Create Organisation
+            Organisation
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/organisation
     #>
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]

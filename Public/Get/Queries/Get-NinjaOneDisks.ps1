@@ -20,6 +20,8 @@ function Get-NinjaOneDisks {
             Gets the disks with a monitoring timestamp at or after 1619712000.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/disksquery
     #>
     [CmdletBinding()]
     [OutputType([Object])]

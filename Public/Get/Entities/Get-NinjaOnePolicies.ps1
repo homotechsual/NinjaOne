@@ -13,6 +13,8 @@ function Get-NinjaOnePolicies {
             Gets all policies.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/policies
     #>
     [CmdletBinding()]
     [OutputType([Object])]

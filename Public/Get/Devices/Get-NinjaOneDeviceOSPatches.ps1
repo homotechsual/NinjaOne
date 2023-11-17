@@ -17,6 +17,8 @@ function Get-NinjaOneDeviceOSPatches {
             Gets OS patch information for the device with id 1 where the patch is an approved security update with critical severity.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/deviceospatches
     #>
     [CmdletBinding()]
     [OutputType([Object])]

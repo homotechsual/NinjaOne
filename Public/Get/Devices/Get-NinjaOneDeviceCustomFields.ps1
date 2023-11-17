@@ -26,7 +26,7 @@ function Get-NinjaOneDeviceCustomFields {
         .OUTPUTS
             A powershell object containing the response
         .LINK
-            https://docs.homotechsual.dev/modules/ninjaone/get/devices/get-ninjaonedevicecustomfields
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/contacts
     #>
     [CmdletBinding()]
     [OutputType([Object])]

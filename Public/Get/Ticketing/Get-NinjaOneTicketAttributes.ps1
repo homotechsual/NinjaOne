@@ -12,6 +12,8 @@ function Get-NinjaOneTicketAttributes {
             Gets all ticket attributes.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/ticketattributes
     #>
     [CmdletBinding()]
     [OutputType([Object])]

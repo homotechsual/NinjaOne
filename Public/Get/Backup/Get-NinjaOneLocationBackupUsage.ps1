@@ -18,7 +18,7 @@ function Get-NinjaOneLocationBackupUsage {
         .OUTPUTS
             A powershell object containing the response.
         .LINK
-            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/Get-NinjaOneLocationBackupUsage
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/locationbackupusage
     #>
     [CmdletBinding()]
     [OutputType([Object])]

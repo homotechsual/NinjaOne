@@ -17,6 +17,8 @@ function Get-NinjaOneDeviceSoftwarePatches {
             Gets all software patches for the device with id 1 where the patch is approved, has type patch and has critical impact/severity.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/devicesoftwarepatches
     #>
     [CmdletBinding()]
     [OutputType([Object])]

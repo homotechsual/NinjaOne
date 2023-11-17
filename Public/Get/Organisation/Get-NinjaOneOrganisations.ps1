@@ -24,6 +24,8 @@ function Get-NinjaOneOrganisations {
             Gets all organisations with locations and policy mappings.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/organisations
     #>
     [CmdletBinding( DefaultParameterSetName = 'Multi' )]
     [OutputType([Object])]

@@ -16,6 +16,8 @@ function Get-NinjaOneTicketForms {
             Gets ticket form with id 1.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/ticketforms
     #>
     [CmdletBinding()]
     [OutputType([Object])]

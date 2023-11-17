@@ -82,7 +82,7 @@ if ($UpdateHelp) {
     $ShortNamesDictionary = ConvertFrom-Yaml -InputObject $ShortNamesYAML
     $ExcludeFiles = Get-ChildItem -Path "$($PSScriptRoot)\Private" -Filter '*.ps1' -Recurse | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_.FullName) }
     $NewDocusaurusHelpParams = @{
-        Module = ('.\{0}.psm1' -f $ModuleName)
+        Module = ('.\{0}.psd1' -f $ModuleName)
         DocsFolder = $DocsFolderPath
         Exclude = $ExcludeFiles
         Sidebar = 'commandlets'

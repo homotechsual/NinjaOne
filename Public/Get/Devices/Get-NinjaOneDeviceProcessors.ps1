@@ -13,6 +13,8 @@ function Get-NinjaOneDeviceProcessors {
             Gets the processors for the device with id 1.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/deviceprocessors
     #>
     [CmdletBinding()]
     [OutputType([Object])]

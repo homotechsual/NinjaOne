@@ -17,6 +17,8 @@ function Get-NinjaOneDeviceVolumes {
             Gets the volumes for the device with id 1 and includes BitLocker status.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/devicevolumes
     #>
     [CmdletBinding()]
     [OutputType([Object])]

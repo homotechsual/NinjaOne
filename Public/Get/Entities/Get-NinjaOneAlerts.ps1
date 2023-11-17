@@ -22,6 +22,8 @@ function Get-NinjaOneAlerts {
             Gets alerts for all approved devices.
         .OUTPUTS    
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/alerts
     #>
     [CmdletBinding()]
     [OutputType([Object])]

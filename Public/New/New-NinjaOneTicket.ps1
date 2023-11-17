@@ -5,9 +5,11 @@ function New-NinjaOneTicket {
         .DESCRIPTION
             Create a ticket using the NinjaOne v2 API.
         .FUNCTIONALITY
-            Create Ticket
+            Ticket
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/ticket
     #>
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]

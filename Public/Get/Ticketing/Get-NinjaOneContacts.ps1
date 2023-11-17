@@ -12,6 +12,8 @@ function Get-NinjaOneContacts {
             Gets all contacts.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/contacts
     #>
     [CmdletBinding()]
     [OutputType([Object])]

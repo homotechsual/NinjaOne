@@ -97,6 +97,7 @@
         'Get-NinjaOneDeviceSoftwarePatches',
         'Get-NinjaOneDeviceSoftwarePatchInstalls',
         'Get-NinjaOneDeviceVolumes',
+        'Get-NinjaOneDeviceWindowsServices',
         'Get-NinjaOneDisks',
         'Get-NinjaOneGroupMembers',
         'Get-NinjaOneGroups',
@@ -141,23 +142,24 @@
         'New-NinjaOneOrganisation',
         'New-NinjaOnePolicy',
         'New-NinjaOneTicket',
+        'New-NinjaOneTicketComment',
         'Remove-NinjaOneDeviceMaintenance',
         'Remove-NinjaOneWebhook',
         'Reset-NinjaOneAlert',
         'Reset-NinjaOneDevicePolicyOverrides',
         'Restart-NinjaOneDevice',
+        'Set-NinjaOneDevice',
         'Set-NinjaOneDeviceApproval',
         'Set-NinjaOneDeviceCustomFields',
         'Set-NinjaOneDeviceMaintenance',
-        'Set-NinjaOneLocationCustomFields',
-        'Set-NinjaOneOrganisationCustomFields',
-        'Set-NinjaOneWindowsServiceConfiguration',
-        'Set-NinjaOneDevice',
         'Set-NinjaOneLocation',
+        'Set-NinjaOneLocationCustomFields',
         'Set-NinjaOneNodeRolePolicyAssignment',
         'Set-NinjaOneOrganisation',
+        'Set-NinjaOneOrganisationCustomFields',
         'Set-NinjaOneOrganisationDocument',
         'Set-NinjaOneTicket',
+        'Set-NinjaOneWindowsServiceConfiguration',
         'Update-NinjaOneWebhook'
     )
 
@@ -170,6 +172,7 @@
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
     AliasesToExport = @(
         'Get-NinjaOneBoards',
+        'Get-NinjaOneDeviceSoftwareProducts',
         'Get-NinjaOneOrganizationCustomFields',
         'Get-NinjaRMMOrganisationDocuments',
         'Get-NinjaRMMOrganizationDocuments',
@@ -236,7 +239,7 @@
             ReleaseNotes = 'Add missing function exports in manifest.'
 
             # Prerelease string of this module
-            Prerelease = 'Beta2'
+            Prerelease = 'Beta3'
 
             # Flag to indicate whether the module requires explicit user acceptance for install/update/save
             # RequireLicenseAcceptance = $false

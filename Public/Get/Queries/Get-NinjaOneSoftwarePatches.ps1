@@ -36,6 +36,8 @@ function Get-NinjaOneSoftwarePatches {
             Gets the software patches with an impact of 'OPTIONAL'.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/softwarepatchesquery
     #>
     [CmdletBinding()]
     [OutputType([Object])]

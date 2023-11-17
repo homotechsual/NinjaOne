@@ -1,4 +1,4 @@
-Connect-NinjaOne: Connect
+Connect-NinjaOne: NinjaOne
 Find-NinjaOneDevices: Devices
 Get-NinjaOneActivities: Activities
 Get-NinjaOneAlerts: Alerts
@@ -59,22 +59,28 @@ Get-NinjaOneTicketStatuses: Ticket Statuses
 Get-NinjaOneUsers: Users
 Get-NinjaOneVolumes: Volumes Query
 Get-NinjaOneWindowsServices: Windows Services Query
-Invoke-NinjaOneDeviceScript: Run Script or Action
-Invoke-NinjaOneRequest: Invoke API Request
-Invoke-NinjaOneWindowsServiceAction: Invoke Windows Service Action
-New-NinjaOneInstaller: Create Installer
-New-NinjaOneLocation: Create Location
-New-NinjaOneOrganisation: Create Organisation
-New-NinjaOnePolicy: Create Policy
-New-NinjaOneTicket: Create Ticket
+Invoke-NinjaOneDeviceScript: Script or Action
+Invoke-NinjaOneRequest: API Request
+Invoke-NinjaOneWindowsServiceAction: Windows Service Action
+New-NinjaOneInstaller: Installer
+New-NinjaOneLocation: Location
+New-NinjaOneOrganisation: Organisation
+New-NinjaOnePolicy: Policy
+New-NinjaOneTicket: Ticket
 Remove-NinjaOneDeviceMaintenance: Maintenance
 Remove-NinjaOneWebhook: Webhook
 Reset-NinjaOneAlert: Alert
 Reset-NinjaOneDevicePolicyOverrides: Device Policy Overrides
 Restart-NinjaOneDevice: Device
+Set-NinjaOneDevice: Device
 Set-NinjaOneDeviceApproval: Device Approval
 Set-NinjaOneDeviceCustomFields: Device Custom Fields
 Set-NinjaOneDeviceMaintenance: Maintenance
 Set-NinjaOneLocationCustomFields: Location Custom Fields
+Set-NinjaOneNodeRolePolicyAssignment: Node Role Policy Assignment
+Set-NinjaOneOrganisation: Organisation
 Set-NinjaOneOrganisationCustomFields: Organisation Custom Fields
+Set-NinjaOneOrganisationDocument: Document
+Set-NinjaOneTicket: Ticket
 Set-NinjaOneWindowsServiceConfiguration: Windows Service Configuration
+Update-NinjaOneWebhook: Webhook

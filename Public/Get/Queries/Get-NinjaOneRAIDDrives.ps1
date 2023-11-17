@@ -20,6 +20,8 @@ function Get-NinjaOneRAIDDrives {
             Gets the RAID drives with a monitoring timestamp at or after 1619712000.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/raiddrivesquery
     #>
     [CmdletBinding()]
     [OutputType([Object])]

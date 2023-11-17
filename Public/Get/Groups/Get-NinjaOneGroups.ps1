@@ -13,6 +13,8 @@ function Get-NinjaOneGroups {
             Gets all groups.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/groups
     #>
     [CmdletBinding()]
     [OutputType([Object])]

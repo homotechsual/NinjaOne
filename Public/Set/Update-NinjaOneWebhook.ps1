@@ -1,9 +1,11 @@
-function Set-NinjaOneWebhook {
+function Update-NinjaOneWebhook {
     <#
         .SYNOPSIS
-            Sets webhook configuration for the current application/API client.
+            Update webhook configuration for the current application/API client.
         .DESCRIPTION
-            Sets webhook configuration for the current application/API client using the NinjaOne v2 API.
+            Updates webhook configuration for the current application/API client using the NinjaOne v2 API.
+        .FUNCTIONALITY
+            Webhook
         .OUTPUTS
             A powershell object containing the response.
     #>

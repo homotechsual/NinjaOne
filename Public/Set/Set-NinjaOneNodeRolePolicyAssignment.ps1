@@ -1,4 +1,4 @@
-function Update-NinjaOneNodeRolePolicyAssignment {
+function Set-NinjaOneNodeRolePolicyAssignment {
     <#
         .SYNOPSIS
             Sets policy assignment for node role(s).

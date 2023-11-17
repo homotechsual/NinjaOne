@@ -14,7 +14,7 @@ function Get-NinjaOneDeviceLastLoggedOnUser {
         .OUTPUTS
             A powershell object containing the response.
         .LINK
-            https://docs.homotechsual.dev/modules/ninjaone/get/devices/get-ninjaonedevicelastloggedonuser
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/devicelastloggedonuser
     #>
     [CmdletBinding()]
     [OutputType([Object])]

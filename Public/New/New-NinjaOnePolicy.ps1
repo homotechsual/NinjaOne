@@ -5,9 +5,11 @@ function New-NinjaOnePolicy {
         .DESCRIPTION
             Create a new policy using the NinjaOne v2 API.
         .FUNCTIONALITY
-            Create Policy
+            Policy
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/policy
     #>
     [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]

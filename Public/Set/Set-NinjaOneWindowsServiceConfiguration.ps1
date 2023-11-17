@@ -10,6 +10,8 @@ function Set-NinjaOneWindowsServiceConfiguration {
             A powershell object containing the response.
         .EXAMPLE
             Set-NinjaOneWindowsServiceConfiguration -deviceId "12345" -serviceId "NinjaRMMAgent" -Configuration @{ startType = "AUTO_START"; userName = "LocalSystem" }
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/windowsserviceconfiguration
     #>
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]

@@ -19,7 +19,7 @@ function Find-NinjaOneDevices {
         .OUTPUTS
             A powershell object containing the response.
         .LINK
-            https://docs.homotechsual.dev/modules/ninjaone/commandlets/find/find-ninjaonedevices
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Find/devices
     #>
     [CmdletBinding()]
     [OutputType([Object])]

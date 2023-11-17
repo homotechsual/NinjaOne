@@ -7,9 +7,11 @@ function New-NinjaOneTicketComment {
         .DESCRIPTION
             Create a ticket comment using the NinjaOne v2 API.
         .FUNCTIONALITY
-            Create Ticket Comment
+            Ticket Comment
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/ticketcomment
     #>
     [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]

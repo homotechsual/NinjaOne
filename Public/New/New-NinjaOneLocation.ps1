@@ -5,9 +5,11 @@ function New-NinjaOneLocation {
         .DESCRIPTION
             Create an location using the NinjaOne v2 API.
         .FUNCTIONALITY
-            Create Location
+            Location
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/location
     #>
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]

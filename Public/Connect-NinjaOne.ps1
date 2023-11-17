@@ -5,7 +5,7 @@ function Connect-NinjaOne {
         .DESCRIPTION
             Creates a new connection to a NinjaOne instance and stores this in a PowerShell Session.
         .FUNCTIONALITY
-            Connect
+            NinjaOne
         .EXAMPLE
             PS> Connect-NinjaOne -Instance 'eu' -ClientId 'AAaaA1aaAaAA-aaAaaA11a1A-aA' -ClientSecret '00Z00zzZzzzZzZzZzZzZZZ0zZ0zzZ_0zzz0zZZzzZz0Z0ZZZzz0z0Z' -UseClientAuth
 
@@ -17,7 +17,7 @@ function Connect-NinjaOne {
         .OUTPUTS
             Sets two script-scoped variables to hold connection and authentication information.
         .LINK
-            https://docs.homotechsual.dev/modules/ninjaone/connect-ninjaone
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Connect/ninjaone
     #>
     [CmdletBinding( DefaultParameterSetName = 'Authorisation Code' )]
     [OutputType([System.Void])]

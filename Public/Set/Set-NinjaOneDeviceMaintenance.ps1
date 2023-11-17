@@ -5,9 +5,11 @@ function Set-NinjaOneDeviceMaintenance {
         .DESCRIPTION
             Schedule a new maintenance window for the given device(s) using the NinjaOne v2 API.
         .FUNCTIONALITY
-            Maintenance
+            Device Maintenance
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/devicemaintenance
     #>
     [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]

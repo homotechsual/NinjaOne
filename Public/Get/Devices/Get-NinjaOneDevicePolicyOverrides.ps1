@@ -14,7 +14,7 @@ function Get-NinjaOneDevicePolicyOverrides {
         .OUTPUTS
             A powershell object containing the response.
         .LINK
-            https://docs.homotechsual.dev/modules/ninjaone/get/devices/get-ninjaonedevicepolicyoverrides
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/devicepolicyoverrides
     #>
     [CmdletBinding()]
     [OutputType([Object])]

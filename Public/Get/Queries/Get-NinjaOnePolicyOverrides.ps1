@@ -16,6 +16,8 @@ function Get-NinjaOnePolicyOverrides {
             Gets the policy overrides by device for the organisation with id 1.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/policyoverridesquery
     #>
     [CmdletBinding()]
     [OutputType([Object])]

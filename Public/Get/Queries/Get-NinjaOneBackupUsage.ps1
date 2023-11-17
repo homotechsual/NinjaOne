@@ -24,6 +24,8 @@ function Get-NinjaOneBackupUsage {
             Gets the backup usage where the cloud, local and revisions total size is not 0 including deleted devices.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/backupusagequery
     #>
     [CmdletBinding()]
     [OutputType([Object])]

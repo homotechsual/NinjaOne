@@ -13,6 +13,8 @@ function Get-NinjaOneRoles {
             Gets all device roles.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/deviceroles
     #>
     [CmdletBinding()]
     [OutputType([Object])]

@@ -33,7 +33,7 @@ function Get-NinjaOneDevices {
 
             Gets all online WINDOWS_WORKSTATION devices.
         .LINK
-            https://docs.homotechsual.dev/modules/ninjaone/misc/device-filters
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/devices
         .OUTPUTS
             A powershell object containing the response.
     #>

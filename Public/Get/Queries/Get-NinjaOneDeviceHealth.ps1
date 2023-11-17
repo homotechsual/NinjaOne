@@ -20,6 +20,8 @@ function Get-NinjaOneDeviceHealth {
             Gets the device health for devices with the health status 'UNHEALTHY'.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/devicehealthquery
     #>
     [CmdletBinding()]
     [OutputType([Object])]

@@ -20,6 +20,8 @@ function Get-NinjaOneVolumes {
             Gets the volumes with a monitoring timestamp at or after 1619712000.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/volumesquery
     #>
     [CmdletBinding()]
     [OutputType([Object])]

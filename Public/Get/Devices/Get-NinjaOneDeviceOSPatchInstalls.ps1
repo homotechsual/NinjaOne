@@ -17,6 +17,8 @@ function Get-NinjaOneDeviceOSPatchInstalls {
             Gets OS patch installs for the device with id 1 where the patch failed to install after 2022-01-01.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/deviceospatchinstalls
     #>
     [CmdletBinding()]
     [OutputType([Object])]

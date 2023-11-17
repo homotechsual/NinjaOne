@@ -6,13 +6,15 @@ function Invoke-NinjaOneRequest {
         .DESCRIPTION
             Wrapper function to send web requests to the NinjaOne API.
         .FUNCTIONALITY
-            Invoke API Request
+            API Request
         .EXAMPLE
             PS> Invoke-NinjaOneRequest -Method 'GET' -Uri 'https://eu.ninjarmm.com/v2/activities'
             
             Make a GET request to the activities resource.
         .OUTPUTS
             Outputs an object containing the response from the web request.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Invoke/apirequest
     #>
     [Cmdletbinding()]
     [OutputType([Object])]

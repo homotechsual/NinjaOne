@@ -6,7 +6,7 @@ function Get-NinjaOneDeviceWindowsServices {
         .DESCRIPTION
             Retrieves device windows services from the NinjaOne v2 API.
         .FUNCTIONALITY
-            Device Windows SErvices
+            Device Windows Services
         .EXAMPLE
             PS> Get-NinjaOneDeviceWindowsServices -deviceId 1
 
@@ -21,6 +21,8 @@ function Get-NinjaOneDeviceWindowsServices {
             Gets all windows services for the device with id 1 that are in the 'RUNNING' state.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/devicewindowsservices
     #>
     [CmdletBinding()]
     [OutputType([Object])]

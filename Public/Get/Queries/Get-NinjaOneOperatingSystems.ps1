@@ -24,6 +24,8 @@ function Get-NinjaOneOperatingSystems {
             Gets all operating systems grouped by the name property.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/operatingsystemsquery
     #>
     [CmdletBinding()]
     [OutputType([Object])]

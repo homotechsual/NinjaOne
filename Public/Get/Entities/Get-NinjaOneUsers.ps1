@@ -21,6 +21,8 @@ function Get-NinjaOneUsers {
             Gets all users for the organisation with id 1 (only works for users with the END_USER user type).
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/users
     #>
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     [OutputType([Object])]

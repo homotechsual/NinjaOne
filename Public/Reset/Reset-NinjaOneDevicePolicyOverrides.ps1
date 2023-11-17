@@ -8,6 +8,8 @@ function Reset-NinjaOneDevicePolicyOverrides {
             Device Policy Overrides
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Reset/devicepolicyoverrides
     #>
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]

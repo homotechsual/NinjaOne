@@ -5,9 +5,11 @@ function New-NinjaOneInstaller {
         .DESCRIPTION
             Create a new installer download link using the NinjaOne v2 API.
         .FUNCTIONALITY
-            Create Installer
+            Installer
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/installer
     #>
     [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]

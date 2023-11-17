@@ -24,6 +24,8 @@ function Get-NinjaOneAntivirusStatus {
             Gets the antivirus status where the antivirus product name is Microsoft Defender Antivirus.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/antivirusstatusquery
     #>
     [CmdletBinding()]
     [OutputType([Object])]

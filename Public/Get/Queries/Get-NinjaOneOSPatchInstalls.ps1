@@ -40,6 +40,8 @@ function Get-NinjaOneOSPatchInstalls {
             Gets the OS patch installs installed after 1619712000.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/ospatchinstallsquery
     #>
     [CmdletBinding()]
     [OutputType([Object])]

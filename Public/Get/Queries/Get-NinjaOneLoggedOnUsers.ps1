@@ -16,6 +16,8 @@ function Get-NinjaOneLoggedOnUsers {
             Gets the logged on users for the organisation with id 1.
         .OUTPUTS
             A powershell object containing the response.
+        .LINK
+            https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/loggedonusersquery
     #>
     [CmdletBinding()]
     [OutputType([Object])]
