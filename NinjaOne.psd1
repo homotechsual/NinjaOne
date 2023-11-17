@@ -236,10 +236,10 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Add missing function exports in manifest.'
+            ReleaseNotes = 'Fixes for bugs in Beta4'
 
             # Prerelease string of this module
-            Prerelease = 'Beta4'
+            Prerelease = 'Beta5'
 
             # Flag to indicate whether the module requires explicit user acceptance for install/update/save
             # RequireLicenseAcceptance = $false
