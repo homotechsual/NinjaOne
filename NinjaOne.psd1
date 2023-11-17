@@ -236,10 +236,10 @@
             IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
             # ReleaseNotes of this module
-            ReleaseNotes = 'Fix incorrect document lookup in Set-NOOD.'
+            ReleaseNotes = 'Fix userType parameter on Get-NOUser.'
 
             # Prerelease string of this module
-            Prerelease = 'Beta6'
+            Prerelease = 'Beta7'
 
             # Flag to indicate whether the module requires explicit user acceptance for install/update/save
             # RequireLicenseAcceptance = $false
