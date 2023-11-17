@@ -239,7 +239,7 @@
             ReleaseNotes = 'Add missing function exports in manifest.'
 
             # Prerelease string of this module
-            Prerelease = 'Beta3'
+            Prerelease = 'Beta4'
 
             # Flag to indicate whether the module requires explicit user acceptance for install/update/save
             # RequireLicenseAcceptance = $false
