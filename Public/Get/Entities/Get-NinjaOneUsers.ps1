@@ -28,17 +28,18 @@ function Get-NinjaOneUsers {
     [OutputType([Object])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
+        # Get users for this organisation id.
+        [Parameter(Mandatory, ParameterSetName = 'Organisation', Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('id', 'organizationId')]
+        [Int]$organisationId,
         # Filter by user type. This can be one of "TECHNICIAN" or "END_USER".
-        [Parameter(ParameterSetName = 'Default')]
+        [Parameter(ParameterSetName = 'Default', Position = 1, ValueFromPipelineByPropertyName)]
+        [Parameter(ParameterSetName = 'Organisation', Position = 1, ValueFromPipelineByPropertyName)]
         [ValidateSet(
             'TECHNICIAN',
             'END_USER'
         )]
-        [String]$userType,
-        # Get users for this organisation id.
-        [Parameter(Mandatory, ParameterSetName = 'Organisation', Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [Alias('id', 'organizationId')]
-        [Int]$organisationId
+        [String]$userType
     )
     $CommandName = $MyInvocation.InvocationName
     $Parameters = (Get-Command -Name $CommandName).Parameters
