@@ -3,12 +3,11 @@
         Core test suite for the NinjaOne module.
 #>
 
-$ModuleName = 'NinjaOne'
+$ModuleName = Get-ChildItem -Path '.\Source' -Filter '*.psd1' | Select-Object -ExpandProperty BaseName
 
 BeforeAll {
-    $ModulePath = Split-Path -Parent -Path (Split-Path -Parent -Path $PSCommandPath)
-    $ModuleName = 'NinjaOne'
-    $ManifestPath = "$($ModulePath)\$($ModuleName).psd1"
+    $ModuleName = Get-ChildItem -Path '.\Source' -Filter '*.psd1' | Select-Object -ExpandProperty BaseName
+    $ManifestPath = Get-ChildItem -Path '.\Source' -Filter '*.psd1'  | Select-Object -ExpandProperty FullName
     if (Get-Module -Name $ModuleName) {
         Remove-Module $ModuleName -Force
     }
@@ -63,8 +62,12 @@ Describe ('{0} - Core Tests' -f $ModuleName) -Tags 'Module' {
     }
 }
 
-Describe 'Module NinjaOne loads' {
+Describe ('{0} - Module Load Test' -f $ModuleName) -Tags 'Module' {
     It 'Passed Module load' {
         Get-Module -Name 'NinjaOne' | Should -Not -Be $null
     }
+}
+
+AfterAll {
+    Remove-Module $ModuleName -Force
 }

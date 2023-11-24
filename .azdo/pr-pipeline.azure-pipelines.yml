@@ -1,0 +1,52 @@
+# Docs: https://aka.ms/yaml
+name: $(Build.DefinitionName)-$(Date:yyyyMMdd)
+trigger:
+  - main
+
+pool:
+  vmImage: 'windows-2022'
+
+variables:
+  - group: MSPsUK KeyVault
+
+stages:
+  - stage: Setup
+    jobs: 
+      - job: Setup
+        steps:
+          - powershell: .\bootstrap.ps1
+            displayName: 'Install pre-requisites'
+  - stage: Lint
+    jobs:
+      - job: Lint
+        steps:
+          - task: PowerShell@2
+            displayName: 'Lint with PS Script Analyzer'
+            inputs:
+              TargetType: filePath
+              PWSH: true
+              FilePath: '$(System.DefaultWorkingDirectory)\Tests\Test-WithPSScriptAnalyzer.ps1'
+              Arguments: '-ScriptDirectory $(System.DefaultWorkingDirectory)'
+  
+  - stage: Test
+    jobs:
+      - job: TestandPublish
+        steps:
+          - task: Pester@10
+            inputs:
+              ScriptFolder: '$(System.DefaultWorkingDirectory)\*'
+              ResultsFile: '$(Common.TestResultsDirectory)\Pester-Results.xml'
+              CodeCoverageOutputFile: '$(Common.TestResultsDirectory)\Code-Coverage.xml'        
+              UsePSCore: true
+              AdditionalModulePath: '$(Build.ArtifactStagingDirectory)'
+          - task: PublishTestResults@2
+            inputs:
+              testResultsFormat: 'NUnit'
+              testResultsFiles: '$(Common.TestResultsDirectory)\Pester-Results.xml'
+              searchFolder: '$(Common.TestResultsDirectory)'
+              failTaskOnFailedTests: true
+          - task: PublishCodeCoverageResults@1
+            inputs:
+              summaryFileLocation: '$(Common.TestResultsDirectory)\Code-Coverage.xml'
+              codeCoverageTool: 'JaCoCo'
+              pathToSources: '$(System.DefaultWorkingDirectory)'
