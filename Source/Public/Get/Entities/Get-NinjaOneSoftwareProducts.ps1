@@ -22,6 +22,7 @@ function Get-NinjaOneSoftwareProducts {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnosp')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device id to get software products for.
@@ -29,39 +30,44 @@ function Get-NinjaOneSoftwareProducts {
         [Alias('id')]
         [Int]$deviceId
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    $Parameters.Remove('deviceId') | Out-Null
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
+        $Parameters.Remove('deviceId') | Out-Null
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        if ($deviceId) {
-            $Device = Get-NinjaOneDevices -deviceId $deviceId
-            if ($Device) {
-                Write-Verbose ('Getting software products for device {0}.' -f $Device.SystemName)
-                $Resource = ('v2/device/{0}/software' -f $deviceId)
+    }
+    process {
+        try {
+            
+            if ($deviceId) {
+                $Device = Get-NinjaOneDevices -deviceId $deviceId
+                if ($Device) {
+                    Write-Verbose ('Getting software products for device {0}.' -f $Device.SystemName)
+                    $Resource = ('v2/device/{0}/software' -f $deviceId)
+                } else {
+                    throw ('Device with id {0} not found.' -f $deviceId)
+                }
             } else {
-                throw ('Device with id {0} not found.' -f $deviceId)
+                Write-Verbose 'Retrieving all software products.'
+                $Resource = 'v2/software-products'
             }
-        } else {
-            Write-Verbose 'Retrieving all software products.'
-            $Resource = 'v2/software-products'
-        }
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
-        }
-        $SoftwareProductResults = New-NinjaOneGETRequest @RequestParams
-        if ($SoftwareProductResults) {
-            return $SoftwareProductResults
-        } else {
-            if ($Device) {
-                throw ('No software products found for device {0}.' -f $Device.SystemName)
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $SoftwareProductResults = New-NinjaOneGETRequest @RequestParams
+            if ($SoftwareProductResults) {
+                return $SoftwareProductResults
             } else {
-                throw 'No software products found.'
+                if ($Device) {
+                    throw ('No software products found for device {0}.' -f $Device.SystemName)
+                } else {
+                    throw 'No software products found.'
+                }
             }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

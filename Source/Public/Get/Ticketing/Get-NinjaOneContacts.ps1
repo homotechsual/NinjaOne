@@ -17,28 +17,33 @@ function Get-NinjaOneContacts {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnoc')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param()
-    if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
-        throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
-        exit 1
-    }
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    try {
+    begin {
+        if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
+            throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
+            exit 1
+        }
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        $Resource = 'v2/ticketing/contact/contacts'
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
+    }
+    process {
+        try {
+            $Resource = 'v2/ticketing/contact/contacts'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $Contacts = New-NinjaOneGETRequest @RequestParams
+            if ($Contacts) {
+                return $Contacts
+            } else {
+                throw 'No contacts found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $Contacts = New-NinjaOneGETRequest @RequestParams
-        if ($Contacts) {
-            return $Contacts
-        } else {
-            throw 'No contacts found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

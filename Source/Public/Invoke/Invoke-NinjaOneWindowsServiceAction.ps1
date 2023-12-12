@@ -18,6 +18,7 @@ function Invoke-NinjaOneWindowsServiceAction {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     # This commandlet returns no output. A success message will be written to the information stream if the API returns a 204 success code. Use `-InformationAction Continue` to see this message.
     [OutputType([System.Void])]
+    [Alias('inowsa')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device(s) to change service configuration for.
@@ -25,40 +26,42 @@ function Invoke-NinjaOneWindowsServiceAction {
         [Alias('id')]
         [int]$deviceId,
         # The service to alter configuration for.
-        [Parameter(Mandatory, Position = 1)]
+        [Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
         [Alias('service', 'serviceName')]
         [string]$serviceId,
         # The action to invoke.
-        [Parameter(Mandatory, Position = 2)]
+        [Parameter(Mandatory, Position = 2, ValueFromPipelineByPropertyName)]
         [ValidateSet('START', 'PAUSE', 'STOP', 'RESTART')]
         [string]$action
     )
-    try {
-        $Device = Get-NinjaOneDevice -deviceId $deviceId
-        if ($Device) {
-            $Service = Get-NinjaOneDeviceWindowsServices -deviceId $deviceId -name $serviceId
-            if ($Service) {
-                Write-Verbose ('Performing action {0} on service {1} on device {2}.' -f $action, $Service.DisplayName, $Device.SystemName)
-                $Resource = ('v2/device/{0}/windows-service/{1}/control' -f $deviceId, $serviceId)
+    process {
+        try {
+            $Device = Get-NinjaOneDevice -deviceId $deviceId
+            if ($Device) {
+                $Service = Get-NinjaOneDeviceWindowsServices -deviceId $deviceId -name $serviceId
+                if ($Service) {
+                    Write-Verbose ('Performing action {0} on service {1} on device {2}.' -f $action, $Service.DisplayName, $Device.SystemName)
+                    $Resource = ('v2/device/{0}/windows-service/{1}/control' -f $deviceId, $serviceId)
+                } else {
+                    throw ('Service with id {0} not found.' -f $serviceId)
+                }
             } else {
-                throw ('Service with id {0} not found.' -f $serviceId)
+                throw ('Device with id {0} not found.' -f $deviceId)
             }
-        } else {
-            throw ('Device with id {0} not found.' -f $deviceId)
-        }
-        $RequestParams = @{
-            Resource = $Resource
-            Body = @{
-                action = $action
+            $RequestParams = @{
+                Resource = $Resource
+                Body = @{
+                    action = $action
+                }
             }
-        }
-        if ($PSCmdlet.ShouldProcess("Service $($serviceId) configuration", 'Set')) {
-            $ServiceAction = New-NinjaOnePOSTRequest @RequestParams
-            if ($ServiceAction -eq 204) {
-                Write-Information ('Requested {0} on service {1} on device {2} successfully.' -f $action, $serviceId, $deviceId)
+            if ($PSCmdlet.ShouldProcess("Service $($serviceId) configuration", 'Set')) {
+                $ServiceAction = New-NinjaOnePOSTRequest @RequestParams
+                if ($ServiceAction -eq 204) {
+                    Write-Information ('Requested {0} on service {1} on device {2} successfully.' -f $action, $serviceId, $deviceId)
+                }
             }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

@@ -18,6 +18,7 @@ function Get-NinjaOneDeviceDashboardURL {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnoddurl')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device id to get the dashboard URL for.
@@ -28,32 +29,36 @@ function Get-NinjaOneDeviceDashboardURL {
         [Parameter(Position = 1)]
         [Switch]$redirect
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    $Parameters.Remove('deviceId') | Out-Null
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
+        $Parameters.Remove('deviceId') | Out-Null
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        Write-Verbose 'Getting device from NinjaOne API.'
-        $Device = Get-NinjaOneDevices -deviceId $deviceId
-        if ($Device) {
-            Write-Verbose ('Getting dashboard URL for device {0}.' -f $Device.SystemName)
-            $Resource = ('v2/device/{0}/dashboard-url' -f $deviceId)
+    }
+    process {
+        try {
+            Write-Verbose 'Getting device from NinjaOne API.'
+            $Device = Get-NinjaOneDevices -deviceId $deviceId
+            if ($Device) {
+                Write-Verbose ('Getting dashboard URL for device {0}.' -f $Device.SystemName)
+                $Resource = ('v2/device/{0}/dashboard-url' -f $deviceId)
+            }
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            if ($redirect) {
+                $RequestParams.Add('Raw', $true)
+            }
+            $DeviceDashboardURLResults = New-NinjaOneGETRequest @RequestParams
+            if ($DeviceDashboardURLResults) {
+                return $DeviceDashboardURLResults
+            } else {
+                throw ('No dashboard URL found for device {0}.' -f $Device.SystemName)
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
-        }
-        if ($redirect) {
-            $RequestParams.Add('Raw', $true)
-        }
-        $DeviceDashboardURLResults = New-NinjaOneGETRequest @RequestParams
-        if ($DeviceDashboardURLResults) {
-            return $DeviceDashboardURLResults
-        } else {
-            throw ('No dashboard URL found for device {0}.' -f $Device.SystemName)
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

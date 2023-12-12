@@ -1,11 +1,11 @@
-function Get-NinjaOneAntivirusStatus {
+function Get-NinjaOneAntiVirusStatus {
     <#
         .SYNOPSIS
             Gets the antivirus status from the NinjaOne API.
         .DESCRIPTION
             Retrieves the antivirus status from the NinjaOne v2 API.
         .FUNCTIONALITY
-            Antivirus Status Query
+            AntiVirus Status Query
         .EXAMPLE
             PS> Get-NinjaOneAntivirusStatus -deviceFilter 'org = 1'
 
@@ -29,6 +29,7 @@ function Get-NinjaOneAntivirusStatus {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnoavs')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.
@@ -55,31 +56,35 @@ function Get-NinjaOneAntivirusStatus {
         [Parameter(Position = 5)]
         [Int]$pageSize
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # If the [DateTime] parameter $timeStamp is set convert the value to a Unix Epoch.
-    if ($timeStamp) {
-        [int]$timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
-    }
-    # If the Unix Epoch parameter $timeStampUnixEpoch is set assign the value to the $timeStamp variable and null $timeStampUnixEpoch.
-    if ($timeStampUnixEpoch) {
-        $Parameters.Remove('timeStampUnixEpoch') | Out-Null
-        [int]$timeStamp = $timeStampUnixEpoch
-    }
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # If the [DateTime] parameter $timeStamp is set convert the value to a Unix Epoch.
+        if ($timeStamp) {
+            [int]$timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
+        }
+        # If the Unix Epoch parameter $timeStampUnixEpoch is set assign the value to the $timeStamp variable and null $timeStampUnixEpoch.
+        if ($timeStampUnixEpoch) {
+            $Parameters.Remove('timeStampUnixEpoch') | Out-Null
+            [int]$timeStamp = $timeStampUnixEpoch
+        }
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        $Resource = 'v2/queries/antivirus-status'
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
+    }
+    process {
+        try {
+            $Resource = 'v2/queries/antivirus-status'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $AntivirusStatus = New-NinjaOneGETRequest @RequestParams
+            if ($AntivirusStatus) {
+                return $AntivirusStatus
+            } else {
+                throw 'No antivirus status found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $AntivirusStatus = New-NinjaOneGETRequest @RequestParams
-        if ($AntivirusStatus) {
-            return $AntivirusStatus
-        } else {
-            throw 'No antivirus status found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

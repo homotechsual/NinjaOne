@@ -21,6 +21,7 @@ function Get-NinjaOnePolicyOverrides {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnopo')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Cursor name.
@@ -34,22 +35,26 @@ function Get-NinjaOnePolicyOverrides {
         [Parameter(Position = 2)]
         [Int]$pageSize
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        $Resource = 'v2/queries/policy-overrides'
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
+    }
+    process {
+        try {
+            $Resource = 'v2/queries/policy-overrides'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $PolicyOverrides = New-NinjaOneGETRequest @RequestParams
+            if ($PolicyOverrides) {
+                return $PolicyOverrides
+            } else {
+                throw 'No policy overrides found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $PolicyOverrides = New-NinjaOneGETRequest @RequestParams
-        if ($PolicyOverrides) {
-            return $PolicyOverrides
-        } else {
-            throw 'No policy overrides found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

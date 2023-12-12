@@ -11,25 +11,28 @@ function Update-NinjaOneWebhook {
     #>
     [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]
+    [Alias('unow', 'snow', 'Set-NinjaOneWebhook')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The webhook configuration object.
         [Parameter( Mandatory )]
         [Object]$webhookConfiguration
     )
-    try {
-        $Resource = 'v2/webhook'
-        $RequestParams = @{
-            Resource = $Resource
-            Body = $webhookConfiguration
-        }
-        if ($PSCmdlet.ShouldProcess('Webhook Configuration', 'Update')) {
-            $WebhookUpdate = New-NinjaOnePUTRequest @RequestParams
-            if ($WebhookUpdate -eq 204) {
-                Write-Information 'Webhook configuration updated successfully.'
+    process {
+        try {
+            $Resource = 'v2/webhook'
+            $RequestParams = @{
+                Resource = $Resource
+                Body = $webhookConfiguration
             }
+            if ($PSCmdlet.ShouldProcess('Webhook Configuration', 'Update')) {
+                $WebhookUpdate = New-NinjaOnePUTRequest @RequestParams
+                if ($WebhookUpdate -eq 204) {
+                    Write-Information 'Webhook configuration updated successfully.'
+                }
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

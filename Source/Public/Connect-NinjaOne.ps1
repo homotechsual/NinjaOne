@@ -21,6 +21,7 @@ function Connect-NinjaOne {
     #>
     [CmdletBinding( DefaultParameterSetName = 'Authorisation Code' )]
     [OutputType([System.Void])]
+    [Alias('cno')]
     Param (
         # Use the "Authorisation Code" flow with your web browser.
         [Parameter( Mandatory, ParameterSetName = 'Authorisation Code')]
@@ -68,148 +69,150 @@ function Connect-NinjaOne {
         [Parameter( ParameterSetName = 'Client Credentials' )]
         [Switch]$ShowTokens
     )
-    # Run the pre-flight check.
-    Invoke-NinjaOnePreFlightCheck -SkipConnectionChecks
-    # Set the default scopes if they're not passed.
-    if ($PSCmdlet.ParameterSetName -eq 'Client Credentials' -and $null -eq $Scopes) {
-        $Scopes = @('monitoring', 'management', 'control')
-    } elseif (($PSCmdlet.ParameterSetName -eq 'Authorisation Code' -or $PSCmdlet.ParameterSetName -eq 'Token Authentication') -and $null -eq $Scopes) {
-        $Scopes = @('monitoring', 'management', 'control', 'offline_access')
-    }
-    # Convert scopes to space separated string if it's an array.
-    if ($Scopes -is [System.Array]) {
-        $AuthScopes = $Scopes -Join ' '
-    } else {
-        $AuthScopes = $Scopes
-    }
-    # Get the NinjaOne instance URL.
-    if ($Instance) {
-        Write-Verbose "Using instance $($Instance) with URL $($Script:NRAPIInstances[$Instance])"
-        $URL = $Script:NRAPIInstances[$Instance]
-    }
-    # Generate a GUID to serve as our state validator.
-    $GUID = ([GUID]::NewGuid()).Guid
-    # Build the redirect URI, if we need one.
-    if ($RedirectURL) {
-        $RedirectURI = [System.UriBuilder]$RedirectURL
-    } else {
-        $RedirectURI = New-Object System.UriBuilder -ArgumentList 'http', 'localhost', $Port
-    }
-    # Build a script-scoped variable to hold the connection information.
-    $ConnectionInformation = @{
-        AuthMode = $PSCmdlet.ParameterSetName
-        URL = $URL
-        Instance = $Instance
-        ClientId = $ClientId
-        ClientSecret = $ClientSecret
-        AuthListenerPort = $Port
-        AuthScopes = $AuthScopes
-        RedirectURI = $RedirectURI
-    }
-    Set-Variable -Name 'NRAPIConnectionInformation' -Value $ConnectionInformation -Visibility Private -Scope Script -Force
-    Write-Verbose "Connection information set to: $($Script:NRAPIConnectionInformation | Format-List | Out-String)"
-    $AuthenticationInformation = [HashTable]@{}
-    # Set a script-scoped variable to hold authentication information.
-    Set-Variable -Name 'NRAPIAuthenticationInformation' -Value $AuthenticationInformation -Visibility Private -Scope Script -Force
-    if ($UseWebAuth) {
-        # NinjaOne authorisation request query params.
-        $AuthRequestParams = @{
-            response_type = 'code'
-            client_id = $Script:NRAPIConnectionInformation.ClientId
-            client_secret = $Script:NRAPIConnectionInformation.ClientSecret
-            redirect_uri = $Script:NRAPIConnectionInformation.RedirectURI.ToString()
-            state = $GUId
+    process {
+        # Run the pre-flight check.
+        Invoke-NinjaOnePreFlightCheck -SkipConnectionChecks
+        # Set the default scopes if they're not passed.
+        if ($PSCmdlet.ParameterSetName -eq 'Client Credentials' -and $null -eq $Scopes) {
+            $Scopes = @('monitoring', 'management', 'control')
+        } elseif (($PSCmdlet.ParameterSetName -eq 'Authorisation Code' -or $PSCmdlet.ParameterSetName -eq 'Token Authentication') -and $null -eq $Scopes) {
+            $Scopes = @('monitoring', 'management', 'control', 'offline_access')
         }
-        if ($Script:NRAPIConnectionInformation.AuthScopes) {
-            $AuthRequestParams.scope = $Script:NRAPIConnectionInformation.AuthScopes
+        # Convert scopes to space separated string if it's an array.
+        if ($Scopes -is [System.Array]) {
+            $AuthScopes = $Scopes -Join ' '
+        } else {
+            $AuthScopes = $Scopes
         }
-        # Build the authentication URI.
-        # Start with the query string.
-        $AuthRequestQuery = [System.Web.HttpUtility]::ParseQueryString([String]::Empty)
-        $AuthRequestParams.GetEnumerator() | ForEach-Object {
-            $AuthRequestQuery.Add($_.Key, $_.Value)
+        # Get the NinjaOne instance URL.
+        if ($Instance) {
+            Write-Verbose "Using instance $($Instance) with URL $($Script:NRAPIInstances[$Instance])"
+            $URL = $Script:NRAPIInstances[$Instance]
         }
-        # Now the authentication URI
-        $AuthRequestURI = [System.UriBuilder]$URL
-        $AuthRequestURI.Path = 'oauth/authorize'
-        $AuthRequestURI.Query = $AuthRequestQuery.ToString()
-        Write-Verbose "Authentication request query string is $($AuthRequestQuery.ToString())"
-        try {
-            $OAuthListenerParams = @{
-                OpenURI = $AuthRequestURI
+        # Generate a GUID to serve as our state validator.
+        $GUID = ([GUID]::NewGuid()).Guid
+        # Build the redirect URI, if we need one.
+        if ($RedirectURL) {
+            $RedirectURI = [System.UriBuilder]$RedirectURL
+        } else {
+            $RedirectURI = New-Object System.UriBuilder -ArgumentList 'http', 'localhost', $Port
+        }
+        # Build a script-scoped variable to hold the connection information.
+        $ConnectionInformation = @{
+            AuthMode = $PSCmdlet.ParameterSetName
+            URL = $URL
+            Instance = $Instance
+            ClientId = $ClientId
+            ClientSecret = $ClientSecret
+            AuthListenerPort = $Port
+            AuthScopes = $AuthScopes
+            RedirectURI = $RedirectURI
+        }
+        Set-Variable -Name 'NRAPIConnectionInformation' -Value $ConnectionInformation -Visibility Private -Scope Script -Force
+        Write-Verbose "Connection information set to: $($Script:NRAPIConnectionInformation | Format-List | Out-String)"
+        $AuthenticationInformation = [HashTable]@{}
+        # Set a script-scoped variable to hold authentication information.
+        Set-Variable -Name 'NRAPIAuthenticationInformation' -Value $AuthenticationInformation -Visibility Private -Scope Script -Force
+        if ($UseWebAuth) {
+            # NinjaOne authorisation request query params.
+            $AuthRequestParams = @{
+                response_type = 'code'
+                client_id = $Script:NRAPIConnectionInformation.ClientId
+                client_secret = $Script:NRAPIConnectionInformation.ClientSecret
+                redirect_uri = $Script:NRAPIConnectionInformation.RedirectURI.ToString()
+                state = $GUId
             }
-            if ($VerbosePreference = 'Continue') {
-                $OAuthListenerParams.Verbose = $true
+            if ($Script:NRAPIConnectionInformation.AuthScopes) {
+                $AuthRequestParams.scope = $Script:NRAPIConnectionInformation.AuthScopes
             }
-            if ($DebugPreference = 'Continue') {
-                $OAuthListenerParams.Debug = $true
+            # Build the authentication URI.
+            # Start with the query string.
+            $AuthRequestQuery = [System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+            $AuthRequestParams.GetEnumerator() | ForEach-Object {
+                $AuthRequestQuery.Add($_.Key, $_.Value)
             }
-            $OAuthListenerResponse = Start-OAuthHTTPListener @OAuthListenerParams
-            $Script:NRAPIAuthenticationInformation.Code = $OAuthListenerResponse.Code
-        } catch {
-            New-NinjaOneError -ErrorRecord $_
-        }
-    }
-    if (($UseTokenAuth) -or ($OAuthListenerResponse.GotAuthorisationCode) -or ($UseClientAuth)) {
-        Write-Verbose 'Getting authentication token.'
-        try {
-            if ($OAuthListenerResponse.GotAuthorisationCode) {
-                Write-Verbose 'Using token authentication.'
-                $TokenRequestBody = @{
-                    grant_type = 'authorization_code'
-                    client_id = $Script:NRAPIConnectionInformation.ClientId
-                    client_secret = $Script:NRAPIConnectionInformation.ClientSecret
-                    code = $Script:NRAPIAuthenticationInformation.Code
-                    redirect_uri = $Script:NRAPIConnectionInformation.RedirectURI.toString()
-                    scope = $Script:NRAPIConnectionInformation.AuthScopes
+            # Now the authentication URI
+            $AuthRequestURI = [System.UriBuilder]$URL
+            $AuthRequestURI.Path = 'oauth/authorize'
+            $AuthRequestURI.Query = $AuthRequestQuery.ToString()
+            Write-Verbose "Authentication request query string is $($AuthRequestQuery.ToString())"
+            try {
+                $OAuthListenerParams = @{
+                    OpenURI = $AuthRequestURI
                 }
-            } elseif ($UseTokenAuth) {
-                Write-Verbose 'Using refresh token.'
-                $TokenRequestBody = @{
-                    grant_type = 'refresh_token'
-                    client_id = $Script:NRAPIConnectionInformation.ClientId
-                    client_secret = $Script:NRAPIConnectionInformation.ClientSecret
-                    refresh_token = $RefreshToken
-                    scope = $Script:NRAPIConnectionInformation.AuthScopes
+                if ($VerbosePreference = 'Continue') {
+                    $OAuthListenerParams.Verbose = $true
                 }
-            } elseif ($UseClientAuth) {
-                Write-Verbose 'Using client authentication.'
-                $TokenRequestBody = @{
-                    grant_type = 'client_credentials'
-                    client_id = $Script:NRAPIConnectionInformation.ClientId
-                    client_secret = $Script:NRAPIConnectionInformation.ClientSecret
-                    redirect_uri = $Script:NRAPIConnectionInformation.RedirectURI.toString()
-                    scope = $Script:NRAPIConnectionInformation.AuthScopes
+                if ($DebugPreference = 'Continue') {
+                    $OAuthListenerParams.Debug = $true
                 }
+                $OAuthListenerResponse = Start-OAuthHTTPListener @OAuthListenerParams
+                $Script:NRAPIAuthenticationInformation.Code = $OAuthListenerResponse.Code
+            } catch {
+                New-NinjaOneError -ErrorRecord $_
             }
-            Write-Verbose "Token request body is $($TokenRequestBody | Format-List | Out-String)"
-            # Using our authorisation code or refresh token let's get an auth token.
-            $TokenRequestUri = [System.UriBuilder]$URL
-            $TokenRequestUri.Path = 'oauth/token'
-            Write-Verbose "Making token request to $($TokenRequestUri.ToString())"
-            $TokenRequestParams = @{
-                Uri = $TokenRequestUri.ToString()
-                Method = 'POST'
-                Body = $TokenRequestBody
-                ContentType = 'application/x-www-form-urlencoded'
+        }
+        if (($UseTokenAuth) -or ($OAuthListenerResponse.GotAuthorisationCode) -or ($UseClientAuth)) {
+            Write-Verbose 'Getting authentication token.'
+            try {
+                if ($OAuthListenerResponse.GotAuthorisationCode) {
+                    Write-Verbose 'Using token authentication.'
+                    $TokenRequestBody = @{
+                        grant_type = 'authorization_code'
+                        client_id = $Script:NRAPIConnectionInformation.ClientId
+                        client_secret = $Script:NRAPIConnectionInformation.ClientSecret
+                        code = $Script:NRAPIAuthenticationInformation.Code
+                        redirect_uri = $Script:NRAPIConnectionInformation.RedirectURI.toString()
+                        scope = $Script:NRAPIConnectionInformation.AuthScopes
+                    }
+                } elseif ($UseTokenAuth) {
+                    Write-Verbose 'Using refresh token.'
+                    $TokenRequestBody = @{
+                        grant_type = 'refresh_token'
+                        client_id = $Script:NRAPIConnectionInformation.ClientId
+                        client_secret = $Script:NRAPIConnectionInformation.ClientSecret
+                        refresh_token = $RefreshToken
+                        scope = $Script:NRAPIConnectionInformation.AuthScopes
+                    }
+                } elseif ($UseClientAuth) {
+                    Write-Verbose 'Using client authentication.'
+                    $TokenRequestBody = @{
+                        grant_type = 'client_credentials'
+                        client_id = $Script:NRAPIConnectionInformation.ClientId
+                        client_secret = $Script:NRAPIConnectionInformation.ClientSecret
+                        redirect_uri = $Script:NRAPIConnectionInformation.RedirectURI.toString()
+                        scope = $Script:NRAPIConnectionInformation.AuthScopes
+                    }
+                }
+                Write-Verbose "Token request body is $($TokenRequestBody | Format-List | Out-String)"
+                # Using our authorisation code or refresh token let's get an auth token.
+                $TokenRequestUri = [System.UriBuilder]$URL
+                $TokenRequestUri.Path = 'oauth/token'
+                Write-Verbose "Making token request to $($TokenRequestUri.ToString())"
+                $TokenRequestParams = @{
+                    Uri = $TokenRequestUri.ToString()
+                    Method = 'POST'
+                    Body = $TokenRequestBody
+                    ContentType = 'application/x-www-form-urlencoded'
+                }
+                $TokenResult = Invoke-WebRequest @TokenRequestParams
+                $TokenPayload = $TokenResult.Content | ConvertFrom-Json
+                Write-Verbose "Token payload is $($TokenPayload | Format-List | Out-String)"
+                # Update our script-scoped NRAPIAuthenticationInformation variable with the token.
+                $Script:NRAPIAuthenticationInformation.Type = $TokenPayload.token_type
+                $Script:NRAPIAuthenticationInformation.Access = $TokenPayload.access_token
+                $Script:NRAPIAuthenticationInformation.Expires = Get-TokenExpiry -ExpiresIn $TokenPayload.expires_in
+                $Script:NRAPIAuthenticationInformation.Refresh = $TokenPayload.refresh_token
+                Write-Verbose 'Got authentication token information from NinjaOne.'
+                Write-Verbose "Authentication information set to: $($Script:NRAPIAuthenticationInformation | Format-List | Out-String)"
+                if ($ShowTokens) {
+                    Write-Output '================ Auth Tokens ================'
+                    Write-Output $($Script:NRAPIAuthenticationInformation | Format-Table -AutoSize)
+                    Write-Output '       SAVE THESE IN A SECURE LOCATION       '
+                }
+            } catch {
+                throw
             }
-            $TokenResult = Invoke-WebRequest @TokenRequestParams
-            $TokenPayload = $TokenResult.Content | ConvertFrom-Json
-            Write-Verbose "Token payload is $($TokenPayload | Format-List | Out-String)"
-            # Update our script-scoped NRAPIAuthenticationInformation variable with the token.
-            $Script:NRAPIAuthenticationInformation.Type = $TokenPayload.token_type
-            $Script:NRAPIAuthenticationInformation.Access = $TokenPayload.access_token
-            $Script:NRAPIAuthenticationInformation.Expires = Get-TokenExpiry -ExpiresIn $TokenPayload.expires_in
-            $Script:NRAPIAuthenticationInformation.Refresh = $TokenPayload.refresh_token
-            Write-Verbose 'Got authentication token information from NinjaOne.'
-            Write-Verbose "Authentication information set to: $($Script:NRAPIAuthenticationInformation | Format-List | Out-String)"
-            if ($ShowTokens) {
-                Write-Output '================ Auth Tokens ================'
-                Write-Output $($Script:NRAPIAuthenticationInformation | Format-Table -AutoSize)
-                Write-Output '       SAVE THESE IN A SECURE LOCATION       '
-            }
-        } catch {
-            throw
         }
     }
 }

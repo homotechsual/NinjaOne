@@ -25,6 +25,7 @@ function Get-NinjaOneVolumes {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnov')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.
@@ -45,31 +46,35 @@ function Get-NinjaOneVolumes {
         [Parameter(Position = 3)]
         [Int]$pageSize
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # If the [DateTime] parameter $timeStamp is set convert the value to a Unix Epoch.
-    if ($timeStamp) {
-        [int]$timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
-    }
-    # If the Unix Epoch parameter $timeStampUnixEpoch is set assign the value to the $timeStamp variable and null $timeStampUnixEpoch.
-    if ($timeStampUnixEpoch) {
-        $Parameters.Remove('timeStampUnixEpoch') | Out-Null
-        [int]$timeStamp = $timeStampUnixEpoch
-    }
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # If the [DateTime] parameter $timeStamp is set convert the value to a Unix Epoch.
+        if ($timeStamp) {
+            [int]$timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
+        }
+        # If the Unix Epoch parameter $timeStampUnixEpoch is set assign the value to the $timeStamp variable and null $timeStampUnixEpoch.
+        if ($timeStampUnixEpoch) {
+            $Parameters.Remove('timeStampUnixEpoch') | Out-Null
+            [int]$timeStamp = $timeStampUnixEpoch
+        }
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        $Resource = 'v2/queries/volumes'
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
+    }
+    process {
+        try {
+            $Resource = 'v2/queries/volumes'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $Volumes = New-NinjaOneGETRequest @RequestParams
+            if ($Volumes) {
+                return $Volumes
+            } else {
+                throw 'No volumes found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $Volumes = New-NinjaOneGETRequest @RequestParams
-        if ($Volumes) {
-            return $Volumes
-        } else {
-            throw 'No volumes found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

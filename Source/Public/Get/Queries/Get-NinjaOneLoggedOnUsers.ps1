@@ -21,6 +21,7 @@ function Get-NinjaOneLoggedOnUsers {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnolou')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.
@@ -34,22 +35,26 @@ function Get-NinjaOneLoggedOnUsers {
         [Parameter(Position = 2)]
         [Int]$pageSize
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        $Resource = 'v2/queries/logged-on-users'
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
+    }
+    process {
+        try {
+            $Resource = 'v2/queries/logged-on-users'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $LoggedOnUsers = New-NinjaOneGETRequest @RequestParams
+            if ($LoggedOnUsers) {
+                return $LoggedOnUsers
+            } else {
+                throw 'No logged on users found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $LoggedOnUsers = New-NinjaOneGETRequest @RequestParams
-        if ($LoggedOnUsers) {
-            return $LoggedOnUsers
-        } else {
-            throw 'No logged on users found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

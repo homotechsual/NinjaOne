@@ -17,24 +17,29 @@ function Get-NinjaOneTicketAttributes {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnota')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param()
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        $Resource = 'v2/ticketing/attributes'
-        $RequestParams = @{
-            QSCollection = $QSCollection
-            Resource = $Resource
+    }
+    process {
+        try {
+            $Resource = 'v2/ticketing/attributes'
+            $RequestParams = @{
+                QSCollection = $QSCollection
+                Resource = $Resource
+            }
+            $TicketAttributes = New-NinjaOneGETRequest @RequestParams
+            if ($TicketAttributes) {
+                return $TicketAttributes
+            } else {
+                throw 'No ticket attributes found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $TicketAttributes = New-NinjaOneGETRequest @RequestParams
-        if ($TicketAttributes) {
-            return $TicketAttributes
-        } else {
-            throw 'No ticket attributes found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

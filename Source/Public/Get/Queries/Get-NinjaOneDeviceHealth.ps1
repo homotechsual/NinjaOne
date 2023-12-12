@@ -25,6 +25,7 @@ function Get-NinjaOneDeviceHealth {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnodh')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.
@@ -42,22 +43,26 @@ function Get-NinjaOneDeviceHealth {
         [Parameter(Position = 3)]
         [Int]$pageSize
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        $Resource = 'v2/queries/device-health'
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
+    }
+    process {
+        try {
+            $Resource = 'v2/queries/device-health'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $DeviceHealth = New-NinjaOneGETRequest @RequestParams
+            if ($DeviceHealth) {
+                return $DeviceHealth
+            } else {
+                throw 'No device health found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $DeviceHealth = New-NinjaOneGETRequest @RequestParams
-        if ($DeviceHealth) {
-            return $DeviceHealth
-        } else {
-            throw 'No device health found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

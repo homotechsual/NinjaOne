@@ -21,6 +21,7 @@ function Get-NinjaOneTicketLogEntries {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnotle')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by ticket id.
@@ -31,32 +32,36 @@ function Get-NinjaOneTicketLogEntries {
         [ValidateSet('DESCRIPTION', 'COMMENT', 'CONDITION', 'SAVE', 'DELETE')]
         [String]$type
     )
-    if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
-        throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
-        exit 1
-    }
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'ticketid=' parameter by removing it from the set parameters.
-    $Parameters.Remove('ticketId') | Out-Null
-    try {
+    begin {
+        if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
+            throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
+            exit 1
+        }
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # Workaround to prevent the query string processor from adding an 'ticketid=' parameter by removing it from the set parameters.
+        $Parameters.Remove('ticketId') | Out-Null
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        $Resource = ('v2/ticketing/ticket/{0}/log-entries' -f $ticketId)
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
-        }
-        $TicketLogEntries = New-NinjaOneGETRequest @RequestParams
-        if ($TicketLogEntries) {
-            return $TicketLogEntries
-        } else {
-            if ($type) {
-                throw ('No ticket log entries found for ticket {0} with type {1}.' -f $ticketId, $type)
-            } else {
-                throw ('No ticket log entries found for ticket {0}.' -f $ticketId)
+    }
+    process {
+        try {
+            $Resource = ('v2/ticketing/ticket/{0}/log-entries' -f $ticketId)
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
             }
+            $TicketLogEntries = New-NinjaOneGETRequest @RequestParams
+            if ($TicketLogEntries) {
+                return $TicketLogEntries
+            } else {
+                if ($type) {
+                    throw ('No ticket log entries found for ticket {0} with type {1}.' -f $ticketId, $type)
+                } else {
+                    throw ('No ticket log entries found for ticket {0}.' -f $ticketId)
+                }
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

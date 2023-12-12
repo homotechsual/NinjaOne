@@ -18,6 +18,7 @@ function Get-NinjaOneAttachment {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnoat')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The attachment id to retrieve.
@@ -25,25 +26,29 @@ function Get-NinjaOneAttachment {
         [Alias('id')]
         [String]$attachmentId
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'attachmentid=' parameter by removing it from the set parameters.
-    $Parameters.Remove('attachmentId') | Out-Null
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # Workaround to prevent the query string processor from adding an 'attachmentid=' parameter by removing it from the set parameters.
+        $Parameters.Remove('attachmentId') | Out-Null
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        Write-Verbose 'Retrieving attachment.'
-        $Resource = ('v2/attachment/{0}' -f $attachmentId)
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
+    }
+    process {
+        try {
+            Write-Verbose 'Retrieving attachment.'
+            $Resource = ('v2/attachment/{0}' -f $attachmentId)
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $AttachmentResults = New-NinjaOneGETRequest @RequestParams
+            if ($AttachmentResults) {
+                return $AttachmentResults   
+            } else {
+                throw ('Attachment with id {0} not found.' -f $attachmentId)
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $AttachmentResults = New-NinjaOneGETRequest @RequestParams
-        if ($AttachmentResults) {
-            return $AttachmentResults   
-        } else {
-            throw ('Attachment with id {0} not found.' -f $attachmentId)
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

@@ -17,21 +17,24 @@ function Get-NinjaOneTicketStatuses {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnots')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param()
-    try {
-        Write-Verbose 'Retrieving ticket statuses from NinjaOne API.'
-        $Resource = 'v2/ticketing/statuses'
-        $RequestParams = @{
-            Resource = $Resource
+    process {
+        try {
+            Write-Verbose 'Retrieving ticket statuses from NinjaOne API.'
+            $Resource = 'v2/ticketing/statuses'
+            $RequestParams = @{
+                Resource = $Resource
+            }
+            $TicketStatuses = New-NinjaOneGETRequest @RequestParams
+            if ($TicketStatuses) {
+                return $TicketStatuses
+            } else {
+                throw 'No ticket statuses found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $TicketStatuses = New-NinjaOneGETRequest @RequestParams
-        if ($TicketStatuses) {
-            return $TicketStatuses
-        } else {
-            throw 'No ticket statuses found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

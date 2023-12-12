@@ -56,7 +56,7 @@ function New-NinjaOnePOSTRequest {
         }
         if ($Body) {
             Write-Verbose 'Building [HttpBody] for New-NinjaOnePOSTRequest'
-            $WebRequestParams.Body = ($Body | ConvertTo-Json -Depth 100)
+            $WebRequestParams.Body = (ConvertTo-Json -InputObject $Body -Depth 100)
             Write-Verbose "Raw body is $($WebRequestParams.Body)"
         } else {
             Write-Verbose 'No body provided for New-NinjaOnePOSTRequest'

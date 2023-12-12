@@ -17,6 +17,7 @@ function Set-NinjaOneDeviceCustomFields {
     #>
     [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
+    [Alias('snodcf', 'unodcf', 'Update-NinjaOneDeviceCustomFields')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device to set the custom field value(s) for.
@@ -28,28 +29,27 @@ function Set-NinjaOneDeviceCustomFields {
         [Alias('customFields', 'body')]
         [Object]$deviceCustomFields
     )
-    try {
-        $Device = Get-NinjaOneDevice -deviceId $deviceId
-        if ($Device) {
-            Write-Verbose ('Setting custom fields for device {0}.' -f $Device.SystemName)
-            $Resource = ('v2/device/{0}/custom-fields' -f $deviceId)
-        } else {
-            throw ('Device with id {0} not found.' -f $deviceId)
-        }
-        $RequestParams = @{
-            Resource = $Resource
-            Body = $deviceCustomFields
-        }
-        if ($PSCmdlet.ShouldProcess(('Custom Fields for {0}' -f $Device.SystemName), 'Set')) {
-            $CustomFieldUpdate = New-NinjaOnePATCHRequest @RequestParams
-            if ($CustomFieldUpdate -eq 204) {
-                $OIP = $InformationPreference
-                $InformationPreference = 'Continue'
-                Write-Information ('Custom fields for {0} updated successfully.' -f $Device.SystemName)
-                $InformationPreference = $OIP
+    process {
+        try {
+            $Device = Get-NinjaOneDevice -deviceId $deviceId
+            if ($Device) {
+                Write-Verbose ('Setting custom fields for device {0}.' -f $Device.SystemName)
+                $Resource = ('v2/device/{0}/custom-fields' -f $deviceId)
+            } else {
+                throw ('Device with id {0} not found.' -f $deviceId)
             }
+            $RequestParams = @{
+                Resource = $Resource
+                Body = $deviceCustomFields
+            }
+            if ($PSCmdlet.ShouldProcess(('Custom Fields for {0}' -f $Device.SystemName), 'Set')) {
+                $CustomFieldUpdate = New-NinjaOnePATCHRequest @RequestParams
+                if ($CustomFieldUpdate -eq 204) {
+                    Write-Information ('Custom fields for {0} updated successfully.' -f $Device.SystemName)
+                }
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

@@ -26,6 +26,7 @@ function Get-NinjaOneUsers {
     #>
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     [OutputType([Object])]
+    [Alias('gnou')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Get users for this organisation id.
@@ -41,40 +42,44 @@ function Get-NinjaOneUsers {
         )]
         [String]$userType
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'organisationid=' parameter by removing it from the set parameters.
-    if ($organisationId) {
-        $Parameters.Remove('organisationId') | Out-Null
-    }
-    try {
-        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # Workaround to prevent the query string processor from adding an 'organisationid=' parameter by removing it from the set parameters.
         if ($organisationId) {
-            Write-Verbose 'Getting organisation from NinjaOne API.'
-            $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
-            if ($Organisation) {
-                Write-Verbose ('Getting users for organisation {0}.' -f $Organisation.Name)
-                $Resource = ('v2/organization/{0}/end-users' -f $organisationId)
-            } 
-        } else {
-            Write-Verbose 'Retrieving all users.'
-            $Resource = 'v2/users'
+            $Parameters.Remove('organisationId') | Out-Null
         }
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
-        }
-        $UserResults = New-NinjaOneGETRequest @RequestParams
-        if ($UserResults) {
-            return $UserResults
-        } else {
-            if ($Organisation) {
-                throw ('No users found for organisation {0}.' -f $Organisation.Name)
+        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
+    }
+    process {
+        try {
+            if ($organisationId) {
+                Write-Verbose 'Getting organisation from NinjaOne API.'
+                $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
+                if ($Organisation) {
+                    Write-Verbose ('Getting users for organisation {0}.' -f $Organisation.Name)
+                    $Resource = ('v2/organization/{0}/end-users' -f $organisationId)
+                } 
             } else {
-                throw 'No users found.'
+                Write-Verbose 'Retrieving all users.'
+                $Resource = 'v2/users'
             }
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $UserResults = New-NinjaOneGETRequest @RequestParams
+            if ($UserResults) {
+                return $UserResults
+            } else {
+                if ($Organisation) {
+                    throw ('No users found for organisation {0}.' -f $Organisation.Name)
+                } else {
+                    throw 'No users found.'
+                }
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

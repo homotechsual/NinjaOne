@@ -13,6 +13,7 @@ function Reset-NinjaOneDevicePolicyOverrides {
     #>
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
+    [Alias('rnodpo')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device Id to reset policy overrides for.
@@ -20,27 +21,26 @@ function Reset-NinjaOneDevicePolicyOverrides {
         [Alias('id')]
         [Int]$deviceId
     )
-    try {
-        $Device = Get-NinjaOneDevice -deviceId $deviceId
-        if ($Device) {
-            Write-Verbose ('Resetting device policy overrides for device {0}.' -f $Device.SystemName)
-            $Resource = ('v2/device/{0}/policy/overrides' -f $deviceId)
-        } else {
-            throw ('Device with id {0} not found.' -f $deviceId)
-        }
-        $RequestParams = @{
-            Resource = $Resource
-        }
-        if ($PSCmdlet.ShouldProcess(('Device Policy Overrides for {0}' -f $Device.SystemName), 'Reset')) {
-            $PolicyOverrides = New-NinjaOneDELETERequest @RequestParams
-            if ($PolicyOverrides -eq 204) {
-                $OIP = $InformationPreference
-                $InformationPreference = 'Continue'
-                Write-Information ('Device policy overrides for {0} reset successfully.' -f $Device.SystemName)
-                $InformationPreference = $OIP
+    process {
+        try {
+            $Device = Get-NinjaOneDevice -deviceId $deviceId
+            if ($Device) {
+                Write-Verbose ('Resetting device policy overrides for device {0}.' -f $Device.SystemName)
+                $Resource = ('v2/device/{0}/policy/overrides' -f $deviceId)
+            } else {
+                throw ('Device with id {0} not found.' -f $deviceId)
             }
+            $RequestParams = @{
+                Resource = $Resource
+            }
+            if ($PSCmdlet.ShouldProcess(('Device Policy Overrides for {0}' -f $Device.SystemName), 'Reset')) {
+                $PolicyOverrides = New-NinjaOneDELETERequest @RequestParams
+                if ($PolicyOverrides -eq 204) {
+                    Write-Information ('Device policy overrides for {0} reset successfully.' -f $Device.SystemName)
+                }
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

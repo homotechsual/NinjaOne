@@ -18,6 +18,7 @@ function Get-NinjaOneGroups {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnog')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Group names should be returned in this language.
@@ -25,23 +26,27 @@ function Get-NinjaOneGroups {
         [Alias('lang')]
         [String]$languageTag
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        Write-Verbose 'Retrieving all groups.'
-        $Resource = 'v2/groups'
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
+    }
+    process {
+        try {
+            Write-Verbose 'Retrieving all groups.'
+            $Resource = 'v2/groups'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $GroupResults = New-NinjaOneGETRequest @RequestParams
+            if ($GroupResults) {
+                return $GroupResults
+            } else {
+                throw 'No groups found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $GroupResults = New-NinjaOneGETRequest @RequestParams
-        if ($GroupResults) {
-            return $GroupResults
-        } else {
-            throw 'No groups found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

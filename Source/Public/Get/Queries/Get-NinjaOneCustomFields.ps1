@@ -37,6 +37,7 @@ function Get-NinjaOneCustomFields {
     #>
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     [OutputType([Object])]
+    [Alias('gnocf')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.
@@ -72,47 +73,51 @@ function Get-NinjaOneCustomFields {
         [Parameter(ParameterSetName = 'Scoped')]
         [Switch]$detailed
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding a 'detailed=' parameter as we use this param to targed an alternative resource.
-    if ($detailed) {
-        $Parameters.Remove('detailed') | Out-Null
-    }
-    # If the [DateTime] parameter $updatedAfter is set convert the value to a Unix Epoch.
-    if ($updatedAfter) {
-        [Int]$updatedAfter = ConvertTo-UnixEpoch -DateTime $updatedAfter
-    }
-    # If the Unix Epoch parameter $updatedAfterUnixEpoch is set assign the value to the $updatedAfter variable and null $updatedAfterUnixEpoch.
-    if ($updatedAfterUnixEpoch) {
-        $Parameters.Remove('updatedAfterUnixEpoch') | Out-Null
-        [Int]$updatedAfter = $updatedAfterUnixEpoch
-    }
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # Workaround to prevent the query string processor from adding a 'detailed=' parameter as we use this param to targed an alternative resource.
+        if ($detailed) {
+            $Parameters.Remove('detailed') | Out-Null
+        }
+        # If the [DateTime] parameter $updatedAfter is set convert the value to a Unix Epoch.
+        if ($updatedAfter) {
+            [Int]$updatedAfter = ConvertTo-UnixEpoch -DateTime $updatedAfter
+        }
+        # If the Unix Epoch parameter $updatedAfterUnixEpoch is set assign the value to the $updatedAfter variable and null $updatedAfterUnixEpoch.
+        if ($updatedAfterUnixEpoch) {
+            $Parameters.Remove('updatedAfterUnixEpoch') | Out-Null
+            [Int]$updatedAfter = $updatedAfterUnixEpoch
+        }
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters -CommaSeparatedArrays
-        if ($PSCmdlet.ParameterSetName -eq 'Default') {
-            if ($detailed) {
-                $Resource = 'v2/queries/custom-fields-detailed'
-            } else {
-                $Resource = 'v2/queries/custom-fields'
+    }
+    process {
+        try {
+            if ($PSCmdlet.ParameterSetName -eq 'Default') {
+                if ($detailed) {
+                    $Resource = 'v2/queries/custom-fields-detailed'
+                } else {
+                    $Resource = 'v2/queries/custom-fields'
+                }
+            } elseif ($PSCmdlet.ParameterSetName -eq 'Scoped') {
+                if ($detailed) {
+                    $Resource = 'v2/queries/scoped-custom-fields-detailed'
+                } else {
+                    $Resource = 'v2/queries/scoped-custom-fields'
+                }
             }
-        } elseif ($PSCmdlet.ParameterSetName -eq 'Scoped') {
-            if ($detailed) {
-                $Resource = 'v2/queries/scoped-custom-fields-detailed'
-            } else {
-                $Resource = 'v2/queries/scoped-custom-fields'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
             }
+            $CustomFields = New-NinjaOneGETRequest @RequestParams
+            if ($CustomFields) {
+                return $CustomFields
+            } else {
+                throw 'No custom fields found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
-        }
-        $CustomFields = New-NinjaOneGETRequest @RequestParams
-        if ($CustomFields) {
-            return $CustomFields
-        } else {
-            throw 'No custom fields found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

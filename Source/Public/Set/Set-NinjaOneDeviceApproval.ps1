@@ -13,6 +13,7 @@ function Set-NinjaOneDeviceApproval {
     #>
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
+    [Alias('snoda', 'unoda', 'Update-NinjaOneDeviceApproval')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The approval mode.
@@ -24,47 +25,48 @@ function Set-NinjaOneDeviceApproval {
         [Alias('id', 'ids')]
         [Int[]]$deviceIds
     )
-    if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
-        throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
-        exit 1
+    begin {
+        if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
+            throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
+            exit 1
+        }
     }
-    try {
-        $DeviceResults = foreach ($deviceId in $deviceIds) {
-            $deviceId | Get-NinjaOneDevice
-        }
-        if ($DeviceResults.count -ne $deviceIds.count) {
-            throw ('One or more of the specified id(s) was not found.')
-        } else {
-            $Resource = ('v2/devices/approval/{0}' -f $mode)
-        }
-        if ($deviceIds -is [array]) {
-            $devices = @{
-                'devices' = $deviceIds
+    process {
+        try {
+            $DeviceResults = foreach ($deviceId in $deviceIds) {
+                $deviceId | Get-NinjaOneDevice
             }
-        } else {
-            $devices = @{
-                'devices' = @($deviceIds)
+            if ($DeviceResults.count -ne $deviceIds.count) {
+                throw ('One or more of the specified id(s) was not found.')
+            } else {
+                $Resource = ('v2/devices/approval/{0}' -f $mode)
             }
-        }
-        $RequestParams = @{
-            Resource = $Resource
-            Body = $devices
-        }
-        if ($PSCmdlet.ShouldProcess('Device Approval', 'Set')) {
-            $DeviceApprovals = New-NinjaOnePOSTRequest @RequestParams
-            if ($DeviceApprovals -eq 204) {
-                if ($mode -eq 'APPROVE') {
-                    $approvalResult = 'approved'
-                } else {
-                    $approvalResult = 'rejected'
+            if ($deviceIds -is [array]) {
+                $devices = @{
+                    'devices' = $deviceIds
                 }
-                $OIP = $InformationPreference
-                $InformationPreference = 'Continue'
-                Write-Information ('Device(s) {0} {1} successfully.' -f (($DeviceResults | Select-Object -ExpandProperty SystemName) -join ', '), $approvalResult)
-                $InformationPreference = $OIP
+            } else {
+                $devices = @{
+                    'devices' = @($deviceIds)
+                }
             }
+            $RequestParams = @{
+                Resource = $Resource
+                Body = $devices
+            }
+            if ($PSCmdlet.ShouldProcess('Device Approval', 'Set')) {
+                $DeviceApprovals = New-NinjaOnePOSTRequest @RequestParams
+                if ($DeviceApprovals -eq 204) {
+                    if ($mode -eq 'APPROVE') {
+                        $approvalResult = 'approved'
+                    } else {
+                        $approvalResult = 'rejected'
+                    }
+                    Write-Information ('Device(s) {0} {1} successfully.' -f (($DeviceResults | Select-Object -ExpandProperty SystemName) -join ', '), $approvalResult)
+                }
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

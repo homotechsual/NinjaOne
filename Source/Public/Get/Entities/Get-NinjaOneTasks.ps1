@@ -18,25 +18,31 @@ function Get-NinjaOneTasks {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnota')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param()
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        Write-Verbose 'Retrieving all tasks.'
-        $Resource = 'v2/tasks'
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
+    }
+    process {
+        try {
+            
+            Write-Verbose 'Retrieving all tasks.'
+            $Resource = 'v2/tasks'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $TaskResults = New-NinjaOneGETRequest @RequestParams
+            if ($TaskResults) {
+                return $TaskResults
+            } else {
+                throw 'No tasks found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $TaskResults = New-NinjaOneGETRequest @RequestParams
-        if ($TaskResults) {
-            return $TaskResults
-        } else {
-            throw 'No tasks found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

@@ -17,6 +17,7 @@ function Get-NinjaOneOrganisationCustomFields {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnoocf', 'Get-NinjaOneOrganizationCustomFields')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by organisation id.
@@ -24,33 +25,37 @@ function Get-NinjaOneOrganisationCustomFields {
         [Alias('id', 'organizationId')]
         [Int]$organisationId
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'organisationid=' parameter by removing it from the set parameters.
-    if ($organisationId) {
-        $Parameters.Remove('organisationId') | Out-Null
-    }
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # Workaround to prevent the query string processor from adding an 'organisationid=' parameter by removing it from the set parameters.
+        if ($organisationId) {
+            $Parameters.Remove('organisationId') | Out-Null
+        }
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        Write-Verbose 'Getting organisation custom fields from NinjaOne API.'
-        $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
-        if ($Organisation) {
-            Write-Verbose ('Getting custom fields for organisation {0}.' -f $Organisation.Name)
-            $Resource = ('v2/organization/{0}/custom-fields' -f $organisationId)
-        } else {
-            throw ('Organisation with id {0} not found.' -f $organisationId)
+    }
+    process {
+        try {
+            Write-Verbose 'Getting organisation custom fields from NinjaOne API.'
+            $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
+            if ($Organisation) {
+                Write-Verbose ('Getting custom fields for organisation {0}.' -f $Organisation.Name)
+                $Resource = ('v2/organization/{0}/custom-fields' -f $organisationId)
+            } else {
+                throw ('Organisation with id {0} not found.' -f $organisationId)
+            }
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $CustomFieldResults = New-NinjaOneGETRequest @RequestParams
+            if ($CustomFieldResults) {
+                return $CustomFieldResults
+            } else {
+                throw ('No custom fields found for organisation {0}.' -f $Organisation.Name)
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
-        }
-        $CustomFieldResults = New-NinjaOneGETRequest @RequestParams
-        if ($CustomFieldResults) {
-            return $CustomFieldResults
-        } else {
-            throw ('No custom fields found for organisation {0}.' -f $Organisation.Name)
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

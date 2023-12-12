@@ -13,36 +13,41 @@ function New-NinjaOneTicket {
     #>
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
+    [Alias('nnot')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # An object containing the ticket to create.
-        [Parameter(Mandatory, Position = 0)]
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Object]$ticket,
         # Show the ticket that was created.
         [Switch]$show
     )
-    if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
-        throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
-        exit 1
+    begin {
+        if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
+            throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
+            exit 1
+        }
     }
-    try {
-        $Resource = 'v2/ticketing/ticket'
-        $RequestParams = @{
-            Resource = $Resource
-            Body = $ticket
-        }
-        if ($PSCmdlet.ShouldProcess(('Ticket {0}' -f $ticket.Subject), 'Create')) {
-            $TicketCreate = New-NinjaOnePOSTRequest @RequestParams
-            if ($show) {
-                return $TicketCreate
-            } else {
-                $OIP = $InformationPreference
-                $InformationPreference = 'Continue'
-                Write-Information ('Ticket {0} created.' -f $TicketCreate.Subject)
-                $InformationPreference = $OIP
+    process {
+        try {
+            $Resource = 'v2/ticketing/ticket'
+            $RequestParams = @{
+                Resource = $Resource
+                Body = $ticket
             }
+            if ($PSCmdlet.ShouldProcess(('Ticket {0}' -f $ticket.Subject), 'Create')) {
+                $TicketCreate = New-NinjaOnePOSTRequest @RequestParams
+                if ($show) {
+                    return $TicketCreate
+                } else {
+                    $OIP = $InformationPreference
+                    $InformationPreference = 'Continue'
+                    Write-Information ('Ticket {0} created.' -f $TicketCreate.Subject)
+                    $InformationPreference = $OIP
+                }
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

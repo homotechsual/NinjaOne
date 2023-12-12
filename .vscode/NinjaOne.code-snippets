@@ -1,0 +1,32 @@
+{
+    "Wrap selection in begin block": {
+        "prefix": "wrap-begin",
+        "body": [
+            "begin {",
+            "\t${0:$TM_SELECTED_TEXT}",
+            "}"
+        ],
+        "scope": "powershell",
+        "description": "Wrap selection in begin block"
+    },
+    "Wrap selection in process block": {
+        "prefix": "wrap-process",
+        "body": [
+            "process {",
+            "\t${0:$TM_SELECTED_TEXT}",
+            "}"
+        ],
+        "scope": "powershell",
+        "description": "Wrap selection in process block"
+    },
+    "Wrap selection in end block": {
+        "prefix": "wrap-end",
+        "body": [
+            "end {",
+            "\t${0:$TM_SELECTED_TEXT}",
+            "}"
+        ],
+        "scope": "powershell",
+        "description": "Wrap selection in end block",
+    },
+}

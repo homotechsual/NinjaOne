@@ -22,6 +22,13 @@ function Get-NinjaOneLocationBackupUsage {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnolbu')]
+    [Metadata(
+        '/v2/organization/{id}/locations/backup/usage',
+        'get',
+        '/v2/organization/{id}/locations/{locationId}/backup/usage',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Organisation id to retrieve backup usage for.
@@ -32,37 +39,39 @@ function Get-NinjaOneLocationBackupUsage {
         [Parameter(Position = 1, ValueFromPipelineByPropertyName)]
         [Int]$locationId
     )
-    try {
-        Write-Verbose 'Getting organisation from NinjaOne API.'
-        $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
-        if ($Organisation) {
-            Write-Verbose 'Getting location from NinjaOne API.'
-            if ($locationId) {
-                $Location = Get-NinjaOneLocations -organisationId $organisationId | Where-Object -Property id -EQ -Value $locationId
-                if ($Location) {
-                    Write-Verbose ('Getting backup usage for location {0} in organisation {1}.' -f $location.name, $organisation.name)
-                    $Resource = ('v2/organization/{0}/locations/{1}/backup/usage' -f $organisationId, $locationId)
+    process {
+        try {
+            Write-Verbose 'Getting organisation from NinjaOne API.'
+            $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
+            if ($Organisation) {
+                Write-Verbose 'Getting location from NinjaOne API.'
+                if ($locationId) {
+                    $Location = Get-NinjaOneLocations -organisationId $organisationId | Where-Object -Property id -EQ -Value $locationId
+                    if ($Location) {
+                        Write-Verbose ('Getting backup usage for location {0} in organisation {1}.' -f $location.name, $organisation.name)
+                        $Resource = ('v2/organization/{0}/locations/{1}/backup/usage' -f $organisationId, $locationId)
+                    } else {
+                        throw ('Location with id {0} not found in organisation {1}' -f $locationId, $Organisation.Name)
+                    }
                 } else {
-                    throw ('Location with id {0} not found in organisation {1}' -f $locationId, $Organisation.Name)
+                    $Locations = Get-NinjaOneLocations -organisationId $organisationId
+                    if ($Organisation -and $Locations) {
+                        Write-Verbose ('Getting backup usage for all locations in organisation {0}.' -f $organisation.name)
+                        $Resource = ('v2/organization/{0}/locations/backup/usage' -f $organisationId)
+                    } else {
+                        throw ('Organisation {0} does not have any locations.' -f $Organisation.Name)
+                    }
                 }
             } else {
-                $Locations = Get-NinjaOneLocations -organisationId $organisationId
-                if ($Organisation -and $Locations) {
-                    Write-Verbose ('Getting backup usage for all locations in organisation {0}.' -f $organisation.name)
-                    $Resource = ('v2/organization/{0}/locations/backup/usage' -f $organisationId)
-                } else {
-                    throw ('Organisation {0} does not have any locations.' -f $Organisation.Name)
-                }
+                throw ('Organisation with id {0} not found.' -f $organisationId)
             }
-        } else {
-            throw ('Organisation with id {0} not found.' -f $organisationId)
+            $RequestParams = @{
+                Resource = $Resource
+            }
+            $LocationBackupUsageResults = New-NinjaOneGETRequest @RequestParams
+            return $LocationBackupUsageResults
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $RequestParams = @{
-            Resource = $Resource
-        }
-        $LocationBackupUsageResults = New-NinjaOneGETRequest @RequestParams
-        return $LocationBackupUsageResults
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

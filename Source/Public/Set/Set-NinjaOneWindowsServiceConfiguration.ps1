@@ -15,6 +15,7 @@ function Set-NinjaOneWindowsServiceConfiguration {
     #>
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
+    [Alias('snowsc', 'unowsc', 'Update-NinjaOneWindowsServiceConfiguration')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device to change servce configuration for.
@@ -28,22 +29,24 @@ function Set-NinjaOneWindowsServiceConfiguration {
         [Parameter(Mandatory, Position = 2, ValueFromPipelineByPropertyName)]
         [Object]$configuration
     )
-    try {
-        $Resource = ('v2/device/{0}/windows-service/{1}/configure' -f $deviceId, $serviceId)
-        $RequestParams = @{
-            Resource = $Resource
-            Body = $configuration
-        }
-        if ($PSCmdlet.ShouldProcess(('Service {0} configuration' -f $serviceId), 'Set')) {
-            $ServiceConfiguration = New-NinjaOnePOSTRequest @RequestParams
-            if ($ServiceConfiguration -eq 204) {
-                $OIP = $InformationPreference
-                $InformationPreference = 'Continue'
-                Write-Information ('Service {0} configuration updated successfully.' -f $serviceId)
-                $InformationPreference = $OIP
+    process {
+        try {
+            $Resource = ('v2/device/{0}/windows-service/{1}/configure' -f $deviceId, $serviceId)
+            $RequestParams = @{
+                Resource = $Resource
+                Body = $configuration
             }
+            if ($PSCmdlet.ShouldProcess(('Service {0} configuration' -f $serviceId), 'Set')) {
+                $ServiceConfiguration = New-NinjaOnePOSTRequest @RequestParams
+                if ($ServiceConfiguration -eq 204) {
+                    $OIP = $InformationPreference
+                    $InformationPreference = 'Continue'
+                    Write-Information ('Service {0} configuration updated successfully.' -f $serviceId)
+                    $InformationPreference = $OIP
+                }
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

@@ -41,6 +41,7 @@ function Get-NinjaOneSoftwarePatches {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnosp')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.
@@ -76,31 +77,35 @@ function Get-NinjaOneSoftwarePatches {
         [Parameter(Position = 7)]
         [Int]$pageSize
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # If the [DateTime] parameter $timeStamp is set convert the value to a Unix Epoch.
-    if ($timeStamp) {
-        [int]$timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
-    }
-    # If the Unix Epoch parameter $timeStampUnixEpoch is set assign the value to the $timeStamp variable and null $timeStampUnixEpoch.
-    if ($timeStampUnixEpoch) {
-        $Parameters.Remove('timeStampUnixEpoch') | Out-Null
-        [int]$timeStamp = $timeStampUnixEpoch
-    }
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # If the [DateTime] parameter $timeStamp is set convert the value to a Unix Epoch.
+        if ($timeStamp) {
+            [int]$timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
+        }
+        # If the Unix Epoch parameter $timeStampUnixEpoch is set assign the value to the $timeStamp variable and null $timeStampUnixEpoch.
+        if ($timeStampUnixEpoch) {
+            $Parameters.Remove('timeStampUnixEpoch') | Out-Null
+            [int]$timeStamp = $timeStampUnixEpoch
+        }
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        $Resource = 'v2/queries/software-patches'
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
+    }
+    process {
+        try {
+            $Resource = 'v2/queries/software-patches'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $SoftwarePatches = New-NinjaOneGETRequest @RequestParams
+            if ($SoftwarePatches) {
+                return $SoftwarePatches
+            } else {
+                throw 'No software patches found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $SoftwarePatches = New-NinjaOneGETRequest @RequestParams
-        if ($SoftwarePatches) {
-            return $SoftwarePatches
-        } else {
-            throw 'No software patches found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

@@ -154,10 +154,10 @@
         'Set-NinjaOneDeviceMaintenance',
         'Set-NinjaOneLocation',
         'Set-NinjaOneLocationCustomFields',
-        'Set-NinjaOneNodeRolePolicyAssignment',
         'Set-NinjaOneOrganisation',
         'Set-NinjaOneOrganisationCustomFields',
         'Set-NinjaOneOrganisationDocument',
+        'Set-NinjaOneOrganisationPolicies',
         'Set-NinjaOneTicket',
         'Set-NinjaOneWindowsServiceConfiguration',
         'Update-NinjaOneWebhook'
@@ -170,35 +170,7 @@
     VariablesToExport = '*'
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-    AliasesToExport = @(
-        'Get-NinjaOneBoards',
-        'Get-NinjaOneDeviceSoftwareProducts',
-        'Get-NinjaOneOrganizationCustomFields',
-        'Get-NinjaRMMOrganisationDocuments',
-        'Get-NinjaRMMOrganizationDocuments',
-        'Get-NinjaOneOrganizationDocuments',
-        'Get-NinjaOneOrganizations',
-        'New-NinjaOneOrganization',
-        'Update-NinjaOneOrganization',
-        'Update-NinjaOneOrganizationDocument'
-        'Update-NinjaOneOrganisationCustomFields',
-        'Update-NinjaOneOrganizationCustomFields',
-        'Set-NinjaOneOrganizationCustomFields',
-        'Update-NinjaOneLocationCustomFields',
-        'Update-NinjaOneDeviceCustomFields',
-        'Get-NinjaOneDevice',
-        'Set-NinjaOneWebhook',
-        'Update-NinjaOneDevice',
-        'Update-NinjaOneDeviceApproval',
-        'Update-NinjaOneDeviceCustomFields',
-        'Update-NinjaOneDeviceMaintenance',
-        'Update-NinjaOneLocation',
-        'Update-NinjaOneNodeRolePolicyAssignment',
-        'Update-NinjaOneOrganisation',
-        'Update-NinjaOneOrganisationCustomFields',
-        'Update-NinjaOneTicket',
-        'Update-NinjaOneWindowsServiceConfiguration'
-    )
+    AliasesToExport = @()
 
     # DSC resources to export from this module
     # DscResourcesToExport = @()

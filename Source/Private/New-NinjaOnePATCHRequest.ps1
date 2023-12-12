@@ -22,7 +22,7 @@ function New-NinjaOnePATCHRequest {
         [HashTable]$QSCollection,
         # A hashtable used to build the body of the request.
         [Parameter(Mandatory = $True)]
-        [Hashtable]$Body
+        [Object]$Body
     )
     if ($null -eq $Script:NRAPIConnectionInformation) {
         throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
@@ -54,7 +54,7 @@ function New-NinjaOnePATCHRequest {
         $WebRequestParams = @{
             Method = 'PATCH'
             Uri = $RequestUri.ToString()
-            Body = ($Body | ConvertTo-Json -Depth 100)
+            Body = (ConvertTo-Json -InputObject $Body -Depth 100)
         }
         Write-Verbose "Raw body is $($WebRequestParams.Body)"
         Write-Verbose "Building new NinjaOneRequest with params: $($WebRequestParams | Out-String)"

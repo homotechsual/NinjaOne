@@ -18,25 +18,30 @@ function Get-NinjaOnePolicies {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnop')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param()
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        Write-Verbose 'Retrieving all policies.'
-        $Resource = 'v2/policies'
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
+    }
+    process {
+        try {
+            Write-Verbose 'Retrieving all policies.'
+            $Resource = 'v2/policies'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $PolicyResults = New-NinjaOneGETRequest @RequestParams
+            if ($PolicyResults) {
+                return $PolicyResults
+            } else {
+                throw 'No policies found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $PolicyResults = New-NinjaOneGETRequest @RequestParams
-        if ($PolicyResults) {
-            return $PolicyResults
-        } else {
-            throw 'No policies found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

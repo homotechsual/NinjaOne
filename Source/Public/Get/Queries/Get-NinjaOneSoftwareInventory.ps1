@@ -37,6 +37,7 @@ function Get-NinjaOneSoftwareInventory {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnosi')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.
@@ -62,36 +63,40 @@ function Get-NinjaOneSoftwareInventory {
         [Parameter(Position = 4)]
         [Int]$installedAfterUnixEpoch
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    if ($installedBefore) {
-        [Int]$installedBefore = ConvertTo-UnixEpoch -DateTime $installedBefore
-    }
-    if ($installedBeforeUnixEpoch) {
-        $Parameters.Remove('installedBeforeUnixEpoch') | Out-Null
-        [Int]$installedBefore = $installedBeforeUnixEpoch
-    }
-    if ($installedAfter) {
-        [Int]$installedAfter = ConvertTo-UnixEpoch -DateTime $installedAfter
-    }
-    if ($installedAfterUnixEpoch) {
-        $Parameters.Remove('installedAfterUnixEpoch') | Out-Null
-        [Int]$installedAfter = $installedAfterUnixEpoch
-    }
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        if ($installedBefore) {
+            [Int]$installedBefore = ConvertTo-UnixEpoch -DateTime $installedBefore
+        }
+        if ($installedBeforeUnixEpoch) {
+            $Parameters.Remove('installedBeforeUnixEpoch') | Out-Null
+            [Int]$installedBefore = $installedBeforeUnixEpoch
+        }
+        if ($installedAfter) {
+            [Int]$installedAfter = ConvertTo-UnixEpoch -DateTime $installedAfter
+        }
+        if ($installedAfterUnixEpoch) {
+            $Parameters.Remove('installedAfterUnixEpoch') | Out-Null
+            [Int]$installedAfter = $installedAfterUnixEpoch
+        }
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        $Resource = 'v2/queries/software'
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
+    }
+    process {
+        try {
+            $Resource = 'v2/queries/software'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $SoftwareInventory = New-NinjaOneGETRequest @RequestParams
+            if ($SoftwareInventory) {
+                return $SoftwareInventory
+            } else {
+                throw 'No software inventory found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $SoftwareInventory = New-NinjaOneGETRequest @RequestParams
-        if ($SoftwareInventory) {
-            return $SoftwareInventory
-        } else {
-            throw 'No software inventory found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

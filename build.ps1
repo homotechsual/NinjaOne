@@ -4,7 +4,7 @@
 #>
 [CmdletBinding()]
 Param (
-    [String]$Configuration = 'Development',
+    [String[]]$TaskNames = ('clean', 'build', 'test', 'updateManifest', 'publish', 'updateHelp', 'generateShortNamesMapping', 'push'),
     [String[]]$Remotes = @('origin', 'homotechsual'),
     [Switch]$Push,
     [Switch]$UpdateHelp,
@@ -29,7 +29,27 @@ Install-RequiredModule -RequiredModulesFile ('{0}\RequiredModules.psd1' -f $PSSc
 # Use strict mode when building.
 Set-StrictMode -Version Latest
 
-if ($Push) {
+# Helper: Get functions from the module.
+function GetFunctions {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [String]$ModuleName
+    )
+    Import-Module ('.\Source\{0}.psd1' -f $ModuleName) -Force
+    $Module = Get-Module -Name $ModuleName
+    $CommandletList = [System.Collections.Generic.List[String]]::new()
+    $CommandletList.AddRange($Module.ExportedFunctions.Keys)
+    return $CommandletList
+}
+
+# Task: Push to remote repositories.
+function Push {
+    [CmdletBinding()]
+    param(
+        [Parameter()]
+        [String[]]$Remotes = @('origin', 'homotechsual')
+    )
     # Push to remote repositories.
     foreach ($Remote in $Remotes) {
         Start-Process -FilePath 'git' -ArgumentList @('push', $Remote) -Wait -NoNewWindow
@@ -37,16 +57,63 @@ if ($Push) {
     }
 }
 
-# (Re)Generate the mapping file for the short names of the commandlets. Stored in the Functionality item of the comment based help. The file will be stored in .\.build\CommandletShortNames.yaml
-## Requres YAYAML installed.
+# Task: Check the implemented commandlets against NinjaOne's API specification.
+function CheckSchema {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [String]$ModuleName
+    )
+    $SchemaURI = 'https://oc.ninjarmm.com/apidocs-beta/NinjaRMM-API-v2.yaml'
+    $CoveredEndpoints = [System.Collections.Generic.List[String]]::new()
+    $MissingEndpoints = [System.Collections.Generic.List[String]]::new()
+    $SchemaObject = Invoke-WebRequest -Uri $SchemaURI -UseBasicParsing | ConvertFrom-Yaml
+    $Endpoints = foreach ($Path in $SchemaObject.paths.GetEnumerator()) {
+        @{
+            Path = $Path.Name
+            Methods = $Path.Value.GetEnumerator() | ForEach-Object { $_.Name }
+        }
+    }
+    $CommandletList = GetFunctions -ModuleName $ModuleName
+    foreach ($Commandlet in $CommandletList) {
+        $AST = (Get-Content -Path ('function:/{0}' -f $Commandlet) -ErrorAction Ignore).AST
+        $MetadataFinder = [System.Func[System.Management.Automation.Language.Ast, bool]] { $args[0] -is [System.Management.Automation.Language.AttributeAst] -and $args[0].TypeName.Name -eq 'Metadata' -and $args[0].Parent -is [System.Management.Automation.Language.ParamBlockAst] }
+        $Metadata = $AST.FindAll($MetadataFinder, $true)
+        $PositionalArguments = $Metadata.PositionalArguments
+        $MetadataHashTable = [Hashtable]@{}
+        if ($PositionalArguments.Count -gt 0 -and ($PositionalArguments.Count % 2 -eq 0)) {
+            for ($i = 0; $i -lt $PositionalArguments.Count; $i += 2) { $MetadataHashTable[$PositionalArguments[$i].Value] = $PositionalArguments[$i + 1].Value }
+        }
+        foreach ($MetadataPairs in $MetadataHashTable) {
+            $EndpointObject = $Endpoints.Where( { $_.Path -eq $MetadataPairs.Key } )
+            if (-not $EndpointObject) {
+                $MissingEndpoints.Add($MetadataPairs.Key)
+            } elseif ($EndpointObject.Methods -notcontains $MetadataPairs.Value) {
+                $MissingEndpoints.Add($MetadataPairs.Key)
+            } else {
+                $CoveredEndpoints.Add($MetadataPairs.Key)
+            }
+        }
+        Write-Verbose ('Covered endpoints: {0}' -f $CoveredEndpoints.Count)
+        if ($MissingEndpoints.Count -gt 0) {
+            Write-Warning ('Missing endpoints: {0}' -f $MissingEndpoints.Count)
+            $MissingEndpoints | ForEach-Object { Write-Warning -Message ('{0}' -f $_) }
+            throw 'Missing endpoints'
+        }
+    }
+}
 
-if ($GenerateShortNamesMapping) {
+# Task: (Re)Generate the mapping file for the short names of the commandlets. Stored in the Functionality item of the comment based help. The file will be stored in .\.build\CommandletShortNames.yaml
+## Requres YAYAML installed.
+function GenerateShortNamesMapping {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [String]$ModuleName
+    )
     $OutputFilePath = [System.IO.FileInfo]'.\.build\CommandletShortNames.yaml'
     $ShortNameOutput = [System.Collections.Generic.Dictionary[String, String]]::new()
-    Import-Module ('.\Source\{0}.psd1' -f $ModuleName) -Force
-    $Module = Get-Module -Name $ModuleName
-    $CommandletList = [System.Collections.Generic.List[String]]::new()
-    $CommandletList.AddRange($Module.ExportedFunctions.Keys)
+    $CommandletList = GetFunctions -ModuleName $ModuleName
     foreach ($Commandlet in $CommandletList) {
         $AST = (Get-Content -Path ('function:/{0}' -f $Commandlet) -ErrorAction Ignore).AST
         $ShortName = $AST.GetHelpContent().Functionality
@@ -64,15 +131,18 @@ if ($GenerateShortNamesMapping) {
     }
 }
 
-# Update the PowerShell Module Help Files.
+# Task: Update the PowerShell Module Help Files.
 ## Requires PlatyPS, Pester, PSScriptAnalyzer and Alt3.Docusaurus.PowerShell installed.
-
-if ($UpdateHelp) {
-    if (-Not($DocusaurusPath)) {
-        throw 'DocusaurusPath parameter is required when updating help'
-    } elseif (-Not(Resolve-Path -Path $DocusaurusPath)) {
-        throw 'DocusaurusPath does not resolve to a valid path'
-    }
+function UpdateHelp {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [String]$ModuleName,
+        [Parameter(Mandatory)]
+        [ValidateScript( { Resolve-Path -Path $_ } )]
+        [System.IO.DirectoryInfo]$DocusaurusPath,
+        [Switch]$ForceUpdateCategoryFiles
+    )
     $DocsFolderPath = Join-Path -Path $DocusaurusPath -ChildPath 'docs' -AdditionalChildPath $ModuleName
     if (-Not(Test-Path -Path $DocsFolderPath)) {
         New-Item -Path $DocsFolderPath -ItemType Directory | Out-Null
@@ -98,7 +168,7 @@ This page has been generated from the {0} PowerShell module source. To make chan
         UseCustomShortTitles = $true
         ShortTitles = $ShortNamesDictionary
         PrependMarkdown = $MarkdownHeader
-        RemoveParameters = @('-FakeParam')
+        RemoveParameters = @('-ProgressAction', '-FakeParam')
     }
     New-DocusaurusHelp @NewDocusaurusHelpParams | Out-Null
     $CommandletDocsFolder = Join-Path -Path $DocusaurusPath -ChildPath 'docs' -AdditionalChildPath @($ModuleName, 'commandlets')
@@ -122,6 +192,7 @@ This page has been generated from the {0} PowerShell module source. To make chan
                 $CategoryFile = $CategoryFileBase
                 $CategoryFile.label = 'Connect to Services'
                 $CategoryFile.position = 0.1
+                $CategoryFile.collapsed = $false
                 $CategoryFile.className = 'category-connect'
                 $CategoryFile.link.title = 'Connect to Services'
                 $CategoryFile.customProps.description = 'This category contains commands for connecting to services, retrieving and storing credentials and managing connections.'
@@ -219,6 +290,10 @@ This page has been generated from the {0} PowerShell module source. To make chan
     }
 }
 
+function Build {
+    Build-Module -Path (Resolve-Path -Path ('{0}\*\build.psd1') -f $PSScriptRoot)
+}
+
 # Copy PowerShell Module files to output folder for release on PSGallery
 if ($CopyModuleFiles) {
     # Copy Module Files to Output Folder
@@ -244,16 +319,16 @@ if ($CopyModuleFiles) {
     ) -Destination "$($PSScriptRoot)\Output\$ModuleName" -Force
 }
 
-# Run all Pester tests in folder .\Tests
-if ($Test) {
+# Task: Run all Pester tests in folder .\Tests
+function Test {
     $Result = Invoke-Pester "$($PSScriptRoot)\Tests" -PassThru
     if ($Result.FailedCount -gt 0) {
         throw 'Pester tests failed'
     }
 }
 
-# Update the Module Manifest file with info from the Changelog.
-if ($UpdateManifest) {
+# Task: Update the Module Manifest file with info from the Changelog.
+function UpdateManifest {
     # Import PlatyPS. Needed for parsing the versions in the Changelog.
     Import-Module -Name PlatyPS
 
@@ -286,12 +361,17 @@ if ($UpdateManifest) {
     Update-ModuleManifest -ModuleVersion $ChangeLogVersion -Path "$($PSScriptRoot)\$ModuleName.psd1" -ReleaseNotes $ReleaseNotes
 }
 
-# Publish Module to PowerShell Gallery
-if ($PublishModule -and $Configuration -eq 'Production') {
+# Task: Publish Module to PowerShell Gallery
+function Publish {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [String]$ModuleName
+    )
     Try {
         # Build a splat containing the required details and make sure to Stop for errors which will trigger the catch
         $params = @{
-            Path = ("$($PSScriptRoot)\Output\$ModuleName")
+            Path = ("$($PSScriptRoot)\Build\$ModuleName")
             NuGetApiKey = $ENV:TF_BUILD ? $ENV:PSGalleryAPIKey : (Get-AzKeyVaultSecret -VaultName $ENV:PSGalleryVault -Name $ENV:PSGallerySecret -AsPlainText) # If running in Azure DevOps, use the Environment Variable, otherwise use the Key Vault
             ErrorAction = 'Stop'
             
@@ -306,10 +386,81 @@ if ($PublishModule -and $Configuration -eq 'Production') {
     }
 }
 
-# Clean up Output folder
-if ($Clean) {
+# Task: Clean up Output folder
+function Clean {
     # Clean output folder
-    if ((Test-Path "$($PSScriptRoot)\Output")) {
-        Remove-Item -Path "$($PSScriptRoot)\Output" -Recurse -Force
+    if ((Test-Path "$($PSScriptRoot)\Build")) {
+        Remove-Item -Path "$($PSScriptRoot)\Build" -Recurse -Force
     }
 }
+# Helper: Write a message to the console.
+function WriteMessage {
+    [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Script is not intended to be used as a module.')]
+    param (
+        # The message to write to the console.
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [String]$Message,
+        # The category of the message.
+        [ValidateSet('Information', 'Warning', 'Error')]
+        [String]$Category = 'Information',
+        # Additional details to write to the console.
+        [String]$Details
+    )
+    process {
+        $Params = @{
+            Object = ('{0}: {1}' -f $Message, $Details).TrimEnd(' :')
+            ForegroundColor = switch ($Category) {
+                'Success' { 'Green' }
+                'Information' { 'Cyan' }
+                'Warning' { 'Yellow' }
+                'Error' { 'Red' }
+            }
+        }
+        Write-Host @Params
+    }
+}
+
+function InvokeTask {
+    [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Script is not intended to be used as a module.')]
+    param (
+        [Parameter(Mandatory, ParameterSetName = 'ExecuteFunction', ValueFromPipeline)]
+        [String]$TaskName,
+        [Parameter(Mandatory, ParameterSetName = 'ExecuteScript', ValueFromPipelineByPropertyName)]
+        [Alias('FullName')]
+        [String]$Path
+    )
+    begin {
+        WriteMessage ('Build {0}' -f $PSCommandPath) -Category Success
+    }
+    process {
+        if ($PSCmdlet.ParameterSetName -eq 'ExecuteScript') {
+            $TaskName = [System.IO.Path]::GetFileNameWithoutExtension($Path)
+        }
+        $ErrorActionPreference = 'Stop'
+        try {
+            $StopWatch = [System.Diagnostics.Stopwatch]::StartNew()
+            WriteMessage -Message ('Task {0}' -f $TaskName)
+            if ($PSCmdlet.ParameterSetName -eq 'ExecuteFunction') {
+                & "Script:$TaskName"
+            } else {
+                & $Path
+            }
+            WriteMessage -Message ('Done {0} {1}' -f $TaskName, $StopWatch.Elapsed)
+        } catch {
+            WriteMessage -Message ('Failed {0} {1}' -f $TaskName, $StopWatch.Elapsed) -Category Error -Details $_.Exception.Message
+            exit 1
+        } finally {
+            $StopWatch.Stop()
+        }
+    }
+}
+
+$TasksPath = Join-Path -Path $PSScriptRoot -ChildPath '.build\tasks'
+@(
+    $TaskName
+    if ((-not $ExcludeCustomTasks) -and (Test-Path $TasksPath)) {
+        Get-ChildItem -Path $TasksPath
+    }
+) | Where-Object { -not $BuildConfig -or $BuildConfig['Skip'] -NotContains $_ } | InvokeTask

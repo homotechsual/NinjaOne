@@ -18,25 +18,31 @@ function Get-NinjaOneRoles {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnor')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param()
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        Write-Verbose 'Retrieving all roles.'
-        $Resource = 'v2/roles'
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
+    }
+    process {
+        try {
+            
+            Write-Verbose 'Retrieving all roles.'
+            $Resource = 'v2/roles'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $RoleResults = New-NinjaOneGETRequest @RequestParams
+            if ($RoleResults) {
+                return $RoleResults
+            } else {
+                throw 'No roles found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $RoleResults = New-NinjaOneGETRequest @RequestParams
-        if ($RoleResults) {
-            return $RoleResults
-        } else {
-            throw 'No roles found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

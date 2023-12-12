@@ -29,6 +29,7 @@ function Get-NinjaOneOrganisations {
     #>
     [CmdletBinding( DefaultParameterSetName = 'Multi' )]
     [OutputType([Object])]
+    [Alias('gnoo', 'Get-NinjaOneOrganizations', 'Get-NinjaOneOrganisation', 'Get-NinjaOneOrganization')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Organisation id
@@ -45,51 +46,55 @@ function Get-NinjaOneOrganisations {
         [Parameter(ParameterSetName = 'Multi', Position = 3)]
         [Switch]$detailed
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'organisationid=' parameter by removing it from the set parameters.
-    if ($organisationId) {
-        $Parameters.Remove('organisationId') | Out-Null
-    }
-    # Similarly we don't want a `detailed=true` parameter since we're targetting a different resource.
-    if ($detailed) {
-        $Parameters.Remove('detailed') | Out-Null
-    }
-    try {
-        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # Workaround to prevent the query string processor from adding an 'organisationid=' parameter by removing it from the set parameters.
         if ($organisationId) {
-            Write-Verbose ('Getting organisation with id {0}.' -f $organisationId)
-            $Resource = ('v2/organization/{0}' -f $organisationId)
-            $RequestParams = @{
-                Resource = $Resource
-                QSCollection = $QSCollection
-            }
-        } else {
-            if ($detailed) {
-                Write-Verbose 'Retrieving detailed information on all organisations'
-                $Resource = 'v2/organizations-detailed'
-            } else {
-                Write-Verbose 'Retrieving all organisations'
-                $Resource = 'v2/organizations'
-            }
-            $RequestParams = @{
-                Resource = $Resource
-                QSCollection = $QSCollection
-            }
+            $Parameters.Remove('organisationId') | Out-Null
         }
+        # Similarly we don't want a `detailed=true` parameter since we're targetting a different resource.
+        if ($detailed) {
+            $Parameters.Remove('detailed') | Out-Null
+        }
+        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
+    }
+    process {
         try {
-            $OrganisationResults = New-NinjaOneGETRequest @RequestParams
-            return $OrganisationResults
-        } catch {
-            if (-not $OrganisationResults) {
-                if ($organisationId) {
-                    throw ('Organisation with id {0} not found.' -f $organisationId)
+            if ($organisationId) {
+                Write-Verbose ('Getting organisation with id {0}.' -f $organisationId)
+                $Resource = ('v2/organization/{0}' -f $organisationId)
+                $RequestParams = @{
+                    Resource = $Resource
+                    QSCollection = $QSCollection
+                }
+            } else {
+                if ($detailed) {
+                    Write-Verbose 'Retrieving detailed information on all organisations'
+                    $Resource = 'v2/organizations-detailed'
                 } else {
-                    throw 'No organisations found.'
+                    Write-Verbose 'Retrieving all organisations'
+                    $Resource = 'v2/organizations'
+                }
+                $RequestParams = @{
+                    Resource = $Resource
+                    QSCollection = $QSCollection
                 }
             }
+            try {
+                $OrganisationResults = New-NinjaOneGETRequest @RequestParams
+                return $OrganisationResults
+            } catch {
+                if (-not $OrganisationResults) {
+                    if ($organisationId) {
+                        throw ('Organisation with id {0} not found.' -f $organisationId)
+                    } else {
+                        throw 'No organisations found.'
+                    }
+                }
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

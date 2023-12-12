@@ -2,6 +2,34 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
+## 2023-12-12 - Version 2.0.0-beta8
+
+* Add short aliases to all commandlets.
+* Rewrite `Set-NinjaOneNodeRolePolicyAssignment` as `Set-NinjaOneOrganisationPolicies` and allow multiple role/policy assignments at a time.
+* Refactor all commandlets to use the "advanced function" template for iterative pipeline support.
+
+## 2023-11-17 - Version 2.0.0-beta7
+
+* Fix the `-userType` parameter on `Get-NinjaOneUsers`.
+
+## 2023-11-17 - Version 2.0.0-beta6
+
+* Fix broken document existence check in `Set-NinjaOneOrganisationDocument`.
+
+## 2023-11-17 - Version 2.0.0-beta5
+
+* Add new `-Scripts` and `-Categories` parameters to `Get-NinjaOneDeviceScriptingOptions` to allow automatic expansion of the results.
+* Rewrite `Invoke-NinjaOneDeviceScript` with better error handling and dependency checking.
+* Introduce new automated tests for comment-based-help elements.
+
+## 2023-11-17 - Version 2.0.0-beta4
+
+* Fix help links, commandlet names and short names (for documentation).
+
+## 2023-11-16 - Version 2.0.0-beta2
+
+* Fix functions not being re-added to exports after name changes.
+
 ## 2023-11-15 - Version 2.0.0-beta1
 
 * {"BC"} Refactoring of error handling to allow PowerShell 5.1 compatibility.

@@ -29,6 +29,7 @@ function Get-NinjaOneWindowsServices {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnows')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.
@@ -58,22 +59,26 @@ function Get-NinjaOneWindowsServices {
         [Parameter(Position = 4)]
         [Int]$pageSize
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        $Resource = 'v2/queries/windows-services'
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
+    }
+    process {
+        try {
+            $Resource = 'v2/queries/windows-services'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $WindowsServices = New-NinjaOneGETRequest @RequestParams
+            if ($WindowsServices) {
+                return $WindowsServices
+            } else {
+                throw 'No windows services found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $WindowsServices = New-NinjaOneGETRequest @RequestParams
-        if ($WindowsServices) {
-            return $WindowsServices
-        } else {
-            throw 'No windows services found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

@@ -20,7 +20,7 @@ function New-NinjaOnePUTRequest {
         [HashTable]$QSCollection,
         # A hashtable used to build the body of the request.
         [Parameter(Mandatory = $True)]
-        [Hashtable]$Body,
+        [Object]$Body,
         # Force body to an array.
         [Switch]$AsArray
     )
@@ -57,7 +57,13 @@ function New-NinjaOnePUTRequest {
         }
         if ($Body) {
             Write-Verbose 'Building [HttpBody] for New-NinjaOnePUTRequest'
-            $WebRequestParams.Body = ($Body | ConvertTo-Json -Depth 100)
+            if ($AsArray) {
+                Write-Verbose 'Forcing body to array'
+                $WebRequestParams.Body = (ConvertTo-Json -InputObject @($Body) -Depth 100)
+            } else {
+                Write-Verbose 'Not forcing body to array'
+                $WebRequestParams.Body = (ConvertTo-Json -InputObject $Body -Depth 100)
+            }
             Write-Verbose "Raw body is $($WebRequestParams.Body)"
         } else {
             Write-Verbose 'No body provided for New-NinjaOnePUTRequest'

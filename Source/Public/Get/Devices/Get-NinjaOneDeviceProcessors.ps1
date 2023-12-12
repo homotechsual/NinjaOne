@@ -18,6 +18,7 @@ function Get-NinjaOneDeviceProcessors {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnodp')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Device id to get processor information for.
@@ -25,27 +26,32 @@ function Get-NinjaOneDeviceProcessors {
         [Alias('id')]
         [Int]$deviceId
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    $Parameters.Remove('deviceId') | Out-Null
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
+        $Parameters.Remove('deviceId') | Out-Null
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        Write-Verbose 'Getting device from NinjaOne API.'
-        $Device = Get-NinjaOneDevices -deviceId $deviceId
-        if ($Device) {
-            Write-Verbose ('Getting processors for device {0}.' -f $Device.SystemName)
-            $Resource = ('v2/device/{0}/processors' -f $deviceId)
-        } else {
-            throw ('Device with id {0} not found.' -f $deviceId)
+    }
+    process {
+        try {
+            
+            Write-Verbose 'Getting device from NinjaOne API.'
+            $Device = Get-NinjaOneDevices -deviceId $deviceId
+            if ($Device) {
+                Write-Verbose ('Getting processors for device {0}.' -f $Device.SystemName)
+                $Resource = ('v2/device/{0}/processors' -f $deviceId)
+            } else {
+                throw ('Device with id {0} not found.' -f $deviceId)
+            }
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $DeviceProcessorResults = New-NinjaOneGETRequest @RequestParams
+            return $DeviceProcessorResults
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
-        }
-        $DeviceProcessorResults = New-NinjaOneGETRequest @RequestParams
-        return $DeviceProcessorResults
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

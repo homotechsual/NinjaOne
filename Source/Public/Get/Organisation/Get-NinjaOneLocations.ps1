@@ -25,6 +25,7 @@ function Get-NinjaOneLocations {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnol')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Number of results per page.
@@ -38,36 +39,40 @@ function Get-NinjaOneLocations {
         [Alias('id', 'organizationId')]
         [Int]$organisationId
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'organisationid=' parameter by removing it from the set parameters.
-    if ($organisationId) {
-        $Parameters.Remove('organisationId') | Out-Null
-    }
-    try {
-        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # Workaround to prevent the query string processor from adding an 'organisationid=' parameter by removing it from the set parameters.
         if ($organisationId) {
-            Write-Verbose 'Getting organisation from NinjaOne API.'
-            $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
-            if ($Organisation) {
-                Write-Verbose ('Getting locations for organisation {0}.' -f $Organisation.Name)
-                $Resource = ('v2/organization/{0}/locations' -f $organisationId)
+            $Parameters.Remove('organisationId') | Out-Null
+        }
+        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
+    }
+    process {
+        try {
+            if ($organisationId) {
+                Write-Verbose 'Getting organisation from NinjaOne API.'
+                $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
+                if ($Organisation) {
+                    Write-Verbose ('Getting locations for organisation {0}.' -f $Organisation.Name)
+                    $Resource = ('v2/organization/{0}/locations' -f $organisationId)
+                }
+            } else {
+                Write-Verbose 'Retrieving all locations.'
+                $Resource = 'v2/locations'
             }
-        } else {
-            Write-Verbose 'Retrieving all locations.'
-            $Resource = 'v2/locations'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $LocationResults = New-NinjaOneGETRequest @RequestParams
+            if ($LocationResults) {
+                return $LocationResults
+            } else {
+                throw ('No locations found for organisation {0}.' -f $Organisation.Name)
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
-        }
-        $LocationResults = New-NinjaOneGETRequest @RequestParams
-        if ($LocationResults) {
-            return $LocationResults
-        } else {
-            throw ('No locations found for organisation {0}.' -f $Organisation.Name)
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

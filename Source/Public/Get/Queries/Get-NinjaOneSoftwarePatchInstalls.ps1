@@ -57,6 +57,7 @@ function Get-NinjaOneSoftwarePatchInstalls {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnospi')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.
@@ -104,49 +105,53 @@ function Get-NinjaOneSoftwarePatchInstalls {
         [Parameter(Position = 9)]
         [Int]$pageSize
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # If the [DateTime] parameter $installedBefore is set convert the value to a Unix Epoch.
-    if ($installedBefore) {
-        [Int]$installedBefore = ConvertTo-UnixEpoch -DateTime $installedBefore
-    }
-    # If the Unix Epoch parameter $installedBeforeUnixEpoch is set assign the value to the $installedBefore variable and null $installedBeforeUnixEpoch.
-    if ($installedBeforeUnixEpoch) {
-        $Parameters.Remove('installedBeforeUnixEpoch') | Out-Null
-        [Int]$installedBefore = $installedBeforeUnixEpoch
-    }
-    # If the [DateTime] parameter $installedAfter is set convert the value to a Unix Epoch.
-    if ($installedAfter) {
-        [Int]$installedAfter = ConvertTo-UnixEpoch -DateTime $installedAfter
-    }
-    # If the Unix Epoch parameter $installedAfterUnixEpoch is set assign the value to the $installedAfter variable and null $installedAfterUnixEpoch.
-    if ($installedAfterUnixEpoch) {
-        $Parameters.Remove('installedAfterUnixEpoch') | Out-Null
-        [Int]$installedAfter = $installedAfterUnixEpoch
-    }
-    # If the [DateTime] parameter $timeStamp is set convert the value to a Unix Epoch.
-    if ($timeStamp) {
-        [int]$timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
-    }
-    # If the Unix Epoch parameter $timeStampUnixEpoch is set assign the value to the $timeStamp variable and null $timeStampUnixEpoch.
-    if ($timeStampUnixEpoch) {
-        $Parameters.Remove('timeStampUnixEpoch') | Out-Null
-        [int]$timeStamp = $timeStampUnixEpoch
-    }
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # If the [DateTime] parameter $installedBefore is set convert the value to a Unix Epoch.
+        if ($installedBefore) {
+            [Int]$installedBefore = ConvertTo-UnixEpoch -DateTime $installedBefore
+        }
+        # If the Unix Epoch parameter $installedBeforeUnixEpoch is set assign the value to the $installedBefore variable and null $installedBeforeUnixEpoch.
+        if ($installedBeforeUnixEpoch) {
+            $Parameters.Remove('installedBeforeUnixEpoch') | Out-Null
+            [Int]$installedBefore = $installedBeforeUnixEpoch
+        }
+        # If the [DateTime] parameter $installedAfter is set convert the value to a Unix Epoch.
+        if ($installedAfter) {
+            [Int]$installedAfter = ConvertTo-UnixEpoch -DateTime $installedAfter
+        }
+        # If the Unix Epoch parameter $installedAfterUnixEpoch is set assign the value to the $installedAfter variable and null $installedAfterUnixEpoch.
+        if ($installedAfterUnixEpoch) {
+            $Parameters.Remove('installedAfterUnixEpoch') | Out-Null
+            [Int]$installedAfter = $installedAfterUnixEpoch
+        }
+        # If the [DateTime] parameter $timeStamp is set convert the value to a Unix Epoch.
+        if ($timeStamp) {
+            [int]$timeStamp = ConvertTo-UnixEpoch -DateTime $timeStamp
+        }
+        # If the Unix Epoch parameter $timeStampUnixEpoch is set assign the value to the $timeStamp variable and null $timeStampUnixEpoch.
+        if ($timeStampUnixEpoch) {
+            $Parameters.Remove('timeStampUnixEpoch') | Out-Null
+            [int]$timeStamp = $timeStampUnixEpoch
+        }
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        $Resource = 'v2/queries/software-patch-installs'
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
+    }
+    process {
+        try {
+            $Resource = 'v2/queries/software-patch-installs'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $SoftwarePatchInstalls = New-NinjaOneGETRequest @RequestParams
+            if ($SoftwarePatchInstalls) {
+                return $SoftwarePatchInstalls
+            } else {
+                throw 'No software patch installs found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $SoftwarePatchInstalls = New-NinjaOneGETRequest @RequestParams
-        if ($SoftwarePatchInstalls) {
-            return $SoftwarePatchInstalls
-        } else {
-            throw 'No software patch installs found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

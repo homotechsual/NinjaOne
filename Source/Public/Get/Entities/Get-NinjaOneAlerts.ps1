@@ -27,6 +27,7 @@ function Get-NinjaOneAlerts {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnoal')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by device id.
@@ -49,44 +50,48 @@ function Get-NinjaOneAlerts {
         [Alias('tz')]
         [String]$timeZone
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    if ($deviceId) {
-        $Parameters.Remove('deviceId') | Out-Null
-    }
-    try {
-        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
         if ($deviceId) {
-            Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceId $deviceId
-            if ($Device) {
-                Write-Verbose ('Getting alerts for device {0}.' -f $Device.SystemName)
-                $Resource = ('v2/device/{0}/alerts' -f $deviceId)
-            } else {
-                throw ('Device with id {0} not found.' -f $deviceId)
-            }
-        } else {
-            Write-Verbose 'Retrieving all alerts.'
-            $Resource = 'v2/alerts'
+            $Parameters.Remove('deviceId') | Out-Null
         }
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
-        }
+        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
+    }
+    process {
         try {
-            $AlertResults = New-NinjaOneGETRequest @RequestParams
-            return $AlertResults
-        } catch {
-            if (-not $AlertResults) {
+            if ($deviceId) {
+                Write-Verbose 'Getting device from NinjaOne API.'
+                $Device = Get-NinjaOneDevices -deviceId $deviceId
                 if ($Device) {
-                    throw ('No alerts found for device {0}.' -f $Device.SystemName)
+                    Write-Verbose ('Getting alerts for device {0}.' -f $Device.SystemName)
+                    $Resource = ('v2/device/{0}/alerts' -f $deviceId)
                 } else {
-                    throw 'No alerts found.'
+                    throw ('Device with id {0} not found.' -f $deviceId)
+                }
+            } else {
+                Write-Verbose 'Retrieving all alerts.'
+                $Resource = 'v2/alerts'
+            }
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            try {
+                $AlertResults = New-NinjaOneGETRequest @RequestParams
+                return $AlertResults
+            } catch {
+                if (-not $AlertResults) {
+                    if ($Device) {
+                        throw ('No alerts found for device {0}.' -f $Device.SystemName)
+                    } else {
+                        throw 'No alerts found.'
+                    }
                 }
             }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

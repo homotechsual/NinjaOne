@@ -23,6 +23,7 @@ function Invoke-NinjaOneDeviceScript {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('inods')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device to run a script on.
@@ -49,73 +50,77 @@ function Invoke-NinjaOneDeviceScript {
         [Parameter(ParameterSetName = 'SCRIPT', Position = 4, ValueFromPipelineByPropertyName)]
         [Parameter(ParameterSetName = 'ACTION', Position = 4, ValueFromPipelineByPropertyName)]
         [ValidateScript(
-            { $_ -is [String] -AND $_ -in @('system', 'SR_MAC_SCRIPT,')}
+            { $_ -is [String] -AND $_ -in @('system', 'SR_MAC_SCRIPT,') }
         )]
         [String]$runAs
     )
-    if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
-        throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
-        exit 1
+    begin {
+        if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
+            throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
+            exit 1
+        }
     }
-    try {
-        if ($type -eq 'SCRIPT') {
-            $prettyAction = 'script'
-        } else {
-            $prettyAction = 'action'
-        }
-        $Device = Get-NinjaOneDevice -deviceId $deviceId
-        if ($Device) {
-            Write-Verbose ('Getting device scripting options for device {0}.' -f $Device.SystemName)
+    process {
+        try {
             if ($type -eq 'SCRIPT') {
-                $ScriptOrAction = Get-NinjaOneDeviceScriptingOptions -deviceId $deviceId -Scripts | Where-Object { $_.id -eq $scriptId -AND $_.type -eq $type }
+                $prettyAction = 'script'
             } else {
-                $ScriptOrAction = Get-NinjaOneDeviceScriptingOptions -deviceId $deviceId -Scripts | Where-Object { $_.uid -eq $actionUId -AND $_.type -eq $type }
+                $prettyAction = 'action'
             }
-            if ($ScriptOrAction.Count -gt 1) {
-                Write-Warning ('More than one {0} matched for device {1}.' -f $prettyAction, $Device.SystemName)
-                Write-Verbose ('Raw {0} options: {1}' -f $prettyAction, ($ScriptOrAction | Out-String))
-            }
-            if ($ScriptOrAction) {
-                Write-Verbose ('Running {0} {1} on device {2}.' -f $prettyAction, $ScriptOrAction.Name, $Device.SystemName)
-                $Resource = ('v2/device/{0}/script/run' -f $deviceId)
-                $RunRequest = @{
-                    type = $type
+            $Device = Get-NinjaOneDevice -deviceId $deviceId
+            if ($Device) {
+                Write-Verbose ('Getting device scripting options for device {0}.' -f $Device.SystemName)
+                if ($type -eq 'SCRIPT') {
+                    $ScriptOrAction = Get-NinjaOneDeviceScriptingOptions -deviceId $deviceId -Scripts | Where-Object { $_.id -eq $scriptId -AND $_.type -eq $type }
+                } else {
+                    $ScriptOrAction = Get-NinjaOneDeviceScriptingOptions -deviceId $deviceId -Scripts | Where-Object { $_.uid -eq $actionUId -AND $_.type -eq $type }
                 }
-                if ($scriptId) {
-                    $RunRequest.id = $scriptId
+                if ($ScriptOrAction.Count -gt 1) {
+                    Write-Warning ('More than one {0} matched for device {1}.' -f $prettyAction, $Device.SystemName)
+                    Write-Verbose ('Raw {0} options: {1}' -f $prettyAction, ($ScriptOrAction | Out-String))
                 }
-                if ($actionUId) {
-                    $RunRequest.uid = $actionUId
+                if ($ScriptOrAction) {
+                    Write-Verbose ('Running {0} {1} on device {2}.' -f $prettyAction, $ScriptOrAction.Name, $Device.SystemName)
+                    $Resource = ('v2/device/{0}/script/run' -f $deviceId)
+                    $RunRequest = @{
+                        type = $type
+                    }
+                    if ($scriptId) {
+                        $RunRequest.id = $scriptId
+                    }
+                    if ($actionUId) {
+                        $RunRequest.uid = $actionUId
+                    }
+                    if ($parameters) {
+                        $RunRequest.parameters = $parameters
+                    }
+                    if ($runAs) {
+                        $RunRequest.runAs = $runAs
+                    }
+                    Write-Verbose ('Raw run request: {0}' -f ($RunRequest | Out-String))
+                } else {
+                    if ($scriptId) {
+                        throw ('Script with id {0} not found for device {1}.' -f $scriptId, $Device.SystemName)
+                    } elseif ($actionUId) {
+                        throw ('Action with uid {0} not found for device {1}.' -f $actionUId, $Device.SystemName)
+                    }
                 }
-                if ($parameters) {
-                    $RunRequest.parameters = $parameters
-                }
-                if ($runAs) {
-                    $RunRequest.runAs = $runAs
-                }
-                Write-Verbose ('Raw run request: {0}' -f ($RunRequest | Out-String))
             } else {
-                if ($scriptId) {
-                    throw ('Script with id {0} not found for device {1}.' -f $scriptId, $Device.SystemName)
-                } elseif ($actionUId) {
-                    throw ('Action with uid {0} not found for device {1}.' -f $actionUId, $Device.SystemName)
-                }
+                throw ('Device with id {0} not found.' -f $deviceId)
             }
-        } else {
-            throw ('Device with id {0} not found.' -f $deviceId)
+            $RequestParams = @{
+                Resource = $Resource
+                Body = $RunRequest
+            }
+            $ScriptRun = New-NinjaOnePOSTRequest @RequestParams
+            if ($ScriptRun -eq 204) {
+                $OIP = $InformationPreference
+                $InformationPreference = 'Continue'
+                Write-Information ('Requested run for {0} {1} on device {2} successfully.' -f $prettyAction, $ScriptOrAction.Name, $Device.SystemName)
+                $InformationPreference = $OIP
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $RequestParams = @{
-            Resource = $Resource
-            Body = $RunRequest
-        }
-        $ScriptRun = New-NinjaOnePOSTRequest @RequestParams
-        if ($ScriptRun -eq 204) {
-            $OIP = $InformationPreference
-            $InformationPreference = 'Continue'
-            Write-Information ('Requested run for {0} {1} on device {2} successfully.' -f $prettyAction, $ScriptOrAction.Name, $Device.SystemName)
-            $InformationPreference = $OIP
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

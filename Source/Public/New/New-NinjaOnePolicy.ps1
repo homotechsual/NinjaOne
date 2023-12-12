@@ -13,26 +13,28 @@ function New-NinjaOnePolicy {
     #>
     [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]
+    [Alias('nnop')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The mode to run in, new, child or copy.
-        [Parameter(Mandatory, Position = 0)]
+        [Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
         [ValidateSet('NEW', 'CHILD', 'COPY')]
         [String]$mode,
         # An object containing the policy to create.
-        [Parameter(Mandatory, Position = 1)]
+        [Parameter(Mandatory, Position = 1, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Object]$policy,
         # The Id of the template policy to copy from.
-        [Parameter(Position = 2)]
+        [Parameter(Position = 2, ValueFromPipelineByPropertyName)]
+        [Alias('templateId')]
         [Int]$templatePolicyId,
         # Show the policy that was created.
         [Switch]$show
     )
-    if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
-        throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
-        exit 1
-    }
-    try {
+    begin {
+        if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
+            throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
+            exit 1
+        }
         if ($mode -eq 'CHILD' -and $null -eq $policy.parentPolicyId) {
             throw 'The policy must have a parent policy id if using "CHILD" mode.'
         } elseif ($mode -eq 'COPY' -and $null -eq $templatePolicyId) {
@@ -50,24 +52,28 @@ function New-NinjaOnePolicy {
             $Parameters.Remove('show') | Out-Null
         }
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        $Resource = 'v2/policies'
-        $RequestParams = @{
-            Resource = $Resource
-            Body = $policy
-            QSCollection = $QSCollection
-        }
-        if ($PSCmdlet.ShouldProcess(('Policy {0}' -f $policy.Name), 'Create')) {
-            $PolicyCreate = New-NinjaOnePOSTRequest @RequestParams
-            if ($show) {
-                return $PolicyCreate
-            } else {
-                $OIP = $InformationPreference
-                $InformationPreference = 'Continue'
-                Write-Information ('Policy {0} created.' -f $PolicyCreate.name)
-                $InformationPreference = $OIP
+    }
+    process {
+        try {
+            $Resource = 'v2/policies'
+            $RequestParams = @{
+                Resource = $Resource
+                Body = $policy
+                QSCollection = $QSCollection
             }
+            if ($PSCmdlet.ShouldProcess(('Policy {0}' -f $policy.Name), 'Create')) {
+                $PolicyCreate = New-NinjaOnePOSTRequest @RequestParams
+                if ($show) {
+                    return $PolicyCreate
+                } else {
+                    $OIP = $InformationPreference
+                    $InformationPreference = 'Continue'
+                    Write-Information ('Policy {0} created.' -f $PolicyCreate.name)
+                    $InformationPreference = $OIP
+                }
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

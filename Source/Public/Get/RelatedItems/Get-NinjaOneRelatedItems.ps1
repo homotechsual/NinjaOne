@@ -33,6 +33,7 @@ function Get-NinjaOneRelatedItems {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnori')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Return all related items.
@@ -59,9 +60,9 @@ function Get-NinjaOneRelatedItems {
         [ValidateSet('ALL', 'RELATIONS', 'REFERENCES')]
         [String]$scope
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
         # Workaround to prevent the query string processor from adding an 'all=true' parameter by removing it from the set parameters.
         if ($all) {
@@ -83,33 +84,37 @@ function Get-NinjaOneRelatedItems {
         if ($entityId) {
             $Parameters.Remove('entityId') | Out-Null
         }
-        if ($PSCmdlet.ParameterSetName -eq 'all') {
-            Write-Verbose 'Getting all related items from NinjaOne API.'
-            $Resource = 'v2/related-items'
-        } elseif ($PSCmdlet.ParameterSetName -eq 'relatedTo' -and $entityType -and $entityId) {
-            Write-Verbose ('Getting items related to entity of type {0} with id {1}.' -f $entityType, $entityId)
-            $Resource = ('v2/related-items/with-entity/{0}/{1}' -f $entityType, $entityId)
-        } elseif ($PSCmdlet.ParameterSetName -eq 'relatedTo' -and $entityType) {
-            Write-Verbose ('Getting items related to entity of type {0}.' -f $entityType)
-            $Resource = ('v2/related-items/with-entity-type/{0}' -f $entityType)
-        } elseif ($PSCmdlet.ParameterSetName -eq 'relatedFrom' -and $entityType -and $entityId) {
-            Write-Verbose ('Getting items with related entities of type {0} with id {1}.' -f $entityType, $entityId)
-            $Resource = ('v2/related-items/with-related-entity/{0}/{1}' -f $entityType, $entityId)
-        } elseif ($PSCmdlet.ParameterSetName -eq 'relatedFrom' -and $entityType) {
-            Write-Verbose ('Getting items with related entities of type {0}.' -f $entityType)
-            $Resource = ('v2/related-items/with-related-entity-type/{0}' -f $entityType)
+    }
+    process {
+        try {
+            if ($PSCmdlet.ParameterSetName -eq 'all') {
+                Write-Verbose 'Getting all related items from NinjaOne API.'
+                $Resource = 'v2/related-items'
+            } elseif ($PSCmdlet.ParameterSetName -eq 'relatedTo' -and $entityType -and $entityId) {
+                Write-Verbose ('Getting items related to entity of type {0} with id {1}.' -f $entityType, $entityId)
+                $Resource = ('v2/related-items/with-entity/{0}/{1}' -f $entityType, $entityId)
+            } elseif ($PSCmdlet.ParameterSetName -eq 'relatedTo' -and $entityType) {
+                Write-Verbose ('Getting items related to entity of type {0}.' -f $entityType)
+                $Resource = ('v2/related-items/with-entity-type/{0}' -f $entityType)
+            } elseif ($PSCmdlet.ParameterSetName -eq 'relatedFrom' -and $entityType -and $entityId) {
+                Write-Verbose ('Getting items with related entities of type {0} with id {1}.' -f $entityType, $entityId)
+                $Resource = ('v2/related-items/with-related-entity/{0}/{1}' -f $entityType, $entityId)
+            } elseif ($PSCmdlet.ParameterSetName -eq 'relatedFrom' -and $entityType) {
+                Write-Verbose ('Getting items with related entities of type {0}.' -f $entityType)
+                $Resource = ('v2/related-items/with-related-entity-type/{0}' -f $entityType)
+            }
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $RelatedItemResults = New-NinjaOneGETRequest @RequestParams
+            if ($RelatedItemResults) {
+                return $RelatedItemResults
+            } else {
+                throw 'No related items found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
-        }
-        $RelatedItemResults = New-NinjaOneGETRequest @RequestParams
-        if ($RelatedItemResults) {
-            return $RelatedItemResults
-        } else {
-            throw 'No related items found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

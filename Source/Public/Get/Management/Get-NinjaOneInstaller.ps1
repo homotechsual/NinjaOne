@@ -22,6 +22,7 @@ function Get-NinjaOneInstaller {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnoi')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The organisation id to get the installer for.
@@ -42,34 +43,38 @@ function Get-NinjaOneInstaller {
         )]
         [String]$installerType
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'organisationid=' parameter by removing it from the set parameters.
-    $Parameters.Remove('organisationId') | Out-Null
-    # Workaround to prevent the query string processor from adding a 'locationid=' parameter by removing it from the set parameters.
-    $Parameters.Remove('locationId') | Out-Null
-    # Workaround to prevent the query string processor from adding an 'installertype=' parameter by removing it from the set parameters.
-    $Parameters.Remove('installerType') | Out-Null
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # Workaround to prevent the query string processor from adding an 'organisationid=' parameter by removing it from the set parameters.
+        $Parameters.Remove('organisationId') | Out-Null
+        # Workaround to prevent the query string processor from adding a 'locationid=' parameter by removing it from the set parameters.
+        $Parameters.Remove('locationId') | Out-Null
+        # Workaround to prevent the query string processor from adding an 'installertype=' parameter by removing it from the set parameters.
+        $Parameters.Remove('installerType') | Out-Null
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        Write-Verbose 'Getting device from NinjaOne API.'
-        $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
-        $Location = Get-NinjaOneLocations -organisationId $organisationId | Where-Object { $_.id -eq $locationId }
-        if ($Organisation -and $Location) {
-            Write-Verbose ('Getting installer for organisation {0} - location {1} ({2}).' -f $Organisation.Name, $Location.Name, $installerType)
-            $Resource = ('v2/organization/{0}/location/{1}/installer/{2}' -f $organisationId, $locationId, $installerType)
+    }
+    process {
+        try {
+            Write-Verbose 'Getting device from NinjaOne API.'
+            $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
+            $Location = Get-NinjaOneLocations -organisationId $organisationId | Where-Object { $_.id -eq $locationId }
+            if ($Organisation -and $Location) {
+                Write-Verbose ('Getting installer for organisation {0} - location {1} ({2}).' -f $Organisation.Name, $Location.Name, $installerType)
+                $Resource = ('v2/organization/{0}/location/{1}/installer/{2}' -f $organisationId, $locationId, $installerType)
+            }
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $AgentInstallerResults = New-NinjaOneGETRequest @RequestParams
+            if ($AgentInstallerResults) {
+                return $AgentInstallerResults
+            } else {
+                throw ('No agent installer found for organisation { 0 } - location { 1 } ({ 2 }).' -f $Organisation.Name, $Location.Name, $installerType)
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
-        }
-        $AgentInstallerResults = New-NinjaOneGETRequest @RequestParams
-        if ($AgentInstallerResults) {
-            return $AgentInstallerResults
-        } else {
-            throw ('No agent installer found for organisation { 0 } - location { 1 } ({ 2 }).' -f $Organisation.Name, $Location.Name, $installerType)
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

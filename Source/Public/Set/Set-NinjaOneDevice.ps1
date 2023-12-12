@@ -13,6 +13,7 @@ function Set-NinjaOneDevice {
     #>
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
+    [Alias('snod', 'unod', 'Update-NinjaOneDevice')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device to set the information for.
@@ -23,28 +24,27 @@ function Set-NinjaOneDevice {
         [Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
         [Object]$deviceInformation
     )
-    try {
-        $Device = Get-NinjaOneDevice -deviceId $deviceId
-        if ($Device) {
-            Write-Verbose ('Setting device information for device {0}.' -f $Device.SystemName)
-            $Resource = ('v2/device/{0}' -f $deviceId)
-        } else {
-            throw ('Device with id {0} not found.' -f $deviceId)
-        }
-        $RequestParams = @{
-            Resource = $Resource
-            Body = $deviceInformation
-        }
-        if ($PSCmdlet.ShouldProcess(('Device {0} information' -f $Device.SystemName), 'Update')) {
-            $DeviceUpdate = New-NinjaOnePATCHRequest @RequestParams
-            if ($DeviceUpdate -eq 204) {
-                $OIP = $InformationPreference
-                $InformationPreference = 'Continue'
-                Write-Information ('Device {0} information updated successfully.' -f $Device.SystemName)
-                $InformationPreference = $OIP
+    process {
+        try {
+            $Device = Get-NinjaOneDevice -deviceId $deviceId
+            if ($Device) {
+                Write-Verbose ('Setting device information for device {0}.' -f $Device.SystemName)
+                $Resource = ('v2/device/{0}' -f $deviceId)
+            } else {
+                throw ('Device with id {0} not found.' -f $deviceId)
             }
+            $RequestParams = @{
+                Resource = $Resource
+                Body = $deviceInformation
+            }
+            if ($PSCmdlet.ShouldProcess(('Device {0} information' -f $Device.SystemName), 'Update')) {
+                $DeviceUpdate = New-NinjaOnePATCHRequest @RequestParams
+                if ($DeviceUpdate -eq 204) {
+                    Write-Information ('Device {0} information updated successfully.' -f $Device.SystemName)
+                }
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

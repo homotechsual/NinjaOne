@@ -29,6 +29,7 @@ function Get-NinjaOneBackupUsage {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnobu')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Cursor name.
@@ -41,22 +42,26 @@ function Get-NinjaOneBackupUsage {
         [Alias('includeDeletedDevices')]
         [Switch]$includeDeleted
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        $Resource = 'v2/queries/backup/usage'
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
+    }
+    process {
+        try {
+            $Resource = 'v2/queries/backup/usage'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $BackupUsage = New-NinjaOneGETRequest @RequestParams
+            if ($BackupUsage) {
+                return $BackupUsage
+            } else {
+                throw 'No backup usage found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $BackupUsage = New-NinjaOneGETRequest @RequestParams
-        if ($BackupUsage) {
-            return $BackupUsage
-        } else {
-            throw 'No backup usage found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

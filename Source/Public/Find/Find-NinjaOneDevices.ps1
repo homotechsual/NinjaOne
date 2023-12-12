@@ -23,6 +23,11 @@ function Find-NinjaOneDevices {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('fnod', 'Find-NinjaOneDevice')]
+    [Metadata(
+        '/v2/devices/search',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Limit number of devices to return.
@@ -32,19 +37,23 @@ function Find-NinjaOneDevices {
         [Alias('q')]
         [String]$searchQuery
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    try {
-        Write-Verbose ('Searching for upto {0} devices matching {1}.') -f $limit, $searchQuery
-        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        $Resource = 'v2/devices/search'
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+    }
+    process {
+        try {
+            Write-Verbose ('Searching for upto {0} devices matching {1}.') -f $limit, $searchQuery
+            $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
+            $Resource = 'v2/devices/search'
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $DeviceSearchResults = New-NinjaOneGETRequest @RequestParams
+            return $DeviceSearchResults
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $DeviceSearchResults = New-NinjaOneGETRequest @RequestParams
-        return $DeviceSearchResults
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

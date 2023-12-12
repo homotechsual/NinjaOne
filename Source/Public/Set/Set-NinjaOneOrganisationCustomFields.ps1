@@ -21,6 +21,7 @@ function Set-NinjaOneOrganisationCustomFields {
     #>
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
+    [Alias('snocf', 'Set-NinjaOneOrganizationCustomFields', 'unocf', 'Update-NinjaOneOrganisationCustomFields', 'Update-NinjaOneOrganizationCustomFields')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The organisation to set the custom fields for.
@@ -32,28 +33,30 @@ function Set-NinjaOneOrganisationCustomFields {
         [Alias('customFields', 'body', 'organizationCustomFields')]
         [Object]$organisationCustomFields
     )
-    try {
-        $Organisation = Get-NinjaOneOrganisations -OrganisationId $organisationId
-        if ($Organisation) {
-            Write-Verbose ('Setting organisation custom fields for organisation {0}.' -f $Organisation.Name)
-            $Resource = ('v2/organization/{0}/custom-fields' -f $organisationId)
-        } else {
-            throw ('Organisation with id {0} not found.' -f $organisationId)
-        }
-        $RequestParams = @{
-            Resource = $Resource
-            Body = $organisationCustomFields
-        }
-        if ($PSCmdlet.ShouldProcess(('Organisation {0} custom fields' -f $Organisation.Name), 'Update')) {
-            $OrganisationCustomFieldsUpdate = New-NinjaOnePATCHRequest @RequestParams
-            if ($OrganisationCustomFieldsUpdate -eq 204) {
-                $OIP = $InformationPreference
-                $InformationPreference = 'Continue'
-                Write-Information ('Organisation {0} custom fields updated successfully.' -f $Organisation.Name)
-                $InformationPreference = $OIP
+    process {
+        try {
+            $Organisation = Get-NinjaOneOrganisations -OrganisationId $organisationId
+            if ($Organisation) {
+                Write-Verbose ('Setting organisation custom fields for organisation {0}.' -f $Organisation.Name)
+                $Resource = ('v2/organization/{0}/custom-fields' -f $organisationId)
+            } else {
+                throw ('Organisation with id {0} not found.' -f $organisationId)
             }
+            $RequestParams = @{
+                Resource = $Resource
+                Body = $organisationCustomFields
+            }
+            if ($PSCmdlet.ShouldProcess(('Organisation {0} custom fields' -f $Organisation.Name), 'Update')) {
+                $OrganisationCustomFieldsUpdate = New-NinjaOnePATCHRequest @RequestParams
+                if ($OrganisationCustomFieldsUpdate -eq 204) {
+                    $OIP = $InformationPreference
+                    $InformationPreference = 'Continue'
+                    Write-Information ('Organisation {0} custom fields updated successfully.' -f $Organisation.Name)
+                    $InformationPreference = $OIP
+                }
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

@@ -18,6 +18,7 @@ function Get-NinjaOneGroupMembers {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnogm')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The group id to get members for.
@@ -28,31 +29,36 @@ function Get-NinjaOneGroupMembers {
         [Parameter(Position = 1)]
         [string]$refresh
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'groupid=' parameter by removing it from the set parameters.
-    $Parameters.Remove('groupId') | Out-Null
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # Workaround to prevent the query string processor from adding an 'groupid=' parameter by removing it from the set parameters.
+        $Parameters.Remove('groupId') | Out-Null
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        Write-Verbose 'Getting group from NinjaOne API.'
-        $Groups = Get-NinjaOneGroups
-        $Group = $Groups | Where-Object { $_.id -eq $groupId }
-        if ($Group) {
-            Write-Verbose "Retrieving group members for $($Group.Name)."
-            $Resource = "v2/group/$($groupId)/device-ids"
-        }
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
-        }
-        $GroupMemberResults = New-NinjaOneGETRequest @RequestParams
-        if ($GroupMemberResults) {
+    }
+    process {
+        try {
+            
+            Write-Verbose 'Getting group from NinjaOne API.'
+            $Groups = Get-NinjaOneGroups
+            $Group = $Groups | Where-Object { $_.id -eq $groupId }
+            if ($Group) {
+                Write-Verbose "Retrieving group members for $($Group.Name)."
+                $Resource = "v2/group/$($groupId)/device-ids"
+            }
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $GroupMemberResults = New-NinjaOneGETRequest @RequestParams
+            if ($GroupMemberResults) {
+                return $GroupMemberResults
+            } else {
+                throw ('No group members found for group {0}.' -f $Group.Name)
+            }
             return $GroupMemberResults
-        } else {
-            throw ('No group members found for group {0}.' -f $Group.Name)
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        return $GroupMemberResults
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

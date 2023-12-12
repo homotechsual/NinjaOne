@@ -30,6 +30,7 @@ function Get-NinjaOneJobs {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnoj')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by device id.
@@ -52,41 +53,45 @@ function Get-NinjaOneJobs {
         [Alias('ts')]
         [String]$timeZone
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    if ($deviceId) {
-        $Parameters.Remove('deviceId') | Out-Null
-    }
-    try {
-        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
         if ($deviceId) {
-            Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceId $deviceId
-            if ($Device) {
-                Write-Verbose ('Getting jobs for device {0}.' -f $Device.SystemName)
-                $Resource = ('v2/device/{0}/jobs' -f $deviceId)
-            }
-        } else {
-            Write-Verbose 'Retrieving all jobs.'
-            $Resource = 'v2/jobs'
+            $Parameters.Remove('deviceId') | Out-Null
         }
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
-            NoDrill = $True
-        }
-        $JobResults = New-NinjaOneGETRequest @RequestParams
-        if ($JobResults) {
-            return $JobResults
-        } else {
-            if ($Device) {
-                throw ('No jobs found for device {0}.' -f $Device.SystemName)
+        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
+    }
+    process {
+        try {
+            if ($deviceId) {
+                Write-Verbose 'Getting device from NinjaOne API.'
+                $Device = Get-NinjaOneDevices -deviceId $deviceId
+                if ($Device) {
+                    Write-Verbose ('Getting jobs for device {0}.' -f $Device.SystemName)
+                    $Resource = ('v2/device/{0}/jobs' -f $deviceId)
+                }
             } else {
-                throw 'No jobs found.'
+                Write-Verbose 'Retrieving all jobs.'
+                $Resource = 'v2/jobs'
             }
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+                NoDrill = $True
+            }
+            $JobResults = New-NinjaOneGETRequest @RequestParams
+            if ($JobResults) {
+                return $JobResults
+            } else {
+                if ($Device) {
+                    throw ('No jobs found for device {0}.' -f $Device.SystemName)
+                } else {
+                    throw 'No jobs found.'
+                }
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

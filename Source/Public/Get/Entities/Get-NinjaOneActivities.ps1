@@ -58,6 +58,7 @@ function Get-NinjaOneActivities {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnoac')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by device id.
@@ -119,73 +120,78 @@ function Get-NinjaOneActivities {
         # return the activities object instead of the default return with `lastActivityId` and `activities` properties.
         [Switch]$expandActivities
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    if ($deviceId) {
-        $Parameters.Remove('deviceId')
-        if ($type) {
-            $Parameters.Remove('type')
-            [string]$activityType = $type
-        }
-    } else {
-        if ($activityType) {
-            $Parameters.Remove('activityType')
-            [string]$type = $activityType
-        }
-    }
-    # If the [DateTime] parameter $before is set convert the value to a Unix Epoch.
-    if ($before) {
-        [Int]$before = ConvertTo-UnixEpoch -DateTime $before
-    }
-    # If the Unix Epoch parameter $beforeUnixEpoch is set assign the value to the $before variable and null $beforeUnixEpoch.
-    if ($beforeUnixEpoch) {
-        $Parameters.Remove('beforeUnixEpoch') | Out-Null
-        [Int]$before = $beforeUnixEpoch
-    }
-    # If the [DateTime] parameter $after is set convert the value to a Unix Epoch.
-    if ($after) {
-        [Int]$after = ConvertTo-UnixEpoch -DateTime $after
-    }
-    # If the Unix Epoch parameter $afterUnixEpoch is set assign the value to the $after variable and null $afterUnixEpoch.
-    if ($afterUnixEpoch) {
-        $Parameters.Remove('afterUnixEpoch') | Out-Null
-        [Int]$after = $afterUnixEpoch
-    }
-    try {
-        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
         if ($deviceId) {
-            Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceId $deviceId
-            if ($Device) {
-                Write-Verbose ('Getting activities for device {0}.' -f $Device.SystemName)
-                $Resource = ('v2/device/{0}/activities' -f $deviceId)
-            } else {
-                throw ('Device with id {0} not found.' -f $deviceId)
+            $Parameters.Remove('deviceId')
+            if ($type) {
+                $Parameters.Remove('type')
+                [string]$activityType = $type
             }
         } else {
-            Write-Verbose 'Retrieving all device activities.'
-            $Resource = 'v2/activities'
-        }
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
-        }
-        $ActivityResults = New-NinjaOneGETRequest @RequestParams
-        if ($ActivityResults) {
-            if ($expandActivities) {
-                return $ActivityResults.activities
-            } else {
-                return $ActivityResults
-            }
-        } else {
-            if ($Device) {
-                throw ('No activities found for device {0}.' -f $Device.SystemName)
-            } else {
-                throw 'No activities found.'
+            if ($activityType) {
+                $Parameters.Remove('activityType')
+                [string]$type = $activityType
             }
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
+        # If the [DateTime] parameter $before is set convert the value to a Unix Epoch.
+        if ($before) {
+            [Int]$before = ConvertTo-UnixEpoch -DateTime $before
+        }
+        # If the Unix Epoch parameter $beforeUnixEpoch is set assign the value to the $before variable and null $beforeUnixEpoch.
+        if ($beforeUnixEpoch) {
+            $Parameters.Remove('beforeUnixEpoch') | Out-Null
+            [Int]$before = $beforeUnixEpoch
+        }
+        # If the [DateTime] parameter $after is set convert the value to a Unix Epoch.
+        if ($after) {
+            [Int]$after = ConvertTo-UnixEpoch -DateTime $after
+        }
+        # If the Unix Epoch parameter $afterUnixEpoch is set assign the value to the $after variable and null $afterUnixEpoch.
+        if ($afterUnixEpoch) {
+            $Parameters.Remove('afterUnixEpoch') | Out-Null
+            [Int]$after = $afterUnixEpoch
+        }
+        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
+    }
+    process {
+        try {
+            
+            if ($deviceId) {
+                Write-Verbose 'Getting device from NinjaOne API.'
+                $Device = Get-NinjaOneDevices -deviceId $deviceId
+                if ($Device) {
+                    Write-Verbose ('Getting activities for device {0}.' -f $Device.SystemName)
+                    $Resource = ('v2/device/{0}/activities' -f $deviceId)
+                } else {
+                    throw ('Device with id {0} not found.' -f $deviceId)
+                }
+            } else {
+                Write-Verbose 'Retrieving all device activities.'
+                $Resource = 'v2/activities'
+            }
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $ActivityResults = New-NinjaOneGETRequest @RequestParams
+            if ($ActivityResults) {
+                if ($expandActivities) {
+                    return $ActivityResults.activities
+                } else {
+                    return $ActivityResults
+                }
+            } else {
+                if ($Device) {
+                    throw ('No activities found for device {0}.' -f $Device.SystemName)
+                } else {
+                    throw 'No activities found.'
+                }
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
+        }
     }
 }

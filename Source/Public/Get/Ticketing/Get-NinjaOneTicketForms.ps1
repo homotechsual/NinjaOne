@@ -21,6 +21,7 @@ function Get-NinjaOneTicketForms {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnotf')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Ticket form id.
@@ -28,32 +29,36 @@ function Get-NinjaOneTicketForms {
         [Alias('id')]
         [Int]$ticketFormId
     )
-    if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
-        throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
-        exit 1
-    }
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    try {
+    begin {
+        if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
+            throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
+            exit 1
+        }
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        if ($ticketFormId) {
-            Write-Verbose ('Getting ticket form with id {0}.' -f $ticketFormId)
-            $Resource = ('/v2/ticketing/ticket-form/{0}' -f $ticketFormId)
-        } else {
-            Write-Verbose 'Retrieving ticket forms'
-            $Resource = '/v2/ticketing/ticket-form'
+    }
+    process {
+        try {
+            if ($ticketFormId) {
+                Write-Verbose ('Getting ticket form with id {0}.' -f $ticketFormId)
+                $Resource = ('/v2/ticketing/ticket-form/{0}' -f $ticketFormId)
+            } else {
+                Write-Verbose 'Retrieving ticket forms'
+                $Resource = '/v2/ticketing/ticket-form'
+            }
+            $RequestParams = @{
+                QSCollection = $QSCollection
+                Resource = $Resource
+            }
+            $TicketForms = New-NinjaOneGETRequest @RequestParams
+            if ($TicketForms) {
+                return $TicketForms
+            } else {
+                throw 'No ticket forms found.'
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $RequestParams = @{
-            QSCollection = $QSCollection
-            Resource = $Resource
-        }
-        $TicketForms = New-NinjaOneGETRequest @RequestParams
-        if ($TicketForms) {
-            return $TicketForms
-        } else {
-            throw 'No ticket forms found.'
-        }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

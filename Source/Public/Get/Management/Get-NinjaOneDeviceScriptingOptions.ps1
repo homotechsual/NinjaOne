@@ -26,6 +26,7 @@ function Get-NinjaOneDeviceScriptingOptions {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnodso')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device id to get the scripting options for.
@@ -41,35 +42,39 @@ function Get-NinjaOneDeviceScriptingOptions {
         # Return the scripts list only.
         [Switch]$Scripts
     )
-    $CommandName = $MyInvocation.InvocationName
-    $Parameters = (Get-Command -Name $CommandName).Parameters
-    # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
-    $Parameters.Remove('deviceId') | Out-Null
-    try {
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
+        $Parameters.Remove('deviceId') | Out-Null
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-        Write-Verbose 'Getting device from NinjaOne API.'
-        $Device = Get-NinjaOneDevices -deviceId $deviceId
-        if ($Device) {
-            Write-Verbose ('Getting scripting options for device {0}.' -f $Device.SystemName)
-            $Resource = ('v2/device/{0}/scripting/options' -f $deviceId)
-        }
-        $RequestParams = @{
-            Resource = $Resource
-            QSCollection = $QSCollection
-        }
-        $DeviceScriptingOptionResults = New-NinjaOneGETRequest @RequestParams
-        if ($DeviceScriptingOptionResults) {
-            if ($Categories) {
-                return $DeviceScriptingOptionResults.Categories
-            } elseif ($Scripts) {
-                return $DeviceScriptingOptionResults.Scripts
-            } else {
-                return $DeviceScriptingOptionResults
+    }
+    process {
+        try {
+            Write-Verbose 'Getting device from NinjaOne API.'
+            $Device = Get-NinjaOneDevices -deviceId $deviceId
+            if ($Device) {
+                Write-Verbose ('Getting scripting options for device {0}.' -f $Device.SystemName)
+                $Resource = ('v2/device/{0}/scripting/options' -f $deviceId)
             }
-        } else {
-            throw ('No scripting options found for device {0}.' -f $Device.SystemName)
+            $RequestParams = @{
+                Resource = $Resource
+                QSCollection = $QSCollection
+            }
+            $DeviceScriptingOptionResults = New-NinjaOneGETRequest @RequestParams
+            if ($DeviceScriptingOptionResults) {
+                if ($Categories) {
+                    return $DeviceScriptingOptionResults.Categories
+                } elseif ($Scripts) {
+                    return $DeviceScriptingOptionResults.Scripts
+                } else {
+                    return $DeviceScriptingOptionResults
+                }
+            } else {
+                throw ('No scripting options found for device {0}.' -f $Device.SystemName)
+            }
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }

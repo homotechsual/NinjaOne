@@ -30,35 +30,40 @@ function Get-NinjaOneDeviceCustomFields {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
+    [Alias('gnodcf')]
+    [Metadata(
+        '/v2/device/{id}/custom-fields',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Device id to get custom field values for a specific device.
         [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id')]
-        [Int]$deviceId,
-        # Inherit custom field values from parent location and/or organisation.
-        [Switch]$withInheritance
+        [Int]$deviceId
     )
-    try {
-        if ($deviceId) {
-            Write-Verbose 'Getting device from NinjaOne API.'
-            $Device = Get-NinjaOneDevices -deviceId $deviceId
-            if ($Device) {
-                Write-Verbose ('Getting custom fields for device {0}.' -f $Device.SystemName)
-                $Resource = ('v2/device/{0}/custom-fields' -f $deviceId)
+    process {
+        try {
+            if ($deviceId) {
+                Write-Verbose 'Getting device from NinjaOne API.'
+                $Device = Get-NinjaOneDevices -deviceId $deviceId
+                if ($Device) {
+                    Write-Verbose ('Getting custom fields for device {0}.' -f $Device.SystemName)
+                    $Resource = ('v2/device/{0}/custom-fields' -f $deviceId)
+                } else {
+                    throw ('Device with id {0} not found.' -f $deviceId)
+                }
             } else {
-                throw ('Device with id {0} not found.' -f $deviceId)
+                Write-Verbose 'Retrieving all device custom fields.'
+                $Resource = 'v2/device-custom-fields'
             }
-        } else {
-            Write-Verbose 'Retrieving all device custom fields.'
-            $Resource = 'v2/device-custom-fields'
+            $RequestParams = @{
+                Resource = $Resource
+            }
+            $DeviceCustomFieldResults = New-NinjaOneGETRequest @RequestParams
+            return $DeviceCustomFieldResults
+        } catch {
+            New-NinjaOneError -ErrorRecord $_
         }
-        $RequestParams = @{
-            Resource = $Resource
-        }
-        $DeviceCustomFieldResults = New-NinjaOneGETRequest @RequestParams
-        return $DeviceCustomFieldResults
-    } catch {
-        New-NinjaOneError -ErrorRecord $_
     }
 }
