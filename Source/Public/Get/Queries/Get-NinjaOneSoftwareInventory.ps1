@@ -38,6 +38,10 @@ function Get-NinjaOneSoftwareInventory {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnosi')]
+    [Metadata(
+        '/v2/queries/software',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.

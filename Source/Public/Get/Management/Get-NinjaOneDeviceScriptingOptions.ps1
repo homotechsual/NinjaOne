@@ -27,6 +27,10 @@ function Get-NinjaOneDeviceScriptingOptions {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodso')]
+    [Metadata(
+        '/v2/device/{id}/scripting/options',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device id to get the scripting options for.

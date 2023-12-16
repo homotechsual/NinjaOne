@@ -23,6 +23,10 @@ function Get-NinjaOneDeviceVolumes {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodv')]
+    [Metadata(
+        '/v2/device/{id}/volumes',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Device id to get volumes for.

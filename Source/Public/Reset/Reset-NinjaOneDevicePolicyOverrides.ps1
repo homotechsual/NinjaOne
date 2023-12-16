@@ -14,6 +14,10 @@ function Reset-NinjaOneDevicePolicyOverrides {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('rnodpo')]
+    [Metadata(
+        '/v2/device/{id}/policy/overrides',
+        'delete'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device Id to reset policy overrides for.

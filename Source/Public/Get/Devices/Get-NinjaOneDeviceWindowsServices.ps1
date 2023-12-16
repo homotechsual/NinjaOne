@@ -27,6 +27,10 @@ function Get-NinjaOneDeviceWindowsServices {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodws')]
+    [Metadata(
+        '/v2/device/{id}/windows-services',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Device id to get windows services for.

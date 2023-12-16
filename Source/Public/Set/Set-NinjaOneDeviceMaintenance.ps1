@@ -14,6 +14,10 @@ function Set-NinjaOneDeviceMaintenance {
     [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]
     [Alias('snodm', 'unodm', 'Update-NinjaOneDeviceMaintenance')]
+    [Metadata(
+        '/v2/device/{id}/maintenance',
+        'put'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device to set a maintenance window for.

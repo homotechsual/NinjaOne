@@ -31,6 +31,12 @@ function Get-NinjaOneJobs {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoj')]
+    [Metadata(
+        '/v2/jobs',
+        'get',
+        '/v2/device/{id}/jobs',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by device id.

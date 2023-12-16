@@ -14,6 +14,10 @@ function New-NinjaOneOrganisation {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('nnoo', 'New-NinjaOneOrganization')]
+    [Metadata(
+        '/v2/organizations',
+        'post'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The Id of the organisation to use as a template.

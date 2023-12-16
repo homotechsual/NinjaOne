@@ -34,6 +34,18 @@ function Get-NinjaOneRelatedItems {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnori')]
+    [Metadata(
+        '/v2/related-items',
+        'get',
+        '/v2/related-items/with-entity/{entityType}/{entityId}',
+        'get',
+        '/v2/related-items/with-entity-type/{entityType}',
+        'get',
+        '/v2/related-items/with-related-entity/{relEntityType}/{relEntityId}',
+        'get',
+        '/v2/related-items/with-related-entity-type/{relatedEntityType}',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Return all related items.

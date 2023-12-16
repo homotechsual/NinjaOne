@@ -30,6 +30,14 @@ function Get-NinjaOneOrganisations {
     [CmdletBinding( DefaultParameterSetName = 'Multi' )]
     [OutputType([Object])]
     [Alias('gnoo', 'Get-NinjaOneOrganizations', 'Get-NinjaOneOrganisation', 'Get-NinjaOneOrganization')]
+    [Metadata(
+        '/v2/organizations',
+        'get',
+        '/v2/organization/{id}',
+        'get',
+        '/v2/organizations-detailed',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Organisation id

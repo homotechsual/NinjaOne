@@ -18,6 +18,10 @@ function Set-NinjaOneDeviceCustomFields {
     [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('snodcf', 'unodcf', 'Update-NinjaOneDeviceCustomFields')]
+    [Metadata(
+        '/v2/device/{id}/custom-fields',
+        'patch'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device to set the custom field value(s) for.

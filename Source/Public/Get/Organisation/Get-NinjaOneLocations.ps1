@@ -26,6 +26,12 @@ function Get-NinjaOneLocations {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnol')]
+    [Metadata(
+        '/v2/locations',
+        'get',
+        '/v2/organization/{id}/locations',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Number of results per page.

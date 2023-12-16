@@ -14,6 +14,10 @@ function Set-NinjaOneDeviceApproval {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('snoda', 'unoda', 'Update-NinjaOneDeviceApproval')]
+    [Metadata(
+        '/v2/devices/approval/{mode}',
+        'post'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The approval mode.

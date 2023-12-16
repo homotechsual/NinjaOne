@@ -22,6 +22,10 @@ function Get-NinjaOnePolicyOverrides {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnopo')]
+    [Metadata(
+        '/v2/queries/policy-overrides',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Cursor name.

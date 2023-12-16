@@ -18,6 +18,10 @@ function Get-NinjaOneOrganisationDocuments {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnood', 'Get-NinjaOneOrganizationDocuments')]
+    [Metadata(
+        '/v2/organization/{organizationId}/documents',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by organisation id.

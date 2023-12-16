@@ -26,6 +26,10 @@ function Get-NinjaOneDisks {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodi')]
+    [Metadata(
+        '/v2/queries/disks',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.

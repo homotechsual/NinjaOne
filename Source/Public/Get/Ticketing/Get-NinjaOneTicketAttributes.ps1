@@ -18,6 +18,10 @@ function Get-NinjaOneTicketAttributes {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnota')]
+    [Metadata(
+        '/v2/ticketing/attributes',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param()
     begin {

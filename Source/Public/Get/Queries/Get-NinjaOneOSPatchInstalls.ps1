@@ -46,6 +46,10 @@ function Get-NinjaOneOSPatchInstalls {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoospi')]
+    [Metadata(
+        '/v2/queries/os-patch-installs',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.

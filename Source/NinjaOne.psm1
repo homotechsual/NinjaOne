@@ -9,6 +9,17 @@ foreach ($Enum in @($Enums)) {
         Write-Error -Message "Failed to import class $($Enum.FullName): $_"
     }
 }
+$Attributes = @(Get-ChildItem -Path $PSScriptRoot\Classes\Attributes -Include *.ps1 -Recurse)
+# Import attributes.
+Write-Verbose "Discovered attributes $($Attributes | Out-String)"
+foreach ($Attribute in @($Attributes)) {
+    try {
+        Write-Verbose "Importing class $($Attribute.FullName)"
+        . $Attribute.FullName
+    } catch {
+        Write-Error -Message "Failed to import class $($Attribute.FullName): $_"
+    }
+}
 $Validators = @(Get-ChildItem -Path $PSScriptRoot\Classes\Validators -Include *.ps1 -Recurse)
 # Import validators.
 Write-Verbose "Discovered validators $($Validators | Out-String)"

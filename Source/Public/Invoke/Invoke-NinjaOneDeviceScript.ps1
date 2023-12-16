@@ -24,6 +24,10 @@ function Invoke-NinjaOneDeviceScript {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('inods')]
+    [Metadata(
+        '/v2/device/{id}/script/run',
+        'post'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device to run a script on.

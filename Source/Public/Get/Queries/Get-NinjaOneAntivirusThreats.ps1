@@ -22,6 +22,10 @@ function Get-NinjaOneAntiVirusThreats {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoavt')]
+    [Metadata(
+        '/v2/queries/antivirus-threats',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.

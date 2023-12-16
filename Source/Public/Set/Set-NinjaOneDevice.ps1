@@ -14,6 +14,10 @@ function Set-NinjaOneDevice {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('snod', 'unod', 'Update-NinjaOneDevice')]
+    [Metadata(
+        '/v2/device/{id}',
+        'patch'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device to set the information for.

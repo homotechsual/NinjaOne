@@ -26,6 +26,12 @@ function Get-NinjaOneTickets {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnot')]
+    [Metadata(
+        '/v2/ticketing/ticket/{ticketId}',
+        'get',
+        '/v2/ticketing/trigger/board/{boardId}/run',
+        'post'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The ticket id to get.

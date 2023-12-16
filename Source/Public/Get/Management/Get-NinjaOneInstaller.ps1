@@ -23,6 +23,10 @@ function Get-NinjaOneInstaller {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoi')]
+    [Metadata(
+        '/v2/organization/{id}/location/{location_id}/installer/{installer_type}',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The organisation id to get the installer for.

@@ -14,6 +14,10 @@ function Restart-NinjaOneDevice {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('rnod')]
+    [Metadata(
+        '/v2/device/{id}/reboot/{mode}',
+        'post'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device Id to reset status for.

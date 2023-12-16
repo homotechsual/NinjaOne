@@ -19,6 +19,10 @@ function Get-NinjaOneDeviceDashboardURL {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoddurl')]
+    [Metadata(
+        '/v2/device/{id}/dashboard-url',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device id to get the dashboard URL for.

@@ -23,6 +23,10 @@ function Get-NinjaOneDeviceSoftwarePatches {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodsp')]
+    [Metadata(
+        '/v2/device/{id}/software-patches',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Device id to get software patch information for.

@@ -26,6 +26,10 @@ function Get-NinjaOneVolumes {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnov')]
+    [Metadata(
+        '/v2/queries/volumes',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.

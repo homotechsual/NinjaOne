@@ -18,6 +18,10 @@ function Get-NinjaOneTicketStatuses {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnots')]
+    [Metadata(
+        '/v2/ticketing/statuses',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param()
     process {

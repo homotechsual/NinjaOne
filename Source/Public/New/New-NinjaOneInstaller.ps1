@@ -14,6 +14,10 @@ function New-NinjaOneInstaller {
     [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]
     [Alias('nnoi')]
+    [Metadata(
+        '/v2/organization/generate-installer',
+        'post'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The organization id to use when creating the installer.

@@ -14,6 +14,10 @@ function Set-NinjaOneOrganisation {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('snoo', 'Set-NinjaOneOrganization', 'unoo', 'Update-NinjaOneOrganisation', 'Update-NinjaOneOrganization')]
+    [Metadata(
+        '/v2/organization/{id}',
+        'patch'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The organisation to set the information for.

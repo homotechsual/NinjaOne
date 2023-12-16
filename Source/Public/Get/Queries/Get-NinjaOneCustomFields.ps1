@@ -38,6 +38,16 @@ function Get-NinjaOneCustomFields {
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     [OutputType([Object])]
     [Alias('gnocf')]
+    [Metadata(
+        '/v2/queries/custom-fields',
+        'get',
+        '/v2/queries/custom-fields-detailed',
+        'get',
+        '/v2/queries/scoped-custom-fields',
+        'get',
+        '/v2/queries/scoped-custom-fields-detailed',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.

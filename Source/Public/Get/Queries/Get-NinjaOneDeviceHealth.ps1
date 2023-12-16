@@ -26,6 +26,10 @@ function Get-NinjaOneDeviceHealth {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodh')]
+    [Metadata(
+        '/v2/queries/device-health',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.

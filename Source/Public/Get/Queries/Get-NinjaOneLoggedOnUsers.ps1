@@ -22,6 +22,10 @@ function Get-NinjaOneLoggedOnUsers {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnolou')]
+    [Metadata(
+        '/v2/queries/logged-on-users',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.

@@ -14,6 +14,10 @@ function Remove-NinjaOneWebhook {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('rnow')]
+    [Metadata(
+        '/v2/webhook',
+        'delete'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param()
     process {

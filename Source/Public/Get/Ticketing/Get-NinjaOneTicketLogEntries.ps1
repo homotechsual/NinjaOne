@@ -22,6 +22,10 @@ function Get-NinjaOneTicketLogEntries {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnotle')]
+    [Metadata(
+        '/v2/ticketing/ticket/{ticketId}/log-entry',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by ticket id.
@@ -45,7 +49,7 @@ function Get-NinjaOneTicketLogEntries {
     }
     process {
         try {
-            $Resource = ('v2/ticketing/ticket/{0}/log-entries' -f $ticketId)
+            $Resource = ('v2/ticketing/ticket/{0}/log-entry' -f $ticketId)
             $RequestParams = @{
                 Resource = $Resource
                 QSCollection = $QSCollection

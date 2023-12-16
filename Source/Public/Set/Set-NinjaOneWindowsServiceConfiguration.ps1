@@ -16,6 +16,10 @@ function Set-NinjaOneWindowsServiceConfiguration {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('snowsc', 'unowsc', 'Update-NinjaOneWindowsServiceConfiguration')]
+    [Metadata(
+        '/v2/device/{id}/windows-service/{serviceId}/configure',
+        'put'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device to change servce configuration for.

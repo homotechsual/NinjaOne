@@ -19,6 +19,10 @@ function Get-NinjaOneAttachment {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoat')]
+    [Metadata(
+        '/v2/attachment/{id}',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The attachment id to retrieve.

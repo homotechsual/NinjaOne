@@ -30,6 +30,10 @@ function Get-NinjaOneOperatingSystems {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoos')]
+    [Metadata(
+        '/v2/queries/operating-systems',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.

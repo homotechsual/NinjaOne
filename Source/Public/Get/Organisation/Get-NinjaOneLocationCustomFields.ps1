@@ -22,6 +22,10 @@ function Get-NinjaOneLocationCustomFields {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnolcf')]
+    [Metadata(
+        '/v2/organization/{id}/location/{locationId}/custom-fields',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by organisation id.

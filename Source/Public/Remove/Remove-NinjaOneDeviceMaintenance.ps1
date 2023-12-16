@@ -14,6 +14,10 @@ function Remove-NinjaOneDeviceMaintenance {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('rnodm')]
+    [Metadata(
+        '/v2/device/{id}/maintenance',
+        'delete'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device Id to cancel maintenance for.

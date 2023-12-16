@@ -42,6 +42,10 @@ function Get-NinjaOneSoftwarePatches {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnosp')]
+    [Metadata(
+        '/v2/queries/software-patches',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.

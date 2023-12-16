@@ -18,6 +18,10 @@ function Get-NinjaOneTicketBoards {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnotb')]
+    [Metadata(
+        '/v2/ticketing/trigger/boards',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param()
     begin {

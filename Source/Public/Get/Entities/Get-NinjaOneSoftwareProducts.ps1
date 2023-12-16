@@ -23,6 +23,12 @@ function Get-NinjaOneSoftwareProducts {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnosp')]
+    [Metadata(
+        '/v2/software-products',
+        'get',
+        '/v2/device/{id}/software',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device id to get software products for.

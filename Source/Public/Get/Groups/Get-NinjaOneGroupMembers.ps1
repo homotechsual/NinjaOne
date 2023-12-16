@@ -19,6 +19,10 @@ function Get-NinjaOneGroupMembers {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnogm')]
+    [Metadata(
+        '/v2/group/{id}/device-ids',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The group id to get members for.
@@ -43,8 +47,8 @@ function Get-NinjaOneGroupMembers {
             $Groups = Get-NinjaOneGroups
             $Group = $Groups | Where-Object { $_.id -eq $groupId }
             if ($Group) {
-                Write-Verbose "Retrieving group members for $($Group.Name)."
-                $Resource = "v2/group/$($groupId)/device-ids"
+                Write-Verbose ('Getting group members for group {0}.' -f $Group.Name)
+                $Resource = ('v2/group/{0}/device-ids' -f $groupId)
             }
             $RequestParams = @{
                 Resource = $Resource

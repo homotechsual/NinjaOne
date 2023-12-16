@@ -14,6 +14,10 @@ function New-NinjaOnePolicy {
     [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]
     [Alias('nnop')]
+    [Metadata(
+        '/v2/policies',
+        'post'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The mode to run in, new, child or copy.

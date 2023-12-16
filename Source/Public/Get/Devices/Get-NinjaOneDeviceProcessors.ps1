@@ -19,6 +19,10 @@ function Get-NinjaOneDeviceProcessors {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodp')]
+    [Metadata(
+        '/v2/device/{id}/processors',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Device id to get processor information for.
@@ -35,7 +39,6 @@ function Get-NinjaOneDeviceProcessors {
     }
     process {
         try {
-            
             Write-Verbose 'Getting device from NinjaOne API.'
             $Device = Get-NinjaOneDevices -deviceId $deviceId
             if ($Device) {

@@ -28,6 +28,12 @@ function Get-NinjaOneAlerts {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoal')]
+    [Metadata(
+        '/v2/alerts',
+        'get',
+        '/v2/device/{id}/alerts',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by device id.

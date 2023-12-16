@@ -14,6 +14,10 @@ function New-NinjaOneTicket {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('nnot')]
+    [Metadata(
+        '/v2/ticketing/ticket',
+        'post'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # An object containing the ticket to create.

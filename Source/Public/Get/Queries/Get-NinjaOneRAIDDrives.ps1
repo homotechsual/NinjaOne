@@ -26,6 +26,10 @@ function Get-NinjaOneRAIDDrives {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoraidd')]
+    [Metadata(
+        '/v2/queries/raid-drives',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.

@@ -18,6 +18,10 @@ function Get-NinjaOneContacts {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoc')]
+    [Metadata(
+        '/v2/ticketing/contact/contacts',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param()
     begin {

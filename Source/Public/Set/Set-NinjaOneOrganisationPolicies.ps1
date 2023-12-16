@@ -14,6 +14,10 @@ function Set-NinjaOneOrganisationPolicies {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Array])]
     [Alias('snoop', 'Set-NinjaOneOrganizationPolicies', 'snorpa', 'Set-NinjaOneNodeRolePolicyAssignment', 'unorpa', 'Update-NinjaOneNodeRolePolicyAssignment')]
+    [Metadata(
+        '/v2/organization/{id}/policies',
+        'put'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The organisation to update the policy assignment for.

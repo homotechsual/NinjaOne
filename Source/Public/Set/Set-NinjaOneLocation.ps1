@@ -14,6 +14,10 @@ function Set-NinjaOneLocation {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('snol', 'unol', 'Update-NinjaOneLocation')]
+    [Metadata(
+        '/v2/organization/{id}/locations/{locationId}',
+        'patch'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The organisation to set the location information for.

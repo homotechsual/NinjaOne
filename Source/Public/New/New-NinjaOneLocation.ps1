@@ -14,6 +14,10 @@ function New-NinjaOneLocation {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('nnol')]
+    [Metadata(
+        '/v2/organization/{id}/locations',
+        'post'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The organization Id to use when creating the location.

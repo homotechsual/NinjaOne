@@ -18,6 +18,10 @@ function Get-NinjaOneOrganisationCustomFields {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoocf', 'Get-NinjaOneOrganizationCustomFields')]
+    [Metadata(
+        '/v2/organization/{id}/custom-fields',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by organisation id.

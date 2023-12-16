@@ -22,6 +22,10 @@ function Set-NinjaOneLocationCustomFields {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('snolcf', 'unolcf', 'Update-NinjaOneLocationCustomFields')]
+    [Metadata(
+        '/v2/organization/{id}/locations/{locationId}/custom-fields',
+        'patch'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The organisation to set the custom fields for.

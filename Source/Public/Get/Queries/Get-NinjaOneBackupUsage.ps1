@@ -30,6 +30,10 @@ function Get-NinjaOneBackupUsage {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnobu')]
+    [Metadata(
+        '/v2/queries/backup/usage',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Cursor name.

@@ -16,6 +16,10 @@ function New-NinjaOneTicketComment {
     [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]
     [Alias('nnotc')]
+    [Metadata(
+        '/v2/ticketing/ticket/{ticketId}/comment',
+        'post'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The ticket Id to use when creating the ticket comment.

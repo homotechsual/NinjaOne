@@ -30,6 +30,10 @@ function Get-NinjaOneWindowsServices {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnows')]
+    [Metadata(
+        '/v2/queries/windows-services',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.

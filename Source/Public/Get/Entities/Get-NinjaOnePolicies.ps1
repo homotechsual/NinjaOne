@@ -19,6 +19,10 @@ function Get-NinjaOnePolicies {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnop')]
+    [Metadata(
+        '/v2/policies',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param()
     begin {

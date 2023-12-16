@@ -19,6 +19,10 @@ function Get-NinjaOneRoles {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnor')]
+    [Metadata(
+        '/v2/roles',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param()
     begin {

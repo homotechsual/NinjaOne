@@ -40,6 +40,16 @@ function Get-NinjaOneDevices {
     [CmdletBinding(DefaultParameterSetName = 'Multi')]
     [OutputType([Object])]
     [Alias('gnod', 'Get-NinjaOneDevice')]
+    [Metadata(
+        '/v2/devices',
+        'get',
+        '/v2/device/{id}',
+        'get',
+        '/v2/organization/{id}/devices',
+        'get',
+        '/v2/devices-detailed',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Device id to retrieve

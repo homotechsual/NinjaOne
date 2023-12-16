@@ -26,6 +26,10 @@ function Get-NinjaOneRAIDControllers {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoraidc')]
+    [Metadata(
+        '/v2/queries/raid-controllers',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.

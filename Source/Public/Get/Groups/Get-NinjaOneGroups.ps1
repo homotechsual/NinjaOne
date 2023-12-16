@@ -19,6 +19,10 @@ function Get-NinjaOneGroups {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnog')]
+    [Metadata(
+        '/v2/groups',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Group names should be returned in this language.

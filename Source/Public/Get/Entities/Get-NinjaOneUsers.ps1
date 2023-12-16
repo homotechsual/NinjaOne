@@ -27,6 +27,12 @@ function Get-NinjaOneUsers {
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     [OutputType([Object])]
     [Alias('gnou')]
+    [Metadata(
+        '/v2/users',
+        'get',
+        '/v2/organization/{id}/end-users',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Get users for this organisation id.

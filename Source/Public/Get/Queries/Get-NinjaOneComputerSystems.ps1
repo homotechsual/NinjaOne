@@ -26,6 +26,10 @@ function Get-NinjaOneComputerSystems {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnocs')]
+    [Metadata(
+        '/v2/queries/computer-systems',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.

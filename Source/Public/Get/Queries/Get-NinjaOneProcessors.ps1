@@ -26,6 +26,10 @@ function Get-NinjaOneProcessors {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnop')]
+    [Metadata(
+        '/v2/queries/processors',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.

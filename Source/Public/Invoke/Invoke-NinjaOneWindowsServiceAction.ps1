@@ -19,6 +19,10 @@ function Invoke-NinjaOneWindowsServiceAction {
     # This commandlet returns no output. A success message will be written to the information stream if the API returns a 204 success code. Use `-InformationAction Continue` to see this message.
     [OutputType([System.Void])]
     [Alias('inowsa')]
+    [Metadata(
+        '/v2/device/{id}/windows-service/{serviceId}/control',
+        'post'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The device(s) to change service configuration for.

@@ -38,6 +38,10 @@ function Get-NinjaOneOSPatches {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoosp')]
+    [Metadata(
+        '/v2/queries/os-patches',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.

@@ -12,6 +12,10 @@ function Update-NinjaOneWebhook {
     [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]
     [Alias('unow', 'snow', 'Set-NinjaOneWebhook')]
+    [Metadata(
+        '/v2/webhook',
+        'put'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The webhook configuration object.

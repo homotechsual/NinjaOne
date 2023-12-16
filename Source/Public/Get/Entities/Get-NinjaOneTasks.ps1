@@ -19,6 +19,10 @@ function Get-NinjaOneTasks {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnota')]
+    [Metadata(
+        '/v2/tasks',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param()
     begin {

@@ -14,6 +14,10 @@ function Set-NinjaOneTicket {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('snot', 'unot', 'Update-NinjaOneTicket')]
+    [Metadata(
+        '/v2/ticketing/ticket/{ticketId}',
+        'put'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # The ticket Id.

@@ -22,6 +22,7 @@ function Connect-NinjaOne {
     [CmdletBinding( DefaultParameterSetName = 'Authorisation Code' )]
     [OutputType([System.Void])]
     [Alias('cno')]
+    [Metadata('IGNORE')]
     Param (
         # Use the "Authorisation Code" flow with your web browser.
         [Parameter( Mandatory, ParameterSetName = 'Authorisation Code')]

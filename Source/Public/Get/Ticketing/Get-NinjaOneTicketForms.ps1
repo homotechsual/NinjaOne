@@ -22,6 +22,12 @@ function Get-NinjaOneTicketForms {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnotf')]
+    [Metadata(
+        '/v2/ticketing/ticket-form',
+        'get',
+        '/v2/ticketing/ticket-form/{id}',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Ticket form id.

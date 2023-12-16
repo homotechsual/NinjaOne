@@ -30,6 +30,10 @@ function Get-NinjaOneAntiVirusStatus {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoavs')]
+    [Metadata(
+        '/v2/queries/antivirus-status',
+        'get'
+    )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter devices.
