@@ -14,7 +14,7 @@ function New-NinjaOneOrganisation {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('nnoo', 'New-NinjaOneOrganization')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/organizations',
         'post'
     )]

@@ -14,7 +14,7 @@ function Set-NinjaOneLocation {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('snol', 'unol', 'Update-NinjaOneLocation')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/organization/{id}/locations/{locationId}',
         'patch'
     )]

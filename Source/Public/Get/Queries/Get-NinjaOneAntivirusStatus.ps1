@@ -30,7 +30,7 @@ function Get-NinjaOneAntiVirusStatus {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoavs')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/antivirus-status',
         'get'
     )]

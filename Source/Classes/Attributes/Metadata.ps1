@@ -1,9 +1,16 @@
-class Metadata : System.Attribute {
-    [string[]]$Metadata
+Add-Type @'
+using System;
+using System.Collections.Generic;
+public class MetadataAttribute : Attribute
+{
+  private string[] _tags;
 
-    Metadata() {}
+  public MetadataAttribute(params string[] tags) {
+    _tags = tags;
+  }
 
-    Metadata([String[]]$Metadata) { 
-        $this.Metadata = $Metadata
-    }
+  public IEnumerable<string> GetTags() {
+    foreach(var tag in _tags) yield return tag;
+  }
 }
+'@

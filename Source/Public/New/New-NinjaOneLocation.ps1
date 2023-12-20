@@ -14,7 +14,7 @@ function New-NinjaOneLocation {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('nnol')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/organization/{id}/locations',
         'post'
     )]

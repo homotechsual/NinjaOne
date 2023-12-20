@@ -57,41 +57,41 @@ function Push {
 }
 # Task: Check the implemented commandlets against NinjaOne's API specification.
 function CheckSchema {
-    $ReturnCode = 0
     $SchemaURI = 'https://oc.ninjarmm.com/apidocs-beta/NinjaRMM-API-v2.yaml'
     $Endpoints = [System.Collections.Generic.List[PSObject]]::new()
     $CoveredEndpoints = [System.Collections.Generic.List[String]]::new()
     $APIMissingEndpoints = [System.Collections.Generic.List[String]]::new()
     $ModuleMissingEndpoints = [System.Collections.Generic.List[String]]::new()
-    $MissingMethods = [System.Collections.Generic.Dictionary[String, String]]::new()
     $ErrorCmdlets = [System.Collections.Generic.List[String]]::new()
     $SchemaObject = Invoke-WebRequest -Uri $SchemaURI -UseBasicParsing | ConvertFrom-Yaml
     foreach ($Path in $SchemaObject.paths.GetEnumerator()) {
-        $Endpoints.Add(
-            @{
-                Path = $Path.Name
-                Methods = $Path.Value.GetEnumerator() | ForEach-Object { $_.Name }
-            }
-        )
+        foreach ($Method in $Path.Value.GetEnumerator()) {
+            $Endpoints.Add(
+                @{
+                    Path = $Path.Name
+                    Method = $Method.Name
+                }
+            )
+        }
     }
     $CommandletList = GetFunctions -ModuleName $Script:ModuleName
     foreach ($Commandlet in $CommandletList) {
         Write-Verbose ('Checking commandlet {0}' -f $Commandlet)
         $AST = (Get-Content -Path ('function:/{0}' -f $Commandlet) -ErrorAction Ignore).AST
         $MetadataFinder = [System.Func[System.Management.Automation.Language.Ast, bool]] { $args[0] -is [System.Management.Automation.Language.AttributeAst] -and $args[0].TypeName.Name -eq 'Metadata' -and $args[0].Parent -is [System.Management.Automation.Language.ParamBlockAst] }
-        $Metadata = $AST.FindAll($MetadataFinder, $true)
+        $MetadataElement = $AST.FindAll($MetadataFinder, $true)
         # If the commandlet has no Metadata attribute, we're gonna emit a warning and add it to our list of error commandlets.
-        if ($Metadata.Count -eq 0) {
+        if ($MetadataElement.Count -eq 0) {
             Write-Warning ('Commandlet {0} has no Metadata attribute.' -f $Commandlet)
             $ErrorCmdlets.Add($Commandlet)
             continue
         }
         # We only care about the first Metadata attribute. We're gonna throw a warning if there are more than one.
-        if ($Metadata.Count -gt 1) {
+        if ($MetadataElement.Count -gt 1) {
             Write-Warning ('Commandlet {0} has more than one Metadata attribute.' -f $Commandlet)
         }
-        if ($Metadata[0].PSObject.Properties.Name -match 'PositionalArguments') {
-            $PositionalArguments = $Metadata[0].PositionalArguments
+        if ($MetadataElement[0].PSObject.Properties.Name -match 'PositionalArguments') {
+            $PositionalArguments = $MetadataElement[0].PositionalArguments
         } else {
             $PositionalArguments = @{}
         }
@@ -104,18 +104,15 @@ function CheckSchema {
         } else {
             Write-Warning ('Commandlet {0} has an invalid Metadata attribute.' -f $Commandlet)
         }
-        foreach ($MetadataPairs in $MetadataHashTable.GetEnumerator()) {
-            $EndpointObject = $Endpoints.Where( { $_.Path -eq $MetadataPairs.Key } )
-            WriteMessage ('Endpoints in collection: {0}' -f $Endpoints.Count) -Category Information
-            WriteMessage ('Endpoint index: {0}' -f $EndpointObject.Index) -Category Information
-            $Endpoints.RemoveAt($EndpointObject.Index)
-            if (-not $EndpointObject) {
-                $ModuleMissingEndpoints.Add($MetadataPairs.Key)
-            } elseif ($EndpointObject.Methods -notcontains $MetadataPairs.Value) {
-                $MissingMethods.Add($EndpointObject.Path, $MetadataPairs.Value)
-            } else {
-                $CoveredEndpoints.Add($EndpointObject.Path)
+        foreach ($Metadata in $MetadataHashTable.GetEnumerator()) {
+            $Endpoint = $Endpoints.Where( { $_.Path -eq $Metadata.Key -and $_.Method -eq $Metadata.Value } )
+            if (-not $Endpoint) {
+                $ModuleMissingEndpoints.Add($Metadata.Key)
+                continue
             }
+            $EndpointIndex = $Endpoints.FindIndex( { $args[0].Path -eq $Metadata.Key -and $args[0].Method -eq $Metadata.Value } )
+            $Endpoints.RemoveAt($EndpointIndex)
+            $CoveredEndpoints.Add($Endpoint.Path)
         }
     }
     foreach ($Endpoint in $Endpoints) {
@@ -132,12 +129,6 @@ function CheckSchema {
         Write-Warning ('API Missing endpoints: {0}' -f $ModuleMissingEndpoints.Count)
         WriteMessage 'These endpoints are missing from the API spec but are preset in the module source.' -Category Warning
         $ModuleMissingEndpoints | ForEach-Object { WriteMessage ('{0}' -f $_) -Category Warning }
-        $ReturnCode += 1
-    }
-    if ($MissingMethods.Count -gt 0) {
-        Write-Warning ('Missing methods: {0}' -f $MissingMethods.Count)
-        WriteMessage 'These methods are either present in the API spec but not implemented in the module or present in the module and not in the API spec.' -Category Warning
-        $MissingMethods.GetEnumerator() | ForEach-Object { WriteMessage ('{0} - {1}' -f $_.Key, $_.Value) -Category Warning }
         $ReturnCode += 1
     }
     if ($ErrorCmdlets.Count -gt 0) {

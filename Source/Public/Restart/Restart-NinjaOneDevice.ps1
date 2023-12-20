@@ -14,7 +14,7 @@ function Restart-NinjaOneDevice {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('rnod')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/reboot/{mode}',
         'post'
     )]

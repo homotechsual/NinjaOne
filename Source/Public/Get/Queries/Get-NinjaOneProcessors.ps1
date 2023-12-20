@@ -26,7 +26,7 @@ function Get-NinjaOneProcessors {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnop')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/processors',
         'get'
     )]

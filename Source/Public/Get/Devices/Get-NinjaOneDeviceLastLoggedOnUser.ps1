@@ -19,7 +19,7 @@ function Get-NinjaOneDeviceLastLoggedOnUser {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodllou')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/last-logged-on-user',
         'get'
     )]

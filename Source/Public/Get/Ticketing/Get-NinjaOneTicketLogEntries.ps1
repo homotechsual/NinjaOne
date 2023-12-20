@@ -22,7 +22,7 @@ function Get-NinjaOneTicketLogEntries {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnotle')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/ticketing/ticket/{ticketId}/log-entry',
         'get'
     )]

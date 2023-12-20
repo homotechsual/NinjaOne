@@ -14,7 +14,7 @@ function Set-NinjaOneOrganisationPolicies {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Array])]
     [Alias('snoop', 'Set-NinjaOneOrganizationPolicies', 'snorpa', 'Set-NinjaOneNodeRolePolicyAssignment', 'unorpa', 'Update-NinjaOneNodeRolePolicyAssignment')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/organization/{id}/policies',
         'put'
     )]

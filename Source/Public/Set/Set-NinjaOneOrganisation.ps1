@@ -14,7 +14,7 @@ function Set-NinjaOneOrganisation {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('snoo', 'Set-NinjaOneOrganization', 'unoo', 'Update-NinjaOneOrganisation', 'Update-NinjaOneOrganization')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/organization/{id}',
         'patch'
     )]

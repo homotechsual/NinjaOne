@@ -22,7 +22,7 @@ function Get-NinjaOneTicketForms {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnotf')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/ticketing/ticket-form',
         'get',
         '/v2/ticketing/ticket-form/{id}',

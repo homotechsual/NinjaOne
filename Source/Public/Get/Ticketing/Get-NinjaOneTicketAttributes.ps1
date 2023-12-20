@@ -18,7 +18,7 @@ function Get-NinjaOneTicketAttributes {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnota')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/ticketing/attributes',
         'get'
     )]

@@ -30,7 +30,7 @@ function Get-NinjaOneOrganisations {
     [CmdletBinding( DefaultParameterSetName = 'Multi' )]
     [OutputType([Object])]
     [Alias('gnoo', 'Get-NinjaOneOrganizations', 'Get-NinjaOneOrganisation', 'Get-NinjaOneOrganization')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/organizations',
         'get',
         '/v2/organization/{id}',

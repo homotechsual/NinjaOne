@@ -19,7 +19,7 @@ function Get-NinjaOneDeviceDashboardURL {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoddurl')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/dashboard-url',
         'get'
     )]

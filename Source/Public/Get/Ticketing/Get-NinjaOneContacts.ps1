@@ -18,7 +18,7 @@ function Get-NinjaOneContacts {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoc')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/ticketing/contact/contacts',
         'get'
     )]

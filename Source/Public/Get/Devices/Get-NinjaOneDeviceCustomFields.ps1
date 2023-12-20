@@ -31,7 +31,7 @@ function Get-NinjaOneDeviceCustomFields {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodcf')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/custom-fields',
         'get'
     )]

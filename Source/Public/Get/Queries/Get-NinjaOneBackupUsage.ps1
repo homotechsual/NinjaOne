@@ -30,7 +30,7 @@ function Get-NinjaOneBackupUsage {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnobu')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/backup/usage',
         'get'
     )]

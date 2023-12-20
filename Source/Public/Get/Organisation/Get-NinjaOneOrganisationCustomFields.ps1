@@ -18,7 +18,7 @@ function Get-NinjaOneOrganisationCustomFields {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoocf', 'Get-NinjaOneOrganizationCustomFields')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/organization/{id}/custom-fields',
         'get'
     )]

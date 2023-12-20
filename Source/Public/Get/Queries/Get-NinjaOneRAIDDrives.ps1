@@ -26,7 +26,7 @@ function Get-NinjaOneRAIDDrives {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoraidd')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/raid-drives',
         'get'
     )]

@@ -19,7 +19,7 @@ function Get-NinjaOneTasks {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnota')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/tasks',
         'get'
     )]

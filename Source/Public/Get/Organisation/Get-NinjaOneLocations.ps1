@@ -26,7 +26,7 @@ function Get-NinjaOneLocations {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnol')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/locations',
         'get',
         '/v2/organization/{id}/locations',

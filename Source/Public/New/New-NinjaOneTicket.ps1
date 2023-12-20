@@ -14,7 +14,7 @@ function New-NinjaOneTicket {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('nnot')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/ticketing/ticket',
         'post'
     )]

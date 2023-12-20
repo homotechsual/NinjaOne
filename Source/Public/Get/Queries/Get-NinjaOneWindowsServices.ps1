@@ -30,7 +30,7 @@ function Get-NinjaOneWindowsServices {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnows')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/windows-services',
         'get'
     )]

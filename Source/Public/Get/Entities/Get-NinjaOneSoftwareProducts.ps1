@@ -23,7 +23,7 @@ function Get-NinjaOneSoftwareProducts {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnosp')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/software-products',
         'get',
         '/v2/device/{id}/software',

@@ -32,7 +32,7 @@ $PesterConfiguration.Run.Path = '.\Tests'
 $PesterConfiguration.Run.PassThru = $true
 $PesterConfiguration.TestResult.Enabled = $true
 $PesterConfiguration.TestResult.OutputPath = '.\.artifacts\TestResults.xml'
-$PesterConfiguration.TestResult.Format = 'JUnitXML'
+$PesterConfiguration.TestResult.OutputFormat = 'JUnitXML'
 if ($IncludeVSCodeMarker) {
     $PesterConfiguration.VSCodeMarker = $true
 }

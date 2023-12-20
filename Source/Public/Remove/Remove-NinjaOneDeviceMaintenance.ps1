@@ -14,7 +14,7 @@ function Remove-NinjaOneDeviceMaintenance {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('rnodm')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/maintenance',
         'delete'
     )]

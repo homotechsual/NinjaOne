@@ -14,7 +14,7 @@ function New-NinjaOnePolicy {
     [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]
     [Alias('nnop')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/policies',
         'post'
     )]

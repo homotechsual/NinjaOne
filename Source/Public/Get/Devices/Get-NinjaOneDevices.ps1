@@ -40,7 +40,7 @@ function Get-NinjaOneDevices {
     [CmdletBinding(DefaultParameterSetName = 'Multi')]
     [OutputType([Object])]
     [Alias('gnod', 'Get-NinjaOneDevice')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/devices',
         'get',
         '/v2/device/{id}',

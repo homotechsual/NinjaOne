@@ -23,7 +23,7 @@ function Get-NinjaOneInstaller {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoi')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/organization/{id}/location/{location_id}/installer/{installer_type}',
         'get'
     )]

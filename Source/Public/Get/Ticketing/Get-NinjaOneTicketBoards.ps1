@@ -18,7 +18,7 @@ function Get-NinjaOneTicketBoards {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnotb')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/ticketing/trigger/boards',
         'get'
     )]

@@ -19,7 +19,7 @@ function Invoke-NinjaOneRequest {
     [Cmdletbinding()]
     [OutputType([Object])]
     [Alias('inor')]
-    [Metadata('IGNORE')]
+    [MetadataAttribute('IGNORE')]
     param (
         # HTTP method to use.
         [Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]

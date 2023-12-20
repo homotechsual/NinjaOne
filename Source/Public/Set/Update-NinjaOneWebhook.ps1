@@ -12,7 +12,7 @@ function Update-NinjaOneWebhook {
     [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]
     [Alias('unow', 'snow', 'Set-NinjaOneWebhook')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/webhook',
         'put'
     )]

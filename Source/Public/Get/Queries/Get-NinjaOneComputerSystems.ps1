@@ -26,7 +26,7 @@ function Get-NinjaOneComputerSystems {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnocs')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/computer-systems',
         'get'
     )]

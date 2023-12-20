@@ -23,7 +23,7 @@ function Get-NinjaOneDeviceSoftwarePatchInstalls {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodspi')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/software-patch-installs',
         'get'
     )]

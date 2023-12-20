@@ -38,7 +38,7 @@ function Get-NinjaOneOSPatches {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoosp')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/os-patches',
         'get'
     )]

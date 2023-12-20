@@ -14,7 +14,7 @@ function Remove-NinjaOneWebhook {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('rnow')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/webhook',
         'delete'
     )]

@@ -19,7 +19,7 @@ function Get-NinjaOneDeviceDisks {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodd')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/disks',
         'get'
     )]

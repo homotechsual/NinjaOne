@@ -24,7 +24,7 @@ function Invoke-NinjaOneDeviceScript {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('inods')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/script/run',
         'post'
     )]

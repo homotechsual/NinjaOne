@@ -31,7 +31,7 @@ function Get-NinjaOneJobs {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoj')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/jobs',
         'get',
         '/v2/device/{id}/jobs',

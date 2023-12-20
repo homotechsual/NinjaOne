@@ -24,7 +24,7 @@ function Find-NinjaOneDevices {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('fnod', 'Find-NinjaOneDevice')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/devices/search',
         'get'
     )]

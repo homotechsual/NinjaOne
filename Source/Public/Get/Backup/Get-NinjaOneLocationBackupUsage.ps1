@@ -23,7 +23,7 @@ function Get-NinjaOneLocationBackupUsage {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnolbu')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/organization/{id}/locations/backup/usage',
         'get',
         '/v2/organization/{id}/locations/{locationId}/backup/usage',

@@ -22,7 +22,7 @@ function Get-NinjaOneLocationCustomFields {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnolcf')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/organization/{id}/location/{locationId}/custom-fields',
         'get'
     )]

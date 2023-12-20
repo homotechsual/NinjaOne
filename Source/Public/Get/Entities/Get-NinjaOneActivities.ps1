@@ -59,7 +59,7 @@ function Get-NinjaOneActivities {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoac')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/activities',
         'get',
         '/v2/activities',

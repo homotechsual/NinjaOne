@@ -58,7 +58,7 @@ function Get-NinjaOneSoftwarePatchInstalls {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnospi')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/software-patch-installs',
         'get'
     )]

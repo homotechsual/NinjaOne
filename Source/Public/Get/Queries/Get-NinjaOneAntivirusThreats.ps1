@@ -22,7 +22,7 @@ function Get-NinjaOneAntiVirusThreats {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoavt')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/antivirus-threats',
         'get'
     )]

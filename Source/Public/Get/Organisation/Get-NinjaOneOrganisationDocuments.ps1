@@ -18,7 +18,7 @@ function Get-NinjaOneOrganisationDocuments {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnood', 'Get-NinjaOneOrganizationDocuments')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/organization/{organizationId}/documents',
         'get'
     )]

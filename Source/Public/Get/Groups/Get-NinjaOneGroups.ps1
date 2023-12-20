@@ -19,7 +19,7 @@ function Get-NinjaOneGroups {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnog')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/groups',
         'get'
     )]

@@ -14,7 +14,7 @@ function New-NinjaOneInstaller {
     [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]
     [Alias('nnoi')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/organization/generate-installer',
         'post'
     )]

@@ -14,7 +14,7 @@ function Set-NinjaOneDevice {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('snod', 'unod', 'Update-NinjaOneDevice')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}',
         'patch'
     )]

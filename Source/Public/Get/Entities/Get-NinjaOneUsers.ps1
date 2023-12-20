@@ -27,7 +27,7 @@ function Get-NinjaOneUsers {
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     [OutputType([Object])]
     [Alias('gnou')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/users',
         'get',
         '/v2/organization/{id}/end-users',

@@ -28,7 +28,7 @@ function Get-NinjaOneAlerts {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoal')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/alerts',
         'get',
         '/v2/device/{id}/alerts',

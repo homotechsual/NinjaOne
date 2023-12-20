@@ -23,7 +23,7 @@ function Get-NinjaOneDeviceVolumes {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodv')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/volumes',
         'get'
     )]

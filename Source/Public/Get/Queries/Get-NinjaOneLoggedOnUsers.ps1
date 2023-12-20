@@ -22,7 +22,7 @@ function Get-NinjaOneLoggedOnUsers {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnolou')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/logged-on-users',
         'get'
     )]

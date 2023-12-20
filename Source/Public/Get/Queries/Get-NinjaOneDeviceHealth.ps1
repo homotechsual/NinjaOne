@@ -26,7 +26,7 @@ function Get-NinjaOneDeviceHealth {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodh')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/device-health',
         'get'
     )]

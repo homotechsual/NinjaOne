@@ -27,7 +27,7 @@ function Get-NinjaOneDeviceScriptingOptions {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodso')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/scripting/options',
         'get'
     )]

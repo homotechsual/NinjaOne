@@ -26,7 +26,7 @@ function Get-NinjaOneVolumes {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnov')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/volumes',
         'get'
     )]

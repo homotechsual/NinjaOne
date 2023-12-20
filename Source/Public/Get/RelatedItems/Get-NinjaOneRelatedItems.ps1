@@ -34,7 +34,7 @@ function Get-NinjaOneRelatedItems {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnori')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/related-items',
         'get',
         '/v2/related-items/with-entity/{entityType}/{entityId}',

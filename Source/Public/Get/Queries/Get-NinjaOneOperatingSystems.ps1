@@ -30,7 +30,7 @@ function Get-NinjaOneOperatingSystems {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoos')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/operating-systems',
         'get'
     )]

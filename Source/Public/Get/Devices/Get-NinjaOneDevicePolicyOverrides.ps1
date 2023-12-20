@@ -19,7 +19,7 @@ function Get-NinjaOneDevicePolicyOverrides {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodpo')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/policy/overrides',
         'get'
     )]

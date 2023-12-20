@@ -23,7 +23,7 @@ function Get-NinjaOneDeviceOSPatches {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodosp')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/os-patches',
         'get'
     )]

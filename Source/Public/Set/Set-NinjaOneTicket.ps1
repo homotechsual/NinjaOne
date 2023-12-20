@@ -14,7 +14,7 @@ function Set-NinjaOneTicket {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('snot', 'unot', 'Update-NinjaOneTicket')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/ticketing/ticket/{ticketId}',
         'put'
     )]

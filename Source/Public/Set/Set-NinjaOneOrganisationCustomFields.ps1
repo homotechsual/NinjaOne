@@ -22,7 +22,7 @@ function Set-NinjaOneOrganisationCustomFields {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('snocf', 'Set-NinjaOneOrganizationCustomFields', 'unocf', 'Update-NinjaOneOrganisationCustomFields', 'Update-NinjaOneOrganizationCustomFields')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/organization/{id}/custom-fields',
         'patch'
     )]

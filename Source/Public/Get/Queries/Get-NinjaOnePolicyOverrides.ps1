@@ -22,7 +22,7 @@ function Get-NinjaOnePolicyOverrides {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnopo')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/policy-overrides',
         'get'
     )]

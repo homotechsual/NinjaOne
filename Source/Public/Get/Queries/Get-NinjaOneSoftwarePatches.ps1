@@ -42,7 +42,7 @@ function Get-NinjaOneSoftwarePatches {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnosp')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/software-patches',
         'get'
     )]

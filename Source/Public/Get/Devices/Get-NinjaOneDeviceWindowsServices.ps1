@@ -27,7 +27,7 @@ function Get-NinjaOneDeviceWindowsServices {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodws')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/windows-services',
         'get'
     )]

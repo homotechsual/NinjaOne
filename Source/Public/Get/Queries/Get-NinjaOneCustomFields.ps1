@@ -38,7 +38,7 @@ function Get-NinjaOneCustomFields {
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     [OutputType([Object])]
     [Alias('gnocf')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/custom-fields',
         'get',
         '/v2/queries/custom-fields-detailed',

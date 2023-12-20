@@ -26,7 +26,7 @@ function Get-NinjaOneDisks {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodi')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/disks',
         'get'
     )]

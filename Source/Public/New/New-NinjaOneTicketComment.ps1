@@ -16,7 +16,7 @@ function New-NinjaOneTicketComment {
     [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]
     [Alias('nnotc')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/ticketing/ticket/{ticketId}/comment',
         'post'
     )]

@@ -38,7 +38,7 @@ function Get-NinjaOneSoftwareInventory {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnosi')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/software',
         'get'
     )]

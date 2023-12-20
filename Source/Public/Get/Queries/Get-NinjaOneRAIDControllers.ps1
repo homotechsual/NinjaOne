@@ -26,7 +26,7 @@ function Get-NinjaOneRAIDControllers {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoraidc')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/queries/raid-controllers',
         'get'
     )]

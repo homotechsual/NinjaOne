@@ -14,7 +14,7 @@ function Set-NinjaOneDeviceMaintenance {
     [CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
     [OutputType([Object])]
     [Alias('snodm', 'unodm', 'Update-NinjaOneDeviceMaintenance')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/maintenance',
         'put'
     )]

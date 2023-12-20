@@ -19,7 +19,7 @@ function Get-NinjaOneRoles {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnor')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/roles',
         'get'
     )]

@@ -14,7 +14,7 @@ function Reset-NinjaOneAlert {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('rnoa')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/alert/{uid}/reset',
         'post',
         '/v2/alert/{uid}',

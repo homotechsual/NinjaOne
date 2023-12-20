@@ -18,7 +18,7 @@ function Set-NinjaOneDeviceCustomFields {
     [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('snodcf', 'unodcf', 'Update-NinjaOneDeviceCustomFields')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/custom-fields',
         'patch'
     )]

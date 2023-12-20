@@ -19,7 +19,7 @@ function Get-NinjaOnePolicies {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnop')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/policies',
         'get'
     )]

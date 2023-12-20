@@ -19,7 +19,7 @@ function Get-NinjaOneDeviceProcessors {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnodp')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/processors',
         'get'
     )]

@@ -19,7 +19,7 @@ function Get-NinjaOneGroupMembers {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnogm')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/group/{id}/device-ids',
         'get'
     )]

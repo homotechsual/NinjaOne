@@ -19,7 +19,7 @@ function Get-NinjaOneAttachment {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnoat')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/attachment/{id}',
         'get'
     )]

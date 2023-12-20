@@ -26,7 +26,7 @@ function Get-NinjaOneTickets {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnot')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/ticketing/ticket/{ticketId}',
         'get',
         '/v2/ticketing/trigger/board/{boardId}/run',

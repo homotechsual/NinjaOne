@@ -14,9 +14,9 @@ function Set-NinjaOneOrganisationDocument {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('snood', 'Set-NinjaOneOrganizationDocument', 'unood', 'Update-NinjaOneOrganisationDocument', 'Update-NinjaOneOrganizationDocument')]
-    [Metadata(
-        '/v2/organization/{id}/documents/{documentId}',
-        'patch'
+    [MetadataAttribute(
+        '/v2/organization/{organizationId}/document/{documentId}',
+        'post'
     )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(

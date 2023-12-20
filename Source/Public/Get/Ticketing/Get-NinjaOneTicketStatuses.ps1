@@ -18,7 +18,7 @@ function Get-NinjaOneTicketStatuses {
     [CmdletBinding()]
     [OutputType([Object])]
     [Alias('gnots')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/ticketing/statuses',
         'get'
     )]

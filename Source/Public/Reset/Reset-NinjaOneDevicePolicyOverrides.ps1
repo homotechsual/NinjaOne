@@ -14,7 +14,7 @@ function Reset-NinjaOneDevicePolicyOverrides {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
     [OutputType([Object])]
     [Alias('rnodpo')]
-    [Metadata(
+    [MetadataAttribute(
         '/v2/device/{id}/policy/overrides',
         'delete'
     )]
