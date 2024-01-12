@@ -16,22 +16,17 @@ BeforeAll {
 }
 Describe ('<ModuleName> - Schema Completeness') -Tags 'Module' {
     Context 'Function <_.Name>' -ForEach $FunctionList {
-        $AST = $_.ScriptBlock.Ast
-        $MetadataFinder = { $args[0] -is [System.Management.Automation.Language.AttributeAst] -and $args[0].TypeName.Name -eq 'MetadataAttribute' -and $args[0].Parent -is [System.Management.Automation.Language.ParamBlockAst] }
-        $MetadataElement = $AST.FindAll($MetadataFinder, $true)
-        if ($MetadataElement[0].PSObject.Properties.Name -match 'PositionalArguments') {
-            $PositionalArguments = $MetadataElement[0].PositionalArguments
-        } else {
-            $PositionalArguments = @{}
+        BeforeAll {
+            $AST = $_.ScriptBlock.Ast
+            $MetadataElement = Get-MetadataElement -AST $AST
+            $PositionalArguments = Get-PositionalArguments -MetadataElement $MetadataElement
+            $Metadata = Get-Metadata -PositionalArguments $PositionalArguments
         }
-        # $StructuredMetadata = [System.Collections.Generic.List[hashtable]]::new()
-        $StructuredMetadata = if ($PositionalArguments.Count -gt 0 -and ($PositionalArguments.Count % 2 -eq 0)) {
-            for ($i = 0; $i -lt $PositionalArguments.Count; $i += 2) {
-                return [hashtable]@{
-                    Endpoint = $PositionalArguments[$i].Value
-                    Method = $PositionalArguments[$i + 1].Value
-                }
-            }
+        BeforeDiscovery {
+            $AST = $_.ScriptBlock.Ast
+            $MetadataElement = Get-MetadataElement -AST $AST
+            $PositionalArguments = Get-PositionalArguments -MetadataElement $MetadataElement
+            $Metadata = Get-Metadata -PositionalArguments $PositionalArguments
         }
         Context 'Metadata Attribute <_>' -ForEach $MetadataElement {
             # Schema tests.
@@ -58,16 +53,19 @@ Describe ('<ModuleName> - Schema Completeness') -Tags 'Module' {
                 $_.PositionalArguments.Count % 2 | Should -Be 0
             }
         }
-        Context 'Metadata Pair <Method>: <Endpoint>' -ForEach $StructuredMetadata -Skip:($StructuredMetadata.Count -eq 0) {
+        Context 'Metadata Pair <Method>: <Endpoint>' -ForEach $Metadata -Skip:($Metadata.Count -eq 0) {
             It ('should match an endpoint') {
-                $Endpoints | Out-Host
                 $Endpoint = $Endpoints | Where-Object { $_.Path -eq $Endpoint -and $_.Method -eq $Method }
                 $Endpoint | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match an endpoint' -f $Method, $Endpoint)
             }
         }
         Context 'Endpoint <Method>: <Path>' -ForEach $Endpoints -Skip:($Endpoints.Count -eq 0) {
             It ('should match a metadata attribute') {
-                $MetadataPair = $StructuredMetadata | Where-Object { $_.Endpoint -eq $Path -and $_.Method -eq $Method } 
+                $MetadataElement = Get-MetadataElement -AST $AST
+                $PositionalArguments = Get-PositionalArguments -MetadataElement $MetadataElement
+                $Metadata = Get-Metadata -PositionalArguments $PositionalArguments
+                $Metadata | Out-Host
+                $MetadataPair = $Metadata | Where-Object { $_.Endpoint -eq $Path -and $_.Method -eq $Method } 
                 $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $Method, $Path)
             }
         }
