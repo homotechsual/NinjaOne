@@ -1,4 +1,6 @@
-$Script:ModuleName = Get-ChildItem -Path '.\Source' -Filter '*.psd1' | Select-Object -ExpandProperty BaseName
+function Get-ModuleName {
+    return 'NinjaOne'
+}
 function Get-Endpoints ([uri]$SchemaURI = 'https://oc.ninjarmm.com/apidocs-beta/NinjaRMM-API-v2.yaml') {
     $Endpoints = [System.Collections.Generic.List[PSObject]]::new()
     $ProgressPreference = 'SilentlyContinue'
@@ -18,15 +20,21 @@ function Get-Endpoints ([uri]$SchemaURI = 'https://oc.ninjarmm.com/apidocs-beta/
 }
 
 function Import-ModuleToBeTested {
-    if (Get-Module -Name $Script:ModuleName) {
-        Remove-Module $Script:ModuleName -Force
+    $ModuleName = Get-ModuleName
+    if (Get-Module -Name $ModuleName) {
+        Remove-Module $ModuleName -Force
     }
-    $ManifestPath = Get-ChildItem -Path '.\Source' -Filter '*.psd1' | Select-Object -ExpandProperty FullName
+    $ManifestPath = Get-ChildItem -Path (Join-Path -Path . -ChildPath 'Source') -Filter '*.psd1' | Select-Object -ExpandProperty FullName
     Import-Module $ManifestPath -Verbose:$False
 }
 
 function Get-FunctionList {
-    $Module = Get-Module -Name $Script:ModuleName
-    $FunctionList = $Module.ExportedFunctions.Values
+    $ModuleName = Get-ModuleName
+    $Module = Get-Module -Name $ModuleName
+    $Functions = $Module.ExportedFunctions.Values
+    $FunctionList = foreach ($Function in $Functions) {
+        $FunctionInfo = Get-Command -Name $Function.Name -Module $Module
+        return $FunctionInfo
+    }
     return $FunctionList
 }
