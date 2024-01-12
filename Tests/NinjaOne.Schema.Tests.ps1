@@ -3,30 +3,20 @@
         Schema test suite for the NinjaOne module.
 #>
 BeforeDiscovery {
+    Import-Module  ('{0}\TestScaffold.psm1' -f $PSScriptRoot) -Force
+    Import-ModuleToBeTested
+    $Endpoints = Get-Endpoints
+    $FunctionList = Get-FunctionList
     $ModuleName = Get-ChildItem -Path '.\Source' -Filter '*.psd1' | Select-Object -ExpandProperty BaseName
-    if (Get-Module -Name $ModuleName) {
-        Remove-Module $ModuleName -Force
-    }
-    $ManifestPath = Get-ChildItem -Path '.\Source' -Filter '*.psd1' | Select-Object -ExpandProperty FullName
-    Import-Module $ManifestPath -Verbose:$False
 }
-Describe ('{0} - Schema Completeness' -f $ModuleName) -Tags 'Module' {
-    $SchemaURI = 'https://oc.ninjarmm.com/apidocs-beta/NinjaRMM-API-v2.yaml'
-    $Endpoints = [System.Collections.Generic.List[PSObject]]::new()
-    $SchemaObject = Invoke-WebRequest -Uri $SchemaURI -UseBasicParsing | ConvertFrom-Yaml
-    foreach ($Path in $SchemaObject.paths.GetEnumerator()) {
-        foreach ($Method in $Path.Value.GetEnumerator()) {
-            $Endpoints.Add(
-                @{
-                    Path = $Path.Name
-                    Method = $Method.Name
-                }
-            )
-        }
-    }
+BeforeAll {
+    Import-Module  ('{0}\TestScaffold.psm1' -f $PSScriptRoot) -Force
+    Import-ModuleToBeTested
+    $Endpoints = Get-Endpoints
+    $FunctionList = Get-FunctionList
     $ModuleName = Get-ChildItem -Path '.\Source' -Filter '*.psd1' | Select-Object -ExpandProperty BaseName
-    $Module = Get-Module -Name $ModuleName
-    $FunctionList = $Module.ExportedFunctions.Values
+}
+Describe ('<ModuleName> - Schema Completeness') -Tags 'Module' {
     Context 'Function <_>' -ForEach $FunctionList {
         $Commandlet = $_
         Write-Verbose ('Checking commandlet {0}' -f $_)
