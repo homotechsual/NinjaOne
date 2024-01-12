@@ -16,18 +16,10 @@ BeforeAll {
 }
 Describe ('<ModuleName> - Schema Completeness') -Tags 'Module' {
     Context 'Function <_.Name>' -ForEach $FunctionList {
-        BeforeAll {
-            $AST = $_.ScriptBlock.Ast
-            $MetadataElement = Get-MetadataElement -AST $AST
-            $PositionalArguments = Get-PositionalArguments -MetadataElement $MetadataElement
-            $Metadata = Get-Metadata -PositionalArguments $PositionalArguments
-        }
-        BeforeDiscovery {
-            $AST = $_.ScriptBlock.Ast
-            $MetadataElement = Get-MetadataElement -AST $AST
-            $PositionalArguments = Get-PositionalArguments -MetadataElement $MetadataElement
-            $Metadata = Get-Metadata -PositionalArguments $PositionalArguments
-        }
+        $AST = $_.ScriptBlock.Ast
+        $MetadataElement = Get-MetadataElement -AST $AST
+        $PositionalArguments = Get-PositionalArguments -MetadataElement $MetadataElement
+        $Metadata = Get-Metadata -PositionalArguments $PositionalArguments
         Context 'Metadata Attribute <_>' -ForEach $MetadataElement {
             # Schema tests.
             ## Metadata attribute exists.
@@ -59,15 +51,22 @@ Describe ('<ModuleName> - Schema Completeness') -Tags 'Module' {
                 $Endpoint | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match an endpoint' -f $Method, $Endpoint)
             }
         }
-        Context 'Endpoint <Method>: <Path>' -ForEach $Endpoints -Skip:($Endpoints.Count -eq 0) {
-            It ('should match a metadata attribute') {
-                $MetadataElement = Get-MetadataElement -AST $AST
-                $PositionalArguments = Get-PositionalArguments -MetadataElement $MetadataElement
-                $Metadata = Get-Metadata -PositionalArguments $PositionalArguments
-                $Metadata | Out-Host
-                $MetadataPair = $Metadata | Where-Object { $_.Endpoint -eq $Path -and $_.Method -eq $Method } 
-                $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $Method, $Path)
-            }
+    }
+    Context 'Endpoint <Method>: <Path>' -ForEach $Endpoints -Skip:($Endpoints.Count -eq 0) {
+        BeforeDiscovery {
+            $AllMetadata = Get-AllMetadata
+        }
+        BeforeAll {
+            $AllMetadata = Get-AllMetadata
+        }
+        It ('should match a metadata attribute') {
+            $AllMetadata | Out-Host
+            ('$AllMetadata is $null: {0}' -f $null -eq $AllMetadata) | Out-Host
+            ('$AllMetadata is empty: {0}' -f $AllMetadata.Count -eq 0) | Out-Host
+            ('$AllMetadata type: {0}' -f $AllMetadata.GetType()) | Out-Host
+            ('$AllMetadata count: {0}' -f $AllMetadata.Count) | Out-Host
+            $MetadataPair = $AllMetadata | Where-Object { $_.Endpoint -eq $Path -and $_.Method -eq $Method } 
+            $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $Method, $Path)
         }
     }
 }

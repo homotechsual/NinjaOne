@@ -34,6 +34,20 @@ function Get-FunctionList {
     $FunctionList = $Module.ExportedFunctions.Values
     return $FunctionList
 }
+
+function Get-AllMetadata {
+    $FunctionList = Get-FunctionList
+    $AllMetadata = foreach ($Function in $FunctionList) {
+        $AST = $Function.ScriptBlock.Ast
+        $MetadataElement = Get-MetadataElement -AST $AST
+        $PositionalArguments = Get-PositionalArguments -MetadataElement $MetadataElement
+        $Metadata = Get-Metadata -PositionalArguments $PositionalArguments
+        return $Metadata
+    }
+    return $AllMetadata
+
+}
+
 function Get-MetadataElement {
     param(
         [Parameter(Mandatory)]
