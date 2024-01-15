@@ -77,6 +77,7 @@
         'Get-NinjaOneAntivirusStatus',
         'Get-NinjaOneAntivirusThreats',
         'Get-NinjaOneAttachment',
+        'Get-NinjaOneBackupJobs',
         'Get-NinjaOneBackupUsage',
         'Get-NinjaOneComputerSystems',
         'Get-NinjaOneContacts',
@@ -88,6 +89,7 @@
         'Get-NinjaOneDeviceHealth',
         'Get-NinjaOneDeviceJobs',
         'Get-NinjaOneDeviceLastLoggedOnUser',
+        'Get-NinjaOneDeviceNetworkInterfaces',
         'Get-NinjaOneDeviceOSPatches',
         'Get-NinjaOneDeviceOSPatchInstalls',
         'Get-NinjaOneDevicePolicyOverrides',
@@ -99,6 +101,7 @@
         'Get-NinjaOneDeviceVolumes',
         'Get-NinjaOneDeviceWindowsServices',
         'Get-NinjaOneDisks',
+        'Get-NinjaOneDocumentTemplates',
         'Get-NinjaOneGroupMembers',
         'Get-NinjaOneGroups',
         'Get-NinjaOneInstaller',
@@ -107,6 +110,7 @@
         'Get-NinjaOneLocationCustomFields',
         'Get-NinjaOneLocations',
         'Get-NinjaOneLoggedOnUsers',
+        'Get-NinjaOneNetworkInterfaces',
         'Get-NinjaOneOperatingSystems',
         'Get-NinjaOneOrganisationCustomFields',
         'Get-NinjaOneOrganisationDocuments',
@@ -137,13 +141,16 @@
         'Invoke-NinjaOneDeviceScript',
         'Invoke-NinjaOneRequest',
         'Invoke-NinjaOneWindowsServiceAction',
+        'New-NinjaOneDocumentTemplate',
         'New-NinjaOneInstaller',
         'New-NinjaOneLocation',
         'New-NinjaOneOrganisation',
+        'New-NinjaOneOrganisationDocument',
         'New-NinjaOnePolicy',
         'New-NinjaOneTicket',
         'New-NinjaOneTicketComment',
         'Remove-NinjaOneDeviceMaintenance',
+        'Remove-NinjaOneDocumentTemplate',
         'Remove-NinjaOneWebhook',
         'Reset-NinjaOneAlert',
         'Reset-NinjaOneDevicePolicyOverrides',
@@ -152,11 +159,13 @@
         'Set-NinjaOneDeviceApproval',
         'Set-NinjaOneDeviceCustomFields',
         'Set-NinjaOneDeviceMaintenance',
+        'Set-NinjaOneDocumentTemplate',
         'Set-NinjaOneLocation',
         'Set-NinjaOneLocationCustomFields',
         'Set-NinjaOneOrganisation',
         'Set-NinjaOneOrganisationCustomFields',
         'Set-NinjaOneOrganisationDocument',
+        'Set-NinjaOneOrganisationDocuments',
         'Set-NinjaOneOrganisationPolicies',
         'Set-NinjaOneTicket',
         'Set-NinjaOneWindowsServiceConfiguration',
@@ -211,7 +220,7 @@
             ReleaseNotes = 'Fix userType parameter on Get-NOUser.'
 
             # Prerelease string of this module
-            Prerelease = 'Beta7'
+            Prerelease = 'RC1'
 
             # Flag to indicate whether the module requires explicit user acceptance for install/update/save
             # RequireLicenseAcceptance = $false

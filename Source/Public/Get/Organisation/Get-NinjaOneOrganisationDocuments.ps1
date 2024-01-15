@@ -20,14 +20,33 @@ function Get-NinjaOneOrganisationDocuments {
     [Alias('gnood', 'Get-NinjaOneOrganizationDocuments')]
     [MetadataAttribute(
         '/v2/organization/{organizationId}/documents',
+        'get',
+        '/v2/organization/documents',
         'get'
     )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by organisation id.
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationId')]
-        [Int]$organisationId
+        [Int]$organisationId,
+        # Filter by document name.
+        [Parameter(Position = 1, ValueFromPipelineByPropertyName)]
+        [String]$documentName,
+        # Group by template or organisation.
+        [Parameter(Position = 2, ValueFromPipelineByPropertyName)]
+        [ValidateSet('template', 'organization')]
+        [String]$groupBy,
+        # Filter by organisation ids. TODO: Describe the format.
+        [Parameter(Position = 3, ValueFromPipelineByPropertyName)]
+        [String]$organisationIds,
+        # Filter by template ids. TODO: Describe the format.
+        [Parameter(Position = 4, ValueFromPipelineByPropertyName)]
+        [String]$templateIds,
+        # Filter by template name.
+        [Parameter(Position = 5, ValueFromPipelineByPropertyName)]
+        [String]$templateName
+
     )
     begin {
         $CommandName = $MyInvocation.InvocationName

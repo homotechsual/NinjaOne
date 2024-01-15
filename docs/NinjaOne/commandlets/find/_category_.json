@@ -1,0 +1,14 @@
+{
+  "customProps": {
+    "description": "This category contains commands for finding information from services, this may include data, objects, settings and more."
+  },
+  "link": {
+    "type": "generated-index",
+    "title": "Find Information"
+  },
+  "position": 0.2,
+  "label": "Find Information",
+  "collapsible": true,
+  "className": "category-find",
+  "collapsed": false
+}

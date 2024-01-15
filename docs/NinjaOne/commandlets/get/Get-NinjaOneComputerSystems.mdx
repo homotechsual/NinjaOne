@@ -1,0 +1,151 @@
+---
+title: Get Computer Systems Query
+id: computersystemsquery
+description: "Retrieves the computer systems from the NinjaOne v2 API."
+hide_title: false
+hide_table_of_contents: false
+---
+
+:::powershell[Generated Cmdlet Help]
+This page has been generated from the NinjaOne PowerShell module source. To make changes please edit the appropriate PowerShell source file.
+:::
+
+## SYNOPSIS
+
+Gets the computer systems from the NinjaOne API.
+
+## SYNTAX
+
+```powershell
+Get-NinjaOneComputerSystems [[-deviceFilter] <String>] [[-timeStamp] <DateTime>]
+ [[-timeStampUnixEpoch] <Int32>] [[-cursor] <String>] [[-pageSize] <Int32>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Retrieves the computer systems from the NinjaOne v2 API.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Get-NinjaOneComputerSystems
+```
+
+Gets all computer systems.
+
+### EXAMPLE 2
+
+```powershell
+Get-NinjaOneComputerSystems -deviceFilter 'org = 1'
+```
+
+Gets the computer systems for the organisation with id 1.
+
+### EXAMPLE 3
+
+```powershell
+Get-NinjaOneComputerSystems -timeStamp 1619712000
+```
+
+Gets the computer systems with a monitoring timestamp at or after 1619712000.
+
+## PARAMETERS
+
+### -deviceFilter
+
+Filter devices.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases: df
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -timeStamp
+
+Monitoring timestamp filter.
+
+```yaml
+Type: DateTime
+Parameter Sets: (All)
+Aliases: ts
+
+Required: False
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -timeStampUnixEpoch
+
+Monitoring timestamp filter in unix time.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
+Default value: 0
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -cursor
+
+Cursor name.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -pageSize
+
+Number of results per page.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
+Default value: 0
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+
+## OUTPUTS
+
+### A powershell object containing the response.
+
+## NOTES
+
+## RELATED LINKS
+
+[https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/computersystemsquery](https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/computersystemsquery)

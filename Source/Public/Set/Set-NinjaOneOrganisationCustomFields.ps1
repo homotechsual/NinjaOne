@@ -53,10 +53,7 @@ function Set-NinjaOneOrganisationCustomFields {
             if ($PSCmdlet.ShouldProcess(('Organisation {0} custom fields' -f $Organisation.Name), 'Update')) {
                 $OrganisationCustomFieldsUpdate = New-NinjaOnePATCHRequest @RequestParams
                 if ($OrganisationCustomFieldsUpdate -eq 204) {
-                    $OIP = $InformationPreference
-                    $InformationPreference = 'Continue'
                     Write-Information ('Organisation {0} custom fields updated successfully.' -f $Organisation.Name)
-                    $InformationPreference = $OIP
                 }
             }
         } catch {

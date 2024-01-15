@@ -42,8 +42,10 @@ function Get-NinjaOneDeviceScriptingOptions {
         [Alias('lang')]
         [String]$LanguageTag,
         # Return the categories list only.
+        [Parameter(Position = 2)]
         [Switch]$Categories,
         # Return the scripts list only.
+        [Parameter(Position = 3)]
         [Switch]$Scripts
     )
     begin {

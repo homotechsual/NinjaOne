@@ -62,10 +62,7 @@ function Set-NinjaOneLocationCustomFields {
             if ($PSCmdlet.ShouldProcess(('Location custom fields for {0} in {1}' -f $Location.Name, $Organisation.Name), 'Update')) {
                 $LocationCustomFieldsUpdate = New-NinjaOnePATCHRequest @RequestParams
                 if ($LocationCustomFieldsUpdate -eq 204) {
-                    $OIP = $InformationPreference
-                    $InformationPreference = 'Continue'
                     Write-Information ('Location {0} custom fields updated successfully.' -f $Location.Name)
-                    $InformationPreference = $OIP
                 }
             }
         } catch {

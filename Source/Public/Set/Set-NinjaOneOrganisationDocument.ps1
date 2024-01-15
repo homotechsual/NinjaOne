@@ -45,7 +45,7 @@ function Set-NinjaOneOrganisationDocument {
                 Write-Verbose ('Getting organisation document {0} from NinjaOne API.' -f $documentId)
                 $Document = Get-NinjaOneOrganisationDocuments -OrganisationId $organisationId | Where-Object { $_.documentId -eq $documentId }
                 if ($Document) {
-                    Write-Verbose ('Setting organisation custom fields for organisation {0}.' -f $Organisation.Name)
+                    Write-Verbose ('Setting organisation document for organisation {0}.' -f $Organisation.Name)
                     $Resource = ('v2/organization/{0}/document/{1}' -f $organisationId, $documentId)
                 } else {
                     throw ('Organisation document with id {0} not found in organisation {1}' -f $documentId, $Organisation.Name)
@@ -60,10 +60,7 @@ function Set-NinjaOneOrganisationDocument {
             if ($PSCmdlet.ShouldProcess(('Organisation {0} document {1}' -f $Organisation.Name, $Document.Name), 'Update')) {
                 $OrganisationDocumentUpdate = New-NinjaOnePOSTRequest @RequestParams
                 if ($OrganisationDocumentUpdate -eq 204) {
-                    $OIP = $InformationPreference
-                    $InformationPreference = 'Continue'
                     Write-Information ('Organisation {0} document {1} updated successfully.' -f $Organisation.Name, $Document.Name)
-                    $InformationPreference = $OIP
                 }
             }
         } catch {

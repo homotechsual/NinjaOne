@@ -25,7 +25,7 @@ function Import-ModuleToBeTested {
         Remove-Module $ModuleName -Force
     }
     $ManifestPath = Get-ChildItem -Path (Join-Path -Path . -ChildPath 'Source') -Filter '*.psd1' | Select-Object -ExpandProperty FullName
-    Import-Module $ManifestPath -Verbose:$False
+    Import-Module $ManifestPath -Verbose:$False -Force
 }
 
 function Get-FunctionList {
@@ -33,19 +33,6 @@ function Get-FunctionList {
     $Module = Get-Module -Name $ModuleName
     $FunctionList = $Module.ExportedFunctions.Values
     return $FunctionList
-}
-
-function Get-AllMetadata {
-    $FunctionList = Get-FunctionList
-    $AllMetadata = foreach ($Function in $FunctionList) {
-        $AST = $Function.ScriptBlock.Ast
-        $MetadataElement = Get-MetadataElement -AST $AST
-        $PositionalArguments = Get-PositionalArguments -MetadataElement $MetadataElement
-        $Metadata = Get-Metadata -PositionalArguments $PositionalArguments
-        return $Metadata
-    }
-    return $AllMetadata
-
 }
 
 function Get-MetadataElement {
@@ -74,13 +61,27 @@ function Get-Metadata {
     param(
         [System.Collections.ObjectModel.ReadOnlyCollection[System.Management.Automation.Language.StringConstantExpressionAst]]$PositionalArguments
     )
-    $Metadata = if ($PositionalArguments.Count -gt 0 -and ($PositionalArguments.Count % 2 -eq 0)) {
-        for ($i = 0; $i -lt $PositionalArguments.Count; $i += 2) {
-            return [hashtable]@{
+    if ($PositionalArguments.Count -gt 0 -and ($PositionalArguments.Count % 2 -eq 0)) {
+        $Metadata = for ($i = 0; $i -lt $PositionalArguments.Count; $i += 2) {
+            [hashtable]@{
                 Endpoint = $PositionalArguments[$i].Value
                 Method = $PositionalArguments[$i + 1].Value
             }
         }
+    } else {
+        $Metadata = @{}
     }
     return $Metadata
+}
+
+function Get-AllMetadata {
+    $FunctionList = Get-FunctionList
+    $AllMetadata = foreach ($Function in $FunctionList) {
+        $AST = $Function.ScriptBlock.Ast
+        $MetadataElement = Get-MetadataElement -AST $AST
+        $PositionalArguments = Get-PositionalArguments -MetadataElement $MetadataElement
+        $Metadata = Get-Metadata -PositionalArguments $PositionalArguments
+        $Metadata
+    }
+    return $AllMetadata
 }

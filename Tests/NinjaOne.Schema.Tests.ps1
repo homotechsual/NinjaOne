@@ -60,11 +60,6 @@ Describe ('<ModuleName> - Schema Completeness') -Tags 'Module' {
             $AllMetadata = Get-AllMetadata
         }
         It ('should match a metadata attribute') {
-            $AllMetadata | Out-Host
-            ('$AllMetadata is $null: {0}' -f $null -eq $AllMetadata) | Out-Host
-            ('$AllMetadata is empty: {0}' -f $AllMetadata.Count -eq 0) | Out-Host
-            ('$AllMetadata type: {0}' -f $AllMetadata.GetType()) | Out-Host
-            ('$AllMetadata count: {0}' -f $AllMetadata.Count) | Out-Host
             $MetadataPair = $AllMetadata | Where-Object { $_.Endpoint -eq $Path -and $_.Method -eq $Method } 
             $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $Method, $Path)
         }

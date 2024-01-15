@@ -45,10 +45,7 @@ function Set-NinjaOneOrganisation {
             if ($PSCmdlet.ShouldProcess(('Organisation {0} information' -f $Organisation.Name), 'Update')) {
                 $OrganisationUpdate = New-NinjaOnePATCHRequest @RequestParams
                 if ($OrganisationUpdate -eq 204) {
-                    $OIP = $InformationPreference
-                    $InformationPreference = 'Continue'
                     Write-Information ('Organisation {0} information updated successfully.' -f $Organisation.Name)
-                    $InformationPreference = $OIP
                 }
             }
         } catch {

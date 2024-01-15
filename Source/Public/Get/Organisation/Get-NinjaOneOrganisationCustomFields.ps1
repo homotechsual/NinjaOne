@@ -25,7 +25,7 @@ function Get-NinjaOneOrganisationCustomFields {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Filter by organisation id.
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
         [Alias('id', 'organizationId')]
         [Int]$organisationId
     )

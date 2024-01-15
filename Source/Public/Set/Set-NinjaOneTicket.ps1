@@ -50,10 +50,7 @@ function Set-NinjaOneTicket {
             if ($PSCmdlet.ShouldProcess(('Ticket {0} ({1})' -f $Ticket.Subject, $ticketId), 'Update')) {
                 $TicketUpdate = New-NinjaOnePUTRequest @RequestParams
                 if ($TicketUpdate -eq 204) {
-                    $OIP = $InformationPreference
-                    $InformationPreference = 'Continue'
                     Write-Information ('Ticket {0} ({1}) updated successfully.' -f $Ticket.Subject, $ticketId)
-                    $InformationPreference = $OIP
                 }
             }
         } catch {

@@ -33,15 +33,32 @@ function Get-NinjaOneDeviceCustomFields {
     [Alias('gnodcf')]
     [MetadataAttribute(
         '/v2/device/{id}/custom-fields',
+        'get',
+        '/v2/device-custom-fields',
         'get'
     )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
     Param(
         # Device id to get custom field values for a specific device.
-        [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Parameter(Mandatory, ParameterSetName = 'Single', Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('id')]
-        [Int]$deviceId
+        [Int]$deviceId,
+        # The scopes to get custom field definitions for.
+        [Parameter(ParameterSetName = 'Multi', Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateSet('all', 'node', 'location', 'organisation')]
+        [String[]]$scope = 'all'
     )
+    begin {
+        $CommandName = $MyInvocation.InvocationName
+        $Parameters = (Get-Command -Name $CommandName).Parameters
+        # Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
+        $Parameters.Remove('deviceId') | Out-Null
+        $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
+        # If $scope has more than one value preprocess the value to a comma separated string.
+        if ($scope.Count -gt 1) {
+            $scope = $scope -join ','
+        }
+    }
     process {
         try {
             if ($deviceId) {
@@ -59,6 +76,7 @@ function Get-NinjaOneDeviceCustomFields {
             }
             $RequestParams = @{
                 Resource = $Resource
+                QSCollection = $QSCollection
             }
             $DeviceCustomFieldResults = New-NinjaOneGETRequest @RequestParams
             return $DeviceCustomFieldResults

@@ -2,9 +2,10 @@ Connect-NinjaOne: NinjaOne
 Find-NinjaOneDevices: Devices
 Get-NinjaOneActivities: Activities
 Get-NinjaOneAlerts: Alerts
-Get-NinjaOneAntivirusStatus: Antivirus Status Query
-Get-NinjaOneAntivirusThreats: Antivirus Threats Query
+Get-NinjaOneAntiVirusStatus: AntiVirus Status Query
+Get-NinjaOneAntiVirusThreats: AntiVirus Threats Query
 Get-NinjaOneAttachment: Attachment
+Get-NinjaOneBackupJobs: Backup Jobs
 Get-NinjaOneBackupUsage: Backup Usage Query
 Get-NinjaOneComputerSystems: Computer Systems Query
 Get-NinjaOneContacts: Contacts
@@ -14,6 +15,7 @@ Get-NinjaOneDeviceDashboardURL: Device Dashboard URL
 Get-NinjaOneDeviceDisks: Device Disks
 Get-NinjaOneDeviceHealth: Device Health Query
 Get-NinjaOneDeviceLastLoggedOnUser: Device Last Logged On User
+Get-NinjaOneDeviceNetworkInterfaces: Device Network Interfaces
 Get-NinjaOneDeviceOSPatches: Device OS Patches
 Get-NinjaOneDeviceOSPatchInstalls: Device OS Patch Installs
 Get-NinjaOneDevicePolicyOverrides: Device Policy Overrides
@@ -25,6 +27,7 @@ Get-NinjaOneDeviceSoftwarePatchInstalls: Device Software Patch Installs
 Get-NinjaOneDeviceVolumes: Device Volumes
 Get-NinjaOneDeviceWindowsServices: Device Windows Services
 Get-NinjaOneDisks: Disks Query
+Get-NinjaOneDocumentTemplates: Document Template
 Get-NinjaOneGroupMembers: Group Members
 Get-NinjaOneGroups: Groups
 Get-NinjaOneInstaller: Installer
@@ -33,6 +36,7 @@ Get-NinjaOneLocationBackupUsage: Location Backup Usage
 Get-NinjaOneLocationCustomFields: Location Custom Fields
 Get-NinjaOneLocations: Locations
 Get-NinjaOneLoggedOnUsers: Logged On Users Query
+Get-NinjaOneNetworkInterfaces: Network Interfaces Query
 Get-NinjaOneOperatingSystems: Operating Systems Query
 Get-NinjaOneOrganisationCustomFields: Organisation Custom Fields
 Get-NinjaOneOrganisationDocuments: Documents
@@ -63,13 +67,16 @@ Get-NinjaOneWindowsServices: Windows Services Query
 Invoke-NinjaOneDeviceScript: Script or Action
 Invoke-NinjaOneRequest: API Request
 Invoke-NinjaOneWindowsServiceAction: Windows Service Action
+New-NinjaOneDocumentTemplate: Document Template
 New-NinjaOneInstaller: Installer
 New-NinjaOneLocation: Location
 New-NinjaOneOrganisation: Organisation
+New-NinjaOneOrganisationDocument: Organisation Documents
 New-NinjaOnePolicy: Policy
 New-NinjaOneTicket: Ticket
 New-NinjaOneTicketComment: Ticket Comment
 Remove-NinjaOneDeviceMaintenance: Maintenance
+Remove-NinjaOneDocumentTemplate: Document Template
 Remove-NinjaOneWebhook: Webhook
 Reset-NinjaOneAlert: Alert
 Reset-NinjaOneDevicePolicyOverrides: Device Policy Overrides
@@ -78,12 +85,14 @@ Set-NinjaOneDevice: Device
 Set-NinjaOneDeviceApproval: Device Approval
 Set-NinjaOneDeviceCustomFields: Device Custom Fields
 Set-NinjaOneDeviceMaintenance: Device Maintenance
+Set-NinjaOneDocumentTemplate: Document Template
 Set-NinjaOneLocation: Location
 Set-NinjaOneLocationCustomFields: Location Custom Fields
-Set-NinjaOneNodeRolePolicyAssignment: Node Role Policy Assignment
 Set-NinjaOneOrganisation: Organisation
 Set-NinjaOneOrganisationCustomFields: Organisation Custom Fields
 Set-NinjaOneOrganisationDocument: Organisation Document
+Set-NinjaOneOrganisationDocuments: Organisation Documents
+Set-NinjaOneOrganisationPolicies: Organisation Policies
 Set-NinjaOneTicket: Ticket
 Set-NinjaOneWindowsServiceConfiguration: Windows Service Configuration
 Update-NinjaOneWebhook: Webhook

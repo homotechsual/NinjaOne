@@ -100,10 +100,7 @@ function Set-NinjaOneOrganisationPolicies {
             if ($PSCmdlet.ShouldProcess(('Assign policy {0} to role {1} for {2}.' -f $Policy.Name, $Role.Name, $Organisation.Name), 'Update')) {
                 $NodeRolePolicyAssignment = New-NinjaOnePUTRequest @RequestParams
                 if ($NodeRolePolicyAssignment -eq 204) {
-                    $OIP = $InformationPreference
-                    $InformationPreference = 'Continue'
                     Write-Information ('Policy {0} assigned to role {1} for {2}.' -f $Policy.Name, $Role.Name, $Organisation.Name)
-                    $InformationPreference = $OIP
                 }
             }
         } catch {

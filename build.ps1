@@ -169,7 +169,7 @@ function UpdateHelp {
         [System.IO.DirectoryInfo]$DocusaurusPath = '.\docs',
         [bool]$ForceUpdateCategoryFiles = $true
     )
-    $DocsFolderPath = Join-Path -Path $DocusaurusPath -ChildPath 'docs' -AdditionalChildPath $Script:ModuleName
+    $DocsFolderPath = Join-Path -Path $DocusaurusPath -ChildPath $Script:ModuleName
     if (-Not(Test-Path -Path $DocsFolderPath)) {
         New-Item -Path $DocsFolderPath -ItemType Directory | Out-Null
     }
@@ -197,7 +197,7 @@ This page has been generated from the {0} PowerShell module source. To make chan
         RemoveParameters = @('-ProgressAction', '-FakeParam')
     }
     New-DocusaurusHelp @NewDocusaurusHelpParams | Out-Null
-    $CommandletDocsFolder = Join-Path -Path $DocusaurusPath -ChildPath 'docs' -AdditionalChildPath @($Script:ModuleName, 'commandlets')
+    $CommandletDocsFolder = Join-Path -Path $DocusaurusPath -ChildPath $Script:ModuleName -AdditionalChildPath 'commandlets'
     $VerbFolders = Get-ChildItem -Path $CommandletDocsFolder -Directory
     $CategoryFileBase = @{
         position = 1
@@ -317,7 +317,7 @@ This page has been generated from the {0} PowerShell module source. To make chan
 }
 # Task: Build the PowerShell Module
 function Build {
-    Build-Module -Path (Resolve-Path -Path ('{0}\*\build.psd1') -f $PSScriptRoot)
+    Build-Module -Path (Resolve-Path -Path ('{0}\*\build.psd1' -f $PSScriptRoot))
 }
 # Task: Copy PowerShell Module files to output folder for release on PSGallery
 function CopyModuleFiles {

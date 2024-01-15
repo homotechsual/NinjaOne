@@ -1,0 +1,14 @@
+{
+  "customProps": {
+    "description": "This category contains commands for updating data, objects, settings and more. This category will overlap with the Set category."
+  },
+  "link": {
+    "type": "generated-index",
+    "title": "Update Data (Update)"
+  },
+  "position": 0.4,
+  "label": "Update Data (Update)",
+  "collapsible": true,
+  "className": "category-update",
+  "collapsed": false
+}
