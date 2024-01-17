@@ -1,0 +1,10 @@
+R:\Development\NinjaOne\C# Classes\MetadataAttribute\bin\Release\netstandard2.1\MetadataAttribute.deps.json
+R:\Development\NinjaOne\C# Classes\MetadataAttribute\bin\Release\netstandard2.1\MetadataAttribute.dll
+R:\Development\NinjaOne\C# Classes\MetadataAttribute\bin\Release\netstandard2.1\MetadataAttribute.pdb
+R:\Development\NinjaOne\C# Classes\MetadataAttribute\obj\Release\netstandard2.1\MetadataAttribute.GeneratedMSBuildEditorConfig.editorconfig
+R:\Development\NinjaOne\C# Classes\MetadataAttribute\obj\Release\netstandard2.1\MetadataAttribute.AssemblyInfoInputs.cache
+R:\Development\NinjaOne\C# Classes\MetadataAttribute\obj\Release\netstandard2.1\MetadataAttribute.AssemblyInfo.cs
+R:\Development\NinjaOne\C# Classes\MetadataAttribute\obj\Release\netstandard2.1\MetadataAttribute.csproj.CoreCompileInputs.cache
+R:\Development\NinjaOne\C# Classes\MetadataAttribute\obj\Release\netstandard2.1\MetadataAttribute.sourcelink.json
+R:\Development\NinjaOne\C# Classes\MetadataAttribute\obj\Release\netstandard2.1\MetadataAttribute.dll
+R:\Development\NinjaOne\C# Classes\MetadataAttribute\obj\Release\netstandard2.1\MetadataAttribute.pdb
