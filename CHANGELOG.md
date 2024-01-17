@@ -2,6 +2,23 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
+## 2024-01-16 - Version 2.0.0-RC1
+
+* Add new commandlets:
+  * `Get-NinjaOneBackupJobs.ps1`
+  * `Get-NinjaOneDeviceNetworkInterfaces.ps1`
+  * `Get-NinjaOneDocumentTemplates`
+  * `Get-NinjaOneNetworkInterfaces`
+  * `New-NinjaOneDocumentTemplate`
+  * `New-NinjaOneOrganisationDocument`
+  * `Remove-NinjaOneDocumentTemplate`
+  * `Set-NinjaOneDocumentTemplate`
+  * `Set-NinjaOneOrganisationDocuments`
+* Fix token refresh for `authorization_code` flows. Make sure you request the `offline_access` scope.
+* New automated tests
+* New automated documentation building
+* New build system - we now compile to a single PSM1 file and PSD1 file for better handling of our bundled classes.
+
 ## 2023-12-12 - Version 2.0.0-beta8
 
 * Add short aliases to all commandlets.

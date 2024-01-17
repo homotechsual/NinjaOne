@@ -48,7 +48,7 @@ Describe ('{0} - Core Tests' -f $ModuleName) -Tags 'Module' {
     }
 
     It 'Project URI is correct' {
-        $Script:ModuleInformation.ProjectUri | Should -Be 'https://github.com/homotechsual/NinjaOne'
+        $Script:ModuleInformation.ProjectUri | Should -Be 'https://docs.homotechsual.dev/modules/ninjaone'
     }
 
     It 'PowerShell Gallery tags is not empty' {

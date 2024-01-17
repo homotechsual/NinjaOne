@@ -4,22 +4,13 @@
 #>
 [CmdletBinding()]
 Param (
-    [String[]]$TaskNames = ('clean', 'build', 'test', 'updateManifest', 'publish', 'updateHelp', 'generateShortNamesMapping', 'push', 'checkSchema'),
+    [String[]]$TaskNames = ('clean', 'build', 'test', 'updateManifest', 'publish', 'updateHelp', 'generateShortNamesMapping', 'push'),
     [String[]]$Remotes = @('origin', 'homotechsual'),
     [Hashtable]$BuildConfig = (
         Join-Path -Path $PSScriptRoot -ChildPath 'buildConfig.psd1' | Import-PowerShellDataFile -LiteralPath { $_ } -ErrorAction SilentlyContinue
     ),
     [Switch]$ExcludeCustomTasks = $false,
-    [Switch]$Push,
-    [Switch]$UpdateHelp,
-    [System.IO.DirectoryInfo]$DocusaurusPath,
-    [Switch]$ForceUpdateCategoryFiles,
-    [Switch]$CopyModuleFiles,
-    [Switch]$Test,
-    [Switch]$UpdateManifest,
-    [Switch]$PublishModule,
-    [Switch]$Clean,
-    [Switch]$GenerateShortNamesMapping
+    [System.Management.Automation.SemanticVersion]$SemVer
 )
 $Script:ModuleName = 'NinjaOne'
 # Install required modules
@@ -54,90 +45,6 @@ function Push {
         Start-Process -FilePath 'git' -ArgumentList @('push', $Remote) -Wait -NoNewWindow
         Start-Process -FilePath 'git' -ArgumentList @('push', $Remote, '--tags') -Wait -NoNewWindow
     }
-}
-# Task: Check the implemented commandlets against NinjaOne's API specification.
-function CheckSchema {
-    $SchemaURI = 'https://oc.ninjarmm.com/apidocs-beta/NinjaRMM-API-v2.yaml'
-    $Endpoints = [System.Collections.Generic.List[PSObject]]::new()
-    $CoveredEndpoints = [System.Collections.Generic.List[String]]::new()
-    $APIMissingEndpoints = [System.Collections.Generic.List[String]]::new()
-    $ModuleMissingEndpoints = [System.Collections.Generic.List[String]]::new()
-    $ErrorCmdlets = [System.Collections.Generic.List[String]]::new()
-    $SchemaObject = Invoke-WebRequest -Uri $SchemaURI -UseBasicParsing | ConvertFrom-Yaml
-    foreach ($Path in $SchemaObject.paths.GetEnumerator()) {
-        foreach ($Method in $Path.Value.GetEnumerator()) {
-            $Endpoints.Add(
-                @{
-                    Path = $Path.Name
-                    Method = $Method.Name
-                }
-            )
-        }
-    }
-    $CommandletList = GetFunctions -ModuleName $Script:ModuleName
-    foreach ($Commandlet in $CommandletList) {
-        Write-Verbose ('Checking commandlet {0}' -f $Commandlet)
-        $AST = (Get-Content -Path ('function:/{0}' -f $Commandlet) -ErrorAction Ignore).AST
-        $MetadataFinder = [System.Func[System.Management.Automation.Language.Ast, bool]] { $args[0] -is [System.Management.Automation.Language.AttributeAst] -and $args[0].TypeName.Name -eq 'Metadata' -and $args[0].Parent -is [System.Management.Automation.Language.ParamBlockAst] }
-        $MetadataElement = $AST.FindAll($MetadataFinder, $true)
-        # If the commandlet has no Metadata attribute, we're gonna emit a warning and add it to our list of error commandlets.
-        if ($MetadataElement.Count -eq 0) {
-            Write-Warning ('Commandlet {0} has no Metadata attribute.' -f $Commandlet)
-            $ErrorCmdlets.Add($Commandlet)
-            continue
-        }
-        # We only care about the first Metadata attribute. We're gonna throw a warning if there are more than one.
-        if ($MetadataElement.Count -gt 1) {
-            Write-Warning ('Commandlet {0} has more than one Metadata attribute.' -f $Commandlet)
-        }
-        if ($MetadataElement[0].PSObject.Properties.Name -match 'PositionalArguments') {
-            $PositionalArguments = $MetadataElement[0].PositionalArguments
-        } else {
-            $PositionalArguments = @{}
-        }
-        $MetadataHashTable = [Hashtable]@{}
-        if ($PositionalArguments.Count -gt 0 -and ($PositionalArguments.Count % 2 -eq 0)) {
-            for ($i = 0; $i -lt $PositionalArguments.Count; $i += 2) { $MetadataHashTable[$PositionalArguments[$i].Value] = $PositionalArguments[$i + 1].Value }
-        } elseif ($PositionalArguments.Count -eq 1 -and $PositionalArguments[0].Value -ceq 'IGNORE') {
-            Write-Verbose ('Commandlet {0} has been marked as ignored.' -f $Commandlet)
-            continue
-        } else {
-            Write-Warning ('Commandlet {0} has an invalid Metadata attribute.' -f $Commandlet)
-        }
-        foreach ($Metadata in $MetadataHashTable.GetEnumerator()) {
-            $Endpoint = $Endpoints.Where( { $_.Path -eq $Metadata.Key -and $_.Method -eq $Metadata.Value } )
-            if (-not $Endpoint) {
-                $ModuleMissingEndpoints.Add($Metadata.Key)
-                continue
-            }
-            $EndpointIndex = $Endpoints.FindIndex( { $args[0].Path -eq $Metadata.Key -and $args[0].Method -eq $Metadata.Value } )
-            $Endpoints.RemoveAt($EndpointIndex)
-            $CoveredEndpoints.Add($Endpoint.Path)
-        }
-    }
-    foreach ($Endpoint in $Endpoints) {
-        $APIMissingEndpoints.Add($Endpoint.Path)
-    }
-    WriteMessage ('Covered endpoints: {0}' -f $CoveredEndpoints.Count) -Category Information
-    if ($APIMissingEndpoints.Count -gt 0) {
-        Write-Warning ('API Missing endpoints: {0}' -f $APIMissingEndpoints.Count)
-        WriteMessage 'These endpoints are missing from the module source but are preset in the API spec.' -Category Warning
-        $APIMissingEndpoints | ForEach-Object { WriteMessage ('{0}' -f $_) -Category Warning }
-        $ReturnCode += 1
-    }
-    if ($ModuleMissingEndpoints.Count -gt 0) {
-        Write-Warning ('API Missing endpoints: {0}' -f $ModuleMissingEndpoints.Count)
-        WriteMessage 'These endpoints are missing from the API spec but are preset in the module source.' -Category Warning
-        $ModuleMissingEndpoints | ForEach-Object { WriteMessage ('{0}' -f $_) -Category Warning }
-        $ReturnCode += 1
-    }
-    if ($ErrorCmdlets.Count -gt 0) {
-        Write-Warning ('Error commandlets: {0}' -f $ErrorCmdlets.Count)
-        WriteMessage 'These commandlets have no Metadata attribute and will not be checked against the API spec.' -Category Warning
-        $ErrorCmdlets | ForEach-Object { WriteMessage ('{0}' -f $_) -Category Warning }
-        $ReturnCode += 1
-    }
-    exit $ReturnCode
 }
 # Task: (Re)Generate the mapping file for the short names of the commandlets. Stored in the Functionality item of the comment based help. The file will be stored in .\.build\CommandletShortNames.yaml
 ## Requres YAYAML installed.
@@ -317,7 +224,7 @@ This page has been generated from the {0} PowerShell module source. To make chan
 }
 # Task: Build the PowerShell Module
 function Build {
-    Build-Module -Path (Resolve-Path -Path ('{0}\*\build.psd1' -f $PSScriptRoot))
+    Build-Module -Path (Resolve-Path -Path ('{0}\*\build.psd1' -f $PSScriptRoot)) -Semver $SemVer.ToString()
 }
 # Task: Copy PowerShell Module files to output folder for release on PSGallery
 function CopyModuleFiles {
@@ -383,17 +290,20 @@ function Publish {
     param()
     Try {
         # Build a splat containing the required details and make sure to Stop for errors which will trigger the catch
-        $params = @{
-            Path = ("$($PSScriptRoot)\Build\$Script:ModuleName")
+        $PublishParams = @{
+            Path = Join-Path -Path $PSScriptRoot -ChildPath 'output\*\*\*.psd1' | Get-Item | Where-Object { $_.BaseName -eq $_.Directory.Parent.Name } | Select-Object -ExpandProperty Directory
             NuGetApiKey = $ENV:TF_BUILD ? $ENV:PSGalleryAPIKey : (Get-AzKeyVaultSecret -VaultName $ENV:PSGalleryVault -Name $ENV:PSGallerySecret -AsPlainText) # If running in Azure DevOps, use the Environment Variable, otherwise use the Key Vault
             ErrorAction = 'Stop'
-            
         }
-        $ManifestPath = "$($PSScriptRoot)\$Script:ModuleName.psd1"
+        $ManifestPath = Get-ChildItem -Path $PublishParams.Path -Filter '*.psd1'
         $Manifest = Test-ModuleManifest -Path $ManifestPath
-        [System.Version]$Version = $Manifest.Version
-        Publish-Module @params
-        Write-Output -InputObject ("$Script:ModuleName PowerShell Module version $($Version) published to the PowerShell Gallery")
+        if ($Manifest.PrivateData.PSData.Prerelease) {
+            [System.Management.Automation.SemanticVersion]$Version = ('{0}-{1}' -f $Manifest.Version, $Manifest.PrivateData.PSData.Prerelease)
+        } else {
+            [System.Management.Automation.SemanticVersion]$Version = $Manifest.Version
+        }
+        Publish-Module @PublishParams
+        Write-Output -InputObject ("$Script:ModuleName PowerShell Module version $($Version.ToString()) published to the PowerShell Gallery")
     } Catch {
         throw $_
     }
