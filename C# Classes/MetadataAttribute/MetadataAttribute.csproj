@@ -5,4 +5,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <Target Name="Copy DLLs" AfterTargets="Build">
+    <Message Text="Executing Copy DLLs" Importance="High" />
+    <Copy SourceFiles="$(TargetDir)$(ProjectName).dll"
+      DestinationFolder="$(SolutionDir)\..\Source\Binaries" />
+    <Message Text="Finished Copy DLLs" Importance="High" />
+  </Target>
+
 </Project>

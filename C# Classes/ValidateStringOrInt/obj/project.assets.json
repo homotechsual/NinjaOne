@@ -1,0 +1,100 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETStandard,Version=v2.1": {
+      "PowerShellStandard.Library/5.1.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/System.Management.Automation.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Management.Automation.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "PowerShellStandard.Library/5.1.1": {
+      "sha512": "e31xJjG+Kjbv6YF3Yq6D4Dl3or8v7LrNF41k3CXrWozW6hR1zcOe5KYuZJaGSiAgLnwP8wcW+I3+IWEzMPZKXQ==",
+      "type": "package",
+      "path": "powershellstandard.library/5.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net452/System.Management.Automation.dll",
+        "lib/netstandard2.0/System.Management.Automation.dll",
+        "powershellstandard.library.5.1.1.nupkg.sha512",
+        "powershellstandard.library.nuspec"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETStandard,Version=v2.1": [
+      "PowerShellStandard.Library >= 5.1.1"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\MichaelO'Toole\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "R:\\Development\\NinjaOne\\C# Classes\\ValidateStringOrInt\\ValidateStringOrInt.csproj",
+      "projectName": "ValidateStringOrInt",
+      "projectPath": "R:\\Development\\NinjaOne\\C# Classes\\ValidateStringOrInt\\ValidateStringOrInt.csproj",
+      "packagesPath": "C:\\Users\\MichaelO'Toole\\.nuget\\packages\\",
+      "outputPath": "R:\\Development\\NinjaOne\\C# Classes\\ValidateStringOrInt\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\MichaelO'Toole\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "netstandard2.1"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "netstandard2.1": {
+        "targetAlias": "netstandard2.1",
+        "dependencies": {
+          "PowerShellStandard.Library": {
+            "target": "Package",
+            "version": "[5.1.1, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "NETStandard.Library": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

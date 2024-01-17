@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "37OXlF9J+lj3Z7nTM89SBBSNhMerRCcPCATXnbVby0Tchw8qGtFIHVXSr7i4Ch0otbCJL6va6W6f60LGNOcRPg==",
+  "success": true,
+  "projectFilePath": "R:\\Development\\NinjaOne\\C# Classes\\ValidateStringOrInt\\ValidateStringOrInt.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\MichaelO'Toole\\.nuget\\packages\\powershellstandard.library\\5.1.1\\powershellstandard.library.5.1.1.nupkg.sha512"
+  ],
+  "logs": []
+}

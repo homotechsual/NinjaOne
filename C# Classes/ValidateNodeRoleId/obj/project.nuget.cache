@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "SsJunKi8/IxbVB1ZYDXNgmQjoL4o/1X8VZGzGfmFlUYM7V2lIgCQIycvuKC/JOXJWuJI/hp5FAtJhBv7oTcpaA==",
+  "success": true,
+  "projectFilePath": "R:\\Development\\NinjaOne\\C# Classes\\ValidateNodeRoleId\\ValidateNodeRoleId.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\MichaelO'Toole\\.nuget\\packages\\powershellstandard.library\\5.1.1\\powershellstandard.library.5.1.1.nupkg.sha512"
+  ],
+  "logs": []
+}
