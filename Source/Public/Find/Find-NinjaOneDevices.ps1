@@ -43,7 +43,7 @@ function Find-NinjaOneDevices {
     }
     process {
         try {
-            Write-Verbose ('Searching for upto {0} devices matching {1}.') -f $limit, $searchQuery
+            Write-Verbose ('Searching for upto {0} devices matching {1}.' -f $limit, $searchQuery)
             $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
             $Resource = 'v2/devices/search'
             $RequestParams = @{

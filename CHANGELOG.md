@@ -2,6 +2,19 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
+## 2024-02-16 - Version 2.0.0-RC3
+
+* Fix broken ticket commandlet.
+* Remove Client Credentials block on Ticketing GET endpoints (thanks Ninja team and Luke Whitelock!)
+* Fix device search commandlet.
+* Test suite improvements.
+* Fix broken class preventing correct commandlet functionality.
+* Start implementing native secret vault support. Present but not entirely functional
+
+## 2024-01-17 - Version 2.0.0-RC2
+
+* Move classes to C# code and compile to DLLs for better portability and reliability.
+
 ## 2024-01-16 - Version 2.0.0-RC1
 
 * Add new commandlets:

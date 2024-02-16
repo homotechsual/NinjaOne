@@ -36,10 +36,6 @@ function Get-NinjaOneTicketForms {
         [Int]$ticketFormId
     )
     begin {
-        if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
-            throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
-            exit 1
-        }
         $CommandName = $MyInvocation.InvocationName
         $Parameters = (Get-Command -Name $CommandName).Parameters
         $QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters

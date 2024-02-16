@@ -5,6 +5,8 @@ function ConvertTo-UnixEpoch {
     .DESCRIPTION
         Takes a PowerShell DateTime object and returns a Unix Epoch timestamp representing the same date/time.
     .OUTPUTS
+        [System.Int]
+
         The Unix Epoch timestamp.
     #>
     [CmdletBinding()]

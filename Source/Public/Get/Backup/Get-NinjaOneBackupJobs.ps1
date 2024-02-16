@@ -11,6 +11,58 @@ function Get-NinjaOneBackupJobs {
             PS> Get-NinjaOneBackupJobs
 
             Gets all backup jobs.
+        .EXAMPLE
+            PS> Get-NinjaOneBackupJobs -status 'RUNNING'
+
+            Gets all backup jobs with a status of 'RUNNING'.
+        .EXAMPLE
+            PS> Get-NinjaOneBackupJobs -status 'RUNNING', 'COMPLETED'
+
+            Gets all backup jobs with a status of 'RUNNING' or 'COMPLETED'.
+        .EXAMPLE
+            PS> Get-NinjaOneBackupJobs -statusFilter 'status = RUNNING'
+
+            Gets all backup jobs with a status of 'RUNNING'.
+        .EXAMPLE
+            PS> Get-NinjaOneBackupJobs -statusFilter 'status in (RUNNING, COMPLETED)'
+
+            Gets all backup jobs with a status of 'RUNNING' or 'COMPLETED'.
+        .EXAMPLE
+            PS> Get-NinjaOneBackupJobs -planType 'IMAGE'
+
+            Gets all backup jobs with a plan type of 'IMAGE'.
+        .EXAMPLE
+            PS> Get-NinjaOneBackupJobs -planType 'IMAGE', 'FILE_FOLDER'
+
+            Gets all backup jobs with a plan type of 'IMAGE' or 'FILE_FOLDER'.
+        .EXAMPLE
+            PS> Get-NinjaOneBackupJobs -planTypeFilter 'planType = IMAGE'
+
+            Gets all backup jobs with a plan type of 'IMAGE'.
+        .EXAMPLE
+            PS> Get-NinjaOneBackupJobs -planTypeFilter 'planType in (IMAGE, FILE_FOLDER)'
+
+            Gets all backup jobs with a plan type of 'IMAGE' or 'FILE_FOLDER'.
+        .EXAMPLE
+            PS> Get-NinjaOneBackupJobs -startTimeBetween (Get-Date).AddDays(-1), (Get-Date)
+
+            Gets all backup jobs with a start time between 24 hours ago and now.
+        .EXAMPLE
+            PS> Get-NinjaOneBackupJobs -startTimeAfter (Get-Date).AddDays(-1)
+
+            Gets all backup jobs with a start time after 24 hours ago.
+        .EXAMPLE
+            PS> Get-NinjaOneBackupJobs -startTimeFilter 'startTime between(2024-01-01T00:00:00.000Z,2024-01-02T00:00:00.000Z)'
+
+            Gets all backup jobs with a start time between 2024-01-01T00:00:00.000Z and 2024-01-02T00:00:00.000Z.
+        .EXAMPLE
+            PS> Get-NinjaOneBackupJobs -startTimeFilter 'startTime after 2024-01-01T00:00:00.000Z'
+
+            Gets all backup jobs with a start time after 2024-01-01T00:00:00.000Z.
+        .EXAMPLE
+            PS> Get-NinjaOneBackupJobs -deviceFilter all
+
+            Gets all backup jobs for the all devices. Includes active and deleted devices.
         .OUTPUTS
             A powershell object containing the response.
         .LINK
@@ -102,30 +154,7 @@ function Get-NinjaOneBackupJobs {
     }
     process {
         try {
-            Write-Verbose 'Getting organisation from NinjaOne API.'
-            $Organisation = Get-NinjaOneOrganisations -organisationId $organisationId
-            if ($Organisation) {
-                Write-Verbose 'Getting location from NinjaOne API.'
-                if ($locationId) {
-                    $Location = Get-NinjaOneLocations -organisationId $organisationId | Where-Object -Property id -EQ -Value $locationId
-                    if ($Location) {
-                        Write-Verbose ('Getting backup usage for location {0} in organisation {1}.' -f $location.name, $organisation.name)
-                        $Resource = ('v2/organization/{0}/locations/{1}/backup/usage' -f $organisationId, $locationId)
-                    } else {
-                        throw ('Location with id {0} not found in organisation {1}' -f $locationId, $Organisation.Name)
-                    }
-                } else {
-                    $Locations = Get-NinjaOneLocations -organisationId $organisationId
-                    if ($Organisation -and $Locations) {
-                        Write-Verbose ('Getting backup usage for all locations in organisation {0}.' -f $organisation.name)
-                        $Resource = ('v2/organization/{0}/locations/backup/usage' -f $organisationId)
-                    } else {
-                        throw ('Organisation {0} does not have any locations.' -f $Organisation.Name)
-                    }
-                }
-            } else {
-                throw ('Organisation with id {0} not found.' -f $organisationId)
-            }
+            $Resource = '/v2/backup/jobs'
             $RequestParams = @{
                 Resource = $Resource
                 QSCollection = $QSCollection

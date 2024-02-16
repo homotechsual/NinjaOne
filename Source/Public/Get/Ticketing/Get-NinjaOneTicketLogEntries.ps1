@@ -37,10 +37,6 @@ function Get-NinjaOneTicketLogEntries {
         [String]$type
     )
     begin {
-        if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
-            throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
-            exit 1
-        }
         $CommandName = $MyInvocation.InvocationName
         $Parameters = (Get-Command -Name $CommandName).Parameters
         # Workaround to prevent the query string processor from adding an 'ticketid=' parameter by removing it from the set parameters.

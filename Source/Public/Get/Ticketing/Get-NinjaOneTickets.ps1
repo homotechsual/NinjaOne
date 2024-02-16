@@ -55,13 +55,12 @@ function Get-NinjaOneTickets {
         [Int]$pageSize,
         # The search criteria to apply to the request.
         [Parameter(ParameterSetName = 'Board', Position = 5)]
-        [String]$searchCriteria
+        [String]$searchCriteria,
+        # Include the metadata in the response.
+        [Parameter(ParameterSetName = 'Board', Position = 6)]
+        [Switch]$includeMetadata
     )
     begin {
-        if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
-            throw ('This function is not available when using client_credentials authentication. If this is unexpected please report this to api@ninjarmm.com.')
-            exit 1
-        }
     }
     process {
         try {
@@ -70,7 +69,7 @@ function Get-NinjaOneTickets {
                 $Resource = ('v2/ticketing/ticket/{0}' -f $ticketId)
                 $Method = 'GET'
             } else {
-                Write-Verbouse ('Getting tickets for board with id {0}.' -f $boardId)
+                Write-Verbose ('Getting tickets for board with id {0}.' -f $boardId)
                 $Resource = ('v2/ticketing/trigger/board/{0}/run' -f $boardId)
                 $Method = 'POST'
             }
@@ -80,7 +79,7 @@ function Get-NinjaOneTickets {
             if ($QSCollection) {
                 $RequestParams.QSCollection = $QSCollection
             }
-            if ($sort -or $filters -or $lastCursorId -or $searchCriteria) {
+            if ($PSCmdlet.ParameterSetName -eq 'Board') {
                 $RequestParams.Body = [hashtable]@{}
             }
             if ($sort) {
@@ -101,10 +100,12 @@ function Get-NinjaOneTickets {
                 $Tickets = New-NinjaOnePOSTRequest @RequestParams
             }
             if ($Tickets) {
-                if ($includeMetadata) {
+                if ($includeMetadata -or $PSCmdlet.ParameterSetName -ne 'Board') {
+                    Write-Verbose 'Returning full response.'
                     return $Tickets
                 } else {
                     # Return just the `data` property which lists the tickets.
+                    Write-Verbose 'Returning just the ticket data.'
                     return $Tickets.data
                 }
             } else {

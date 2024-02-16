@@ -8,7 +8,7 @@
   <Target Name="Copy DLLs" AfterTargets="Build">
     <Message Text="Executing Copy DLLs" Importance="High" />
     <Copy SourceFiles="$(TargetDir)$(ProjectName).dll"
-      DestinationFolder="$(SolutionDir)\..\Source\Binaries" />
+      DestinationFolder="..\..\Source\Binaries" />
     <Message Text="Finished Copy DLLs" Importance="High" />
   </Target>
 

@@ -26,33 +26,40 @@ function Connect-NinjaOne {
     Param (
         # Use the "Authorisation Code" flow with your web browser.
         [Parameter( Mandatory, ParameterSetName = 'Authorisation Code')]
+        [Parameter( ParameterSetName = 'Key Vault Write' )]
         [Switch]$UseWebAuth,
         # Use the "Token Authentication" flow - useful if you already have a refresh token.
         [Parameter( Mandatory, ParameterSetName = 'Token Authentication' )]
+        [Parameter( ParameterSetName = 'Key Vault Write' )]
         [switch]$UseTokenAuth,
         # Use the "Client Credentials" flow - useful if you already have a client ID and secret.
         [Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
+        [Parameter( ParameterSetName = 'Key Vault Write' )]
         [switch]$UseClientAuth,
         # The NinjaOne instance to connect to. Choose from 'eu', 'oc' or 'us'.
         [Parameter( Mandatory, ParameterSetName = 'Authorisation Code' )]
         [Parameter( Mandatory, ParameterSetName = 'Token Authentication' )]
         [Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
+        [Parameter( Mandatory, ParameterSetName = 'Key Vault Write' )]
         [ValidateSet('eu', 'oc', 'us', 'ca', 'us2')]
         [string]$Instance,
         # The Client Id for the application configured in NinjaOne.
         [Parameter( Mandatory, ParameterSetName = 'Authorisation Code' )]
         [Parameter( Mandatory, ParameterSetName = 'Token Authentication' )]
         [Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
+        [Parameter( Mandatory, ParameterSetName = 'Key Vault Write' )]
         [String]$ClientId,
         # The Client Secret for the application configured in NinjaOne.
         [Parameter( Mandatory, ParameterSetName = 'Authorisation Code' )]
         [Parameter( Mandatory, ParameterSetName = 'Token Authentication' )]
         [Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
+        [Parameter( Mandatory, ParameterSetName = 'Key Vault Write' )]
         [String]$ClientSecret,
         # The API scopes to request, if this isn't passed the scope is assumed to be "all". Pass a string or array of strings. Limited by the scopes granted to the application in NinjaOne.
         [Parameter( ParameterSetName = 'Authorisation Code' )]
         [Parameter( ParameterSetName = 'Token Authentication' )]
         [Parameter( ParameterSetName = 'Client Credentials' )]
+        [Parameter( ParameterSetName = 'Key Vault Write' )]
         [ValidateSet('monitoring', 'management', 'control', 'offline_access')]
         [String[]]$Scopes,
         # The redirect URI to use. If not set defaults to 'http://localhost'. Should be a full URI e.g. https://redirect.example.uk:9090/auth
@@ -63,26 +70,74 @@ function Connect-NinjaOne {
         [Int]$Port = 9090,
         # The refresh token to use for "Token Authentication" flow.
         [Parameter( ParameterSetName = 'Token Authentication' )]
+        [Parameter( ParameterSetName = 'Key Vault Write' )]
         [String]$RefreshToken,
         # Output the tokens - useful when using "Authorisation Code" flow - to use with "Token Authentication" flow.
         [Parameter( ParameterSetName = 'Authorisation Code' )]
         [Parameter( ParameterSetName = 'Token Authentication' )]
         [Parameter( ParameterSetName = 'Client Credentials' )]
-        [Switch]$ShowTokens
+        [Switch]$ShowTokens,
+        # Use Azure Key Vault to retrieve credentials and store tokens.
+        [Parameter( ParameterSetName = 'Authorisation Code' )]
+        [Parameter( ParameterSetName = 'Token Authentication' )]
+        [Parameter( ParameterSetName = 'Client Credentials' )]
+        [Parameter( Mandatory, ParameterSetName = 'Key Vault Write' )]
+        [Parameter( Mandatory, ParameterSetName = 'Key Vault Read' )]
+        [Switch]$UseKeyVault,
+        # The name of the Azure Key Vault to use.
+        [Parameter( ParameterSetName = 'Authorisation Code' )]
+        [Parameter( ParameterSetName = 'Token Authentication' )]
+        [Parameter( ParameterSetName = 'Client Credentials' )]
+        [Parameter( Mandatory, ParameterSetName = 'Key Vault Write' )]
+        [Parameter( Mandatory, ParameterSetName = 'Key Vault Read' )]
+        [String]$VaultName,
+        # Write updated credentials to Azure Key Vault.
+        [Parameter( ParameterSetName = 'Authorisation Code' )]
+        [Parameter( ParameterSetName = 'Token Authentication' )]
+        [Parameter( ParameterSetName = 'Client Credentials' )]
+        [Parameter( Mandatory, ParameterSetName = 'Key Vault Write' )]
+        [Parameter( ParameterSetName = 'Key Vault Read')]
+        [Switch]$WriteToKeyVault,
+        # Read the authentication information from Azure Key Vault.
+        [Parameter( ParameterSetName = 'Key Vault Read' )]
+        [Switch]$ReadFromKeyVault
     )
     process {
         # Run the pre-flight check.
         Invoke-NinjaOnePreFlightCheck -SkipConnectionChecks
+        # Test for Azure Key Vault module.
+        if ($UseKeyVault) {
+            if (-not (Get-Module -Name 'Az.KeyVault' -ListAvailable)) {
+                Write-Error 'Azure Key Vault module not installed, please install the module and try again.'
+                exit 1
+            }
+            # Test that we have an Azure context.
+            if (-not (Get-AzContext -Verbose:$false -Debug:$false)) {
+                Write-Error 'No Azure context found, please run Connect-AzAccount and try again.'
+                exit 1
+            } else {
+                if ((Get-AzContext -Verbose:$false -Debug:$false).Account.Type -eq 'User') {
+                    Write-Information 'Connected to Azure as a user, using Azure Key Vault to store credentials.'
+                } elseif ((Get-AzContext -Verbose:$false -Debug:$false).Account.Type -eq 'ManagedService') {
+                    Write-Information 'Connected to Azure as a managed service, using Azure Key Vault to store credentials.'
+                }
+            }
+            if ($ReadFromKeyVault) {
+                Get-NinjaOneKeyVaultInformation -VaultName $VaultName
+            }
+        }
         # Set the default scopes if they're not passed.
-        if ($PSCmdlet.ParameterSetName -eq 'Client Credentials' -and $null -eq $Scopes) {
+        if ($UseClientAuth -and $null -eq $Scopes) {
             $Scopes = @('monitoring', 'management', 'control')
-        } elseif (($PSCmdlet.ParameterSetName -eq 'Authorisation Code' -or $PSCmdlet.ParameterSetName -eq 'Token Authentication') -and $null -eq $Scopes) {
+        } elseif (($UseWebAuth -or $UseTokenAuth) -and $null -eq $Scopes) {
             $Scopes = @('monitoring', 'management', 'control', 'offline_access')
         }
         # Convert scopes to space separated string if it's an array.
         if ($Scopes -is [System.Array]) {
+            Write-Verbose ('Scopes are an array, converting to space separated string.')
             $AuthScopes = $Scopes -Join ' '
         } else {
+            Write-Verbose ('Scopes are a string, using as is.')
             $AuthScopes = $Scopes
         }
         # Get the NinjaOne instance URL.
@@ -98,22 +153,46 @@ function Connect-NinjaOne {
         } else {
             $RedirectURI = New-Object System.UriBuilder -ArgumentList 'http', 'localhost', $Port
         }
-        # Build a script-scoped variable to hold the connection information.
-        $ConnectionInformation = @{
-            AuthMode = $PSCmdlet.ParameterSetName
-            URL = $URL
-            Instance = $Instance
-            ClientId = $ClientId
-            ClientSecret = $ClientSecret
-            AuthListenerPort = $Port
-            AuthScopes = $AuthScopes
-            RedirectURI = $RedirectURI
+        # Determine the authentication mode.
+        if ($UseWebAuth -and $Scopes -notcontains 'offline_access') {
+            $AuthMode = 'Authorisation Code'
+        } elseif ($UseTokenAuth -or ($UseWebAuth -and $Scopes -contains 'offline_access')) {
+            $AuthMode = 'Token Authentication'
+        } elseif ($UseClientAuth) {
+            $AuthMode = 'Client Credentials'
         }
-        Set-Variable -Name 'NRAPIConnectionInformation' -Value $ConnectionInformation -Visibility Private -Scope Script -Force
+        # Build a script-scoped variable to hold the connection information.
+        if ($null -eq $Script:NRAPIConnectionInformation) {  
+            $ConnectionInformation = @{
+                AuthMode = $AuthMode
+                URL = $URL
+                Instance = $Instance
+                ClientId = $ClientId
+                ClientSecret = $ClientSecret
+                AuthListenerPort = $Port
+                AuthScopes = $AuthScopes
+                RedirectURI = $RedirectURI
+                UseKeyVault = $UseKeyVault
+                VaultName = $VaultName
+                WriteToKeyVault = $WriteToKeyVault
+            }
+            Set-Variable -Name 'NRAPIConnectionInformation' -Value $ConnectionInformation -Visibility Private -Scope Script -Force
+        }
         Write-Verbose "Connection information set to: $($Script:NRAPIConnectionInformation | Format-List | Out-String)"
-        $AuthenticationInformation = [HashTable]@{}
-        # Set a script-scoped variable to hold authentication information.
-        Set-Variable -Name 'NRAPIAuthenticationInformation' -Value $AuthenticationInformation -Visibility Private -Scope Script -Force
+        if ($null -eq $Script:NRAPIAuthenticationInformation) {
+            $AuthenticationInformation = [HashTable]@{}
+            # Set a script-scoped variable to hold authentication information.
+            Set-Variable -Name 'NRAPIAuthenticationInformation' -Value $AuthenticationInformation -Visibility Private -Scope Script -Force
+        }
+        if ($Script.NRAPIConnectionInformation.AuthMode -eq 'Token Authentication' -and $null -eq $UseTokenAuth) {
+            $UseTokenAuth = $true
+        }
+        if ($Script.NRAPIConnectionInformation.AuthMode -eq 'Client Credentials' -and $null -eq $UseClientAuth) {
+            $UseClientAuth = $true
+        }
+        if ($Script.NRAPIConnectionInformation.AuthMode -eq 'Authorisation Code' -and $null -eq $UseWebAuth) {
+            $UseWebAuth = $true
+        }
         if ($UseWebAuth) {
             # NinjaOne authorisation request query params.
             $AuthRequestParams = @{
@@ -121,7 +200,7 @@ function Connect-NinjaOne {
                 client_id = $Script:NRAPIConnectionInformation.ClientId
                 client_secret = $Script:NRAPIConnectionInformation.ClientSecret
                 redirect_uri = $Script:NRAPIConnectionInformation.RedirectURI.ToString()
-                state = $GUId
+                state = $GUID
             }
             if ($Script:NRAPIConnectionInformation.AuthScopes) {
                 $AuthRequestParams.scope = $Script:NRAPIConnectionInformation.AuthScopes
@@ -210,6 +289,28 @@ function Connect-NinjaOne {
                     Write-Output '================ Auth Tokens ================'
                     Write-Output $($Script:NRAPIAuthenticationInformation | Format-Table -AutoSize)
                     Write-Output '       SAVE THESE IN A SECURE LOCATION       '
+                }
+                # If we're using Azure Key Vault, store the authentication information we need.
+                if ($Script:NRAPIConnectionInformation.UseKeyVault -and $Script:NRAPIConnectionInformation.WriteToKeyVault) {
+                    $KeyVaultParams = @{
+                        AuthMode = $Script:NRAPIConnectionInformation.AuthMode
+                        URL = $Script:NRAPIConnectionInformation.URL
+                        Instance = $Script:NRAPIConnectionInformation.Instance
+                        ClientId = $Script:NRAPIConnectionInformation.ClientId
+                        ClientSecret = $Script:NRAPIConnectionInformation.ClientSecret
+                        AuthListenerPort = $Script:NRAPIConnectionInformation.AuthListenerPort
+                        AuthScopes = $Script:NRAPIConnectionInformation.AuthScopes
+                        RedirectURI = $Script:NRAPIConnectionInformation.RedirectURI.ToString()
+                        UseKeyVault = $Script:NRAPIConnectionInformation.UseKeyVault
+                        VaultName = $Script:NRAPIConnectionInformation.VaultName
+                        WriteToKeyVault = $Script:NRAPIConnectionInformation.WriteToKeyVault
+                        Type = $Script:NRAPIAuthenticationInformation.Type
+                        Access = $Script:NRAPIAuthenticationInformation.Access
+                        Expires = $Script:NRAPIAuthenticationInformation.Expires
+                        Refresh = $Script:NRAPIAuthenticationInformation.Refresh
+                    }
+                    Write-Verbose 'Using Azure Key Vault to store credentials.'
+                    $ConnectionInformation = Set-NinjaOneKeyVaultInformation @KeyVaultParams
                 }
             } catch {
                 throw

@@ -5,6 +5,8 @@ function Get-TokenExpiry {
     .DESCRIPTION
         Takes the expires in time for an auth token and returns a PowerShell date/time object containing the expiry date/time of the token.
     .OUTPUTS
+        [System.DateTime]
+
         A powershell date/time object representing the token expiry.
     #>
     [CmdletBinding()]

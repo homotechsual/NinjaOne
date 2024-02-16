@@ -224,7 +224,7 @@ This page has been generated from the {0} PowerShell module source. To make chan
 }
 # Task: Build the PowerShell Module
 function Build {
-    Build-Module -Path (Resolve-Path -Path ('{0}\*\build.psd1' -f $PSScriptRoot)) -Semver $SemVer.ToString()
+    Build-Module -Path '.\Source' -SemVer $SemVer.ToString()
 }
 # Task: Copy PowerShell Module files to output folder for release on PSGallery
 function CopyModuleFiles {

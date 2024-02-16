@@ -6,7 +6,7 @@ param(
     [switch]$IncludeVSCodeMarker
 )
 Push-Location $PSScriptRoot
-$ModuleName = Get-ChildItem -Path '.\Source' -Filter '*.psd1' | Select-Object -ExpandProperty BaseName
+$ModuleName = Get-ChildItem -Path '.\Source\*' -Filter '*.psd1' -Exclude 'build.psd1' | Select-Object -ExpandProperty BaseName
 # Disable default parameters during testing, just in case
 $PSDefaultParameterValues += @{}
 $PSDefaultParameterValues['Disabled'] = $true

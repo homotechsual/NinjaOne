@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ValidateNodeRoleId")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+95ffe00f92432edd5afa99b995d6e9e3e2a3a7de")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b879e06dbf11105d702faf1fe4830bc3d96e2920")]
 [assembly: System.Reflection.AssemblyProductAttribute("ValidateNodeRoleId")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ValidateNodeRoleId")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

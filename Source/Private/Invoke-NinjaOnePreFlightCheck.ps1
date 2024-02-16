@@ -1,5 +1,23 @@
 using namespace System.Management.Automation
 function Invoke-NinjaOnePreFlightCheck {
+    <#
+        .SYNOPSIS
+            Conducts pre-flight checks for the NinjaOne API.
+        .DESCRIPTION
+            Conducts pre-flight checks ensuring that the NinjaOne API connection information is present and that the user is authenticated.
+        .EXAMPLE
+            PS> Invoke-NinjaOnePreFlightCheck
+
+            Conducts pre-flight checks for the NinjaOne API.
+        .EXAMPLE
+            PS> Invoke-NinjaOnePreFlightCheck -SkipConnectionChecks
+
+            Conducts pre-flight checks for the NinjaOne API, skipping the connection checks.
+        .OUTPUTS
+            [System.Void]
+
+            Returns nothing if the checks pass. Otherwise, throws an error.
+    #>
     [CmdletBinding()]
     param(
         # Skip the connection checks.
@@ -21,9 +39,5 @@ function Invoke-NinjaOnePreFlightCheck {
         }
     } else {
         Write-Verbose 'Skipping connection checks.'
-    }
-    if ($PSEdition -eq 'Desktop') {
-        
-        
     }
 }
