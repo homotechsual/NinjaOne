@@ -2,6 +2,10 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
+## 2024-02-18 - Version 2.0.0-RC4
+
+* Change secret vault to use the SecretManagement module.
+
 ## 2024-02-16 - Version 2.0.0-RC3
 
 * Fix broken ticket commandlet.

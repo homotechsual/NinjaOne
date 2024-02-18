@@ -4,10 +4,12 @@
 #>
 [CmdletBinding()]
 Param (
-    [String[]]$TaskNames = ('clean', 'build', 'test', 'updateManifest', 'publish', 'updateHelp', 'generateShortNamesMapping', 'push'),
+    [ValidateSet('clean', 'build', 'updateManifest', 'publish', 'updateHelp', 'generateShortNamesMapping', 'push')]
+    [String[]]$TaskNames = ('clean', 'build', 'updateManifest', 'publish', 'updateHelp', 'generateShortNamesMapping', 'push'),
+    [ValidateSet('origin', 'homotechsual')]
     [String[]]$Remotes = @('origin', 'homotechsual'),
     [Hashtable]$BuildConfig = (
-        Join-Path -Path $PSScriptRoot -ChildPath 'buildConfig.psd1' | Import-PowerShellDataFile -LiteralPath { $_ } -ErrorAction SilentlyContinue
+        Join-Path -Path $PSScriptRoot -ChildPath 'Source' | Join-Path -ChildPath 'build.psd1' | Import-PowerShellDataFile -LiteralPath { $_ } -ErrorAction SilentlyContinue
     ),
     [Switch]$ExcludeCustomTasks = $false,
     [System.Management.Automation.SemanticVersion]$SemVer
@@ -20,6 +22,19 @@ if (-Not(Get-Module -Name 'Install-RequiredModule')) {
 Install-RequiredModule -RequiredModulesFile ('{0}\RequiredModules.psd1' -f $PSScriptRoot) -Scope CurrentUser -TrustRegisteredRepositories -Import -Quiet
 # Use strict mode when building.
 Set-StrictMode -Version Latest
+# Helper: Get the module PSD1 file path.
+function GetModulePath {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [String]$ModuleName
+    )
+    $ModulePath = (Get-ChildItem -Path ('{0}\Output\*\*\{1}.psd1' -f $PSScriptRoot, $ModuleName)).FullName
+    if (!(Test-Path -Path $ModulePath)) {
+        throw ('Module {0} not found at "{1}".' -f $ModuleName, $ModulePath)
+    }
+    return $ModulePath
+}
 # Helper: Get functions from the module.
 function GetFunctions {
     [CmdletBinding()]
@@ -27,7 +42,8 @@ function GetFunctions {
         [Parameter(Mandatory)]
         [String]$ModuleName
     )
-    Import-Module ('.\Source\{0}.psd1' -f $Script:ModuleName) -Force
+    $ModulePath = GetModulePath -ModuleName $ModuleName
+    Import-Module $ModulePath -Force
     $Module = Get-Module -Name $Script:ModuleName
     $CommandletList = [System.Collections.Generic.List[String]]::new()
     $CommandletList.AddRange($Module.ExportedFunctions.Keys)
@@ -90,7 +106,7 @@ This page has been generated from the {0} PowerShell module source. To make chan
 '@ -f $Script:ModuleName
     $ExcludeFiles = Get-ChildItem -Path "$($PSScriptRoot)\Private" -Filter '*.ps1' -Recurse | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_.FullName) }
     $NewDocusaurusHelpParams = @{
-        Module = ('.\Source\{0}.psd1' -f $Script:ModuleName)
+        Module = (GetModulePath -ModuleName $Script:ModuleName)
         DocsFolder = $DocsFolderPath
         Exclude = $ExcludeFiles
         Sidebar = 'commandlets'
@@ -225,37 +241,6 @@ This page has been generated from the {0} PowerShell module source. To make chan
 # Task: Build the PowerShell Module
 function Build {
     Build-Module -Path '.\Source' -SemVer $SemVer.ToString()
-}
-# Task: Copy PowerShell Module files to output folder for release on PSGallery
-function CopyModuleFiles {
-    # Copy Module Files to Output Folder
-    if (-not (Test-Path "$($PSScriptRoot)\Output\$Script:ModuleName")) {
-        New-Item -Path "$($PSScriptRoot)\Output\$Script:ModuleName" -ItemType Directory | Out-Null
-    }
-    if (Test-Path -Path "$($PSScriptRoot)\Classes\") {
-        Copy-Item -Path "$($PSScriptRoot)\Classes\" -Filter *.* -Recurse -Destination "$($PSScriptRoot)\Output\$Script:ModuleName" -Force
-    }
-    if (Test-Path -Path "$($PSScriptRoot)\Data\") {
-        Copy-Item -Path "$($PSScriptRoot)\Data\" -Filter *.* -Recurse -Destination "$($PSScriptRoot)\Output\$Script:ModuleName" -Force
-    }
-    Copy-Item -Path "$($PSScriptRoot)\Private\" -Filter *.* -Recurse -Destination "$($PSScriptRoot)\Output\$Script:ModuleName" -Force
-    Copy-Item -Path "$($PSScriptRoot)\Public\" -Filter *.* -Recurse -Destination "$($PSScriptRoot)\Output\$Script:ModuleName" -Force
-
-    # Copy module, manifest and scaffold files
-    Copy-Item -Path @(
-        "$($PSScriptRoot)\LICENSE.md"
-        "$($PSScriptRoot)\CHANGELOG.md"
-        "$($PSScriptRoot)\README.md"
-        "$($PSScriptRoot)\$Script:ModuleName.psd1"
-        "$($PSScriptRoot)\$Script:ModuleName.psm1"
-    ) -Destination "$($PSScriptRoot)\Output\$Script:ModuleName" -Force
-}
-# Task: Run all Pester tests in folder .\Tests
-function Test {
-    $Result = Invoke-Pester "$($PSScriptRoot)\Tests" -PassThru
-    if ($Result.FailedCount -gt 0) {
-        throw 'Pester tests failed'
-    }
 }
 # Task: Update the Module Manifest file with info from the Changelog.
 function UpdateManifest {

@@ -19,7 +19,13 @@ function Connect-NinjaOne {
 
             This logs into NinjaOne using the refresh token flow.
         .EXAMPLE
-            PS> Connect-NinjaOne -UseSecretManagement -VaultName 'NinjaOneVault' -WriteToSecretVault
+            PS> Connect-NinjaOne -UseSecretManagement -VaultName 'NinjaOneVault' -WriteToSecretVault -Instance 'eu' -ClientId 'AAaaA1aaAaAA-aaAaaA11a1A-aA' -ClientSecret '00Z00zzZzzzZzZzZzZzZZZ0zZ0zzZ_0zzz0zZZzzZz0Z0ZZZzz0z0Z' -UseClientAuth
+
+            This logs into NinjaOne using the client credentials flow and writes the connection information to the secret vault.
+        .EXAMPLE
+            PS> Connect-NinjaOne -UseSecretManagement -VaultName 'NinjaOneVault' -ReadFromSecretVault
+
+            This reads the connection information from the secret vault.
         .OUTPUTS
             Sets two script-scoped variables to hold connection and authentication information.
         .LINK
@@ -85,7 +91,7 @@ function Connect-NinjaOne {
         [Parameter( ParameterSetName = 'Token Authentication' )]
         [Parameter( ParameterSetName = 'Client Credentials' )]
         [Switch]$ShowTokens,
-        # Use the secret management module to retrieve credentials and store tokens.
+        # Use the secret management module to retrieve credentials and store tokens. Check the docs on setting up the secret management module at https://docs.homotechsual.dev/common/secretmanagement.
         [Parameter( ParameterSetName = 'Authorisation Code' )]
         [Parameter( ParameterSetName = 'Token Authentication' )]
         [Parameter( ParameterSetName = 'Client Credentials' )]
