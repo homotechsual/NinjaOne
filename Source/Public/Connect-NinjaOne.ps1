@@ -14,6 +14,12 @@ function Connect-NinjaOne {
             PS> Connect-NinjaOne -Instance 'eu' -ClientId 'AAaaA1aaAaAA-aaAaaA11a1A-aA' -ClientSecret '00Z00zzZzzzZzZzZzZzZZZ0zZ0zzZ_0zzz0zZZzzZz0Z0ZZZzz0z0Z' -Port 9090 -UseWebAuth
 
             This logs into NinjaOne using the authorization code flow.
+        .EXAMPLE
+            PS> Connect-NinjaOne -Instance 'eu' -ClientId 'AAaaA1aaAaAA-aaAaaA11a1A-aA' -ClientSecret '00Z00zzZzzzZzZzZzZzZZZ0zZ0zzZ_0zzz0zZZzzZz0Z0ZZZzz0z0Z' -RefreshToken 'a1a11a11-aa11-11a1-a111-a1a111aaa111.11AaaAaaa11aA-AA1aaaAAA111aAaaaaA1AAAA1_AAa' -UseTokenAuth
+
+            This logs into NinjaOne using the refresh token flow.
+        .EXAMPLE
+            PS> Connect-NinjaOne -UseSecretManagement -VaultName 'NinjaOneVault' -WriteToSecretVault
         .OUTPUTS
             Sets two script-scoped variables to hold connection and authentication information.
         .LINK
@@ -26,104 +32,100 @@ function Connect-NinjaOne {
     Param (
         # Use the "Authorisation Code" flow with your web browser.
         [Parameter( Mandatory, ParameterSetName = 'Authorisation Code')]
-        [Parameter( ParameterSetName = 'Key Vault Write' )]
+        [Parameter( ParameterSetName = 'Secret Vault Write' )]
         [Switch]$UseWebAuth,
         # Use the "Token Authentication" flow - useful if you already have a refresh token.
         [Parameter( Mandatory, ParameterSetName = 'Token Authentication' )]
-        [Parameter( ParameterSetName = 'Key Vault Write' )]
+        [Parameter( ParameterSetName = 'Secret Vault Write' )]
         [switch]$UseTokenAuth,
         # Use the "Client Credentials" flow - useful if you already have a client ID and secret.
         [Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
-        [Parameter( ParameterSetName = 'Key Vault Write' )]
+        [Parameter( ParameterSetName = 'Secret Vault Write' )]
         [switch]$UseClientAuth,
         # The NinjaOne instance to connect to. Choose from 'eu', 'oc' or 'us'.
         [Parameter( Mandatory, ParameterSetName = 'Authorisation Code' )]
         [Parameter( Mandatory, ParameterSetName = 'Token Authentication' )]
         [Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
-        [Parameter( Mandatory, ParameterSetName = 'Key Vault Write' )]
+        [Parameter( Mandatory, ParameterSetName = 'Secret Vault Write' )]
         [ValidateSet('eu', 'oc', 'us', 'ca', 'us2')]
         [string]$Instance,
         # The Client Id for the application configured in NinjaOne.
         [Parameter( Mandatory, ParameterSetName = 'Authorisation Code' )]
         [Parameter( Mandatory, ParameterSetName = 'Token Authentication' )]
         [Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
-        [Parameter( Mandatory, ParameterSetName = 'Key Vault Write' )]
+        [Parameter( Mandatory, ParameterSetName = 'Secret Vault Write' )]
         [String]$ClientId,
         # The Client Secret for the application configured in NinjaOne.
         [Parameter( Mandatory, ParameterSetName = 'Authorisation Code' )]
         [Parameter( Mandatory, ParameterSetName = 'Token Authentication' )]
         [Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
-        [Parameter( Mandatory, ParameterSetName = 'Key Vault Write' )]
+        [Parameter( Mandatory, ParameterSetName = 'Secret Vault Write' )]
         [String]$ClientSecret,
         # The API scopes to request, if this isn't passed the scope is assumed to be "all". Pass a string or array of strings. Limited by the scopes granted to the application in NinjaOne.
         [Parameter( ParameterSetName = 'Authorisation Code' )]
         [Parameter( ParameterSetName = 'Token Authentication' )]
         [Parameter( ParameterSetName = 'Client Credentials' )]
-        [Parameter( ParameterSetName = 'Key Vault Write' )]
+        [Parameter( ParameterSetName = 'Secret Vault Write' )]
         [ValidateSet('monitoring', 'management', 'control', 'offline_access')]
         [String[]]$Scopes,
         # The redirect URI to use. If not set defaults to 'http://localhost'. Should be a full URI e.g. https://redirect.example.uk:9090/auth
         [Parameter( ParameterSetName = 'Authorisation Code' )]
+        [Parameter( ParameterSetName = 'Secret Vault Write' )]
         [URI]$RedirectURL,
         # The port to use for the redirect URI. Must match with the configuration set in NinjaOne. If not set defaults to '9090'.
         [Parameter( ParameterSetName = 'Authorisation Code' )]
+        [Parameter( ParameterSetName = 'Secret Vault Write' )]
         [Int]$Port = 9090,
         # The refresh token to use for "Token Authentication" flow.
         [Parameter( ParameterSetName = 'Token Authentication' )]
-        [Parameter( ParameterSetName = 'Key Vault Write' )]
+        [Parameter( ParameterSetName = 'Secret Vault Write' )]
         [String]$RefreshToken,
         # Output the tokens - useful when using "Authorisation Code" flow - to use with "Token Authentication" flow.
         [Parameter( ParameterSetName = 'Authorisation Code' )]
         [Parameter( ParameterSetName = 'Token Authentication' )]
         [Parameter( ParameterSetName = 'Client Credentials' )]
         [Switch]$ShowTokens,
-        # Use Azure Key Vault to retrieve credentials and store tokens.
+        # Use the secret management module to retrieve credentials and store tokens.
         [Parameter( ParameterSetName = 'Authorisation Code' )]
         [Parameter( ParameterSetName = 'Token Authentication' )]
         [Parameter( ParameterSetName = 'Client Credentials' )]
-        [Parameter( Mandatory, ParameterSetName = 'Key Vault Write' )]
-        [Parameter( Mandatory, ParameterSetName = 'Key Vault Read' )]
-        [Switch]$UseKeyVault,
-        # The name of the Azure Key Vault to use.
+        [Parameter( Mandatory, ParameterSetName = 'Secret Vault Write' )]
+        [Parameter( Mandatory, ParameterSetName = 'Secret Vault Read' )]
+        [Switch]$UseSecretManagement,
+        # The name of the secret vault to use.
         [Parameter( ParameterSetName = 'Authorisation Code' )]
         [Parameter( ParameterSetName = 'Token Authentication' )]
         [Parameter( ParameterSetName = 'Client Credentials' )]
-        [Parameter( Mandatory, ParameterSetName = 'Key Vault Write' )]
-        [Parameter( Mandatory, ParameterSetName = 'Key Vault Read' )]
+        [Parameter( Mandatory, ParameterSetName = 'Secret Vault Write' )]
+        [Parameter( Mandatory, ParameterSetName = 'Secret Vault Read' )]
         [String]$VaultName,
-        # Write updated credentials to Azure Key Vault.
+        # Write updated credentials to secret management vault.
         [Parameter( ParameterSetName = 'Authorisation Code' )]
         [Parameter( ParameterSetName = 'Token Authentication' )]
         [Parameter( ParameterSetName = 'Client Credentials' )]
-        [Parameter( Mandatory, ParameterSetName = 'Key Vault Write' )]
-        [Parameter( ParameterSetName = 'Key Vault Read')]
-        [Switch]$WriteToKeyVault,
-        # Read the authentication information from Azure Key Vault.
-        [Parameter( ParameterSetName = 'Key Vault Read' )]
-        [Switch]$ReadFromKeyVault
+        [Parameter( Mandatory, ParameterSetName = 'Secret Vault Write' )]
+        [Parameter( ParameterSetName = 'Secret Vault Read')]
+        [Switch]$WriteToSecretVault,
+        # Read the authentication information from secret management vault.
+        [Parameter( ParameterSetName = 'Secret Vault Read' )]
+        [Switch]$ReadFromSecretVault
     )
     process {
         # Run the pre-flight check.
         Invoke-NinjaOnePreFlightCheck -SkipConnectionChecks
-        # Test for Azure Key Vault module.
-        if ($UseKeyVault) {
-            if (-not (Get-Module -Name 'Az.KeyVault' -ListAvailable)) {
-                Write-Error 'Azure Key Vault module not installed, please install the module and try again.'
+        # Test for secret management module.
+        if ($UseSecretManagement -or $Script:NRAPIConnectionInformation.UseSecretManagement) {
+            if (-not (Get-Module -Name 'Microsoft.PowerShell.SecretManagement' -ListAvailable)) {
+                Write-Error 'Secret management module not installed, please install the module and try again.'
                 exit 1
             }
-            # Test that we have an Azure context.
-            if (-not (Get-AzContext -Verbose:$false -Debug:$false)) {
-                Write-Error 'No Azure context found, please run Connect-AzAccount and try again.'
+            if (-not (Get-SecretVault)) {
+                Write-Error 'No secret vaults found, please create a secret vault and try again.'
                 exit 1
-            } else {
-                if ((Get-AzContext -Verbose:$false -Debug:$false).Account.Type -eq 'User') {
-                    Write-Information 'Connected to Azure as a user, using Azure Key Vault to store credentials.'
-                } elseif ((Get-AzContext -Verbose:$false -Debug:$false).Account.Type -eq 'ManagedService') {
-                    Write-Information 'Connected to Azure as a managed service, using Azure Key Vault to store credentials.'
-                }
             }
-            if ($ReadFromKeyVault) {
-                Get-NinjaOneKeyVaultInformation -VaultName $VaultName
+            if ($ReadFromSecretVault -or $Script:NRAPIConnectionInformation.ReadFromSecretVault) {
+                Write-Verbose 'Reading authentication information from secret vault.'
+                Get-NinjaOneSecrets -VaultName $VaultName
             }
         }
         # Set the default scopes if they're not passed.
@@ -172,9 +174,9 @@ function Connect-NinjaOne {
                 AuthListenerPort = $Port
                 AuthScopes = $AuthScopes
                 RedirectURI = $RedirectURI
-                UseKeyVault = $UseKeyVault
+                UseSecretManagement = $UseSecretManagement
                 VaultName = $VaultName
-                WriteToKeyVault = $WriteToKeyVault
+                WriteToSecretVault = $WriteToSecretVault
             }
             Set-Variable -Name 'NRAPIConnectionInformation' -Value $ConnectionInformation -Visibility Private -Scope Script -Force
         }
@@ -290,31 +292,32 @@ function Connect-NinjaOne {
                     Write-Output $($Script:NRAPIAuthenticationInformation | Format-Table -AutoSize)
                     Write-Output '       SAVE THESE IN A SECURE LOCATION       '
                 }
-                # If we're using Azure Key Vault, store the authentication information we need.
-                if ($Script:NRAPIConnectionInformation.UseKeyVault -and $Script:NRAPIConnectionInformation.WriteToKeyVault) {
-                    $KeyVaultParams = @{
-                        AuthMode = $Script:NRAPIConnectionInformation.AuthMode
-                        URL = $Script:NRAPIConnectionInformation.URL
-                        Instance = $Script:NRAPIConnectionInformation.Instance
-                        ClientId = $Script:NRAPIConnectionInformation.ClientId
-                        ClientSecret = $Script:NRAPIConnectionInformation.ClientSecret
-                        AuthListenerPort = $Script:NRAPIConnectionInformation.AuthListenerPort
-                        AuthScopes = $Script:NRAPIConnectionInformation.AuthScopes
-                        RedirectURI = $Script:NRAPIConnectionInformation.RedirectURI.ToString()
-                        UseKeyVault = $Script:NRAPIConnectionInformation.UseKeyVault
-                        VaultName = $Script:NRAPIConnectionInformation.VaultName
-                        WriteToKeyVault = $Script:NRAPIConnectionInformation.WriteToKeyVault
-                        Type = $Script:NRAPIAuthenticationInformation.Type
-                        Access = $Script:NRAPIAuthenticationInformation.Access
-                        Expires = $Script:NRAPIAuthenticationInformation.Expires
-                        Refresh = $Script:NRAPIAuthenticationInformation.Refresh
-                    }
-                    Write-Verbose 'Using Azure Key Vault to store credentials.'
-                    $ConnectionInformation = Set-NinjaOneKeyVaultInformation @KeyVaultParams
-                }
             } catch {
                 throw
             }
+        }
+        # If we're using secret management, store the authentication information we need.
+        if ($Script:NRAPIConnectionInformation.UseSecretManagement -and $Script:NRAPIConnectionInformation.WriteToSecretVault) {
+            $SecretManagementParams = @{
+                AuthMode = $Script:NRAPIConnectionInformation.AuthMode
+                URL = $Script:NRAPIConnectionInformation.URL
+                Instance = $Script:NRAPIConnectionInformation.Instance
+                ClientId = $Script:NRAPIConnectionInformation.ClientId
+                ClientSecret = $Script:NRAPIConnectionInformation.ClientSecret
+                AuthListenerPort = $Script:NRAPIConnectionInformation.AuthListenerPort
+                AuthScopes = $Script:NRAPIConnectionInformation.AuthScopes
+                RedirectURI = $Script:NRAPIConnectionInformation.RedirectURI.ToString()
+                UseSecretManagement = $Script:NRAPIConnectionInformation.UseSecretManagement
+                VaultName = $Script:NRAPIConnectionInformation.VaultName
+                WriteToSecretVault = $Script:NRAPIConnectionInformation.WriteToSecretVault
+                ReadFromSecretVault = $Script:NRAPIConnectionInformation.ReadFromSecretVault
+                Type = $Script:NRAPIAuthenticationInformation.Type
+                Access = $Script:NRAPIAuthenticationInformation.Access
+                Expires = $Script:NRAPIAuthenticationInformation.Expires
+                Refresh = $Script:NRAPIAuthenticationInformation.Refresh
+            }
+            Write-Verbose 'Using secret management to store credentials.'
+            Set-NinjaOneSecrets @SecretManagementParams
         }
     }
 }
