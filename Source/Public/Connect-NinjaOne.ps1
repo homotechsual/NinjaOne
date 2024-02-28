@@ -136,8 +136,10 @@ function Connect-NinjaOne {
         }
         # Set the default scopes if they're not passed.
         if ($UseClientAuth -and $null -eq $Scopes) {
+            Write-Verbose 'Setting default scopes for client credentials auth.'
             $Scopes = @('monitoring', 'management', 'control')
         } elseif (($UseWebAuth -or $UseTokenAuth) -and $null -eq $Scopes) {
+            Write-Verbose 'Setting default scopes for authorisation code or token auth.'
             $Scopes = @('monitoring', 'management', 'control', 'offline_access')
         }
         # Convert scopes to space separated string if it's an array.

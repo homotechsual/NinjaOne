@@ -56,8 +56,11 @@ function Get-NinjaOneTickets {
         # The search criteria to apply to the request.
         [Parameter(ParameterSetName = 'Board', Position = 5)]
         [String]$searchCriteria,
-        # Include the metadata in the response.
+        # Inclue the given columns in the response.
         [Parameter(ParameterSetName = 'Board', Position = 6)]
+        [String[]]$includeColumns,
+        # Include the metadata in the response.
+        [Parameter(ParameterSetName = 'Board', Position = 7)]
         [Switch]$includeMetadata
     )
     begin {
@@ -88,11 +91,17 @@ function Get-NinjaOneTickets {
             if ($filters) {
                 $RequestParams.Body.filters = $filters
             }
-            if ($lastCursorId) {
-                $RequestParams.Body.lastCursorId = $lastCursorId
+            if ($pageSize) {
+                $RequestParams.Body.pageSize = $pageSize
             }
             if ($searchCriteria) {
                 $RequestParams.Body.searchCriteria = $searchCriteria
+            }
+            if ($includeColumns) {
+                $RequestParams.Body.includeColumns = $includeColumns
+            }
+            if ($lastCursorId) {
+                $RequestParams.Body.lastCursorId = $lastCursorId
             }
             if ($Method -eq 'GET') {
                 $Tickets = New-NinjaOneGETRequest @RequestParams

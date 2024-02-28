@@ -2,13 +2,14 @@
     .SYNOPSIS
         Help test suite for the NinjaOne module.
 #>
-$ModuleName = Get-ChildItem -Path '.\Source' -Filter '*.psd1' | Select-Object -ExpandProperty BaseName
+$ModuleName = Get-ChildItem -Path '.\Source\*' -Include '*.psd1' -Exclude 'build.psd1' | Select-Object -ExpandProperty BaseName
 BeforeDiscovery {
-    $ModuleName = Get-ChildItem -Path '.\Source' -Filter '*.psd1' | Select-Object -ExpandProperty BaseName
+    $ModuleName = Get-ChildItem -Path '.\Source\*' -Include '*.psd1' -Exclude 'build.psd1' | Select-Object -ExpandProperty BaseName
     if (Get-Module -Name $ModuleName) {
         Remove-Module $ModuleName -Force
     }
-    $ManifestPath = Get-ChildItem -Path '.\Source' -Filter '*.psd1' | Select-Object -ExpandProperty FullName
+    $ModulePath = Resolve-Path -Path '.\Output\*\*' | Sort-Object -Property BaseName | Select-Object -Last 1 -ExpandProperty Path
+    $ManifestPath = Get-ChildItem -Path ('{0}\*' -f $ModulePath) -Include '*.psd1' -Exclude 'build.psd1' | Select-Object -ExpandProperty FullName
     Import-Module $ManifestPath -Verbose:$False
 }
 BeforeAll {

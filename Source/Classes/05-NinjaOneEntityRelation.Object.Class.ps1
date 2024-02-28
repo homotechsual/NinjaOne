@@ -1,3 +1,4 @@
+<#
 using namespace System.Management.Automation
 class NinjaOneEntityRelation {
     [EntityType]$relationEntityType
@@ -32,3 +33,4 @@ class NinjaOneEntityRelation {
         $this.Value = $Value
     }
 }
+#>

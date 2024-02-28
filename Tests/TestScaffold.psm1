@@ -24,7 +24,7 @@ function Import-ModuleToBeTested {
     if (Get-Module -Name $ModuleName) {
         Remove-Module $ModuleName -Force
     }
-    $ManifestPath = Get-ChildItem -Path (Join-Path -Path . -ChildPath 'Source') -Filter '*.psd1' | Select-Object -ExpandProperty FullName
+    $ManifestPath = Get-ChildItem -Path (Join-Path -Path . -ChildPath 'Source') -Filter ('{0}.psd1' -f $ModuleName) | Select-Object -ExpandProperty FullName
     Import-Module $ManifestPath -Verbose:$False -Force
 }
 

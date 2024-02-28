@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "SsJunKi8/IxbVB1ZYDXNgmQjoL4o/1X8VZGzGfmFlUYM7V2lIgCQIycvuKC/JOXJWuJI/hp5FAtJhBv7oTcpaA==",
+  "dgSpecHash": "qzcnoNIdBSP5ab4b4BXzNSNJmqXOYLqMeHNtmjYKleufU5RzBjZO7MI52CA7TkdR18B+AETN40Lkpn+N0+MoSQ==",
   "success": true,
   "projectFilePath": "R:\\Development\\NinjaOne\\C# Classes\\ValidateNodeRoleId\\ValidateNodeRoleId.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\MichaelO'Toole\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\MichaelO'Toole\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512",
     "C:\\Users\\MichaelO'Toole\\.nuget\\packages\\powershellstandard.library\\5.1.1\\powershellstandard.library.5.1.1.nupkg.sha512"
   ],
   "logs": []

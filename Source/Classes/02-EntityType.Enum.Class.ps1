@@ -1,3 +1,4 @@
+<#
 enum EntityType {
     ORGANIZATION = 1
     DOCUMENT = 2
@@ -11,3 +12,4 @@ enum EntityType {
     CONTACT = 10
     KB_DOCUMENT = 11
 }
+#>

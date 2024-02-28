@@ -1,3 +1,4 @@
+<#
 using namespace System.Management.Automation
 class NinjaOneDocumentTemplateField {
     # The human readable label for the field.
@@ -59,3 +60,4 @@ class NinjaOneDocumentTemplateField {
         $this.uiElementType = $uiElementType
     }
 }
+#>

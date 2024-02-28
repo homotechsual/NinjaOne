@@ -1,3 +1,4 @@
+<#
 using namespace System.Management.Automation
 class NinjaOneCustomField {
     [String]$name
@@ -14,3 +15,4 @@ class NinjaOneCustomField {
         $this.value = @{ html = $value }
     }
 }
+#>

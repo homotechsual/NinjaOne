@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "+vv8kDQJh5xIgyP4YsAgxXzUT74VYL+BSDdzR5BP1Kkhu+UHHfCRrKebsZO0UgZYOFRJqG6vIEOQQlgfu6/CQg==",
+  "dgSpecHash": "mpEPKoJ5S3QgB/3UcJlr9tZ35ZqXjUXd+AskMKgGIlZdhmXcohKOWKjYLFBlMnyKki/26qsDP3pmjPTfV55qnA==",
   "success": true,
   "projectFilePath": "R:\\Development\\NinjaOne\\C# Classes\\MetadataAttribute\\MetadataAttribute.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\MichaelO'Toole\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\MichaelO'Toole\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+  ],
   "logs": []
 }

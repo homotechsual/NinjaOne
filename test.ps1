@@ -6,12 +6,13 @@ param(
     [switch]$IncludeVSCodeMarker
 )
 Push-Location $PSScriptRoot
-$ModuleName = Get-ChildItem -Path '.\Source\*' -Filter '*.psd1' -Exclude 'build.psd1' | Select-Object -ExpandProperty BaseName
+$ModulePath = Resolve-Path -Path '.\Output\*\*' | Sort-Object -Property BaseName | Select-Object -Last 1 -ExpandProperty Path
+$ModuleName = Get-ChildItem -Path ('{0}\*' -f $ModulePath) -Filter '*.psd1' -Exclude 'build.psd1' | Select-Object -ExpandProperty BaseName
 # Disable default parameters during testing, just in case
 $PSDefaultParameterValues += @{}
 $PSDefaultParameterValues['Disabled'] = $true
 # Find a built module as a version-numbered folder:
-$VersionDirectory = Get-ChildItem [0-9]* -Directory
+$VersionDirectory = Resolve-Path -Path '.\Output\*\*'
 if ($VersionDirectory) {
     $TestDirectory = $VersionDirectory | Sort-Object { $_.Name -as [SemanticVersion[]] } | Select-Object -Last 1
 } else {
@@ -40,7 +41,7 @@ if ($IncludeVSCodeMarker) {
 Invoke-Pester -Configuration $PesterConfiguration
 
 if (-not $SkipScriptAnalyzer) {
-    Invoke-ScriptAnalyzer $ModuleUnderTest.Path
+    Invoke-ScriptAnalyzer $ModuleUnderTest.Path -Settings .\PSScriptAnalyzerSettings.psd1
 }
 Pop-Location
 

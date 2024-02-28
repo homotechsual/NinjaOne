@@ -1,0 +1,11 @@
+R:\Development\NinjaOne\C# Classes\ValidateStringOrInt\bin\Debug\netstandard2.0\ValidateStringOrInt.deps.json
+R:\Development\NinjaOne\C# Classes\ValidateStringOrInt\bin\Debug\netstandard2.0\ValidateStringOrInt.dll
+R:\Development\NinjaOne\C# Classes\ValidateStringOrInt\bin\Debug\netstandard2.0\ValidateStringOrInt.pdb
+R:\Development\NinjaOne\C# Classes\ValidateStringOrInt\obj\Debug\netstandard2.0\ValidateStringOrInt.csproj.AssemblyReference.cache
+R:\Development\NinjaOne\C# Classes\ValidateStringOrInt\obj\Debug\netstandard2.0\ValidateStringOrInt.GeneratedMSBuildEditorConfig.editorconfig
+R:\Development\NinjaOne\C# Classes\ValidateStringOrInt\obj\Debug\netstandard2.0\ValidateStringOrInt.AssemblyInfoInputs.cache
+R:\Development\NinjaOne\C# Classes\ValidateStringOrInt\obj\Debug\netstandard2.0\ValidateStringOrInt.AssemblyInfo.cs
+R:\Development\NinjaOne\C# Classes\ValidateStringOrInt\obj\Debug\netstandard2.0\ValidateStringOrInt.csproj.CoreCompileInputs.cache
+R:\Development\NinjaOne\C# Classes\ValidateStringOrInt\obj\Debug\netstandard2.0\ValidateStringOrInt.sourcelink.json
+R:\Development\NinjaOne\C# Classes\ValidateStringOrInt\obj\Debug\netstandard2.0\ValidateStringOrInt.dll
+R:\Development\NinjaOne\C# Classes\ValidateStringOrInt\obj\Debug\netstandard2.0\ValidateStringOrInt.pdb

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd"[]>
-<report name="Pester (02/12/2024 13:22:54)">
-  <sessioninfo id="this" start="1707744173508" dump="1707744174518" />
+<report name="Pester (02/23/2024 18:40:18)">
+  <sessioninfo id="this" start="1708713606885" dump="1708713618462" />
   <package name="Tests">
     <class name="Tests/TestScaffold" sourcefilename="TestScaffold.psm1">
       <method name="Get-ModuleName" desc="()" line="2">
