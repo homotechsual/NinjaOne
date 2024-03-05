@@ -1,4 +1,3 @@
-<#
 using namespace System.Management.Automation
 class NinjaOneTicketBoardFilter {
     [String]$Field
@@ -33,4 +32,3 @@ class NinjaOneTicketBoardFilter {
         $this.Value = $Value
     }
 }
-#>

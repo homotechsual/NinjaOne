@@ -1,4 +1,3 @@
-<#
 using namespace System.Management.Automation
 class NinjaOneOrganisationDocument {
     [Int]$documentId
@@ -73,4 +72,3 @@ class NinjaOneOrganisationDocument {
     }
     ## 
 }
-#>

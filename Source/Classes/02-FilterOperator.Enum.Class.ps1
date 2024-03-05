@@ -1,4 +1,3 @@
-<#
 enum FilterOperator {
     present = 1
     not_present = 2
@@ -14,4 +13,3 @@ enum FilterOperator {
     less_or_equal_than = 12
     between = 13
 }
-#>
