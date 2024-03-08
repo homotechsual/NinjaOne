@@ -75,7 +75,9 @@ All going well you should be at `administration/apps/api/client`.
 
 1. Click on **Add** to add a new API application.
 
-1. Set the **Application Platform** to *API Services (machine-to-machine)*
+1. Set the **Application Platform** to one of the following:
+  * If you want to use Client Credentials use `machine-to-machine`
+  * If you want to use Authorization Code or Refresh Token use `web`.
 
 1. Enter the **Name**.  
 For example *NinjaOne API PS Module*.
