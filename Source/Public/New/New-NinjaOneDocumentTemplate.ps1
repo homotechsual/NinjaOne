@@ -34,22 +34,10 @@ function New-NinjaOneDocumentTemplate {
         [Switch]$mandatory,
         # The document template fields.
         [Parameter(Mandatory, Position = 4, ValueFromPipelineByPropertyName)]
-        [Object[]]$fields,
+        [PSTypeName('DocumentTemplateField')][Object[]]$fields,
         # Show the document template that was created.
         [Switch]$show
     )
-    begin {
-        # Validate the fields parameter.
-        foreach ($field in $fields) {
-            if ($field.fieldType -in ('DROPDOWN', 'MULTI_SELECT')) {
-                if ($null -eq $field.fieldContent) {
-                    throw 'Field content must be specified for field type {0}.' -f $field.fieldType
-                } elseif ($null -eq $field.fieldContent.values) {
-                    throw 'Field content values must be specified for field type {0}.' -f $field.fieldType
-                }
-            }
-        }
-    }
     process {
         try {
             $DocumentTemplate = @{

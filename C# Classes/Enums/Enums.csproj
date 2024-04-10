@@ -11,7 +11,4 @@
     <Message Text="Finished Copy DLLs" Importance="High" />
   </Target>
 
-  <ItemGroup>
-    <PackageReference Include="PowerShellStandard.Library" Version="5.1.1" PrivateAssets="all" />
-  </ItemGroup>
 </Project>

@@ -13,28 +13,30 @@ function Get-NinjaOneSecrets {
     [OutputType([System.Void])]
     param(
         # The vault name to use for retrieving the secrets.
-        [String]$VaultName
+        [String]$VaultName,
+        # The prefix to use for the secret names.
+        [String]$SecretPrefix = 'NinjaOne'
     )
     $Secrets = @{
         ConnectionInfo = @{
-            'AuthMode' = 'NinjaOneAuthMode'
-            'URL' = 'NinjaOneURL'
-            'Instance' = 'NinjaOneInstance'
-            'ClientId' = 'NinjaOneClientId'
-            'ClientSecret' = 'NinjaOneClientSecret'
-            'AuthScopes' = 'NinjaOneAuthScopes'
-            'RedirectURI' = 'NinjaOneRedirectURI'
-            'AuthListenerPort' = 'NinjaOneAuthListenerPort'
-            'UseSecretManagement' = 'NinjaOneUseSecretManagement'
-            'WriteToSecretVault' = 'NinjaOneWriteToSecretVault'
-            'ReadFromSecretVault' = 'NinjaOneReadFromSecretVault'
-            'VaultName' = 'NinjaOneVaultName'
+            'AuthMode' = ('{0}AuthMode' -f $SecretPrefix)
+            'URL' = ('{0}URL' -f $SecretPrefix)
+            'Instance' = ('{0}Instance' -f $SecretPrefix)
+            'ClientId' = ('{0}ClientId' -f $SecretPrefix)
+            'ClientSecret' = ('{0}ClientSecret' -f $SecretPrefix)
+            'AuthScopes' = ('{0}AuthScopes' -f $SecretPrefix)
+            'RedirectURI' = ('{0}RedirectURI' -f $SecretPrefix)
+            'AuthListenerPort' = ('{0}AuthListenerPort' -f $SecretPrefix)
+            'UseSecretManagement' = ('{0}UseSecretManagement' -f $SecretPrefix)
+            'WriteToSecretVault' = ('{0}WriteToSecretVault' -f $SecretPrefix)
+            'ReadFromSecretVault' = ('{0}ReadFromSecretVault' -f $SecretPrefix)
+            'VaultName' = ('{0}VaultName' -f $SecretPrefix)
         }
         AuthenticationInfo = @{
-            'Type' = 'NinjaOneType'
-            'Access' = 'NinjaOneAccess'
-            'Expires' = 'NinjaOneExpires'
-            'Refresh' = 'NinjaOneRefresh'
+            'Type' = ('{0}Type' -f $SecretPrefix)
+            'Access' = ('{0}Access' -f $SecretPrefix)
+            'Expires' = ('{0}Expires' -f $SecretPrefix)
+            'Refresh' = ('{0}Refresh' -f $SecretPrefix)
         }
     }
     # Setup the the script scoped variables for the connection and authentication information.

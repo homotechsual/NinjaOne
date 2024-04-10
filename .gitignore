@@ -260,6 +260,8 @@ Generated_Code/
 # because we have git ;-)
 _UpgradeReport_Files/
 Backup*/
+# Unless it's in `/Source`.
+!/Source/**/Backup*/
 UpgradeLog*.XML
 UpgradeLog*.htm
 ServiceFabricBackup/
@@ -384,7 +386,7 @@ FodyWeavers.xsd
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-*.code-workspace
+!*.code-workspace
 
 # Local History for Visual Studio Code
 .history/
@@ -405,6 +407,8 @@ FodyWeavers.xsd
 
 # Exclude .NET assemblies from source
 *.dll
+# Unless they are under `/Source`.
+!/Source/**/*.dll
 
 ### VisualStudioCode ###
 !.vscode/*.code-snippets
@@ -424,3 +428,4 @@ FodyWeavers.xsd
 # Custom
 output
 build
+docs

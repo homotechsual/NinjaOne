@@ -47,7 +47,9 @@ function Set-NinjaOneSecrets {
         # The expiration time of the access token.
         [DateTime]$Expires,
         # The refresh token to use for authentication.
-        [String]$Refresh
+        [String]$Refresh,
+        # The prefix to use for the secret names.
+        [String]$SecretPrefix = 'NinjaOne'
     )
     # Check if the secret vault exists.
     $SecretVault = Get-SecretVault -Name $VaultName -ErrorAction SilentlyContinue
@@ -63,52 +65,52 @@ function Set-NinjaOneSecrets {
     # Write the connection information to the secret vault.
     $Secrets = [Hashtable]@{}
     if ($null -ne $Script:NRAPIConnectionInformation.AuthMode) {
-        $Secrets.NinjaOneAuthMode = $Script:NRAPIConnectionInformation.AuthMode
+        $Secrets.('{0}AuthMode' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.AuthMode
     }
     if ($null -ne $Script:NRAPIConnectionInformation.URL) {
-        $Secrets.NinjaOneURL = $Script:NRAPIConnectionInformation.URL
+        $Secrets.('{0}URL' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.URL
     }
     if ($null -ne $Script:NRAPIConnectionInformation.Instance) {
-        $Secrets.NinjaOneInstance = $Script:NRAPIConnectionInformation.Instance
+        $Secrets.('{0}Instance' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.Instance
     }
     if ($null -ne $Script:NRAPIConnectionInformation.ClientId) {
-        $Secrets.NinjaOneClientId = $Script:NRAPIConnectionInformation.ClientId
+        $Secrets.('{0}ClientId' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.ClientId
     }
     if ($null -ne $Script:NRAPIConnectionInformation.ClientSecret) {
-        $Secrets.NinjaOneClientSecret = $Script:NRAPIConnectionInformation.ClientSecret
+        $Secrets.('{0}ClientSecret' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.ClientSecret
     }
     if ($null -ne $Script:NRAPIConnectionInformation.AuthScopes) {
-        $Secrets.NinjaOneAuthScopes = $Script:NRAPIConnectionInformation.AuthScopes
+        $Secrets.('{0}AuthScopes' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.AuthScopes
     }
     if ($null -ne $Script:NRAPIConnectionInformation.RedirectURI) {
-        $Secrets.NinjaOneRedirectURI = $Script:NRAPIConnectionInformation.RedirectURI.ToString()
+        $Secrets.('{0}RedirectURI' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.RedirectURI.ToString()
     }
     if ($null -ne $Script:NRAPIConnectionInformation.AuthListenerPort) {
-        $Secrets.NinjaOneAuthListenerPort = $Script:NRAPIConnectionInformation.AuthListenerPort.ToString()
+        $Secrets.('{0}AuthListenerPort' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.AuthListenerPort.ToString()
     }
     if ($null -ne $Script:NRAPIAuthenticationInformation.Type) {
-        $Secrets.NinjaOneType = $Script:NRAPIAuthenticationInformation.Type
+        $Secrets.('{0}Type' -f $SecretPrefix) = $Script:NRAPIAuthenticationInformation.Type
     }
     if ($null -ne $Script:NRAPIAuthenticationInformation.Access) {
-        $Secrets.NinjaOneAccess = $Script:NRAPIAuthenticationInformation.Access
+        $Secrets.('{0}Access' -f $SecretPrefix) = $Script:NRAPIAuthenticationInformation.Access
     }
     if ($null -ne $Script:NRAPIAuthenticationInformation.Expires) {
-        $Secrets.NinjaOneExpires = $Script:NRAPIAuthenticationInformation.Expires.ToString()
+        $Secrets.('{0}Expires' -f $SecretPrefix) = $Script:NRAPIAuthenticationInformation.Expires.ToString()
     }
     if ($null -ne $Script:NRAPIAuthenticationInformation.Refresh) {
-        $Secrets.NinjaOneRefresh = $Script:NRAPIAuthenticationInformation.Refresh
+        $Secrets.('{0}Refresh' -f $SecretPrefix) = $Script:NRAPIAuthenticationInformation.Refresh
     }
     if ($null -ne $Script:NRAPIConnectionInformation.UseSecretManagement) {
-        $Secrets.NinjaOneUseSecretManagement = $Script:NRAPIConnectionInformation.UseSecretManagement.ToString()
+        $Secrets.('{0}UseSecretManagement' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.UseSecretManagement.ToString()
     }
     if ($null -ne $Script:NRAPIConnectionInformation.WriteToSecretVault) {
-        $Secrets.NinjaOneWriteToSecretVault = $Script:NRAPIConnectionInformation.WriteToSecretVault.ToString()
+        $Secrets.('{0}WriteToSecretVault' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.WriteToSecretVault.ToString()
     }
     if ($null -ne $Script:NRAPIConnectionInformation.ReadFromSecretVault) {
-        $Secrets.NinjaOneReadFromSecretVault = $Script:NRAPIConnectionInformation.ReadFromSecretVault.ToString()
+        $Secrets.('{0}ReadFromSecretVault' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.ReadFromSecretVault.ToString()
     }
     if ($null -ne $Script:NRAPIConnectionInformation.VaultName) {
-        $Secrets.NinjaOneVaultName = $Script:NRAPIConnectionInformation.VaultName
+        $Secrets.('{0}VaultName' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.VaultName
     }
     foreach ($Secret in $Secrets.GetEnumerator()) {
         Write-Verbose ('Processing secret {0} for vault storage.' -f $Secret.Key)

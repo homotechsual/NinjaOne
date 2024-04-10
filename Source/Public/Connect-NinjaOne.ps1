@@ -114,7 +114,11 @@ function Connect-NinjaOne {
         [Switch]$WriteToSecretVault,
         # Read the authentication information from secret management vault.
         [Parameter( ParameterSetName = 'Secret Vault Read' )]
-        [Switch]$ReadFromSecretVault
+        [Switch]$ReadFromSecretVault,
+        # The prefix to add to the name of the secrets stored in the secret vault.
+        [Parameter( ParameterSetName = 'Secret Vault Write' )]
+        [Parameter( ParameterSetName = 'Secret Vault Read' )]
+        [String]$SecretPrefix = 'NinjaOne'
     )
     process {
         # Run the pre-flight check.
@@ -185,6 +189,7 @@ function Connect-NinjaOne {
                 UseSecretManagement = $UseSecretManagement
                 VaultName = $VaultName
                 WriteToSecretVault = $WriteToSecretVault
+                SecretPrefix = $SecretPrefix
             }
             Set-Variable -Name 'NRAPIConnectionInformation' -Value $ConnectionInformation -Visibility Private -Scope Script -Force
         }
@@ -323,6 +328,7 @@ function Connect-NinjaOne {
                 Access = $Script:NRAPIAuthenticationInformation.Access
                 Expires = $Script:NRAPIAuthenticationInformation.Expires
                 Refresh = $Script:NRAPIAuthenticationInformation.Refresh
+                SecretPrefix = $Script:NRAPIConnectionInformation.SecretPrefix
             }
             Write-Verbose 'Using secret management to store credentials.'
             Set-NinjaOneSecrets @SecretManagementParams

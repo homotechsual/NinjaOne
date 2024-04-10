@@ -1,8 +1,25 @@
-using namespace System.Management.Automation
-class NinjaOneEntityRelation {
-    [EntityType]$relationEntityType
-    [FilterOperator]$Operator
-    [ValidateStringOrInt()][Object]$Value
+function New-NinjaOneEntityRelationObject {
+    <#
+        .SYNOPSIS
+            Create a new Entity Relation object.
+        .DESCRIPTION
+            Creates a new Entity Relation object containing required / specified properties / structure.
+        .OUTPUTS
+            [DocumentTemplateField]
+
+            A new Document Template Field or UI Element object.
+    #>
+    [CmdletBinding()]
+    [OutputType([EntityRelation])]
+    [Alias('nnoer')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Does not change system state, creates a new object.')]
+    param(
+        # The entity type of the relation.
+        [EntityType]$Entity,
+        [EntityType]$relationEntityType,
+        [FilterOperator]$Operator,
+        [ValidateStringOrInt()][Object]$Value
+    )
 
     NinjaOneTicketBoardFilter([String]$Field, [String]$Operator, [Object]$Value) {
         if ($Operator -in @('present', 'not_present') -and ($null -ne $Value)) {

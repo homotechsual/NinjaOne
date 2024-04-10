@@ -3,7 +3,7 @@ class NinjaOneOrganisationDocument {
     [Int]$documentId
     [String]$documentName
     [String]$documentDescription
-    [NinjaOneCustomField[]]$fields
+    [Object[]]$fields
     [Int]$documentTemplateId
     [Int]$organisationId
     # New object contructors.
@@ -11,7 +11,7 @@ class NinjaOneOrganisationDocument {
     NinjaOneOrganisationDocument(
         [String]$documentName,
         [String]$documentDescription,
-        [NinjaOneCustomField[]]$fields,
+        [Object[]]$fields,
         [Int]$documentTemplateId,
         [Int]$organisationId
     ) {
@@ -25,7 +25,7 @@ class NinjaOneOrganisationDocument {
     NinjaOneOrganisationDocument(
         [String]$documentName,
         [String]$documentDescription,
-        [NinjaOneCustomField[]]$fields,
+        [Object[]]$fields,
         [Int]$organisationId
     ) {
         $this.documentName = $documentName
@@ -36,7 +36,7 @@ class NinjaOneOrganisationDocument {
     ## No description constructor.
     NinjaOneOrganisationDocument(
         [String]$documentName,
-        [NinjaOneCustomField[]]$fields,
+        [Object[]]$fields,
         [Int]$documentTemplateId,
         [Int]$organisationId
     ) {
@@ -48,7 +48,7 @@ class NinjaOneOrganisationDocument {
     ## No template id or description constructor.
     NinjaOneOrganisationDocument(
         [String]$documentName,
-        [NinjaOneCustomField[]]$fields,
+        [Object[]]$fields,
         [Int]$organisationId
     ) {
         $this.documentName = $documentName
@@ -61,7 +61,7 @@ class NinjaOneOrganisationDocument {
         [Int]$documentId,
         [String]$documentName,
         [String]$documentDescription,
-        [NinjaOneCustomField[]]$fields,
+        [Object[]]$fields,
         [Int]$organisationId
     ) {
         $this.documentId = $documentId
