@@ -58,7 +58,7 @@ function Get-NinjaOneActivities {
     #>
     [CmdletBinding()]
     [OutputType([Object])]
-    [Alias('gnoac')]
+    [Alias('gnoac', 'Get-NinjaOneActivity')]
     [MetadataAttribute(
         '/v2/device/{id}/activities',
         'get',
@@ -164,7 +164,6 @@ function Get-NinjaOneActivities {
     }
     process {
         try {
-            
             if ($deviceId) {
                 Write-Verbose 'Getting device from NinjaOne API.'
                 $Device = Get-NinjaOneDevices -deviceId $deviceId

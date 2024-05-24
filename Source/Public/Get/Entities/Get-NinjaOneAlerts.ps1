@@ -10,7 +10,7 @@ function Get-NinjaOneAlerts {
             Alerts
         .EXAMPLE
             PS> Get-NinjaOneAlerts
-            
+
             Gets all alerts.
         .EXAMPLE
             PS> Get-NinjaOneAlerts -sourceType 'CONDITION_CUSTOM_FIELD'
@@ -20,14 +20,14 @@ function Get-NinjaOneAlerts {
             PS> Get-NinjaOneAlerts -deviceFilter 'status eq APPROVED'
 
             Gets alerts for all approved devices.
-        .OUTPUTS    
+        .OUTPUTS
             A powershell object containing the response.
         .LINK
             https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/alerts
     #>
     [CmdletBinding()]
     [OutputType([Object])]
-    [Alias('gnoal')]
+    [Alias('gnoal', 'Get-NinjaOneAlert')]
     [MetadataAttribute(
         '/v2/alerts',
         'get',

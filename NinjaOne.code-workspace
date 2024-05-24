@@ -5,7 +5,10 @@
     }
   ],
   "settings": {
-    "editor.tabSize": 4,
+    "editor.indentSize": "tabSize",
+    "editor.tabSize": 1,
+    "editor.detectIndentation": true,
+    "editor.autoIndent": "advanced",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "modificationsIfAvailable",
     "azure-pipelines.customSchemaFile": ".\\DevOps\\azurepipelines.schema.json",
@@ -48,8 +51,7 @@
       {
         "name": "PowerShell Attach Interactive Session Runspace",
         "type": "PowerShell",
-        "request": "attach",
-        "processId": "current"
+        "request": "attach"
       },
       {
         "name": "PowerShell: Launch Current File",

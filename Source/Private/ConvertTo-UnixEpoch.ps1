@@ -21,7 +21,7 @@ function ConvertTo-UnixEpoch {
     if ($DateTime -is [String]) {
         $DateTime = [DateTime]::Parse($DateTime)
     } elseif ($DateTime -is [Int]) {
-        (Get-Date 01.01.1970).AddSeconds($unixTimeStamp)  
+        (Get-Date 01.01.1970).AddSeconds($unixTimeStamp)
     } elseif ($DateTime -is [DateTime]) {
         $DateTime = $DateTime
     } else {
