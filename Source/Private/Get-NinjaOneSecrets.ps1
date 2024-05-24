@@ -46,7 +46,8 @@ function Get-NinjaOneSecrets {
     foreach ($ConnectionSecret in $Secrets.ConnectionInfo.GetEnumerator()) {
         Write-Verbose ('Processing secret {0} for vault retrieval.' -f $ConnectionSecret.Key)
         $SecretName = $ConnectionSecret.Key
-        $SecretValue = Get-Secret -Name $SecretName -Vault $VaultName -ErrorAction SilentlyContinue
+        $VaultSecretName = $ConnectionSecret.Value
+        $SecretValue = Get-Secret -Name $VaultSecretName -Vault $VaultName -AsPlainText -ErrorAction SilentlyContinue
         if ($null -eq $SecretValue) {
             Write-Verbose ('Secret {0} is null. Skipping.' -f $SecretName)
             continue
@@ -58,7 +59,8 @@ function Get-NinjaOneSecrets {
     foreach ($AuthenticationSecret in $Secrets.AuthenticationInfo.GetEnumerator()) {
         Write-Verbose ('Processing secret {0} for vault retrieval.' -f $AuthenticationSecret.Key)
         $SecretName = $AuthenticationSecret.Key
-        $SecretValue = Get-Secret -Name $SecretName -Vault $VaultName -ErrorAction SilentlyContinue
+        $VaultSecretName = $AuthenticationSecret.Value
+        $SecretValue = Get-Secret -Name $VaultSecretName -Vault $VaultName -AsPlainText -ErrorAction SilentlyContinue
         if ($null -eq $SecretValue) {
             Write-Verbose ('Secret {0} is null. Skipping.' -f $SecretName)
             continue
