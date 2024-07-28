@@ -2,6 +2,8 @@ function Get-NinjaOneOrganisationLocations {
 	<#
         .SYNOPSIS
             Wrapper command using `Get-NinjaOneLocations` to get locations for an organisation.
+		.DESCRIPTION
+			Gets locations for an organisation using the NinjaOne v2 API.
         .FUNCTIONALITY
             Organisation Locations
         .EXAMPLE

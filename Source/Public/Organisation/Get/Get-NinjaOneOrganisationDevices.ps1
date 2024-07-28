@@ -2,6 +2,8 @@ function Get-NinjaOneOrganisationUsers {
 	<#
         .SYNOPSIS
             Wrapper command using `Get-NinjaOneDevices` to get devices for an organisation.
+		.DESCRIPTION
+			Gets devices for an organisation using the NinjaOne v2 API.
         .FUNCTIONALITY
             Organisation Devices
         .EXAMPLE

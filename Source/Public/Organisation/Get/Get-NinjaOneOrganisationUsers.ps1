@@ -2,6 +2,8 @@ function Get-NinjaOneOrganisationUsers {
 	<#
         .SYNOPSIS
             Wrapper command using `Get-NinjaOneUsers` to get users for an organisation.
+		.DESCRIPTION
+			Gets users for an organisation using the NinjaOne v2 API.
         .FUNCTIONALITY
             Organisation Users
         .EXAMPLE

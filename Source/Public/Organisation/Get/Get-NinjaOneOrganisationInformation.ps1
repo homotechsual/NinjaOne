@@ -2,6 +2,8 @@ function Get-NinjaOneOrganisationInformation {
 	<#
         .SYNOPSIS
             Wrapper command using `Get-NinjaOneOrganisations` to get detailed information for an organisation.
+		.DESCRIPTION
+			Gets detailed information for an organisation using the NinjaOne v2 API.
         .FUNCTIONALITY
             Organisation Information
         .EXAMPLE

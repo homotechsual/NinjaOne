@@ -5,7 +5,7 @@ function New-NinjaOneOrganisationDocument {
 		.DESCRIPTION
 			Create a single organisation document using the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Organisation Documents
+			Organisation Document
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK

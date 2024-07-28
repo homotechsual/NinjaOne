@@ -2,6 +2,8 @@ function Get-NinjaOneOrganisationLocationsBackupUsage {
 	<#
         .SYNOPSIS
             Wrapper command using `Get-NinjaOneLocationBackupUsage` to get backup usage for all locations in an organisation.
+		.DESCRIPTION
+			Gets backup usage for all locations in an organisation using the NinjaOne v2 API.
         .FUNCTIONALITY
             Organisation Locations Backup Usage
         .EXAMPLE

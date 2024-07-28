@@ -2,6 +2,8 @@ function Get-NinjaOneDeviceActivities {
 	<#
         .SYNOPSIS
             Wrapper command using `Get-NinjaOneActivities` to get activities for a device.
+		.DESCRIPTION
+			Gets activities for a device using the NinjaOne v2 API.
         .FUNCTIONALITY
             Device Activities
         .EXAMPLE

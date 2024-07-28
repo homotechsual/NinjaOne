@@ -2,6 +2,8 @@ function Get-NinjaOneDeviceJobs {
 	<#
         .SYNOPSIS
             Wrapper command using `Get-NinjaOneJobs` to get jobs for a device.
+		.DESCRIPTION
+			Gets jobs for a device using the NinjaOne v2 API.
         .FUNCTIONALITY
             Device Jobs
         .EXAMPLE

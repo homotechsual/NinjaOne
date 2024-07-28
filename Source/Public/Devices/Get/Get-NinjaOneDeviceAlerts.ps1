@@ -2,6 +2,8 @@ function Get-NinjaOneDeviceAlerts {
 	<#
         .SYNOPSIS
             Wrapper command using `Get-NinjaOneAlerts` to get alerts for a device.
+		.DESCRIPTION
+			Gets alerts for a device using the NinjaOne v2 API.
         .FUNCTIONALITY
             Device Alerts
         .EXAMPLE

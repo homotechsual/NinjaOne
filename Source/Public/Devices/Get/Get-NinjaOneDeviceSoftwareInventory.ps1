@@ -2,6 +2,8 @@ function Get-NinjaOneDeviceSoftwareInventory {
 	<#
         .SYNOPSIS
             Wrapper command using `Get-NinjaOneSoftwareProducts` to get installed software products for a device.
+		.DESCRIPTION
+			Gets installed software products for a device using the NinjaOne v2 API.
         .FUNCTIONALITY
             Device Software Inventory
         .EXAMPLE
