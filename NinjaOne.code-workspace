@@ -5,10 +5,9 @@
     }
   ],
   "settings": {
-    "editor.indentSize": "tabSize",
-    "editor.tabSize": 1,
-    "editor.detectIndentation": true,
-    "editor.autoIndent": "advanced",
+    "editor.insertSpaces": false,
+    "editor.detectIndentation": false,
+    "editor.autoIndent": "full",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "modificationsIfAvailable",
     "azure-pipelines.customSchemaFile": ".\\DevOps\\azurepipelines.schema.json",
@@ -35,7 +34,8 @@
       "Homotechsual",
       "organisation",
       "Organisation",
-      "pluralised"
+      "pluralised",
+      "Whitelock"
     ],
     "intelephense.format.braces": "k&r"
   },

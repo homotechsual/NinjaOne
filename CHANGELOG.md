@@ -2,6 +2,50 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
+## 2024-07-26 - Version 2.0.0-RC5
+
+* Add new commandlets:
+  * `Get-NinjaOneAutomations`
+  * `Get-NinjaOneNotificationChannels`
+  * `Get-NinjaOneCustomFieldsPolicyConditions`
+  * `Get-NinjaOneCustomFieldsPolicyCondition`
+  * `Get-NinjaOneWindowsEventConditions`
+  * `Get-NinjaOneWindowsEventCondition`
+  * `Get-NinjaOneTicketingUsers`
+  * `Get-NinjaOneKnowledgeBaseArticle`
+  * `Get-NinjaOneOrganisationKnowledgeBaseArticles`
+  * `Get-NinjaOneGlobalKnowledgeBaseArticles`
+  * `Get-NinjaOneKnowledgeBaseFolders`
+  * `Get-NinjaOneRelatedItemAttachment`
+  * `Get-NinjaOneRelatedItemAttachmentSignedURLs`
+  * `Get-NinjaOneCustomFieldSignedURLs`
+  * `Get-NinjaOneIntegrityCheckJobs`
+  * `New-NinjaOneCustomFieldsPolicyCondition`
+  * `New-NinjaOneWindowsEventPolicyCondition`
+  * `New-NinjaOneAttachmentRelation`
+  * `New-NinjaOneEntityRelation`
+  * `New-NinjaOneEntityRelations`
+  * `New-NinjaOneSecureRelation`
+  * `New-NinjaOneIntegrityCheckJob`
+  * `Remove-NinjaOneRelatedItem`
+  * `Remove-NinjaOneRelatedItems`
+  * `Remove-NinjaOneOrganisationDocument`
+  * `Remove-NinjaOnePolicyCondition`
+* Remove deprecated commandlet:
+  * `Get-NinjaOneAttachment`
+* Fix bug in `Set-NinjaOneOrganisationDocument`.
+* Fix auth endpoints in `Connect-NinjaOne` to use the `ws/oauth` paths.
+* Apply a round of fixes to `Get-NinjaOneSecrets`.
+* Remove early exits for endpoints which don't support `client_credentials` authentication as NinjaOne has added a native descriptive error for this issue.
+* Add `of` / `organisationFilter` parameter to the `Get-NinjaOneOrganisations` commandlet.
+* Fix handling of `scopes` parameter on `Get-NinjaOneDeviceCustomFields`.
+* Reformat all code to use tabs instead of spaces - largely driven by accessibility benefits of using tabs over spaces. I was, for many years, a "spaces > tabs" guy. Until I was pointed at [this article by Alexander Sandberg](https://alexandersandberg.com/articles/default-to-tabs-instead-of-spaces-for-an-accessible-first-environment/). It managed to convince me that the accessibility benefits of tabs outweighed my attachment to spaces. Our workspace file uses whatever tab width you have set in VSCode you can change this using `editor.tabSize` in your settings.
+* Add many new aliases to try and stay as close to Ninja's "entity" naming as we can. For example, `Get-NinjaOneRoles` now has the alias `Get-NinjaOneDeviceRoles`.
+* Add many new wrapper commands to provide commandlets named consistently with Ninja's entity naming where we've combined endpoints into a single commandlet for expediency.
+* Remove entity exists validation from all commandlets, we will no longer test if a device exists before you try to get it's disks. This reduces the volume of calls we make and you will now see Ninja's 404 response being returned when the given device does not exist. This has been done to drastically reduce the number of API calls we were making.
+* Reorganise source folder to match Ninja's API groupings.
+* Remove the `-usageLimit` parameter from `New-NinjaOneInstaller`.
+
 ## 2024-02-18 - Version 2.0.0-RC4
 
 * Change secret vault to use the SecretManagement module.
@@ -207,7 +251,7 @@ Please note that backwards compatibility breaks are prefixed with `{"BC"}` (shor
 
 ## 2022-10-28 - Version 1.6.0
 
-* Fix multiple parameters which were incorrect set as mandatory
+* Fix multiple parameters which were incorrectly set as mandatory
 
 ## 2022-10-26 - Version 1.5.0
 
