@@ -22,7 +22,7 @@ function New-NinjaOneCustomFieldsPolicyCondition {
 	Param(
 		# The policy id to create the custom fields policy condition for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-		[Alias('id', 'policyId')]
+		[Alias('id')]
 		[Int]$policyId,
 		# An object containing the custom fields policy condition to create.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]

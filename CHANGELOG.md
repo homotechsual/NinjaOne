@@ -2,7 +2,15 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
-## 2024-07-26 - Version 2.0.0-RC5
+## 2024-07-28 - Version 2.0.0-RC6
+
+* Fix double declaration of `Get-NinjaOneOrganisationInformation` (once as an alias and once as a new wrapper commandlet!)
+* Fix incorrect output type on `New-NinjaOneCustomFieldsObject`.
+* Fix incorrect output type on `New-NinjaOneDocumentTemplateObject`.
+* Fix incorrect parameter alias on `policyId` param for Windows Event and Custom Field commandlets.
+* Fix incorrect parameter alias on `deviceId` param for Integrity Check Job commandlet.
+
+## 2024-07-28 - Version 2.0.0-RC5
 
 * Add new commandlets:
   * `Get-NinjaOneAutomations`

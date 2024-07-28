@@ -4,13 +4,15 @@ function New-NinjaOneEntityRelationObject {
 			Create a new Entity Relation object.
 		.DESCRIPTION
 			Creates a new Entity Relation object containing required / specified properties / structure.
+		.FUNCTIONALITY
+			Entity Relation Object Helper
 		.OUTPUTS
-			[DocumentTemplateField]
+			[Object]
 
 			A new Document Template Field or UI Element object.
 	#>
 	[CmdletBinding()]
-	[OutputType([EntityRelation])]
+	[OutputType([Object])]
 	[Alias('nnoer')]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Does not change system state, creates a new object.')]
 	param(

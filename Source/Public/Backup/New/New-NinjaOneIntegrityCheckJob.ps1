@@ -22,7 +22,7 @@ function New-NinjaOneIntegrityCheckJob {
 	Param(
 		# The deviceId to create the integrity check job for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-		[Alias('id', 'deviceId')]
+		[Alias('id')]
 		[Int]$deviceId,
 		# The planUid to create the integrity check job for.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]

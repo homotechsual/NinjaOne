@@ -2,8 +2,8 @@
 using namespace Microsoft.PackageManagement.Provider.Utility
 using namespace System.Management.Automation
 param(
-    [switch]$SkipScriptAnalyzer,
-    [switch]$IncludeVSCodeMarker
+	[switch]$SkipScriptAnalyzer,
+	[switch]$IncludeVSCodeMarker
 )
 Push-Location $PSScriptRoot
 $ModulePath = Resolve-Path -Path '.\Output\*\*' | Sort-Object -Property BaseName | Select-Object -Last 1 -ExpandProperty Path
@@ -14,13 +14,13 @@ $PSDefaultParameterValues['Disabled'] = $true
 # Find a built module as a version-numbered folder:
 $VersionDirectory = Resolve-Path -Path '.\Output\*\*'
 if ($VersionDirectory) {
-    $TestDirectory = $VersionDirectory | Sort-Object { $_.Name -as [SemanticVersion[]] } | Select-Object -Last 1
+	$TestDirectory = $VersionDirectory | Sort-Object { $_.Name -as [SemanticVersion[]] } | Select-Object -Last 1
 } else {
-    $TestDirectory = Get-Item -Path '.\Source'
+	$TestDirectory = Get-Item -Path '.\Source'
 }
 $FoundModule = $TestDirectory | Get-ChildItem -Filter ('{0}.psd1' -f $ModuleName)
 if (!$FoundModule) {
-    throw ('Cannot find {0}.psd1 in {1}' -f $ModuleName, $TestDirectory.FullName)
+	throw ('Cannot find {0}.psd1 in {1}' -f $ModuleName, $TestDirectory.FullName)
 }
 Remove-Module $ModuleName -ErrorAction Ignore -Force
 $ModuleUnderTest = Import-Module $FoundModule.FullName -PassThru -Force -DisableNameChecking -Verbose:$false
@@ -35,13 +35,13 @@ $PesterConfiguration.TestResult.Enabled = $true
 $PesterConfiguration.TestResult.OutputPath = '.\.artifacts\TestResults.xml'
 $PesterConfiguration.TestResult.OutputFormat = 'JUnitXML'
 if ($IncludeVSCodeMarker) {
-    $PesterConfiguration.VSCodeMarker = $true
+	$PesterConfiguration.VSCodeMarker = $true
 }
 
 Invoke-Pester -Configuration $PesterConfiguration
 
 if (-not $SkipScriptAnalyzer) {
-    Invoke-ScriptAnalyzer $ModuleUnderTest.Path -Settings .\PSScriptAnalyzerSettings.psd1
+	Invoke-ScriptAnalyzer $ModuleUnderTest.Path -Settings .\PSScriptAnalyzerSettings.psd1
 }
 Pop-Location
 

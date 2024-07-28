@@ -4,13 +4,15 @@ function New-NinjaOneCustomFieldObject {
 			Create a new Custom Field object.
 		.DESCRIPTION
 			Creates a new Custom Field object containing required / specified properties / structure.
+		.FUNCTIONALITY
+			Custom Field Object Helper
 		.OUTPUTS
-			[CustomField]
+			[Object]
 
 			A new Custom Field object.
 	#>
 	[CmdletBinding()]
-	[OutputType([CustomField])]
+	[OutputType([Object])]
 	[Alias('nnodtfo')]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Does not change system state, creates a new object.')]
 	param(

@@ -1,8 +1,11 @@
+# requires -Version 7.0
 <#
 	.SYNOPSIS
 		Homotechsual portable module build script.
 #>
 [CmdletBinding()]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseCompatibleSyntax', '', Justification = 'Script runs in CI/CD pipelines and is not designed to run on old versions.')]
+
 Param (
 	[ValidateSet('clean', 'build', 'updateManifest', 'publish', 'updateHelp', 'generateShortNamesMapping', 'push')]
 	[String[]]$TaskNames = ('clean', 'build', 'updateManifest', 'publish', 'updateHelp', 'generateShortNamesMapping', 'push'),
@@ -20,6 +23,7 @@ if (-Not(Get-Module -Name 'Install-RequiredModule')) {
 	Install-Script -Name 'Install-RequiredModule' -Force -Scope CurrentUser
 }
 Install-RequiredModule -RequiredModulesFile ('{0}\RequiredModules.psd1' -f $PSScriptRoot) -Scope CurrentUser -TrustRegisteredRepositories -Import -Quiet
+Import-Module 'R:\Development\Docusaurus.PowerShell\Output\Alt3.Docusaurus.PowerShell\1.0.34\Alt3.Docusaurus.PowerShell.psd1' -Force
 # Use strict mode when building.
 Set-StrictMode -Version Latest
 # Helper: Get the module PSD1 file path.

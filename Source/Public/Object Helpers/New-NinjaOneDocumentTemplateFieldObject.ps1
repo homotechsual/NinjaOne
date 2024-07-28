@@ -4,13 +4,15 @@ function New-NinjaOneDocumentTemplateFieldObject {
 			Create a new Document Template Field object.
 		.DESCRIPTION
 			Creates a new Document Template Field object containing required / specified properties / structure.
+		.FUNCTIONALITY
+			Document Template Field Object Helper
 		.OUTPUTS
-			[DocumentTemplateField]
+			[Object]
 
 			A new Document Template Field or UI Element object.
 	#>
 	[CmdletBinding()]
-	[OutputType([DocumentTemplateField])]
+	[OutputType([Object])]
 	[Alias('nnodtfo')]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Does not change system state, creates a new object.')]
 	param(
