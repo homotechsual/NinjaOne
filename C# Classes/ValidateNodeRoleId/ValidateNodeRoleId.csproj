@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <Target Name="Copy DLLs" AfterTargets="Build">
+    <Message Text="Executing Copy DLLs" Importance="High" />
+    <Copy SourceFiles="$(TargetDir)$(ProjectName).dll"
+      DestinationFolder="..\..\Source\Binaries" />
+    <Message Text="Finished Copy DLLs" Importance="High" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="PowerShellStandard.Library" Version="5.1.1" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

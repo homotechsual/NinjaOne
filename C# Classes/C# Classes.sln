@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34408.163
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetadataAttribute", "MetadataAttribute\MetadataAttribute.csproj", "{C50E9E72-D49F-4A57-B6AF-C4D080C6DAC2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValidateStringOrInt", "ValidateStringOrInt\ValidateStringOrInt.csproj", "{2D95F554-D757-4495-9615-0DD98345D83D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValidateNodeRoleId", "ValidateNodeRoleId\ValidateNodeRoleId.csproj", "{1598F27D-2D6C-44C9-BFAE-D259098F4E09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums", "Enums\Enums.csproj", "{0A15392D-A811-46B6-9416-0FA25BF16BBA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomField", "NinjaOneCustomField\CustomField.csproj", "{7948D943-2640-4AAB-B525-76AE7C2754D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentTemplateField", "NinjaOneDocumentTemplateField\DocumentTemplateField.csproj", "{E4EFEBEF-E661-4C51-A57A-8DFE758A217A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C50E9E72-D49F-4A57-B6AF-C4D080C6DAC2}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{C50E9E72-D49F-4A57-B6AF-C4D080C6DAC2}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{C50E9E72-D49F-4A57-B6AF-C4D080C6DAC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C50E9E72-D49F-4A57-B6AF-C4D080C6DAC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D95F554-D757-4495-9615-0DD98345D83D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D95F554-D757-4495-9615-0DD98345D83D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D95F554-D757-4495-9615-0DD98345D83D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D95F554-D757-4495-9615-0DD98345D83D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1598F27D-2D6C-44C9-BFAE-D259098F4E09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1598F27D-2D6C-44C9-BFAE-D259098F4E09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1598F27D-2D6C-44C9-BFAE-D259098F4E09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1598F27D-2D6C-44C9-BFAE-D259098F4E09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A15392D-A811-46B6-9416-0FA25BF16BBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A15392D-A811-46B6-9416-0FA25BF16BBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A15392D-A811-46B6-9416-0FA25BF16BBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A15392D-A811-46B6-9416-0FA25BF16BBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7948D943-2640-4AAB-B525-76AE7C2754D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7948D943-2640-4AAB-B525-76AE7C2754D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7948D943-2640-4AAB-B525-76AE7C2754D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7948D943-2640-4AAB-B525-76AE7C2754D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4EFEBEF-E661-4C51-A57A-8DFE758A217A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4EFEBEF-E661-4C51-A57A-8DFE758A217A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4EFEBEF-E661-4C51-A57A-8DFE758A217A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4EFEBEF-E661-4C51-A57A-8DFE758A217A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {07F983EA-3275-42BD-AE4A-5182E104DB99}
+	EndGlobalSection
+EndGlobal

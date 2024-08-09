@@ -1,0 +1,134 @@
+Connect-NinjaOne: NinjaOne
+Find-NinjaOneDevices: Devices
+Get-NinjaOneActivities: Activities
+Get-NinjaOneAlerts: Alerts
+Get-NinjaOneAntiVirusStatus: AntiVirus Status Query
+Get-NinjaOneAntiVirusThreats: AntiVirus Threats Query
+Get-NinjaOneAutomations: Automation Scripts
+Get-NinjaOneBackupJobs: Backup Jobs
+Get-NinjaOneComputerSystems: Computer Systems Query
+Get-NinjaOneContacts: Contacts
+Get-NinjaOneCustomFields: Custom Fields Query
+Get-NinjaOneCustomFieldSignedURLs: Custom Field Signed URLs
+Get-NinjaOneCustomFieldsPolicyCondition: Custom Field Policy Condition
+Get-NinjaOneCustomFieldsPolicyConditions: Custom Field Policy Conditions
+Get-NinjaOneDeviceActivities: Device Activities
+Get-NinjaOneDeviceAlerts: Device Alerts
+Get-NinjaOneDeviceBackupUsage: Backup Usage Query
+Get-NinjaOneDeviceCustomFields: Device Custom Fields
+Get-NinjaOneDeviceDashboardURL: Device Dashboard URL
+Get-NinjaOneDeviceDisks: Device Disk drives
+Get-NinjaOneDeviceHealth: Device Health Query
+Get-NinjaOneDeviceJobs: Device Jobs
+Get-NinjaOneDeviceLastLoggedOnUser: Device Last Logged On User
+Get-NinjaOneDeviceNetworkInterfaces: Device Network Interfaces
+Get-NinjaOneDeviceOSPatches: Device OS Patches
+Get-NinjaOneDeviceOSPatchInstalls: Device OS Patch Installs
+Get-NinjaOneDevicePolicyOverrides: Device Policy Overrides
+Get-NinjaOneDeviceProcessors: Device Processors
+Get-NinjaOneDevices: Devices
+Get-NinjaOneDeviceScriptingOptions: Device Scripting Options
+Get-NinjaOneDeviceSoftwareInventory: Device Software Inventory
+Get-NinjaOneDeviceSoftwarePatches: Device Software Patches
+Get-NinjaOneDeviceSoftwarePatchInstalls: Device Software Patch Installs
+Get-NinjaOneDeviceVolumes: Device Volumes
+Get-NinjaOneDeviceWindowsServices: Device Windows Services
+Get-NinjaOneDisks: Disks Query
+Get-NinjaOneDocumentTemplates: Document Template
+Get-NinjaOneGroupMembers: Group Members
+Get-NinjaOneGroups: Groups
+Get-NinjaOneInstaller: Installer
+Get-NinjaOneIntegrityCheckJobs: Integrity Check Jobs
+Get-NinjaOneJobs: Jobs
+Get-NinjaOneKnowledgeBaseArticle: Knowledge Base Article
+Get-NinjaOneKnowledgeBaseFolders: Knowledge Base Folders
+Get-NinjaOneLocationCustomFields: Location Custom Fields
+Get-NinjaOneLocations: Locations
+Get-NinjaOneLoggedOnUsers: Logged On Users Query
+Get-NinjaOneNetworkInterfaces: Network Interfaces Query
+Get-NinjaOneNotificationChannels: Notification Channels
+Get-NinjaOneOperatingSystems: Operating Systems Query
+Get-NinjaOneOrganisationCustomFields: Organisation Custom Fields
+Get-NinjaOneOrganisationDocuments: Organisation Documents
+Get-NinjaOneOrganisationDocumentSignedURLs: Organisation Document Signed URLs
+Get-NinjaOneOrganisationInformation: Organisation Information
+Get-NinjaOneOrganisationKnowledgeBaseArticles: Organisation Knowledge Base Articles
+Get-NinjaOneOrganisationLocationBackupUsage: Location Backup Usage
+Get-NinjaOneOrganisationLocations: Organisation Locations
+Get-NinjaOneOrganisationLocationsBackupUsage: Organisation Locations Backup Usage
+Get-NinjaOneOrganisations: Organisations
+Get-NinjaOneOrganisationUsers: Organisation Users
+Get-NinjaOneOSPatches: OS Patches Query
+Get-NinjaOneOSPatchInstalls: OS Patch Installs Query
+Get-NinjaOnePolicies: Policies
+Get-NinjaOnePolicyOverrides: Policy Overrides Query
+Get-NinjaOneProcessors: Processors Query
+Get-NinjaOneRAIDControllers: RAID Controllers Query
+Get-NinjaOneRAIDDrives: RAID Drives Query
+Get-NinjaOneRelatedItemAttachment: Related Item Attachment
+Get-NinjaOneRelatedItemAttachmentSignedURLs: Related Item Attachment Signed URLs
+Get-NinjaOneRelatedItems: Related Items
+Get-NinjaOneRoles: Device Roles
+Get-NinjaOneSoftwareInventory: Software Inventory Query
+Get-NinjaOneSoftwarePatches: Software Patches Query
+Get-NinjaOneSoftwarePatchInstalls: Software Patch Installs Query
+Get-NinjaOneSoftwareProducts: Software Products
+Get-NinjaOneTasks: Scheduled Tasks
+Get-NinjaOneTicketAttributes: Ticket Attributes
+Get-NinjaOneTicketBoards: Ticket Boards
+Get-NinjaOneTicketForms: Ticket Forms
+Get-NinjaOneTicketingUsers: Ticketing Users
+Get-NinjaOneTicketLogEntries: Ticket Log Entries
+Get-NinjaOneTickets: Tickets
+Get-NinjaOneTicketStatuses: Ticket Statuses
+Get-NinjaOneUsers: Users
+Get-NinjaOneVolumes: Volumes Query
+Get-NinjaOneWindowsEventPolicyCondition: Windows Event Policy Condition
+Get-NinjaOneWindowsServices: Windows Services Query
+Invoke-NinjaOneDeviceScript: Script or Action
+Invoke-NinjaOneRequest: API Request
+Invoke-NinjaOneWindowsServiceAction: Windows Service Action
+New-NinjaOneAttachmentRelation: Attachment Relation
+New-NinjaOneCustomFieldObject: Custom Field Object Helper
+New-NinjaOneCustomFieldsPolicyCondition: Custom Fields Policy Condition
+New-NinjaOneDocumentTemplate: Document Template
+New-NinjaOneDocumentTemplateFieldObject: Document Template Field Object Helper
+New-NinjaOneEntityRelation: Entity Relation
+New-NinjaOneEntityRelationObject: Entity Relation Object Helper
+New-NinjaOneEntityRelations: Entity Relations
+New-NinjaOneInstaller: Installer
+New-NinjaOneIntegrityCheckJob: Integrity Check Job
+New-NinjaOneLocation: Location
+New-NinjaOneOrganisation: Organisation
+New-NinjaOneOrganisationDocument: Organisation Documents
+New-NinjaOneOrganisationDocuments: Organisation Documents
+New-NinjaOnePolicy: Policy
+New-NinjaOneSecureRelation: Secure Value Relation
+New-NinjaOneTicket: Ticket
+New-NinjaOneTicketComment: Ticket Comment
+New-NinjaOneWindowsEventPolicyCondition: Windows Event Policy Condition
+Remove-NinjaOneDeviceMaintenance: Maintenance
+Remove-NinjaOneDocumentTemplate: Document Template
+Remove-NinjaOneOrganisationDocument: Organisation Document
+Remove-NinjaOnePolicyCondition: Policy Condition
+Remove-NinjaOneRelatedItem: Related Item
+Remove-NinjaOneRelatedItems: Related Items
+Remove-NinjaOneWebhook: Webhook
+Reset-NinjaOneAlert: Alert
+Reset-NinjaOneDevicePolicyOverrides: Device Policy Overrides
+Restart-NinjaOneDevice: Device
+Set-NinjaOneDevice: Device
+Set-NinjaOneDeviceApproval: Device Approval
+Set-NinjaOneDeviceCustomFields: Device Custom Fields
+Set-NinjaOneDeviceMaintenance: Device Maintenance
+Set-NinjaOneDocumentTemplate: Document Template
+Set-NinjaOneLocation: Location
+Set-NinjaOneLocationCustomFields: Location Custom Fields
+Set-NinjaOneOrganisation: Organisation
+Set-NinjaOneOrganisationCustomFields: Organisation Custom Fields
+Set-NinjaOneOrganisationDocument: Organisation Document
+Set-NinjaOneOrganisationDocuments: Organisation Documents
+Set-NinjaOneOrganisationPolicies: Organisation Policies
+Set-NinjaOneTicket: Ticket
+Set-NinjaOneWindowsServiceConfiguration: Windows Service Configuration
+Update-NinjaOneWebhook: Webhook

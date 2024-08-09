@@ -5,7 +5,9 @@
     }
   ],
   "settings": {
-    "editor.tabSize": 4,
+    "editor.insertSpaces": false,
+    "editor.detectIndentation": false,
+    "editor.autoIndent": "full",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "modificationsIfAvailable",
     "azure-pipelines.customSchemaFile": ".\\DevOps\\azurepipelines.schema.json",
@@ -25,7 +27,17 @@
     "powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
     "powershell.codeFormatting.whitespaceBeforeOpenParen": true,
     "powershell.codeFormatting.whitespaceBetweenParameters": false,
-    "powershell.codeFormatting.whitespaceInsideBrace": true
+    "powershell.codeFormatting.whitespaceInsideBrace": true,
+    "cSpell.words": [
+      "hashtable",
+      "homotechsual",
+      "Homotechsual",
+      "organisation",
+      "Organisation",
+      "pluralised",
+      "Whitelock"
+    ],
+    "intelephense.format.braces": "k&r"
   },
   "launch": {
     "version": "0.2.0",
@@ -39,8 +51,7 @@
       {
         "name": "PowerShell Attach Interactive Session Runspace",
         "type": "PowerShell",
-        "request": "attach",
-        "processId": "current"
+        "request": "attach"
       },
       {
         "name": "PowerShell: Launch Current File",

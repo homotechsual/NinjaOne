@@ -3,10 +3,11 @@
         Core test suite for the NinjaOne module.
 #>
 
+$ModuleName = Get-ChildItem -Path '.\Source' -Filter '*.psd1' | Select-Object -ExpandProperty BaseName
+
 BeforeAll {
-    $ModulePath = Split-Path -Parent -Path (Split-Path -Parent -Path $PSCommandPath)
-    $ModuleName = 'NinjaOne'
-    $ManifestPath = "$($ModulePath)\$($ModuleName).psd1"
+    $ModuleName = Get-ChildItem -Path '.\Source' -Filter '*.psd1' | Select-Object -ExpandProperty BaseName
+    $ManifestPath = Get-ChildItem -Path '.\Source' -Filter '*.psd1'  | Select-Object -ExpandProperty FullName
     if (Get-Module -Name $ModuleName) {
         Remove-Module $ModuleName -Force
     }
@@ -15,8 +16,7 @@ BeforeAll {
 
 }
 
-# Test that the manifest is generally correct. Not a functional test.
-Describe 'Core' {
+Describe ('{0} - Core Tests' -f $ModuleName) -Tags 'Module' {
     It 'Manifest is valid' {
         {
             Test-ModuleManifest -Path $ManifestPath -ErrorAction Stop -WarningAction SilentlyContinue
@@ -48,7 +48,7 @@ Describe 'Core' {
     }
 
     It 'Project URI is correct' {
-        $Script:ModuleInformation.ProjectUri | Should -Be 'https://github.com/homotechsual/NinjaOne'
+        $Script:ModuleInformation.ProjectUri | Should -Be 'https://docs.homotechsual.dev/modules/ninjaone'
     }
 
     It 'PowerShell Gallery tags is not empty' {
@@ -62,8 +62,12 @@ Describe 'Core' {
     }
 }
 
-Describe 'Module NinjaOne loads' {
+Describe ('{0} - Module Load Test' -f $ModuleName) -Tags 'Module' {
     It 'Passed Module load' {
         Get-Module -Name 'NinjaOne' | Should -Not -Be $null
     }
+}
+
+AfterAll {
+    Remove-Module $ModuleName -Force
 }

@@ -5,8 +5,8 @@
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/NinjaOne?style=for-the-badge)](https://www.powershellgallery.com/packages/NinjaOne/)
 [![License](https://img.shields.io/github/license/homotechsual/NinjaOne?style=for-the-badge)](https://mit.license.homotechsual.dev/)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/homotechsual?style=for-the-badge)](https://github.com/sponsors/homotechsual/)
-[![Stable Release](https://img.shields.io/powershellgallery/v/NinjaOne?label=Stable+Release&style=for-the-badge)](https://www.powershellgallery.com/packages/NinjaOne/)
-[![Preview Release](https://img.shields.io/powershellgallery/v/NinjaOne?include_prereleases&label=Preview%20Release&style=for-the-badge)](https://www.powershellgallery.com/packages/NinjaOne/)
+[![Stable Release](https://img.shields.io/powershellgallery/v/NinjaOne?label=Stable+Release\&style=for-the-badge)](https://www.powershellgallery.com/packages/NinjaOne/)
+[![Preview Release](https://img.shields.io/powershellgallery/v/NinjaOne?include_prereleases\&label=Preview%20Release\&style=for-the-badge)](https://www.powershellgallery.com/packages/NinjaOne/)
 
 ## Where's the content?
 
