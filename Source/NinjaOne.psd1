@@ -255,10 +255,10 @@
 			IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
 			# ReleaseNotes of this module
-			ReleaseNotes = 'https://github.com/homotechsual/NinjaOne/releases/tag/2.0.0-RC6'
+			ReleaseNotes = 'https://github.com/homotechsual/NinjaOne/releases/tag/2.0.0'
 
 			# Prerelease string of this module
-			Prerelease = 'RC6'
+			# Prerelease = ''
 
 			# Flag to indicate whether the module requires explicit user acceptance for install/update/save
 			# RequireLicenseAcceptance = $false

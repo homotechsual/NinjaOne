@@ -5,6 +5,11 @@
 		https://github.com/PowerShell/PSScriptAnalyzer/blob/master/Engine/Settings/
 #>
 @{
+	Filter = @(
+		'**/*.ps1',
+		'**/*.psm1',
+		!'* * / Tests/*.ps1'
+	)
 	Severity = @(
 		'Error',
 		'Warning',
