@@ -258,7 +258,7 @@
 			ReleaseNotes = 'https://github.com/homotechsual/NinjaOne/releases/tag/2.0.0'
 
 			# Prerelease string of this module
-			# Prerelease = ''
+			Prerelease = ''
 
 			# Flag to indicate whether the module requires explicit user acceptance for install/update/save
 			# RequireLicenseAcceptance = $false
