@@ -43,10 +43,7 @@ function New-NinjaOneLocation {
 				if ($show) {
 					return $LocationCreate
 				} else {
-					$OIP = $InformationPreference
-					$InformationPreference = 'Continue'
 					Write-Information ('Location {0} created.' -f $LocationCreate.name)
-					$InformationPreference = $OIP
 				}
 			}
 		} catch {

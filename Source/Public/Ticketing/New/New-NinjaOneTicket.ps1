@@ -39,10 +39,7 @@ function New-NinjaOneTicket {
 				if ($show) {
 					return $TicketCreate
 				} else {
-					$OIP = $InformationPreference
-					$InformationPreference = 'Continue'
 					Write-Information ('Ticket {0} created.' -f $TicketCreate.Subject)
-					$InformationPreference = $OIP
 				}
 			}
 		} catch {

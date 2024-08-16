@@ -57,10 +57,7 @@ function New-NinjaOneOrganisation {
 				if ($show) {
 					return $OrganisationCreate
 				} else {
-					$OIP = $InformationPreference
-					$InformationPreference = 'Continue'
 					Write-Information ('Organisation {0} created.' -f $OrganisationCreate.name)
-					$InformationPreference = $OIP
 				}
 			}
 		} catch {

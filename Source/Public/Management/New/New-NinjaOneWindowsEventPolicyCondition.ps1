@@ -43,10 +43,7 @@ function New-NinjaOneWindowsEventPolicyCondition {
 				if ($show) {
 					return $WindowsEventConditionCreate
 				} else {
-					$OIP = $InformationPreference
-					$InformationPreference = 'Continue'
 					Write-Information ('Windows Event conditon {0} created.' -f $WindowsEventConditionCreate.displayName)
-					$InformationPreference = $OIP
 				}
 			}
 		} catch {
