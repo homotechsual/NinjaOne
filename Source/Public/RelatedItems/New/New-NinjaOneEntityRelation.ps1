@@ -56,10 +56,7 @@ function New-NinjaOneEntityRelation {
 				if ($show) {
 					return $EntityRelationCreate
 				} else {
-					$OIP = $InformationPreference
-					$InformationPreference = 'Continue'
 					Write-Information ('Entity relation between {0} with id {1} and {2} with id {3} created.' -f $entityType, $entityId, $relatedEntityType, $relatedEntityId)
-					$InformationPreference = $OIP
 				}
 			}
 		} catch {

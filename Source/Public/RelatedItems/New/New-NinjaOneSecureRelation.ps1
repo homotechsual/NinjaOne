@@ -80,10 +80,7 @@ function New-NinjaOneSecureRelation {
 				if ($show) {
 					return $SecureRelationCreate
 				} else {
-					$OIP = $InformationPreference
-					$InformationPreference = 'Continue'
 					Write-Information ('Secure relation between {0} and {2} with id {3} created.' -f $entityType, $entityId, $secureValueName)
-					$InformationPreference = $OIP
 				}
 			}
 		} catch {

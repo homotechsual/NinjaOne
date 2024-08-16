@@ -47,10 +47,7 @@ function New-NinjaOneAttachmentRelation {
 				if ($show) {
 					return $AttachmentRelationCreate
 				} else {
-					$OIP = $InformationPreference
-					$InformationPreference = 'Continue'
 					Write-Information ('Attachment relation created for {0} with id {1}' -f $entityType, $entityId)
-					$InformationPreference = $OIP
 				}
 			}
 		} catch {

@@ -43,10 +43,7 @@ function New-NinjaOneCustomFieldsPolicyCondition {
 				if ($show) {
 					return $CustomFieldsConditionCreate
 				} else {
-					$OIP = $InformationPreference
-					$InformationPreference = 'Continue'
 					Write-Information ('Custom Fields condition {0} created.' -f $CustomFieldsConditionCreate.displayName)
-					$InformationPreference = $OIP
 				}
 			}
 		} catch {

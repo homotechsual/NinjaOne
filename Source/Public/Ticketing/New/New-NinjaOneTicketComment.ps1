@@ -45,10 +45,7 @@ function New-NinjaOneTicketComment {
 				if ($show) {
 					return $TicketCreate
 				} else {
-					$OIP = $InformationPreference
-					$InformationPreference = 'Continue'
 					Write-Information ('Ticket comment on ticket {0} created.' -f $ticketId)
-					$InformationPreference = $OIP
 				}
 			}
 		} catch {

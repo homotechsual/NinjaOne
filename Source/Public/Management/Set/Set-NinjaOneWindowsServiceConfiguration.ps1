@@ -43,10 +43,7 @@ function Set-NinjaOneWindowsServiceConfiguration {
 			if ($PSCmdlet.ShouldProcess(('Service {0} configuration' -f $serviceId), 'Set')) {
 				$ServiceConfiguration = New-NinjaOnePOSTRequest @RequestParams
 				if ($ServiceConfiguration -eq 204) {
-					$OIP = $InformationPreference
-					$InformationPreference = 'Continue'
 					Write-Information ('Service {0} configuration updated successfully.' -f $serviceId)
-					$InformationPreference = $OIP
 				}
 			}
 		} catch {

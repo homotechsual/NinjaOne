@@ -46,10 +46,7 @@ function New-NinjaOneIntegrityCheckJob {
 				if ($show) {
 					return $IntegrityCheckJobCreate
 				} else {
-					$OIP = $InformationPreference
-					$InformationPreference = 'Continue'
 					Write-Information ('Integrity Check Job {0} created.' -f $IntegrityCheckJobCreate.jobUid)
-					$InformationPreference = $OIP
 				}
 			}
 		} catch {

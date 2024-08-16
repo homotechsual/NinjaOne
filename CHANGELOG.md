@@ -2,6 +2,14 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
+## 2024-08-16 - Version 2.0.1
+
+* Remove debugging statements forcing `Write-Information` output to always display.
+
+## 2024-08-09 - Version 2.0.0
+
+* No changes from 2.0.0-RC6
+
 ## 2024-07-28 - Version 2.0.0-RC6
 
 * Fix double declaration of `Get-NinjaOneOrganisationInformation` (once as an alias and once as a new wrapper commandlet!)

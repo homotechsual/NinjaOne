@@ -66,10 +66,7 @@ function New-NinjaOnePolicy {
 				if ($show) {
 					return $PolicyCreate
 				} else {
-					$OIP = $InformationPreference
-					$InformationPreference = 'Continue'
 					Write-Information ('Policy {0} created.' -f $PolicyCreate.name)
-					$InformationPreference = $OIP
 				}
 			}
 		} catch {
