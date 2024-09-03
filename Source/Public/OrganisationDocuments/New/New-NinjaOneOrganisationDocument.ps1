@@ -30,8 +30,8 @@ function New-NinjaOneOrganisationDocument {
 		[String]$documentTemplateId,
 		# An object containing an array of organisation documents to create.
 		[Parameter(Mandatory, Position = 2, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-		[Alias('organizationDocuments', 'body')]
-		[NinjaOneOrganisationDocument[]]$organisationDocuments,
+		[Alias('organizationDocuments', 'organisationDocuments', 'organizationDocument', 'body')]
+		[Object]$organisationDocument,
 		# Show the organisation document that was created.
 		[Switch]$show
 	)

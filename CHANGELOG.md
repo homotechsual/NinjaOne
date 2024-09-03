@@ -2,6 +2,10 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
+## 2024-09-03 - Version 2.0.2
+
+* Fix incorrect parameter type for `-organisationDocument` and `-organisationDocuments` parameters on the `New-NinjaOneOrganisationDocument` and `New-NinjaOneOrganisationDocuments` commandlets.
+
 ## 2024-08-16 - Version 2.0.1
 
 * Remove debugging statements forcing `Write-Information` output to always display.
