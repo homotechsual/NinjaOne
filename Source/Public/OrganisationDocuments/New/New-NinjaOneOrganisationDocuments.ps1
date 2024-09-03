@@ -23,7 +23,7 @@ function New-NinjaOneOrganisationDocuments {
 		# An object containing an array of organisation documents to create.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('organizationDocuments', 'body')]
-		[NinjaOneOrganisationDocument[]]$organisationDocuments,
+		[Object[]]$organisationDocuments,
 		# Show the organisation documents that were created.
 		[Switch]$show
 	)
