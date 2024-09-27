@@ -100,7 +100,7 @@ New-NinjaOneInstaller: Installer
 New-NinjaOneIntegrityCheckJob: Integrity Check Job
 New-NinjaOneLocation: Location
 New-NinjaOneOrganisation: Organisation
-New-NinjaOneOrganisationDocument: Organisation Documents
+New-NinjaOneOrganisationDocument: Organisation Document
 New-NinjaOneOrganisationDocuments: Organisation Documents
 New-NinjaOnePolicy: Policy
 New-NinjaOneSecureRelation: Secure Value Relation
