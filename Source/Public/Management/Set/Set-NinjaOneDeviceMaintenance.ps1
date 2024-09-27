@@ -44,6 +44,7 @@ function Set-NinjaOneDeviceMaintenance {
 	process {
 		try {
 			Write-Verbose ('Setting maintenance window for device {0}.' -f $deviceId)
+			$Resource = ('v2/device/{0}/maintenance' -f $deviceId)
 			if ($start) {
 				[Int]$start = ConvertTo-UnixEpoch -DateTime $start
 			} elseif ($unixStart) {

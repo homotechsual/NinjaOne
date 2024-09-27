@@ -2,6 +2,10 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
+## 2024-09-27 - Version 2.0.3
+
+* Fix broken `Set-NinjaOneDeviceMaintenance` commandlet where the API resource path was not set.
+
 ## 2024-09-03 - Version 2.0.2
 
 * Fix incorrect parameter type for `-organisationDocument` and `-organisationDocuments` parameters on the `New-NinjaOneOrganisationDocument` and `New-NinjaOneOrganisationDocuments` commandlets.
