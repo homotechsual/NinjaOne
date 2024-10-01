@@ -68,6 +68,9 @@ function Invoke-NinjaOneRequest {
 			} else {
 				Write-Verbose 'No body present.'
 			}
+			if ($PSVersionTable.PSVersion.Major -eq 5) {
+				$WebRequestParams.UseBasicParsing = $true
+			}
 			$Response = Invoke-WebRequest @WebRequestParams -Headers $AuthHeaders -ContentType 'application/json;charset=utf-8'
 			Write-Verbose ('Response status code: {0}' -f $Response.StatusCode)
 			Write-Verbose ('Response headers: {0}' -f ($Response.Headers | Out-String))
