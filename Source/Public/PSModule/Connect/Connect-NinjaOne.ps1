@@ -290,6 +290,9 @@ function Connect-NinjaOne {
 					Body = $TokenRequestBody
 					ContentType = 'application/x-www-form-urlencoded'
 				}
+				if ($PSVersionTable.PSVersion.Major -eq 5) {
+					$TokenRequestParams.UseBasicParsing = $true
+				}
 				$TokenResult = Invoke-WebRequest @TokenRequestParams
 				$TokenPayload = $TokenResult.Content | ConvertFrom-Json
 				Write-Verbose "Token payload is $($TokenPayload | Format-List | Out-String)"

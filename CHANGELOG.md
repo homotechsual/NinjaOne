@@ -2,6 +2,10 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
+## 2024-10-01 - Version 2.0.4
+
+* Fix for systems where IE First-Run is not complete by using the `-UseBasicParsing` switch for `Invoke-WebRequest`.
+
 ## 2024-09-27 - Version 2.0.3
 
 * Fix broken `Set-NinjaOneDeviceMaintenance` commandlet where the API resource path was not set.
