@@ -35,7 +35,7 @@ function Start-NinjaOneOSPatchScan {
 			$Resource = ('v2/device/{0}/patch/os/scan' -f $deviceId)
 			$RequestParams = @{
 				Resource = $Resource
-				Body = $deviceCustomFields
+				Body = $deviceOSScan
 			}
 			if ($PSCmdlet.ShouldProcess(('OS Patch Scan for {0}' -f $deviceId), 'Set')) {
 				$OSScanTrigger = New-NinjaOnePATCHRequest @RequestParams
