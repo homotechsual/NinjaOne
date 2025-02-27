@@ -39,12 +39,12 @@ function Set-NinjaOneOrganisationPolicies {
 		try {
 			$RequestParams = @{
 				Resource = ('v2/organization/{0}/policies' -f $organisationId)
-				Body = $Body
+				Body = $null
 			}
 			if ($PSCmdlet.ParameterSetName -eq 'Single') {
 				try {
 					$RequestParams.AsArray = $true
-					$Body = @{
+					$RequestParams.Body = @{
 						'nodeRoleId' = $nodeRoleId
 						'policyId' = $policyId
 					}
@@ -59,10 +59,10 @@ function Set-NinjaOneOrganisationPolicies {
 				}
 			} elseif ($PSCmdlet.ParameterSetName -eq 'Multiple') {
 				$RequestParams.AsArray = $false
-				$Body = [System.Collections.Generic.List[Object]]::new()
+				$RequestParams.Body = [System.Collections.Generic.List[Object]]::new()
 				$policyAssignments | ForEach-Object {
 					try {
-						$Body.Add(
+						$RequestParams.Body.Add(
 							@{
 								'nodeRoleId' = $_.nodeRoleId
 								'policyId' = $_.policyId
