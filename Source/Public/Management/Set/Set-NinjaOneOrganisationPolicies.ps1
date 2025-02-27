@@ -61,7 +61,7 @@ function Set-NinjaOneOrganisationPolicies {
 					}
 				}
 			}
-			$Resource = ('v2/organization/{0}/policies' -f $organisation.id)
+			$Resource = ('v2/organization/{0}/policies' -f $organisationId)
 			$RequestParams = @{
 				Resource = $Resource
 				Body = $Body
