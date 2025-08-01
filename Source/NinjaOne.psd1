@@ -193,6 +193,7 @@
 		'Reset-NinjaOneAlert',
 		'Reset-NinjaOneDevicePolicyOverrides',
 		'Restart-NinjaOneDevice',
+		'Set-NinjaOneDeviceOwner',
 		'Set-NinjaOneDevice',
 		'Set-NinjaOneDeviceApproval',
 		'Set-NinjaOneDeviceCustomFields',

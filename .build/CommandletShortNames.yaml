@@ -118,6 +118,7 @@ Reset-NinjaOneAlert: Alert
 Reset-NinjaOneDevicePolicyOverrides: Device Policy Overrides
 Restart-NinjaOneDevice: Device
 Set-NinjaOneDevice: Device
+Set-NinjaOneDeviceOwner: Device Owner
 Set-NinjaOneDeviceApproval: Device Approval
 Set-NinjaOneDeviceCustomFields: Device Custom Fields
 Set-NinjaOneDeviceMaintenance: Device Maintenance
