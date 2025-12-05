@@ -10,13 +10,15 @@ function ConvertTo-UnixEpoch {
 		The Unix Epoch timestamp.
 	#>
 	[CmdletBinding()]
-	[OutputType([Int])]
+	[OutputType([Int], [Int64])]
 	param (
 		# The PowerShell DateTime object to convert.
 		[Parameter(
 			Mandatory = $True
 		)]
-		[Object]$DateTime
+		[Object]$DateTime,
+		[Alias("Millis", "Ms")]
+		[switch]$Milliseconds
 	)
 	if ($DateTime -is [String]) {
 		$DateTime = [DateTime]::Parse($DateTime)
@@ -30,6 +32,11 @@ function ConvertTo-UnixEpoch {
 	}
 	$UniversalDateTime = $DateTime.ToUniversalTime()
 	$UnixEpochTimestamp = Get-Date -Date $UniversalDateTime -UFormat %s
+
+	if ($Milliseconds) {
+		$UnixEpochTimestamp = [Int64]$UnixEpochTimestamp * 1000
+	}
+
 	Write-Verbose "Converted $DateTime to Unix Epoch timestamp $UnixEpochTimestamp"
 	return $UnixEpochTimestamp
 }
