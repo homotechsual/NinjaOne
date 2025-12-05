@@ -19,9 +19,9 @@ function Get-NinjaOneCustomFields {
 
 			Gets all custom field values for all devices updated in the last 24 hours.
 		.EXAMPLE
-			PS> Get-NinjaOneCustomFields -updatedAfterUnixEpoch 1619712000
+			PS> Get-NinjaOneCustomFields -updatedAfterUnixEpoch 1619712000000
 
-			Gets all custom field values for all devices updated at or after 1619712000.
+			Gets all custom field values for all devices updated at or after Thu Apr 29 2021 16:00.
 		.EXAMPLE
 			PS> Get-NinjaOneCustomFields -fields 'hasBatteries', 'autopilotHwid'
 
@@ -70,10 +70,10 @@ function Get-NinjaOneCustomFields {
 		[Parameter(ParameterSetName = 'Default', Position = 3)]
 		[Parameter(ParameterSetName = 'Scoped', Position = 3)]
 		[DateTime]$updatedAfter,
-		# Custom fields updated after the specified date. Unix Epoch time.
+		# Custom fields updated after the specified date. Unix Epoch time (milliseconds).
 		[Parameter(ParameterSetName = 'Default', Position = 3)]
 		[Parameter(ParameterSetName = 'Scoped', Position = 3)]
-		[Int]$updatedAfterUnixEpoch,
+		[Int64]$updatedAfterUnixEpoch,
 		# Array of fields.
 		[Parameter(ParameterSetName = 'Default', Position = 4)]
 		[Parameter(ParameterSetName = 'Scoped', Position = 4)]
@@ -92,12 +92,12 @@ function Get-NinjaOneCustomFields {
 		}
 		# If the [DateTime] parameter $updatedAfter is set convert the value to a Unix Epoch.
 		if ($updatedAfter) {
-			[Int]$updatedAfter = ConvertTo-UnixEpoch -DateTime $updatedAfter
+			[Int64]$updatedAfter = ConvertTo-UnixEpoch -DateTime $updatedAfter -Milliseconds
 		}
 		# If the Unix Epoch parameter $updatedAfterUnixEpoch is set assign the value to the $updatedAfter variable and null $updatedAfterUnixEpoch.
 		if ($updatedAfterUnixEpoch) {
 			$Parameters.Remove('updatedAfterUnixEpoch') | Out-Null
-			[Int]$updatedAfter = $updatedAfterUnixEpoch
+			[Int64]$updatedAfter = $updatedAfterUnixEpoch
 		}
 		$QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters -CommaSeparatedArrays
 	}
