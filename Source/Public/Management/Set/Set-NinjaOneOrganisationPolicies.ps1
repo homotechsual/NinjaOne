@@ -19,7 +19,7 @@ function Set-NinjaOneOrganisationPolicies {
 		'put'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The organisation to update the policy assignment for.
 		[Parameter(Mandatory, ParameterSetName = 'Single', Position = 0, ValueFromPipelineByPropertyName)]
 		[Parameter(Mandatory, ParameterSetName = 'Multiple', Position = 0, ValueFromPipelineByPropertyName)]
@@ -41,7 +41,7 @@ function Set-NinjaOneOrganisationPolicies {
 				try {
 					$Body = @{
 						'nodeRoleId' = $nodeRoleId
-						'policyId' = $policyId
+						'policyId'   = $policyId
 					}
 				} catch {
 					New-NinjaOneError -ErrorRecord $_
@@ -53,7 +53,7 @@ function Set-NinjaOneOrganisationPolicies {
 						$Body.Add(
 							@{
 								'nodeRoleId' = $_.nodeRoleId
-								'policyId' = $_.policyId
+								'policyId'   = $_.policyId
 							}
 						) | Out-Null
 					} catch {
@@ -61,10 +61,10 @@ function Set-NinjaOneOrganisationPolicies {
 					}
 				}
 			}
-			$Resource = ('v2/organization/{0}/policies' -f $organisation.id)
+			$Resource = ('v2/organization/{0}/policies' -f $organisationId)
 			$RequestParams = @{
 				Resource = $Resource
-				Body = $Body
+				Body     = $Body
 			}
 			if ($PSCmdlet.ParameterSetName -eq 'Single') {
 				$RequestParams.AsArray = $true
