@@ -118,6 +118,7 @@ Reset-NinjaOneAlert: Alert
 Reset-NinjaOneDevicePolicyOverrides: Device Policy Overrides
 Restart-NinjaOneDevice: Device
 Set-NinjaOneDevice: Device
+Set-NinjaOneDeviceOwner: Device Owner
 Set-NinjaOneDeviceApproval: Device Approval
 Set-NinjaOneDeviceCustomFields: Device Custom Fields
 Set-NinjaOneDeviceMaintenance: Device Maintenance
@@ -132,3 +133,96 @@ Set-NinjaOneOrganisationPolicies: Organisation Policies
 Set-NinjaOneTicket: Ticket
 Set-NinjaOneWindowsServiceConfiguration: Windows Service Configuration
 Update-NinjaOneWebhook: Webhook
+Get-NinjaOneChecklistTemplates: Checklist Templates
+New-NinjaOneChecklistTemplate: Checklist Template
+Remove-NinjaOneChecklistTemplate: Checklist Template
+Remove-NinjaOneChecklistTemplates: Checklist Templates
+Set-NinjaOneChecklistTemplates: Checklist Templates
+Invoke-NinjaOneChecklistArchive: Checklist Archive
+Invoke-NinjaOneChecklistRestore: Checklist Restore
+Get-NinjaOneEntityCustomFieldsSignedURLs: Entity Custom Fields Signed URLs
+Start-NinjaOneOSPatchApply: OS Patch Apply (Start)
+Start-NinjaOneOSPatchScanJob: OS Patch Scan Job (Start)
+Start-NinjaOneSoftwarePatchApply: Software Patch Apply (Start)
+Start-NinjaOneSoftwarePatchScan: Software Patch Scan (Start)
+Invoke-NinjaOneDocumentTemplateArchive: Document Template Archive
+Invoke-NinjaOneDocumentTemplateRestore: Document Template Restore
+Invoke-NinjaOneDocumentTemplatesArchive: Document Templates Archive
+Invoke-NinjaOneDocumentTemplatesRestore: Document Templates Restore
+New-NinjaOneUnmanagedDevice: Unmanaged Device
+Remove-NinjaOneUnmanagedDevice: Unmanaged Device
+Set-NinjaOneUnmanagedDevice: Unmanaged Device
+Invoke-NinjaOneKnowledgeBaseArticlesArchive: Knowledge Base Articles Archive
+Invoke-NinjaOneKnowledgeBaseFoldersArchive: Knowledge Base Folders Archive
+New-NinjaOneKnowledgeBaseArticles: Knowledge Base Articles
+Remove-NinjaOneKnowledgeBaseArticles: Knowledge Base Articles
+Remove-NinjaOneKnowledgeBaseFolders: Knowledge Base Folders
+Restore-NinjaOneKnowledgeBaseArticles: Knowledge Base Articles Restore
+Restore-NinjaOneKnowledgeBaseFolders: Knowledge Base Folders Restore
+Move-NinjaOneKnowledgeBaseItems: Knowledge Base Items Move
+Set-NinjaOneKnowledgeBaseArticles: Knowledge Base Articles
+Remove-NinjaOneDeviceOwner: Device Owner
+Set-NinjaOneDeviceOwner: Device Owner
+Get-NinjaOneOrganisationEndUsers: Organisation End Users
+Invoke-NinjaOneOrganisationArchive: Organisation Archive
+Invoke-NinjaOneOrganisationRestore: Organisation Restore
+Get-NinjaOneOrganisationChecklist: Organisation Checklist
+Get-NinjaOneOrganisationChecklists: Organisation Checklists
+Get-NinjaOneOrganisationChecklistSignedURLs: Organisation Checklist Signed URLs
+Invoke-NinjaOneOrganisationChecklistsPromote: Organisation Checklists Promote
+Invoke-NinjaOneOrganisationChecklistsPromoteWithName: Organisation Checklists Promote With Name
+New-NinjaOneOrganisationChecklist: Organisation Checklist
+New-NinjaOneOrganisationChecklistsFromTemplates: Organisation Checklists From Templates
+Remove-NinjaOneOrganisationChecklist: Organisation Checklist
+Remove-NinjaOneOrganisationChecklists: Organisation Checklists
+Set-NinjaOneOrganisationChecklists: Organisation Checklists
+Invoke-NinjaOneOrganisationDocumentArchive: Organisation Document Archive
+Invoke-NinjaOneOrganisationDocumentRestore: Organisation Document Restore
+Invoke-NinjaOneOrganisationDocumentsArchive: Organisation Documents Archive
+Invoke-NinjaOneOrganisationDocumentsRestore: Organisation Documents Restore
+Get-NinjaOneContact: Contact
+Get-NinjaOneSystemContacts: System Contacts
+New-NinjaOneContact: Contact
+Remove-NinjaOneContact: Contact
+Set-NinjaOneContact: Contact
+Get-NinjaOneTab: Tab
+Get-NinjaOneTabEndUser: Tab End User
+Get-NinjaOneTabOrganisation: Tab Organisation
+Get-NinjaOneTabRole: Tab Role
+Get-NinjaOneTabSummaryEndUser: Tab Summary End User
+Get-NinjaOneTabSummaryOrganisation: Tab Summary Organisation
+Get-NinjaOneTabSummaryRole: Tab Summary Role
+New-NinjaOneTab: Tab
+Remove-NinjaOneTab: Tab
+Rename-NinjaOneTab: Tab Rename
+Set-NinjaOneTab: Tab
+Set-NinjaOneTabEndUserOrder: Tab End User Order
+Set-NinjaOneTabOrganisationOrder: Tab Organisation Order
+Set-NinjaOneTabRoleOrder: Tab Role Order
+Set-NinjaOneTabRoleVisibility: Tab Role Visibility
+Get-NinjaOneTags: Tags
+New-NinjaOneTag: Tag
+New-NinjaOneTagGlobal: Tag Global
+Remove-NinjaOneTag: Tag
+Remove-NinjaOneTags: Tags
+Merge-NinjaOneTags: Tags Merge
+Set-NinjaOneAssetTag: Asset Tag
+Set-NinjaOneTag: Tag
+Get-NinjaOneEndUser: End User
+Get-NinjaOneEndUserCustomFields: End User Custom Fields
+Get-NinjaOneEndUsers: End Users
+Get-NinjaOneTechnician: Technician
+Get-NinjaOneTechnicians: Technicians
+Get-NinjaOneUserRoles: User Roles
+New-NinjaOneEndUser: End User
+New-NinjaOneTechnician: Technician
+Remove-NinjaOneEndUser: End User
+Remove-NinjaOneTechnician: Technician
+Add-NinjaOneUserRoleMembers: User Role Members (Add)
+Remove-NinjaOneUserRoleMembers: User Role Members (Remove)
+Set-NinjaOneEndUser: End User
+Set-NinjaOneEndUserCustomFields: End User Custom Fields
+Set-NinjaOneTechnician: Technician
+Get-NinjaOneVulnerabilityScanGroup: Vulnerability Scan Group
+Get-NinjaOneVulnerabilityScanGroups: Vulnerability Scan Groups
+Invoke-NinjaOneVulnerabilityScanGroupUpload: Vulnerability Scan Group Upload

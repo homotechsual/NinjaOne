@@ -2,6 +2,107 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
+## 2025-09-04 - Version TBD
+
+* Add new commandlets:
+  * `Get-NinjaOneChecklistTemplates`
+  * `New-NinjaOneChecklistTemplate`
+  * `Remove-NinjaOneChecklistTemplate`
+  * `Remove-NinjaOneChecklistTemplates`
+  * `Set-NinjaOneChecklistTemplates`
+  * `Invoke-NinjaOneChecklistArchive`
+  * `Invoke-NinjaOneChecklistRestore`
+  * `Get-NinjaOneEntityCustomFieldsSignedURLs`
+  * `Start-NinjaOneOSPatchApply`
+  * `Start-NinjaOneOSPatchScanJob`
+  * `Start-NinjaOneSoftwarePatchApply`
+  * `Start-NinjaOneSoftwarePatchScan`
+  * `Invoke-NinjaOneDocumentTemplateArchive`
+  * `Invoke-NinjaOneDocumentTemplateRestore`
+  * `Invoke-NinjaOneDocumentTemplatesArchive`
+  * `Invoke-NinjaOneDocumentTemplatesRestore`
+  * `New-NinjaOneUnmanagedDevice`
+  * `Remove-NinjaOneUnmanagedDevice`
+  * `Set-NinjaOneUnmanagedDevice`
+  * `Invoke-NinjaOneKnowledgeBaseArticlesArchive`
+  * `Invoke-NinjaOneKnowledgeBaseFoldersArchive`
+  * `New-NinjaOneKnowledgeBaseArticles`
+  * `Remove-NinjaOneKnowledgeBaseArticles`
+  * `Remove-NinjaOneKnowledgeBaseFolders`
+  * `Restore-NinjaOneKnowledgeBaseArticles`
+  * `Restore-NinjaOneKnowledgeBaseFolders`
+  * `Move-NinjaOneKnowledgeBaseItems`
+  * `Set-NinjaOneKnowledgeBaseArticles`
+  * `Remove-NinjaOneDeviceOwner`
+  * `Set-NinjaOneDeviceOwner`
+  * `Get-NinjaOneOrganisationEndUsers`
+  * `Invoke-NinjaOneOrganisationArchive`
+  * `Invoke-NinjaOneOrganisationRestore`
+  * `Get-NinjaOneOrganisationChecklist`
+  * `Get-NinjaOneOrganisationChecklists`
+  * `Get-NinjaOneOrganisationChecklistSignedURLs`
+  * `Invoke-NinjaOneOrganisationChecklistsPromote`
+  * `Invoke-NinjaOneOrganisationChecklistsPromoteWithName`
+  * `New-NinjaOneOrganisationChecklist`
+  * `New-NinjaOneOrganisationChecklistsFromTemplates`
+  * `Remove-NinjaOneOrganisationChecklist`
+  * `Remove-NinjaOneOrganisationChecklists`
+  * `Set-NinjaOneOrganisationChecklists`
+  * `Invoke-NinjaOneOrganisationDocumentArchive`
+  * `Invoke-NinjaOneOrganisationDocumentRestore`
+  * `Invoke-NinjaOneOrganisationDocumentsArchive`
+  * `Invoke-NinjaOneOrganisationDocumentsRestore`
+  * `Get-NinjaOneContact`
+  * `Get-NinjaOneSystemContacts`
+  * `New-NinjaOneContact`
+  * `Remove-NinjaOneContact`
+  * `Set-NinjaOneContact`
+  * `Get-NinjaOneTab`
+  * `Get-NinjaOneTabEndUser`
+  * `Get-NinjaOneTabOrganisation`
+  * `Get-NinjaOneTabRole`
+  * `Get-NinjaOneTabSummaryEndUser`
+  * `Get-NinjaOneTabSummaryOrganisation`
+  * `Get-NinjaOneTabSummaryRole`
+  * `New-NinjaOneTab`
+  * `Remove-NinjaOneTab`
+  * `Rename-NinjaOneTab`
+  * `Set-NinjaOneTab`
+  * `Set-NinjaOneTabEndUserOrder`
+  * `Set-NinjaOneTabOrganisationOrder`
+  * `Set-NinjaOneTabRoleOrder`
+  * `Set-NinjaOneTabRoleVisibility`
+  * `Get-NinjaOneTags`
+  * `New-NinjaOneTag`
+  * `New-NinjaOneTagGlobal`
+  * `Remove-NinjaOneTag`
+  * `Remove-NinjaOneTags`
+  * `Merge-NinjaOneTags`
+  * `Set-NinjaOneAssetTag`
+  * `Set-NinjaOneTag`
+  * `Get-NinjaOneEndUser`
+  * `Get-NinjaOneEndUserCustomFields`
+  * `Get-NinjaOneEndUsers`
+  * `Get-NinjaOneTechnician`
+  * `Get-NinjaOneTechnicians`
+  * `Get-NinjaOneUserRoles`
+  * `New-NinjaOneEndUser`
+  * `New-NinjaOneTechnician`
+  * `Remove-NinjaOneEndUser`
+  * `Remove-NinjaOneTechnician`
+  * `Add-NinjaOneUserRoleMembers`
+  * `Remove-NinjaOneUserRoleMembers`
+  * `Set-NinjaOneEndUser`
+  * `Set-NinjaOneEndUserCustomFields`
+  * `Set-NinjaOneTechnician`
+  * `Get-NinjaOneVulnerabilityScanGroup`
+  * `Get-NinjaOneVulnerabilityScanGroups`
+  * `Invoke-NinjaOneVulnerabilityScanGroupUpload`
+
+* Updates:
+  * Update module manifest `NinjaOne.psd1`.
+  * Improve `Get-NinjaOneRelatedItemAttachmentSignedURLs` internals.
+
 ## 2024-10-01 - Version 2.0.4
 
 * Fix for systems where IE First-Run is not complete by using the `-UseBasicParsing` switch for `Invoke-WebRequest`.
