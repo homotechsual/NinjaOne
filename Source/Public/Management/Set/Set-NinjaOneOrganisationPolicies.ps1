@@ -19,7 +19,7 @@ function Set-NinjaOneOrganisationPolicies {
 		'put'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	param(
+	Param(
 		# The organisation to update the policy assignment for.
 		[Parameter(Mandatory, ParameterSetName = 'Single', Position = 0, ValueFromPipelineByPropertyName)]
 		[Parameter(Mandatory, ParameterSetName = 'Multiple', Position = 0, ValueFromPipelineByPropertyName)]
@@ -37,44 +37,46 @@ function Set-NinjaOneOrganisationPolicies {
 	)
 	process {
 		try {
+			$RequestParams = @{
+				Resource = ('v2/organization/{0}/policies' -f $organisationId)
+				Body = $null
+			}
 			if ($PSCmdlet.ParameterSetName -eq 'Single') {
 				try {
-					$Body = @{
+					$RequestParams.AsArray = $true
+					$RequestParams.Body = @{
 						'nodeRoleId' = $nodeRoleId
-						'policyId'   = $policyId
+						'policyId' = $policyId
+					}
+					if ($PSCmdlet.ShouldProcess(('Assign policy {0} to role {1} for {2}.' -f $policyId, $nodeRoleId, $organisationId), 'Update')) {
+						$NodeRolePolicyAssignment = New-NinjaOnePUTRequest @RequestParams
+						if ($NodeRolePolicyAssignment -eq 204) {
+							Write-Information ('Policy {0} assigned to role {1} for {2}.' -f $policyId, $nodeRoleId, $organisationId)
+						}
 					}
 				} catch {
 					New-NinjaOneError -ErrorRecord $_
 				}
 			} elseif ($PSCmdlet.ParameterSetName -eq 'Multiple') {
-				$Body = [System.Collections.Generic.List[Object]]::new()
+				$RequestParams.AsArray = $false
+				$RequestParams.Body = [System.Collections.Generic.List[Object]]::new()
 				$policyAssignments | ForEach-Object {
 					try {
-						$Body.Add(
+						$RequestParams.Body.Add(
 							@{
 								'nodeRoleId' = $_.nodeRoleId
-								'policyId'   = $_.policyId
+								'policyId' = $_.policyId
 							}
 						) | Out-Null
 					} catch {
 						New-NinjaOneError -ErrorRecord $_
 					}
 				}
-			}
-			$Resource = ('v2/organization/{0}/policies' -f $organisationId)
-			$RequestParams = @{
-				Resource = $Resource
-				Body     = $Body
-			}
-			if ($PSCmdlet.ParameterSetName -eq 'Single') {
-				$RequestParams.AsArray = $true
-			} elseif ($PSCmdlet.ParameterSetName -eq 'Multiple') {
-				$RequestParams.AsArray = $false
-			}
-			if ($PSCmdlet.ShouldProcess(('Assign policy {0} to role {1} for {2}.' -f $policyId, $nodeRoleId, $organisationId), 'Update')) {
-				$NodeRolePolicyAssignment = New-NinjaOnePUTRequest @RequestParams
-				if ($NodeRolePolicyAssignment -eq 204) {
-					Write-Information ('Policy {0} assigned to role {1} for {2}.' -f $policyId, $nodeRoleId, $organisationId)
+				if ($PSCmdlet.ShouldProcess(('Update policies for {0}.' -f $organisationId), 'Update')) {
+					$NodeRolePolicyAssignment = New-NinjaOnePUTRequest @RequestParams
+					if ($NodeRolePolicyAssignment -eq 204) {
+						Write-Information ('Policies updated for {0}.' -f $organisationId)
+					}
 				}
 			}
 		} catch {
