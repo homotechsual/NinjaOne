@@ -1,52 +1,54 @@
 function Set-NinjaOneDeviceOwner {
-	<#
+    <#
 		.SYNOPSIS
-			Sets the owner of a device.
+			Sets device Owner.
 		.DESCRIPTION
-			Sets the owner of the specified device via the NinjaOne v2 API.
+			Sets device Owner using the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Devices
-		.EXAMPLE
-			PS> Set-NinjaOneDeviceOwner -id 1234 -ownerUid 'user-uuid-1'
-
-			Sets the owner of device 1234 to the specified user.
+			Device
 		.OUTPUTS
-			Status code or updated resource per API.
+			A powershell object containing the response.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/deviceowner
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/device
 	#>
-	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
-	[OutputType([Object])]
-	[Alias('snodo')]
-	[MetadataAttribute(
-		'/v2/device/{id}/owner/{ownerUid}',
-		'post'
-	)]
-	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
-		# Device identifier
-		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
-		[Int]$id,
-		# Owner UID
-		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
-		[String]$ownerUid
-	)
-	begin {
-		$CommandName = $MyInvocation.InvocationName
-		$Parameters = (Get-Command -Name $CommandName).Parameters
-		if ($id) { $Parameters.Remove('id') | Out-Null }
-		if ($ownerUid) { $Parameters.Remove('ownerUid') | Out-Null }
-		$QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-	}
-	process {
-		try {
-			$Resource = ('v2/device/{0}/owner/{1}' -f $id, $ownerUid)
-			$RequestParams = @{ Resource = $Resource; QSCollection = $QSCollection }
-			if ($PSCmdlet.ShouldProcess(('Device {0}' -f $id), ('Set owner {0}' -f $ownerUid))) {
-				$Result = New-NinjaOnePOSTRequest @RequestParams
-				return $Result
-			}
-		} catch { New-NinjaOneError -ErrorRecord $_ }
-	}
-}
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
+    [OutputType([Object])]
+    [Alias('snod', 'unod', 'Update-NinjaOneDeviceOwner')]
+    [MetadataAttribute(
+        '/v2/device/{id}/owner/{ownerUid}',
+        'post'
+    )]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
+    Param(
+        # The device to set the information for.
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('id')]
+        [Int]$deviceId,
+        # The device information body object.
+        [Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
+        [Alias('ownerUid')]
+        [String]$OwnerId
+    )
+    process {
+        try {
+            Write-Verbose ('Setting device owner for device {0}.' -f $deviceId)
+            $Resource = ('v2/device/{0}/owner/{1}' -f $deviceId, $OwnerId)
+            $RequestParams = @{
+                Resource = $Resource
+            }
+            if ($PSCmdlet.ShouldProcess("Device ID $deviceId", "Set Owner to $OwnerId")) {
+                $Response = New-NinjaOnePOSTRequest @RequestParams
 
+                if ($Response -eq 204) {
+                    Write-Information "Device owner updated successfully for device ID $deviceId."
+                }
+                else {
+                    Write-Warning "Unexpected response: $Response"
+                }
+            }
+        }
+        catch {
+            New-NinjaOneError -ErrorRecord $_
+        }
+    }
+}
