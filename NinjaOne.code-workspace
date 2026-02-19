@@ -35,9 +35,15 @@
       "organisation",
       "Organisation",
       "pluralised",
-      "Whitelock"
+      "PSGALLERY",
+      "Whitelock",
+      "YAYAML",
     ],
-    "intelephense.format.braces": "k&r"
+    "intelephense.format.braces": "k&r",
+    "chat.tools.terminal.autoApprove": {
+      "Copy-Item": true,
+      "&": true,
+    },
   },
   "launch": {
     "version": "0.2.0",

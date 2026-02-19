@@ -7,7 +7,7 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseCompatibleSyntax', '', Justification = 'Script runs in CI/CD pipelines and is not designed to run on old versions.')]
 
 Param (
-	[ValidateSet('clean', 'build', 'updateManifest', 'publish', 'updateHelp', 'generateShortNamesMapping', 'push')]
+	[ValidateSet('clean', 'build', 'updateManifest', 'publish', 'publishDocs', 'updateHelp', 'generateShortNamesMapping', 'push')]
 	[String[]]$TaskNames = ('clean', 'build', 'updateManifest', 'publish', 'updateHelp', 'generateShortNamesMapping', 'push'),
 	[ValidateSet('origin', 'homotechsual')]
 	[String[]]$Remotes = @('origin', 'homotechsual'),
@@ -15,15 +15,83 @@ Param (
 		Join-Path -Path $PSScriptRoot -ChildPath 'Source' | Join-Path -ChildPath 'build.psd1' | Import-PowerShellDataFile -LiteralPath { $_ } -ErrorAction SilentlyContinue
 	),
 	[Switch]$ExcludeCustomTasks = $false,
-	[System.Management.Automation.SemanticVersion]$SemVer
+	[System.Management.Automation.SemanticVersion]$SemVer,
+	[string]$DocsOutputPath = (Join-Path -Path $PSScriptRoot -ChildPath '.build\docs')
 )
 $Script:ModuleName = 'NinjaOne'
+$Script:DocsSourcePath = Join-Path -Path $PSScriptRoot -ChildPath 'docs\NinjaOne\commandlets'
+
+function Invoke-IsolatedBuildIfNeeded {
+	param(
+		[string[]]$TaskNames,
+		[switch]$ExcludeCustomTasks,
+		[System.Management.Automation.SemanticVersion]$SemVer
+	)
+
+	if ($env:NINJAONE_BUILD_ISOLATED_CHILD) {
+		return
+	}
+
+	if ($TaskNames -notcontains 'clean' -and $TaskNames -notcontains 'build') {
+		return
+	}
+
+	$escapedScriptPath = $PSCommandPath.Replace("'", "''")
+	$taskList = ($TaskNames | ForEach-Object { "'$($_.Replace("'", "''"))'" }) -join ','
+	$command = "`$env:NINJAONE_BUILD_ISOLATED_CHILD='1'; & '$escapedScriptPath' -TaskNames @($taskList)"
+	if ($ExcludeCustomTasks) {
+		$command += ' -ExcludeCustomTasks'
+	}
+	if ($SemVer) {
+		$command += " -SemVer '$SemVer'"
+	}
+
+	$argList = @(
+		'-NoProfile',
+		'-ExecutionPolicy', 'Bypass',
+		'-Command', $command
+	)
+
+	Write-Host 'Running isolated build (clean/build)...' -ForegroundColor Cyan
+	$proc = Start-Process -FilePath 'pwsh' -ArgumentList $argList -Wait -NoNewWindow -PassThru
+	exit $proc.ExitCode
+}
+
+Invoke-IsolatedBuildIfNeeded -TaskNames $TaskNames -ExcludeCustomTasks:$ExcludeCustomTasks -SemVer $SemVer
 # Install required modules
-if (-Not(Get-Module -Name 'Install-RequiredModule')) {
+if (-not (Get-Command -Name 'Install-RequiredModule' -ErrorAction SilentlyContinue)) {
 	Install-Script -Name 'Install-RequiredModule' -Force -Scope CurrentUser
 }
-Install-RequiredModule -RequiredModulesFile ('{0}\RequiredModules.psd1' -f $PSScriptRoot) -Scope CurrentUser -TrustRegisteredRepositories -Import -Quiet
-Import-Module 'J:\Projects\Docusaurus.PowerShell\Output\Alt3.Docusaurus.PowerShell\1.0.34\Alt3.Docusaurus.PowerShell.psd1' -Force
+
+$installCmd = Get-Command -Name 'Install-RequiredModule' -ErrorAction SilentlyContinue
+if (-not $installCmd) {
+	$installedScript = Get-InstalledScript -Name 'Install-RequiredModule' -ErrorAction SilentlyContinue
+	if ($installedScript) {
+		$installCmdPath = Join-Path -Path $installedScript.InstalledLocation -ChildPath 'Install-RequiredModule.ps1'
+	}
+} else {
+	if ($installCmd.Path) {
+		$installCmdPath = $installCmd.Path
+	} elseif ($installCmd.Source -and (Test-Path $installCmd.Source)) {
+		$installCmdPath = $installCmd.Source
+	}
+}
+
+if (-not $installCmdPath) {
+	$userDocs = [Environment]::GetFolderPath('MyDocuments')
+	$fallbackPaths = @(
+		(Join-Path -Path $userDocs -ChildPath 'PowerShell\Scripts\Install-RequiredModule.ps1'),
+		(Join-Path -Path $userDocs -ChildPath 'WindowsPowerShell\Scripts\Install-RequiredModule.ps1')
+	)
+	$installCmdPath = $fallbackPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
+}
+
+if (-not $installCmdPath) {
+	throw 'Install-RequiredModule script not found. Ensure it is installed and on PATH.'
+}
+
+& $installCmdPath -RequiredModulesFile ('{0}\RequiredModules.psd1' -f $PSScriptRoot) -Scope CurrentUser -TrustRegisteredRepositories -Import -Quiet
+Import-Module 'J:\Projects\Docusaurus.PowerShell\Output\Alt3.Docusaurus.Powershell\1.0.37\Alt3.Docusaurus.Powershell.psd1' -Force
 # Use strict mode when building.
 Set-StrictMode -Version Latest
 # Helper: Get the module PSD1 file path.
@@ -97,7 +165,7 @@ function UpdateHelp {
 		[bool]$ForceUpdateCategoryFiles = $true
 	)
 	$DocsFolderPath = Join-Path -Path $DocusaurusPath -ChildPath $Script:ModuleName
-	if (-Not(Test-Path -Path $DocsFolderPath)) {
+	if (-not(Test-Path -Path $DocsFolderPath)) {
 		New-Item -Path $DocsFolderPath -ItemType Directory | Out-Null
 	}
 	$ShortNamesFilePath = [System.IO.FileInfo]'.\.build\CommandletShortNames.yaml'
@@ -116,7 +184,6 @@ This page has been generated from the {0} PowerShell module source. To make chan
 		Sidebar = 'commandlets'
 		# MetaDescription = 'Generated cmdlet help for the %1 commandlet.'
 		GroupByVerb = $true
-		UseDescriptionFromHelp = $true
 		NoPlaceHolderExamples = $true
 		UseCustomShortTitles = $true
 		ShortTitles = $ShortNamesDictionary
@@ -130,8 +197,11 @@ This page has been generated from the {0} PowerShell module source. To make chan
 		position = 1
 		collapsible = $true
 		collapsed = $true
+		label = ''
+		className = ''
 		link = @{
 			type = 'generated-index'
+			title = ''
 		}
 		customProps = @{
 			description = ''
@@ -140,9 +210,10 @@ This page has been generated from the {0} PowerShell module source. To make chan
 	foreach ($VerbFolder in $VerbFolders) {
 		$HasCategoryFile = Get-ChildItem -Path $VerbFolder.FullName -Filter '_category_.*' -File -ErrorAction SilentlyContinue
 		$CategoryFilePath = Join-Path -Path $VerbFolder.FullName -ChildPath '_category_.json'
+		# Start with a fresh copy so each verb gets its own object
+		$CategoryFile = $CategoryFileBase | ConvertTo-Json -Depth 5 | ConvertFrom-Json
 		switch ($VerbFolder.Name) {
 			'Connect' {
-				$CategoryFile = $CategoryFileBase
 				$CategoryFile.label = 'Connect to Services'
 				$CategoryFile.position = 0.1
 				$CategoryFile.collapsed = $false
@@ -151,7 +222,6 @@ This page has been generated from the {0} PowerShell module source. To make chan
 				$CategoryFile.customProps.description = 'This category contains commands for connecting to services, retrieving and storing credentials and managing connections.'
 			}
 			'Find' {
-				$CategoryFile = $CategoryFileBase
 				$CategoryFile.label = 'Find Information'
 				$CategoryFile.position = 0.2
 				$CategoryFile.className = 'category-find'
@@ -159,7 +229,6 @@ This page has been generated from the {0} PowerShell module source. To make chan
 				$CategoryFile.customProps.description = 'This category contains commands for finding information from services, this may include data, objects, settings and more.'
 			}
 			'Get' {
-				$CategoryFile = $CategoryFileBase
 				$CategoryFile.label = 'Retrieve Information'
 				$CategoryFile.position = 0.3
 				$CategoryFile.className = 'category-get'
@@ -167,7 +236,6 @@ This page has been generated from the {0} PowerShell module source. To make chan
 				$CategoryFile.customProps.description = 'This category contains commands for retrieving information from services, this may include data, objects, settings and more.'
 			}
 			'Invoke' {
-				$CategoryFile = $CategoryFileBase
 				$CategoryFile.label = 'Invoke Actions'
 				$CategoryFile.position = 0.4
 				$CategoryFile.className = 'category-invoke'
@@ -175,7 +243,6 @@ This page has been generated from the {0} PowerShell module source. To make chan
 				$CategoryFile.customProps.description = 'This category contains commands for invoking actions, this may include running scripts, executing commands and more. For API modules, this category will contain commands for sending arbitrary requests to the API - that is requests not covered by existing commands.'
 			}
 			'New' {
-				$CategoryFile = $CategoryFileBase
 				$CategoryFile.label = 'Create Data'
 				$CategoryFile.position = 0.5
 				$CategoryFile.className = 'category-new'
@@ -183,7 +250,6 @@ This page has been generated from the {0} PowerShell module source. To make chan
 				$CategoryFile.customProps.description = 'This category contains commands for creating data, objects, settings and more.'
 			}
 			'Remove' {
-				$CategoryFile = $CategoryFileBase
 				$CategoryFile.label = 'Remove Data'
 				$CategoryFile.position = 0.6
 				$CategoryFile.className = 'category-remove'
@@ -191,7 +257,6 @@ This page has been generated from the {0} PowerShell module source. To make chan
 				$CategoryFile.customProps.description = 'This category contains commands for removing data, objects, settings and more.'
 			}
 			'Reset' {
-				$CategoryFile = $CategoryFileBase
 				$CategoryFile.label = 'Reset State'
 				$CategoryFile.position = 0.6
 				$CategoryFile.className = 'category-reset'
@@ -199,7 +264,6 @@ This page has been generated from the {0} PowerShell module source. To make chan
 				$CategoryFile.customProps.description = 'This category contains commands for resetting state, this may include resetting settings, connections and more.'
 			}
 			'Restart' {
-				$CategoryFile = $CategoryFileBase
 				$CategoryFile.label = 'Restart Services'
 				$CategoryFile.position = 0.6
 				$CategoryFile.className = 'category-restart'
@@ -207,7 +271,6 @@ This page has been generated from the {0} PowerShell module source. To make chan
 				$CategoryFile.customProps.description = 'This category contains commands for restarting services, this may include restarting services, processes and more.'
 			}
 			'Restore' {
-				$CategoryFile = $CategoryFileBase
 				$CategoryFile.label = 'Restore Data'
 				$CategoryFile.position = 0.6
 				$CategoryFile.className = 'category-restore'
@@ -215,7 +278,6 @@ This page has been generated from the {0} PowerShell module source. To make chan
 				$CategoryFile.customProps.description = 'This category contains commands for restoring data, objects, settings and more. These commands will primarily be used for restoring data to a previous state.'
 			}
 			'Set' {
-				$CategoryFile = $CategoryFileBase
 				$CategoryFile.label = 'Update Data (Set)'
 				$CategoryFile.position = 0.4
 				$CategoryFile.className = 'category-set'
@@ -223,7 +285,6 @@ This page has been generated from the {0} PowerShell module source. To make chan
 				$CategoryFile.customProps.description = 'This category contains commands for updating data, objects, settings and more. This category will overlap with the Update category.'
 			}
 			'Update' {
-				$CategoryFile = $CategoryFileBase
 				$CategoryFile.label = 'Update Data (Update)'
 				$CategoryFile.position = 0.4
 				$CategoryFile.className = 'category-update'
@@ -231,10 +292,10 @@ This page has been generated from the {0} PowerShell module source. To make chan
 				$CategoryFile.customProps.description = 'This category contains commands for updating data, objects, settings and more. This category will overlap with the Set category.'
 			}
 		}
-		if (-Not($HasCategoryFile)) {
+		if (-not($HasCategoryFile)) {
 			$CategoryFile | ConvertTo-Json | Out-File -FilePath $CategoryFilePath -Force
 		} else {
-			if (-Not($ForceUpdateCategoryFiles)) {
+			if (-not($ForceUpdateCategoryFiles)) {
 				Write-Warning -Message ('Category file already exists in "{0}" verb folder. Use the ForceUpdateCategoryFiles switch to overwrite existing category files.' -f $VerbFolder.Name)
 			} else {
 				Set-Content -Path $CategoryFilePath -Value ($CategoryFile | ConvertTo-Json) -Force
@@ -244,7 +305,66 @@ This page has been generated from the {0} PowerShell module source. To make chan
 }
 # Task: Build the PowerShell Module
 function Build {
-	Build-Module -Path '.\Source' -SemVer $SemVer.ToString()
+	$moduleOutputRoot = Join-Path -Path $PSScriptRoot -ChildPath ($BuildConfig.OutputDirectory ?? '..\output')
+	$moduleOutputPath = Join-Path -Path $moduleOutputRoot -ChildPath $Script:ModuleName
+	AssertOutputBinariesUnlocked -OutputPath $moduleOutputPath
+
+	if ($SemVer) {
+		Build-Module -Path '.\Source' -SemVer $SemVer.ToString()
+	} else {
+		Build-Module -Path '.\Source'
+	}
+}
+
+# Helper: ensure output binaries are not locked before rebuild.
+function AssertOutputBinariesUnlocked {
+	[CmdletBinding()]
+	param(
+		[Parameter(Mandatory)]
+		[string]$OutputPath
+	)
+
+	if (-not (Test-Path $OutputPath)) {
+		return
+	}
+	$resolvedOutputPath = (Resolve-Path -Path $OutputPath).Path
+
+	$locked = [System.Collections.Generic.List[string]]::new()
+	$processInfo = [System.Collections.Generic.List[string]]::new()
+	$dlls = Get-ChildItem -Path $resolvedOutputPath -Filter '*.dll' -Recurse -ErrorAction SilentlyContinue
+	Write-Host ('Checking output DLL locks in {0}' -f $resolvedOutputPath) -ForegroundColor DarkGray
+	if (-not $dlls) {
+		return
+	}
+	$dlls | ForEach-Object {
+		$originalPath = $_.FullName
+		Get-Process -ErrorAction SilentlyContinue | ForEach-Object {
+			try {
+				if ($_.Modules | Where-Object { $_.FileName -eq $originalPath }) {
+					$processInfo.Add("$($_.ProcessName)($($_.Id)) -> $originalPath")
+				}
+			} catch {
+				# ignore processes we can't inspect
+			}
+		}
+	}
+
+	$dlls | ForEach-Object {
+		try {
+			$originalPath = $_.FullName
+			$tempPath = "$originalPath.lockcheck"
+			Move-Item -Path $originalPath -Destination $tempPath -ErrorAction Stop
+			Move-Item -Path $tempPath -Destination $originalPath -ErrorAction Stop
+		} catch {
+			$locked.Add($_.FullName)
+		}
+	}
+
+	if ($locked.Count -gt 0 -or $processInfo.Count -gt 0) {
+		$details = if ($locked.Count -gt 0) { $locked -join '; ' } else { 'None detected by rename check' }
+		$procDetails = if ($processInfo.Count -gt 0) { $processInfo -join '; ' } else { 'Unknown process' }
+		throw "Build output DLLs are in use. Close any process using these files and retry. Locked: $details. Processes: $procDetails"
+	}
 }
 # Task: Update the Module Manifest file with info from the Changelog.
 function UpdateManifest {
@@ -269,7 +389,7 @@ function UpdateManifest {
 	# Update Manifest file with Release Notes
 	$CHANGELOG = Get-Content -Path "$($PSScriptRoot)\CHANGELOG.md"
 	$MarkdownObject = [Markdown.MAML.Parser.MarkdownParser]::new()
-	$ReleaseNotes = ((($MarkdownObject.ParseString($CHANGELOG).Children.Spans.Text) -Match '\d\.\d\.\d') -Split ' - ')[1]
+	$ReleaseNotes = ((($MarkdownObject.ParseString($CHANGELOG).Children.Spans.Text) -match '\d\.\d\.\d') -split ' - ')[1]
 	# Update Module with new version
 	Update-ModuleManifest -ModuleVersion $ChangeLogVersion -Path "$($PSScriptRoot)\$Script:ModuleName.psd1" -ReleaseNotes $ReleaseNotes
 }
@@ -277,7 +397,7 @@ function UpdateManifest {
 function Publish {
 	[CmdletBinding()]
 	param()
-	Try {
+	try {
 		# Build a splat containing the required details and make sure to Stop for errors which will trigger the catch
 		$PublishParams = @{
 			Path = Join-Path -Path $PSScriptRoot -ChildPath 'output\*\*\*.psd1' | Get-Item | Where-Object { $_.BaseName -eq $_.Directory.Parent.Name } | Select-Object -ExpandProperty Directory
@@ -293,13 +413,55 @@ function Publish {
 		}
 		Publish-Module @PublishParams
 		Write-Output -InputObject ("$Script:ModuleName PowerShell Module version $($Version.ToString()) published to the PowerShell Gallery")
-	} Catch {
+	} catch {
 		throw $_
 	}
+}
+
+# Task: Export docs for publishing (local file ops only)
+# Note: GitHub Actions workflow will handle git commit and push to remote repo
+function PublishDocsTask {
+	[CmdletBinding()]
+	param()
+	PublishDocs -DocsOutputPath $DocsOutputPath
+}
+
+# Task: Export docs for publishing to external repo
+# Purpose: Copies generated docs to output directory for workflow to push to remote
+# GitHub Actions Workflow Integration:
+#   - Run this task to generate docs at: .\.build\docs\docs\ninjaone\commandlets
+#   - Workflow will checkout homotechsualdocs repo on dev branch
+#   - Workflow will replace docs\ninjaone\commandlets with output from this task
+#   - Workflow will commit and push with GITHUB_TOKEN (automatic in GitHub Actions)
+function PublishDocs {
+	[CmdletBinding()]
+	param(
+		[Parameter(Mandatory = $false)]
+		[string]$DocsOutputPath
+	)
+
+	if (-not $DocsOutputPath) {
+		$DocsOutputPath = Join-Path -Path $PSScriptRoot -ChildPath '.build\docs'
+	}
+
+	# Create output structure matching target repo path: docs/ninjaone/commandlets
+	$destPath = Join-Path -Path $DocsOutputPath -ChildPath 'docs\ninjaone\commandlets'
+	if (Test-Path $destPath) {
+		Remove-Item -Path $destPath -Recurse -Force
+	}
+	New-Item -Path $destPath -ItemType Directory -Force | Out-Null
+
+	# Copy generated docs to output
+	Copy-Item -Path $Script:DocsSourcePath\* -Destination $destPath -Recurse -Force
+
+	WriteMessage -Message 'Docs exported to output directory' -Details $destPath -Category Success
+	WriteMessage -Message 'Next step: GitHub Actions workflow will push these to homotechsualdocs/dev' -Category Information
 }
 # Task: Clean up Output folder
 function Clean {
 	# Clean output folder
+	$moduleOutput = Join-Path -Path $PSScriptRoot -ChildPath ('output\{0}\*\Binaries' -f $Script:ModuleName)
+	AssertOutputBinariesUnlocked -OutputPath $moduleOutput
 	if ((Test-Path "$($PSScriptRoot)\Build")) {
 		Remove-Item -Path "$($PSScriptRoot)\Build" -Recurse -Force
 	}

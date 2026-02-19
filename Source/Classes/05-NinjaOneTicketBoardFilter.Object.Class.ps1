@@ -2,9 +2,12 @@ using namespace System.Management.Automation
 class NinjaOneTicketBoardFilter {
     [String]$Field
     [FilterOperator]$Operator
-    [ValidateStringOrInt()][Object]$Value
+    [Object]$Value
 
     NinjaOneTicketBoardFilter([String]$Field, [String]$Operator, [Object]$Value) {
+        if ($Value -isnot [string] -and $Value -isnot [int]) {
+            throw [MetadataException]::new("Value must be a string or integer.")
+        }
         if ($Operator -in @('present', 'not_present') -and ($null -ne $Value)) {
             throw [MetadataException]::new("Operator '$Operator' does not accept a value.")
         }

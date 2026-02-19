@@ -1,3 +1,10 @@
+<#
+	.SYNOPSIS
+		Archive organisation documents.
+	
+	.FUNCTIONALITY
+		Archive Organisation Documents
+#>
 function Invoke-NinjaOneOrganisationDocumentsArchive {
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
 	[OutputType([Object])]

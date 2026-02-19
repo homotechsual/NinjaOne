@@ -1,3 +1,10 @@
+<#
+	.SYNOPSIS
+		Restore an organisation.
+	
+	.FUNCTIONALITY
+		Restore Organisation
+#>
 function Invoke-NinjaOneOrganisationRestore {
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
 	[OutputType([Object])]

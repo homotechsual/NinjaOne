@@ -1,3 +1,10 @@
+<#
+	.SYNOPSIS
+		Restore document templates.
+	
+	.FUNCTIONALITY
+		Restore Document Templates
+#>
 function Invoke-NinjaOneDocumentTemplatesRestore {
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
 	[OutputType([Object])]

@@ -17,7 +17,7 @@ function Start-NinjaOneOSPatchScan {
 	#>
 	[CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
-	[Alias('snoossc', 'unoossc', 'Start-NinjaOneOSPatchScan')]
+	[Alias('snoossc', 'unoossc')]
 	[MetadataAttribute(
 		'/v2/device/{id}/patch/os/scan',
 		'patch'

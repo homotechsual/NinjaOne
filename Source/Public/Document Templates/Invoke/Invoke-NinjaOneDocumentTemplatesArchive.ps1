@@ -1,3 +1,10 @@
+<#
+	.SYNOPSIS
+		Archive document templates.
+	
+	.FUNCTIONALITY
+		Archive Document Templates
+#>
 function Invoke-NinjaOneDocumentTemplatesArchive {
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
 	[OutputType([Object])]

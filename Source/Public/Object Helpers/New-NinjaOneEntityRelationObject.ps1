@@ -20,7 +20,7 @@ function New-NinjaOneEntityRelationObject {
 		[EntityType]$Entity,
 		[EntityType]$relationEntityType,
 		[FilterOperator]$Operator,
-		[ValidateStringOrInt()][Object]$Value
+		[ValidateScript({ $_ -is [string] -or $_ -is [int] })][Object]$Value
 	)
 
 	NinjaOneTicketBoardFilter([String]$Field, [String]$Operator, [Object]$Value) {
