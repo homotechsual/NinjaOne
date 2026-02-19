@@ -1,7 +1,7 @@
 <#
 	.SYNOPSIS
 		Archive an organisation document.
-	
+
 	.FUNCTIONALITY
 		Archive Organisation Document
 #>

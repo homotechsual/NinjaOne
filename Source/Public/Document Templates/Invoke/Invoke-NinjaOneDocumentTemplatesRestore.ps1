@@ -1,7 +1,7 @@
 <#
 	.SYNOPSIS
 		Restore document templates.
-	
+
 	.FUNCTIONALITY
 		Restore Document Templates
 #>

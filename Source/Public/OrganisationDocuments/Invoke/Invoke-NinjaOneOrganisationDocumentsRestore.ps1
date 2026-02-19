@@ -1,7 +1,7 @@
 <#
 	.SYNOPSIS
 		Restore organisation documents.
-	
+
 	.FUNCTIONALITY
 		Restore Organisation Documents
 #>

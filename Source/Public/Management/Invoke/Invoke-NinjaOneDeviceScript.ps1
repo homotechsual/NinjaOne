@@ -112,7 +112,7 @@ function Invoke-NinjaOneDeviceScript {
 				Body = $RunRequest
 			}
 			$ScriptRun = New-NinjaOnePOSTRequest @RequestParams
-			if ($ScriptRun -eq 204) {		
+			if ($ScriptRun -eq 204) {
 				Write-Information ('Requested run for {0} {1} on device {2} successfully.' -f $prettyAction, $ScriptOrAction.Name, $Device.SystemName)
 			}
 		} catch {

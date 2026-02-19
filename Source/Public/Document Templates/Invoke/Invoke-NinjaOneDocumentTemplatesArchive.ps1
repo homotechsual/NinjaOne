@@ -1,7 +1,7 @@
 <#
 	.SYNOPSIS
 		Archive document templates.
-	
+
 	.FUNCTIONALITY
 		Archive Document Templates
 #>

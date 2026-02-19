@@ -9,7 +9,7 @@ function Start-NinjaOneOSPatchScan {
 		.OUTPUTS
 			A powershell object containing the response.
 		.EXAMPLE
-			PS> Start-NinjaOneOSPatchScan -deviceId 1 
+			PS> Start-NinjaOneOSPatchScan -deviceId 1
 
 			Start an OS Patch Scan on the device with id 1.
 		.LINK
