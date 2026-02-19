@@ -11,6 +11,7 @@
 		'Information'
 	)
 	IncludeRules = @(
+		'PSAlignAssignmentStatement',
 		'PSAvoidAssignmentToAutomaticVariable',
 		'PSAvoidDefaultValueForMandatoryParameter',
 		'PSAvoidDefaultValueSwitchParameter',
@@ -21,20 +22,25 @@
 		'PSAvoidNullOrEmptyHelpMessageAttribute',
 		'PSAvoidSemicolonsAsLineTerminators',
 		'PSAvoidShouldContinueWithoutForce',
+		'PSAvoidTrailingWhitespace',
 		'PSAvoidUsingBrokenHashAlgorithms',
 		'PSAvoidUsingCmdletAliases',
 		'PSAvoidUsingComputerNameHardcoded',
 		'PSAvoidUsingConvertToSecureStringWithPlainText',
 		'PSAvoidUsingDeprecatedManifestFields',
+		'PSAvoidUsingDoubleQuotesForConstantString',
 		'PSAvoidUsingEmptyCatchBlock',
 		'PSAvoidUsingInvokeExpression',
 		'PSAvoidUsingPlainTextForPassword',
 		'PSAvoidUsingPositionalParameters',
 		'PSAvoidUsingUserNameAndPasswordParams',
 		'PSAvoidUsingWMICmdlet',
+		'PSAvoidUsingWriteHost',
 		'PSDSC*',
 		'PSMisleadingBacktick',
 		'PSMissingModuleManifestField',
+		'PSPlaceCloseBrace',
+		'PSPlaceOpenBrace',
 		'PSPossibleIncorrectComparisonWithNull',
 		'PSPossibleIncorrectUsageOfAssignmentOperator',
 		'PSPossibleIncorrectUsageOfRedirectionOperator',
@@ -53,9 +59,27 @@
 		'PSUseOutputTypeCorrectly',
 		'PSUseProcessBlockForPipelineCommand',
 		'PSUsePSCredentialType',
-		'PSUseShouldProcessForStateChangingFunctions'
+		'PSUseShouldProcessForStateChangingFunctions',
+		'PSUseConsistentIndentation',
+		'PSUseConsistentWhitespace',
+		'PSUseCorrectCasing'
 	)
 	Rules = @{
+		PSAlignAssignmentStatement = @{
+			Enable = $false
+		}
+		PSPlaceCloseBrace = @{
+			Enable = $true
+			NewLineAfter = $false
+			IgnoreOneLineBlock = $true
+			NoEmptyLineBefore = $false
+		}
+		PSPlaceOpenBrace = @{
+			Enable = $true
+			OnSameLine = $true
+			NewLineAfter = $true
+			IgnoreOneLineBlock = $true
+		}
 		PSReviewUnusedParameter = @{
 			Enable = $true
 			CommandsToTraverse = @(
@@ -79,6 +103,26 @@
 				'6.0',
 				'7.0'
 			)
+		}
+		PSUseConsistentIndentation = @{
+			Enable = $true
+			Kind = 'tab'
+			PipelineIndentation = 'IncreaseIndentationForFirstPipeline'
+		}
+		PSUseConsistentWhitespace = @{
+			Enable = $true
+			CheckInnerBrace = $true
+			CheckOpenBrace = $true
+			CheckOpenParen = $true
+			CheckOperator = $true
+			CheckPipe = $true
+			CheckPipeForRedundantWhitespace = $true
+			CheckSeparator = $true
+			CheckParameter = $true
+			IgnoreAssignmentOperatorInsideHashTable = $true
+		}
+		PSUseCorrectCasing = @{
+			Enable = $true
 		}
 	}
 }
