@@ -60,6 +60,7 @@
 		'PSUseProcessBlockForPipelineCommand',
 		'PSUsePSCredentialType',
 		'PSUseShouldProcessForStateChangingFunctions',
+		'PSUseConsistentIndentation',
 		'PSUseConsistentWhitespace',
 		'PSUseCorrectCasing'
 	)
@@ -102,6 +103,11 @@
 				'6.0',
 				'7.0'
 			)
+		}
+		PSUseConsistentIndentation = @{
+			Enable = $true
+			Kind = 'tab'
+			PipelineIndentation = 'IncreaseIndentationForFirstPipeline'
 		}
 		PSUseConsistentWhitespace = @{
 			Enable = $true
