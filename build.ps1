@@ -6,17 +6,14 @@
 [CmdletBinding()]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseCompatibleSyntax', '', Justification = 'Script runs in CI/CD pipelines and is not designed to run on old versions.')]
 
-Param (
+param (
 	[ValidateSet('clean', 'build', 'updateManifest', 'publish', 'publishDocs', 'updateHelp', 'generateShortNamesMapping', 'push')]
 	[String[]]$TaskNames = ('clean', 'build', 'updateManifest', 'publish', 'updateHelp', 'generateShortNamesMapping', 'push'),
-	[ValidateSet('origin', 'homotechsual')]
-	[String[]]$Remotes = @('origin', 'homotechsual'),
 	[Hashtable]$BuildConfig = (
 		Join-Path -Path $PSScriptRoot -ChildPath 'Source' | Join-Path -ChildPath 'build.psd1' | Import-PowerShellDataFile -LiteralPath { $_ } -ErrorAction SilentlyContinue
 	),
 	[Switch]$ExcludeCustomTasks = $false,
-	[System.Management.Automation.SemanticVersion]$SemVer,
-	[string]$DocsOutputPath = (Join-Path -Path $PSScriptRoot -ChildPath '.build\docs')
+	[System.Management.Automation.SemanticVersion]$SemVer
 )
 $Script:ModuleName = 'NinjaOne'
 $Script:DocsSourcePath = Join-Path -Path $PSScriptRoot -ChildPath 'docs\NinjaOne\commandlets'
@@ -52,7 +49,7 @@ function Invoke-IsolatedBuildIfNeeded {
 		'-Command', $command
 	)
 
-	Write-Host 'Running isolated build (clean/build)...' -ForegroundColor Cyan
+	Write-Verbose 'Running isolated build (clean/build)...'
 	$proc = Start-Process -FilePath 'pwsh' -ArgumentList $argList -Wait -NoNewWindow -PassThru
 	exit $proc.ExitCode
 }
@@ -110,6 +107,7 @@ function GetModulePath {
 # Helper: Get functions from the module.
 function GetFunctions {
 	[CmdletBinding()]
+	[OutputType([System.Collections.Generic.List[String]])]
 	param(
 		[Parameter(Mandatory)]
 		[String]$ModuleName
@@ -332,7 +330,7 @@ function AssertOutputBinariesUnlocked {
 	$locked = [System.Collections.Generic.List[string]]::new()
 	$processInfo = [System.Collections.Generic.List[string]]::new()
 	$dlls = Get-ChildItem -Path $resolvedOutputPath -Filter '*.dll' -Recurse -ErrorAction SilentlyContinue
-	Write-Host ('Checking output DLL locks in {0}' -f $resolvedOutputPath) -ForegroundColor DarkGray
+	Write-Verbose ('Checking output DLL locks in {0}' -f $resolvedOutputPath)
 	if (-not $dlls) {
 		return
 	}
@@ -344,7 +342,7 @@ function AssertOutputBinariesUnlocked {
 					$processInfo.Add("$($_.ProcessName)($($_.Id)) -> $originalPath")
 				}
 			} catch {
-				# ignore processes we can't inspect
+				Write-Verbose -Message "Unable to inspect process $($_.ProcessName): $_"
 			}
 		}
 	}
@@ -535,4 +533,4 @@ $TasksPath = Join-Path -Path $PSScriptRoot -ChildPath '.build\tasks'
 	if ((-not $ExcludeCustomTasks) -and (Test-Path $TasksPath)) {
 		Get-ChildItem -Path $TasksPath
 	}
-) | Where-Object { -not $BuildConfig -or $BuildConfig['Skip'] -NotContains $_ } | InvokeTask
+) | Where-Object { -not $BuildConfig -or $BuildConfig['Skip'] -notcontains $_ } | InvokeTask

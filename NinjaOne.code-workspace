@@ -43,6 +43,7 @@
     "chat.tools.terminal.autoApprove": {
       "Copy-Item": true,
       "&": true,
+      "Invoke-ScriptAnalyzer": true,
     },
   },
   "launch": {
