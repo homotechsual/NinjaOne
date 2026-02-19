@@ -27,11 +27,16 @@ jobs:
       - name: Run PSScriptAnalyzer
         shell: pwsh
         run: |
-          $Results = Invoke-ScriptAnalyzer -Path . -Recurse -Settings PSScriptAnalyzerSettings.psd1
-          $Results | Format-Table -AutoSize
+          $Results = @()
+          $Results += Invoke-ScriptAnalyzer -Path Source -Recurse -Settings PSScriptAnalyzerSettings.psd1
+          $Results += Invoke-ScriptAnalyzer -Path build.ps1 -Settings PSScriptAnalyzerSettings.psd1
+          $Results = $Results | Where-Object { $null -ne $_ }
           if ($Results) {
+            $Results | Format-Table -AutoSize
             Write-Error "PSScriptAnalyzer found $($Results.Count) issue(s)"
             exit 1
+          } else {
+            Write-Host "PSScriptAnalyzer passed!" -ForegroundColor Green
           }
 
   test:
