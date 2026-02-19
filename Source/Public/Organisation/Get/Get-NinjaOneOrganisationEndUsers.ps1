@@ -22,7 +22,7 @@ function Get-NinjaOneOrganisationEndUsers {
 		'/v2/organization/{id}/end-users',
 		'get'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('organizationId')]
 		[Int]$organisationId,

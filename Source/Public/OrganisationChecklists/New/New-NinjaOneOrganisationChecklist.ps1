@@ -22,7 +22,7 @@ function New-NinjaOneOrganisationChecklist {
 		'/v2/organization/checklists',
 		'post'
 	)]
-	Param(
+	param(
 		# Checklist payload per API schema
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]

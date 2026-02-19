@@ -29,7 +29,7 @@ function Invoke-NinjaOneDeviceScript {
 		'post'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The device to run a script on.
 		[Parameter(Mandatory, ParameterSetName = 'SCRIPT', Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Parameter(Mandatory, ParameterSetName = 'ACTION', Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
@@ -54,7 +54,7 @@ function Invoke-NinjaOneDeviceScript {
 		[Parameter(ParameterSetName = 'SCRIPT', Position = 4, ValueFromPipelineByPropertyName)]
 		[Parameter(ParameterSetName = 'ACTION', Position = 4, ValueFromPipelineByPropertyName)]
 		[ValidateScript(
-			{ $_ -is [String] -OR $_ -in @('system', 'SR_MAC_SCRIPT', 'SR_LINUX_SCRIPT', 'loggedonuser', 'SR_LOCAL_ADMINISTRATOR', 'SR_DOMAIN_ADMINISTRATOR') }
+			{ $_ -is [String] -or $_ -in @('system', 'SR_MAC_SCRIPT', 'SR_LINUX_SCRIPT', 'loggedonuser', 'SR_LOCAL_ADMINISTRATOR', 'SR_DOMAIN_ADMINISTRATOR') }
 		)]
 		[String]$runAs
 	)
@@ -70,9 +70,9 @@ function Invoke-NinjaOneDeviceScript {
 			if ($Device) {
 				Write-Verbose ('Getting device scripting options for device {0}.' -f $Device.SystemName)
 				if ($type -eq 'SCRIPT') {
-					$ScriptOrAction = Get-NinjaOneDeviceScriptingOptions -deviceId $deviceId -Scripts | Where-Object { $_.id -eq $scriptId -AND $_.type -eq $type }
+					$ScriptOrAction = Get-NinjaOneDeviceScriptingOptions -deviceId $deviceId -Scripts | Where-Object { $_.id -eq $scriptId -and $_.type -eq $type }
 				} else {
-					$ScriptOrAction = Get-NinjaOneDeviceScriptingOptions -deviceId $deviceId -Scripts | Where-Object { $_.uid -eq $actionUId -AND $_.type -eq $type }
+					$ScriptOrAction = Get-NinjaOneDeviceScriptingOptions -deviceId $deviceId -Scripts | Where-Object { $_.uid -eq $actionUId -and $_.type -eq $type }
 				}
 				if ($ScriptOrAction.Count -gt 1) {
 					Write-Warning ('More than one {0} matched for device {1}.' -f $prettyAction, $Device.SystemName)

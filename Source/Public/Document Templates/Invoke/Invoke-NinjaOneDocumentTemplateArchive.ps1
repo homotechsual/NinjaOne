@@ -22,7 +22,7 @@ function Invoke-NinjaOneDocumentTemplateArchive {
 		'/v2/document-templates/{documentTemplateId}/archive',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$documentTemplateId
 	)

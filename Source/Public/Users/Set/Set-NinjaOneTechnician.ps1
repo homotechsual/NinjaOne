@@ -22,7 +22,7 @@ function Set-NinjaOneTechnician {
 		'/v2/user/technician/{id}',
 		'patch'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$id,
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]

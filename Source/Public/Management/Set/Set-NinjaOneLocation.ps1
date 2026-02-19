@@ -19,7 +19,7 @@ function Set-NinjaOneLocation {
 		'patch'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The organisation to set the location information for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('id', 'organizationId')]

@@ -19,7 +19,7 @@ function Remove-NinjaOneWebhook {
 		'delete'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param()
+	param()
 	process {
 		try {
 			$Resource = 'v2/webhook'

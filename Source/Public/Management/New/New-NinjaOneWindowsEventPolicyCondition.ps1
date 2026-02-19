@@ -19,7 +19,7 @@ function New-NinjaOneWindowsEventPolicyCondition {
 		'post'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The policy id to create the windows event policy condition for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]

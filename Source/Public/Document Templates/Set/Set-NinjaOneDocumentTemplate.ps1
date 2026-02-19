@@ -19,7 +19,7 @@ function Set-NinjaOneDocumentTemplate {
 		'put'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The document template id to update.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]

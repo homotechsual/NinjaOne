@@ -22,7 +22,7 @@ function Get-NinjaOneChecklistTemplates {
 		'/v2/checklist/templates',
 		'get'
 	)]
-	Param()
+	param()
 	process {
 		try {
 			$Resource = 'v2/checklist/templates'

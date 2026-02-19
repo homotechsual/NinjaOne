@@ -22,7 +22,7 @@ function Remove-NinjaOneKnowledgeBaseArticles {
 		'/v2/knowledgebase/articles/delete',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int[]]$articleIds
 	)

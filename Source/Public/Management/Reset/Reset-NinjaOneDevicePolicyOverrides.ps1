@@ -19,7 +19,7 @@ function Reset-NinjaOneDevicePolicyOverrides {
 		'delete'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The device Id to reset policy overrides for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]

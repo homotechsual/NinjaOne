@@ -22,7 +22,7 @@ function New-NinjaOneOrganisationChecklistsFromTemplates {
 		'/v2/organization/{organizationId}/checklists-from-templates',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
 		[Int]$organisationId,

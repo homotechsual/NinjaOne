@@ -19,7 +19,7 @@ function Set-NinjaOneOrganisationPolicies {
 		'put'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The organisation to update the policy assignment for.
 		[Parameter(Mandatory, ParameterSetName = 'Single', Position = 0, ValueFromPipelineByPropertyName)]
 		[Parameter(Mandatory, ParameterSetName = 'Multiple', Position = 0, ValueFromPipelineByPropertyName)]

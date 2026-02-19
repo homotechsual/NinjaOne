@@ -22,7 +22,7 @@ function Set-NinjaOneOrganisationChecklists {
 		'/v2/organization/checklists',
 		'put'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$checklists

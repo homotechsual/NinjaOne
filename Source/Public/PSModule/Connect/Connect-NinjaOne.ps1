@@ -35,7 +35,7 @@ function Connect-NinjaOne {
 	[OutputType([System.Void])]
 	[Alias('cno')]
 	[MetadataAttribute('IGNORE')]
-	Param (
+	param (
 		# Use the "Authorisation Code" flow with your web browser.
 		[Parameter( Mandatory, ParameterSetName = 'Authorisation Code')]
 		[Parameter( ParameterSetName = 'Secret Vault Write' )]
@@ -149,7 +149,7 @@ function Connect-NinjaOne {
 		# Convert scopes to space separated string if it's an array.
 		if ($Scopes -is [System.Array]) {
 			Write-Verbose ('Scopes are an array, converting to space separated string.')
-			$AuthScopes = $Scopes -Join ' '
+			$AuthScopes = $Scopes -join ' '
 		} else {
 			Write-Verbose ('Scopes are a string, using as is.')
 			$AuthScopes = $Scopes
@@ -235,10 +235,10 @@ function Connect-NinjaOne {
 				$OAuthListenerParams = @{
 					OpenURI = $AuthRequestURI
 				}
-				if ($VerbosePreference -eq 'Continue') {
+				if ($VerbosePreference -eq 'continue') {
 					$OAuthListenerParams.Verbose = $true
 				}
-				if ($DebugPreference -eq 'Continue') {
+				if ($DebugPreference -eq 'continue') {
 					$OAuthListenerParams.Debug = $true
 				}
 				$OAuthListenerResponse = Start-OAuthHTTPListener @OAuthListenerParams

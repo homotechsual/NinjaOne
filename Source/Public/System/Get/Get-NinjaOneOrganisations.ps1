@@ -39,7 +39,7 @@ function Get-NinjaOneOrganisations {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# Organisation id
 		[Parameter(ParameterSetName = 'Single', Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id', 'organizationId')]

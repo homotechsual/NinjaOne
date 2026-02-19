@@ -40,7 +40,7 @@ function New-NinjaOneError {
 					}
 				}
 			} elseif ($ErrorRecord.ErrorDetails -like $APIResultMatchString -and $ErrorRecord.ErrorDetails -like $HTTPResponseMatchString) {
-				$Errors = $ErrorRecord.ErrorDetails -Split "`r`n"
+				$Errors = $ErrorRecord.ErrorDetails -split "`r`n"
 				if ($Errors -is [array]) {
 					ForEach-Object -InputObject $Errors {
 						$ExceptionMessage.Add($_) | Out-Null

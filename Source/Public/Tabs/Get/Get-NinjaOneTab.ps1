@@ -22,7 +22,7 @@ function Get-NinjaOneTab {
 		'/v2/tab/{tabId}',
 		'get'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
 		[Int]$tabId

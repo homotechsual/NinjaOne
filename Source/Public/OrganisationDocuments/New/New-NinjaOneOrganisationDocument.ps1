@@ -19,7 +19,7 @@ function New-NinjaOneOrganisationDocument {
 		'post'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The Id of the organisation to create the document for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('organizationId', 'id')]

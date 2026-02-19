@@ -13,7 +13,7 @@ function Invoke-NinjaOneOrganisationRestore {
 		'/v2/organization/restore',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$request

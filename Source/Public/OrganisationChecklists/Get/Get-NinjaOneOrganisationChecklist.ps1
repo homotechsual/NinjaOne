@@ -22,7 +22,7 @@ function Get-NinjaOneOrganisationChecklist {
 		'/v2/organization/checklist/{checklistId}',
 		'get'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
 		[Int]$checklistId

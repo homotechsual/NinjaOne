@@ -43,7 +43,7 @@ function Get-NinjaOneTicketingUsers {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# Start results from this user natural id.
 		[Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Int]$anchorNaturalId,

@@ -22,7 +22,7 @@ function Move-NinjaOneKnowledgeBaseItems {
 		'/v2/knowledgebase/folders/move',
 		'patch'
 	)]
-	Param(
+	param(
 		# Move request payload per API schema (MovePublicApiRequest)
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]

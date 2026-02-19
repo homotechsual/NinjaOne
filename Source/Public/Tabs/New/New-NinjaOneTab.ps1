@@ -22,7 +22,7 @@ function New-NinjaOneTab {
 		'/v2/tab',
 		'post'
 	)]
-	Param(
+	param(
 		# Payload to create tab per API schema
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]

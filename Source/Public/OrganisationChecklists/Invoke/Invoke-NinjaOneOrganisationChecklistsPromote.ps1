@@ -22,7 +22,7 @@ function Invoke-NinjaOneOrganisationChecklistsPromote {
 		'/v2/organization/checklists/promote',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$request

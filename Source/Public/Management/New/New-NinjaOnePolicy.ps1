@@ -19,7 +19,7 @@ function New-NinjaOnePolicy {
 		'post'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The mode to run in, new, child or copy.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[ValidateSet('NEW', 'CHILD', 'COPY')]

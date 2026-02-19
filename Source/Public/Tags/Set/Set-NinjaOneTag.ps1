@@ -22,7 +22,7 @@ function Set-NinjaOneTag {
 		'/v2/tag/{tagId}',
 		'put'
 	)]
-	Param(
+	param(
 		# The tag Id to update.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('id')]

@@ -21,7 +21,7 @@ function Reset-NinjaOneAlert {
 		'delete'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The alert Id to reset status for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
@@ -42,7 +42,7 @@ function Reset-NinjaOneAlert {
 					$Alert = New-NinjaOnePOSTRequest @RequestParams
 					if ($Alert -eq 204) {
 						$OIP = $InformationPreference
-						$InformationPreference = 'Continue'
+						$InformationPreference = 'continue'
 						Write-Information 'Alert reset successfully.'
 						$InformationPreference = $OIP
 					}

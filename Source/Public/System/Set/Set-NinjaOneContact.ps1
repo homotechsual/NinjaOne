@@ -22,7 +22,7 @@ function Set-NinjaOneContact {
 		'/v2/contact/{id}',
 		'patch'
 	)]
-	Param(
+	param(
 		# Contact Id to update.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$id,

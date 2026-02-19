@@ -17,7 +17,7 @@ function Update-NinjaOneWebhook {
 		'put'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The webhook configuration object.
 		[Parameter( Mandatory )]
 		[Object]$webhookConfiguration

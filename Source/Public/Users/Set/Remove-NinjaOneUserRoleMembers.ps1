@@ -22,7 +22,7 @@ function Remove-NinjaOneUserRoleMembers {
 		'/v2/user/role/{roleId}/remove-members',
 		'patch'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$roleId,
 		[Parameter(Mandatory, Position=1, ValueFromPipelineByPropertyName)]

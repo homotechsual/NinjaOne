@@ -19,7 +19,7 @@ function Remove-NinjaOneRelatedItems {
 		'delete'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The entity type to remove related items for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[ValidateSet('ORGANIZATION', 'DOCUMENT', 'LOCATION', 'NODE', 'ATTACHMENT', 'TECHNICIAN', 'CREDENTIAL', 'CHECKLIST', 'END_USER', 'CONTACT', 'KB_DOCUMENT')]

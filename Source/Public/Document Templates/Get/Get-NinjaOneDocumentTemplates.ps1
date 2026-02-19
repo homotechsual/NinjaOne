@@ -28,7 +28,7 @@ function Get-NinjaOneDocumentTemplates {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The document template id to retrieve.
 		[Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]

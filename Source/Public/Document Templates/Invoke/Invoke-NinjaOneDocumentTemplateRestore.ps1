@@ -22,7 +22,7 @@ function Invoke-NinjaOneDocumentTemplateRestore {
 		'/v2/document-templates/{documentTemplateId}/restore',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$documentTemplateId
 	)

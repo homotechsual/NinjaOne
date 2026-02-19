@@ -22,7 +22,7 @@ function Add-NinjaOneUserRoleMembers {
 		'/v2/user/role/{roleId}/add-members',
 		'patch'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$roleId,
 		[Parameter(Mandatory, Position=1, ValueFromPipelineByPropertyName)]

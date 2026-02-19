@@ -13,7 +13,7 @@ function Invoke-NinjaOneOrganisationDocumentRestore {
 		'/v2/organization/document/{clientDocumentId}/restore',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$clientDocumentId
 	)

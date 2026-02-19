@@ -22,7 +22,7 @@ function Remove-NinjaOneTab {
 		'/v2/tab/{tabId}',
 		'delete'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Int]$tabId
 	)

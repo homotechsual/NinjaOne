@@ -47,7 +47,7 @@ function Get-NinjaOneRelatedItems {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# Return all related items.
 		[Parameter(Mandatory, ParameterSetName = 'all')]
 		[Switch]$all,

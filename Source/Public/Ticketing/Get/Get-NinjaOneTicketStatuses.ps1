@@ -23,7 +23,7 @@ function Get-NinjaOneTicketStatuses {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param()
+	param()
 	process {
 		try {
 			Write-Verbose 'Retrieving ticket statuses from NinjaOne API.'

@@ -22,7 +22,7 @@ function New-NinjaOneContact {
 		'/v2/contacts',
 		'post'
 	)]
-	Param(
+	param(
 		# Contact object payload per API schema.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]

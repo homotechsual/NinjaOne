@@ -23,7 +23,7 @@ function Get-NinjaOneOrganisationDocumentSignedURLs {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The client document id to get signed URLs for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id', 'documentId', 'organisationDocumentId', 'organizationDocumentId')]

@@ -22,7 +22,7 @@ function Remove-NinjaOneUnmanagedDevice {
 		'/v2/itam/unmanaged-device/{nodeId}',
 		'delete'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$nodeId
 	)

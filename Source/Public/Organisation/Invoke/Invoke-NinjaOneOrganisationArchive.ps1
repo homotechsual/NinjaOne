@@ -22,7 +22,7 @@ function Invoke-NinjaOneOrganisationArchive {
 		'/v2/organization/archive',
 		'post'
 	)]
-	Param(
+	param(
 		# Archive request payload per API schema
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]

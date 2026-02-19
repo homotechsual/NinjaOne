@@ -29,7 +29,7 @@ function Find-NinjaOneDevices {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# Limit number of devices to return.
 		[Int]$limit,
 		# Search query

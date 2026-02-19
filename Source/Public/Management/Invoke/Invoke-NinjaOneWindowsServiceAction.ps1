@@ -9,14 +9,14 @@ function Invoke-NinjaOneWindowsServiceAction {
 		.OUTPUTS
 			System.Void
 
-			This commandlet returns no output. A success message will be written to the information stream if the API returns a 204 success code. Use `-InformationAction Continue` to see this message.
+			This commandlet returns no output. A success message will be written to the information stream if the API returns a 204 success code. Use `-InformationAction continue` to see this message.
 		.EXAMPLE
 
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Invoke/windowsserviceaction
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
-	# This commandlet returns no output. A success message will be written to the information stream if the API returns a 204 success code. Use `-InformationAction Continue` to see this message.
+	# This commandlet returns no output. A success message will be written to the information stream if the API returns a 204 success code. Use `-InformationAction continue` to see this message.
 	[OutputType([System.Void])]
 	[Alias('inowsa')]
 	[MetadataAttribute(
@@ -24,7 +24,7 @@ function Invoke-NinjaOneWindowsServiceAction {
 		'post'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The device(s) to change service configuration for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]

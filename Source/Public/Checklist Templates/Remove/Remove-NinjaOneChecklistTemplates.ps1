@@ -22,7 +22,7 @@ function Remove-NinjaOneChecklistTemplates {
 		'/v2/checklist/templates/delete',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int[]]$templateIds
 	)

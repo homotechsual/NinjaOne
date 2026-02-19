@@ -22,7 +22,7 @@ function New-NinjaOneKnowledgeBaseArticles {
 		'/v2/knowledgebase/articles',
 		'post'
 	)]
-	Param(
+	param(
 		# Articles payload per API schema
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]

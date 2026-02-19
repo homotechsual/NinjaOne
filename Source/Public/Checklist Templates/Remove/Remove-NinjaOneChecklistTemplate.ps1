@@ -20,7 +20,7 @@ function Remove-NinjaOneChecklistTemplate {
 		'/v2/checklist/template/{checklistTemplateId}',
 		'delete'
 	)]
-	Param(
+	param(
 		# Checklist template Id to delete.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]

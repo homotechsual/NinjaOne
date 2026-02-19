@@ -22,7 +22,7 @@ function Get-NinjaOneOrganisationChecklists {
 		'/v2/organization/checklists',
 		'get'
 	)]
-	Param()
+	param()
 	process {
 		try {
 			$Resource = 'v2/organization/checklists'

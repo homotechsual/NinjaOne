@@ -23,7 +23,7 @@ function Get-NinjaOneEntityCustomFieldsSignedURLs {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The entity type.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[ValidateSet('ORGANIZATION','DOCUMENT','LOCATION','NODE','ATTACHMENT','TECHNICIAN','CREDENTIAL','CHECKLIST','END_USER','CONTACT','KB_DOCUMENT')]

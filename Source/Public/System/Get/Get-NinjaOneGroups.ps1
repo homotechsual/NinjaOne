@@ -24,7 +24,7 @@ function Get-NinjaOneGroups {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# Group names should be returned in this language.
 		[Parameter(Position = 0)]
 		[Alias('lang')]

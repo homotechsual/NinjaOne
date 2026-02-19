@@ -44,6 +44,12 @@
       "Copy-Item": true,
       "&": true,
       "Invoke-ScriptAnalyzer": true,
+      "Group-Object": true,
+      "ForEach-Object": true,
+      "Set-Content": true,
+      "git add": true,
+      "git commit": true,
+      "git push": true,
     },
   },
   "launch": {

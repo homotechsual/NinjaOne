@@ -13,7 +13,7 @@ function Invoke-NinjaOneOrganisationDocumentArchive {
 		'/v2/organization/document/{clientDocumentId}/archive',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$clientDocumentId
 	)

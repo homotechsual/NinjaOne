@@ -19,7 +19,7 @@ function New-NinjaOneOrganisation {
 		'post'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The Id of the organisation to use as a template.
 		[Parameter(Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('templateOrganizationId', 'templateId')]

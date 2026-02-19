@@ -33,7 +33,7 @@ function Get-NinjaOneLocations {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# Number of results per page.
 		[Parameter(Position = 0)]
 		[Int]$pageSize,

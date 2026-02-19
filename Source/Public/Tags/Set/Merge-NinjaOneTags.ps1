@@ -22,7 +22,7 @@ function Merge-NinjaOneTags {
 		'/v2/tag/merge',
 		'post'
 	)]
-	Param(
+	param(
 		# Merge request payload as per API schema (source/target tag ids)
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]

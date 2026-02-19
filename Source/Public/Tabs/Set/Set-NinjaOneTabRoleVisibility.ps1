@@ -25,7 +25,7 @@ function Set-NinjaOneTabRoleVisibility {
 		'/v2/tab/role/{roleId}/visibility',
 		'patch'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$roleId,
 		# Array payload (CustomTabsVisibilityPublicApiDTO[])

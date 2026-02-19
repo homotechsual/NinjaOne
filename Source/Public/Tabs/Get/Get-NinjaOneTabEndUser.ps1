@@ -22,7 +22,7 @@ function Get-NinjaOneTabEndUser {
 		'/v2/tab/{tabId}/end-user',
 		'get'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
 		[Int]$tabId

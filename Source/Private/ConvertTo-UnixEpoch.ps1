@@ -28,7 +28,7 @@ function ConvertTo-UnixEpoch {
 		$DateTime = $DateTime
 	} else {
 		Write-Error 'The DateTime parameter must be a DateTime object, a string, or an integer.'
-		Exit 1
+		exit 1
 	}
 	$UniversalDateTime = $DateTime.ToUniversalTime()
 	$UnixEpochTimestamp = Get-Date -Date $UniversalDateTime -UFormat %s

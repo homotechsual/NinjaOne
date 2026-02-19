@@ -22,7 +22,7 @@ function New-NinjaOneTag {
 		'/v2/tag/{assetType}',
 		'post'
 	)]
-	Param(
+	param(
 		# The asset type the tag applies to (e.g. NODE, ORGANIZATION, LOCATION).
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[String]$assetType,

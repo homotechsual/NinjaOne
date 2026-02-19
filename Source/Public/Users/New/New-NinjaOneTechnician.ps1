@@ -22,7 +22,7 @@ function New-NinjaOneTechnician {
 		'/v2/user/technicians',
 		'post'
 	)]
-	Param(
+	param(
 		# Technician payload per API schema.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]

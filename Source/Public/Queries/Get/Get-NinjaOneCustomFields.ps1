@@ -49,7 +49,7 @@ function Get-NinjaOneCustomFields {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# Filter devices.
 		[Parameter(ParameterSetName = 'Default', Position = 0)]
 		[Alias('df')]
