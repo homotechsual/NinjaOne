@@ -5,6 +5,9 @@
 		https://github.com/PowerShell/PSScriptAnalyzer/blob/master/Engine/Settings/
 #>
 @{
+	CustomRulePath = @(
+		'.\CustomRules'
+	)
 	Severity = @(
 		'Error',
 		'Warning',
@@ -62,7 +65,10 @@
 		'PSUseShouldProcessForStateChangingFunctions',
 		'PSUseConsistentIndentation',
 		'PSUseConsistentWhitespace',
-		'PSUseCorrectCasing'
+		'PSUseCorrectCasing',
+		'Measure-AvoidDoubleQuoteInterpolation',
+		'Measure-AvoidOneLineIfElse',
+		'Measure-RequiredCommentBasedHelp'
 	)
 	Rules = @{
 		PSAlignAssignmentStatement = @{
@@ -71,14 +77,14 @@
 		PSPlaceCloseBrace = @{
 			Enable = $true
 			NewLineAfter = $false
-			IgnoreOneLineBlock = $true
+			IgnoreOneLineBlock = $false
 			NoEmptyLineBefore = $false
 		}
 		PSPlaceOpenBrace = @{
 			Enable = $true
 			OnSameLine = $true
 			NewLineAfter = $true
-			IgnoreOneLineBlock = $true
+			IgnoreOneLineBlock = $false
 		}
 		PSReviewUnusedParameter = @{
 			Enable = $true

@@ -39,7 +39,11 @@ function Get-NinjaOneTabSummaryRole {
 			$Resource = ('v2/tab/summary/role/{0}' -f $roleId)
 			$RequestParams = @{ Resource = $Resource; QSCollection = $QSCollection }
 			$Result = New-NinjaOneGETRequest @RequestParams
-			if ($Result) { return $Result } else { throw ('No tab summary found for role {0}.' -f $roleId) }
+			if ($Result) {
+				return $Result
+			} else {
+				throw ('No tab summary found for role {0}.' -f $roleId)
+			}
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }

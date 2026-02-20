@@ -10,6 +10,12 @@ function Set-NinjaOneDeviceMaintenance {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/devicemaintenance
+	
+	.EXAMPLE
+		PS> Set-NinjaOneDeviceMaintenance -Identity 123 -Property 'Value'
+
+		Updates the specified resource.
+
 	#>
 	[CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
 	[OutputType([Object])]

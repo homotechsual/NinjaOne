@@ -15,17 +15,18 @@ function New-NinjaOneChecklistTemplate {
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/checklisttemplate
 	#>
-	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('nnoct')]
 	[MetadataAttribute(
 		'/v2/checklist/templates',
 		'post'
 	)]
-	Param(
-		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
+	param(
+		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$template
 	)
-	process { try { if($PSCmdlet.ShouldProcess('Checklist Template','Create')){ return (New-NinjaOnePOSTRequest -Resource 'v2/checklist/templates' -Body $template) } } catch { New-NinjaOneError -ErrorRecord $_ } }
+	process { try { if ($PSCmdlet.ShouldProcess('Checklist Template', 'Create')) { return (New-NinjaOnePOSTRequest -Resource 'v2/checklist/templates' -Body $template) } } catch { New-NinjaOneError -ErrorRecord $_ } }
 }
+

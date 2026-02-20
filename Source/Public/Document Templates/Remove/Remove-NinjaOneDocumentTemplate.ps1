@@ -10,6 +10,12 @@ function Remove-NinjaOneDocumentTemplate {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Remove/documenttemplate
+	
+	.EXAMPLE
+		PS> Remove-NinjaOneDocumentTemplate -Identity 123
+
+		Removes the specified resource.
+
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]

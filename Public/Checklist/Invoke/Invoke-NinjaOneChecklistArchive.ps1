@@ -15,17 +15,18 @@ function Invoke-NinjaOneChecklistArchive {
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Invoke/checklist-archive
 	#>
-	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('inoclarch')]
 	[MetadataAttribute(
 		'/v2/checklist/archive',
 		'post'
 	)]
-	Param(
-		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
+	param(
+		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$request
 	)
-	process { try { if($PSCmdlet.ShouldProcess('Checklists','Archive')){ return (New-NinjaOnePOSTRequest -Resource 'v2/checklist/archive' -Body $request) } } catch { New-NinjaOneError -ErrorRecord $_ } }
+	process { try { if ($PSCmdlet.ShouldProcess('Checklists', 'Archive')) { return (New-NinjaOnePOSTRequest -Resource 'v2/checklist/archive' -Body $request) } } catch { New-NinjaOneError -ErrorRecord $_ } }
 }
+

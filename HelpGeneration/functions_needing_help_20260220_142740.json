@@ -1,0 +1,251 @@
+{
+  "Push": {
+    "Parameters": "Remotes",
+    "IsPublic": false,
+    "FilePath": ".\\build.ps1",
+    "LineNumber": 123,
+    "File": "J:\\Projects\\NinjaOne\\build.ps1"
+  },
+  "InvokeTask": {
+    "Parameters": [
+      "TaskName",
+      "Path"
+    ],
+    "IsPublic": false,
+    "FilePath": ".\\build.ps1",
+    "LineNumber": 504,
+    "File": "J:\\Projects\\NinjaOne\\build.ps1"
+  },
+  "Get-PositionalArguments": {
+    "Parameters": "MetadataElement",
+    "IsPublic": false,
+    "FilePath": ".\\Tests\\TestScaffold.psm1",
+    "LineNumber": 48,
+    "File": "J:\\Projects\\NinjaOne\\Tests\\TestScaffold.psm1"
+  },
+  "AssertOutputBinariesUnlocked": {
+    "Parameters": "OutputPath",
+    "IsPublic": false,
+    "FilePath": ".\\build.ps1",
+    "LineNumber": 318,
+    "File": "J:\\Projects\\NinjaOne\\build.ps1"
+  },
+  "Clean": {
+    "Parameters": [],
+    "IsPublic": false,
+    "FilePath": ".\\build.ps1",
+    "LineNumber": 468,
+    "File": "J:\\Projects\\NinjaOne\\build.ps1"
+  },
+  "Invoke-NinjaOneOrganisationRestore": {
+    "Parameters": "request",
+    "IsPublic": true,
+    "FilePath": ".\\Public\\Organisation\\Invoke\\Invoke-NinjaOneOrganisationRestore.ps1",
+    "LineNumber": 1,
+    "File": "J:\\Projects\\NinjaOne\\Public\\Organisation\\Invoke\\Invoke-NinjaOneOrganisationRestore.ps1"
+  },
+  "Invoke-NinjaOneOrganisationDocumentsRestore": {
+    "Parameters": "request",
+    "IsPublic": true,
+    "FilePath": ".\\Public\\OrganisationDocuments\\Invoke\\Invoke-NinjaOneOrganisationDocumentsRestore.ps1",
+    "LineNumber": 1,
+    "File": "J:\\Projects\\NinjaOne\\Public\\OrganisationDocuments\\Invoke\\Invoke-NinjaOneOrganisationDocumentsRestore.ps1"
+  },
+  "PublishDocsTask": {
+    "Parameters": [],
+    "IsPublic": false,
+    "FilePath": ".\\build.ps1",
+    "LineNumber": 430,
+    "File": "J:\\Projects\\NinjaOne\\build.ps1"
+  },
+  "Update-NinjaOneToken": {
+    "Parameters": [],
+    "IsPublic": false,
+    "FilePath": ".\\Source\\Private\\Update-NinjaOneToken.ps1",
+    "LineNumber": 1,
+    "File": "J:\\Projects\\NinjaOne\\Source\\Private\\Update-NinjaOneToken.ps1"
+  },
+  "Invoke-NinjaOneOrganisationDocumentsArchive": {
+    "Parameters": "request",
+    "IsPublic": true,
+    "FilePath": ".\\Public\\OrganisationDocuments\\Invoke\\Invoke-NinjaOneOrganisationDocumentsArchive.ps1",
+    "LineNumber": 1,
+    "File": "J:\\Projects\\NinjaOne\\Public\\OrganisationDocuments\\Invoke\\Invoke-NinjaOneOrganisationDocumentsArchive.ps1"
+  },
+  "NinjaOneOrganisationDocument": {
+    "Parameters": [],
+    "IsPublic": false,
+    "FilePath": ".\\Source\\Classes\\05-NinjaOneOrganisationDocument.Object.Class.ps1",
+    "LineNumber": 66,
+    "File": "J:\\Projects\\NinjaOne\\Source\\Classes\\05-NinjaOneOrganisationDocument.Object.Class.ps1"
+  },
+  "UpdateHelp": {
+    "Parameters": [
+      "DocusaurusPath",
+      "ForceUpdateCategoryFiles"
+    ],
+    "IsPublic": false,
+    "FilePath": ".\\build.ps1",
+    "LineNumber": 159,
+    "File": "J:\\Projects\\NinjaOne\\build.ps1"
+  },
+  "New-NinjaOneError": {
+    "Parameters": [
+      "ErrorRecord",
+      "HasResponse"
+    ],
+    "IsPublic": false,
+    "FilePath": ".\\Source\\Private\\New-NinjaOneError.ps1",
+    "LineNumber": 3,
+    "File": "J:\\Projects\\NinjaOne\\Source\\Private\\New-NinjaOneError.ps1"
+  },
+  "PublishDocs": {
+    "Parameters": "DocsOutputPath",
+    "IsPublic": false,
+    "FilePath": ".\\build.ps1",
+    "LineNumber": 443,
+    "File": "J:\\Projects\\NinjaOne\\build.ps1"
+  },
+  "UpdateManifest": {
+    "Parameters": [],
+    "IsPublic": false,
+    "FilePath": ".\\build.ps1",
+    "LineNumber": 377,
+    "File": "J:\\Projects\\NinjaOne\\build.ps1"
+  },
+  "Get-FunctionList": {
+    "Parameters": [],
+    "IsPublic": false,
+    "FilePath": ".\\Tests\\TestScaffold.psm1",
+    "LineNumber": 31,
+    "File": "J:\\Projects\\NinjaOne\\Tests\\TestScaffold.psm1"
+  },
+  "GenerateShortNamesMapping": {
+    "Parameters": [],
+    "IsPublic": false,
+    "FilePath": ".\\build.ps1",
+    "LineNumber": 137,
+    "File": "J:\\Projects\\NinjaOne\\build.ps1"
+  },
+  "Get-Endpoints": {
+    "Parameters": [],
+    "IsPublic": false,
+    "FilePath": ".\\Tests\\TestScaffold.psm1",
+    "LineNumber": 4,
+    "File": "J:\\Projects\\NinjaOne\\Tests\\TestScaffold.psm1"
+  },
+  "Invoke-NinjaOneDocumentTemplatesRestore": {
+    "Parameters": "request",
+    "IsPublic": true,
+    "FilePath": ".\\Public\\Document Templates\\Invoke\\Invoke-NinjaOneDocumentTemplatesRestore.ps1",
+    "LineNumber": 1,
+    "File": "J:\\Projects\\NinjaOne\\Public\\Document Templates\\Invoke\\Invoke-NinjaOneDocumentTemplatesRestore.ps1"
+  },
+  "Measure-RequiredCommentBasedHelp": {
+    "Parameters": "ScriptBlockAst",
+    "IsPublic": false,
+    "FilePath": ".\\CustomRules\\CustomRules.psm1",
+    "LineNumber": 135,
+    "File": "J:\\Projects\\NinjaOne\\CustomRules\\CustomRules.psm1"
+  },
+  "Get-MetadataElement": {
+    "Parameters": "AST",
+    "IsPublic": false,
+    "FilePath": ".\\Tests\\TestScaffold.psm1",
+    "LineNumber": 38,
+    "File": "J:\\Projects\\NinjaOne\\Tests\\TestScaffold.psm1"
+  },
+  "Invoke-NinjaOneDocumentTemplatesArchive": {
+    "Parameters": "request",
+    "IsPublic": true,
+    "FilePath": ".\\Public\\Document Templates\\Invoke\\Invoke-NinjaOneDocumentTemplatesArchive.ps1",
+    "LineNumber": 1,
+    "File": "J:\\Projects\\NinjaOne\\Public\\Document Templates\\Invoke\\Invoke-NinjaOneDocumentTemplatesArchive.ps1"
+  },
+  "Get-Metadata": {
+    "Parameters": "PositionalArguments",
+    "IsPublic": false,
+    "FilePath": ".\\Tests\\TestScaffold.psm1",
+    "LineNumber": 60,
+    "File": "J:\\Projects\\NinjaOne\\Tests\\TestScaffold.psm1"
+  },
+  "WriteMessage": {
+    "Parameters": [
+      "Message",
+      "Category",
+      "Details"
+    ],
+    "IsPublic": false,
+    "FilePath": ".\\build.ps1",
+    "LineNumber": 477,
+    "File": "J:\\Projects\\NinjaOne\\build.ps1"
+  },
+  "Get-AllMetadata": {
+    "Parameters": [],
+    "IsPublic": false,
+    "FilePath": ".\\Tests\\TestScaffold.psm1",
+    "LineNumber": 77,
+    "File": "J:\\Projects\\NinjaOne\\Tests\\TestScaffold.psm1"
+  },
+  "New-NinjaOneQuery": {
+    "Parameters": [
+      "CommandName",
+      "Parameters",
+      "CommaSeparatedArrays",
+      "AsString"
+    ],
+    "IsPublic": false,
+    "FilePath": ".\\Source\\Private\\New-NinjaOneQuery.ps1",
+    "LineNumber": 1,
+    "File": "J:\\Projects\\NinjaOne\\Source\\Private\\New-NinjaOneQuery.ps1"
+  },
+  "Import-ModuleToBeTested": {
+    "Parameters": [],
+    "IsPublic": false,
+    "FilePath": ".\\Tests\\TestScaffold.psm1",
+    "LineNumber": 22,
+    "File": "J:\\Projects\\NinjaOne\\Tests\\TestScaffold.psm1"
+  },
+  "Invoke-NinjaOneOrganisationDocumentArchive": {
+    "Parameters": "clientDocumentId",
+    "IsPublic": true,
+    "FilePath": ".\\Public\\OrganisationDocuments\\Invoke\\Invoke-NinjaOneOrganisationDocumentArchive.ps1",
+    "LineNumber": 1,
+    "File": "J:\\Projects\\NinjaOne\\Public\\OrganisationDocuments\\Invoke\\Invoke-NinjaOneOrganisationDocumentArchive.ps1"
+  },
+  "Get-ModuleName": {
+    "Parameters": [],
+    "IsPublic": false,
+    "FilePath": ".\\Tests\\TestScaffold.psm1",
+    "LineNumber": 1,
+    "File": "J:\\Projects\\NinjaOne\\Tests\\TestScaffold.psm1"
+  },
+  "Build": {
+    "Parameters": [],
+    "IsPublic": false,
+    "FilePath": ".\\build.ps1",
+    "LineNumber": 305,
+    "File": "J:\\Projects\\NinjaOne\\build.ps1"
+  },
+  "Invoke-NinjaOneOrganisationDocumentRestore": {
+    "Parameters": "clientDocumentId",
+    "IsPublic": true,
+    "FilePath": ".\\Public\\OrganisationDocuments\\Invoke\\Invoke-NinjaOneOrganisationDocumentRestore.ps1",
+    "LineNumber": 1,
+    "File": "J:\\Projects\\NinjaOne\\Public\\OrganisationDocuments\\Invoke\\Invoke-NinjaOneOrganisationDocumentRestore.ps1"
+  },
+  "GetFunctions": {
+    "Parameters": "ModuleName",
+    "IsPublic": false,
+    "FilePath": ".\\build.ps1",
+    "LineNumber": 108,
+    "File": "J:\\Projects\\NinjaOne\\build.ps1"
+  },
+  "Publish": {
+    "Parameters": [],
+    "IsPublic": false,
+    "FilePath": ".\\build.ps1",
+    "LineNumber": 404,
+    "File": "J:\\Projects\\NinjaOne\\build.ps1"
+  }
+}

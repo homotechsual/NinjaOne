@@ -2,8 +2,17 @@
 	.SYNOPSIS
 		Restore organisation documents.
 
+	.DESCRIPTION
+		Restore organisation documents using the NinjaOne v2 API.
+
 	.FUNCTIONALITY
 		Restore Organisation Documents
+	
+	.EXAMPLE
+		PS> Invoke-NinjaOneOrganisationDocumentsRestore -Identity 123
+
+		Invokes the specified operation.
+
 #>
 function Invoke-NinjaOneOrganisationDocumentsRestore {
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]

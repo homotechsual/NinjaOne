@@ -38,7 +38,11 @@ function Get-NinjaOneOrganisationChecklist {
 			$Resource = ('v2/organization/checklist/{0}' -f $checklistId)
 			$RequestParams = @{ Resource = $Resource; QSCollection = $QSCollection }
 			$Result = New-NinjaOneGETRequest @RequestParams
-			if ($Result) { return $Result } else { throw ('Checklist {0} not found.' -f $checklistId) }
+			if ($Result) {
+				return $Result
+			} else {
+				throw ('Checklist {0} not found.' -f $checklistId)
+			}
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }

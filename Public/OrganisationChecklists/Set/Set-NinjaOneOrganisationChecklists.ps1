@@ -15,17 +15,18 @@ function Set-NinjaOneOrganisationChecklists {
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/organisationchecklists
 	#>
-	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('snoocl')]
 	[MetadataAttribute(
 		'/v2/organization/checklists',
 		'put'
 	)]
-	Param(
-		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
+	param(
+		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$checklists
 	)
-	process { try { if($PSCmdlet.ShouldProcess('Organisation Checklists','Update')){ return (New-NinjaOnePUTRequest -Resource 'v2/organization/checklists' -Body $checklists) } } catch { New-NinjaOneError -ErrorRecord $_ } }
+	process { try { if ($PSCmdlet.ShouldProcess('Organisation Checklists', 'Update')) { return (New-NinjaOnePUTRequest -Resource 'v2/organization/checklists' -Body $checklists) } } catch { New-NinjaOneError -ErrorRecord $_ } }
 }
+

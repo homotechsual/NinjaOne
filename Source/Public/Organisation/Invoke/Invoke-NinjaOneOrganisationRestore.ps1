@@ -1,9 +1,16 @@
 <#
 	.SYNOPSIS
 		Restore an organisation.
-
+	.DESCRIPTION
+		Restore organisation using the NinjaOne v2 API.
 	.FUNCTIONALITY
 		Restore Organisation
+	
+	.EXAMPLE
+		PS> Invoke-NinjaOneOrganisationRestore -Identity 123
+
+		Invokes the specified operation.
+
 #>
 function Invoke-NinjaOneOrganisationRestore {
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]

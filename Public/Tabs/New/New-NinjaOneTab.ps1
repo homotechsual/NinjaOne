@@ -15,22 +15,23 @@ function New-NinjaOneTab {
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/tab
 	#>
-	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('nnotab')]
 	[MetadataAttribute(
 		'/v2/tab',
 		'post'
 	)]
-	Param(
+	param(
 		# Payload to create tab per API schema
-		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
+		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$tab
 	)
 	process {
 		try {
-			if($PSCmdlet.ShouldProcess('Tab','Create')){ return (New-NinjaOnePOSTRequest -Resource 'v2/tab' -Body $tab) }
+			if ($PSCmdlet.ShouldProcess('Tab', 'Create')) { return (New-NinjaOnePOSTRequest -Resource 'v2/tab' -Body $tab) }
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+

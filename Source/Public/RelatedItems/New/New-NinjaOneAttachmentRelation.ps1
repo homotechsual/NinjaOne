@@ -10,6 +10,13 @@ function New-NinjaOneAttachmentRelation {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/attachmentrelation
+	
+	.EXAMPLE
+		PS> $newObject = @{ Name = 'Example' }
+		PS> New-NinjaOneAttachmentRelation @newObject
+
+		Creates a new resource with the specified properties.
+
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]

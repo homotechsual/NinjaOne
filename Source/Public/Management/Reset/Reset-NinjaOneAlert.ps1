@@ -10,6 +10,12 @@ function Reset-NinjaOneAlert {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Reset/alert
+	
+	.EXAMPLE
+		PS> Reset-NinjaOneAlert -Identity 123
+
+		Resets the specified resource to default state.
+
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]

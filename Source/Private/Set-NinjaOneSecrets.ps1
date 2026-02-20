@@ -16,6 +16,8 @@ function Set-NinjaOneSecrets {
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '', Justification = 'No viable alternative.')]
 	# Suppress the PSSA warning about invoking empty members which is caused by our use of dynamic member names. This is a false positive.
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidInvokingEmptyMembers', '', Justification = 'False positive.')]
+	# Suppress the PSSA warning about unused parameters. Parameters are accepted for API consistency but not used directly.
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Parameters accepted for API consistency but populated from script variables.')]
 	param(
 		# The authentication mode to use.
 		[String]$AuthMode,
@@ -60,8 +62,8 @@ function Set-NinjaOneSecrets {
 		exit 1
 	}
 	# Make sure we've been told to write to the secret vault.
-	if ($false -eq $WriteToKeyVault) {
-		Write-Error 'WriteToKeyVault must be specified.'
+	if ($false -eq $WriteToSecretVault) {
+		Write-Error 'WriteToSecretVault must be specified.'
 		exit 1
 	}
 	# Write the connection information to the secret vault.

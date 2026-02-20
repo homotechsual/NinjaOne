@@ -15,22 +15,23 @@ function Rename-NinjaOneTab {
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/tab-rename
 	#>
-	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('rnotab')]
 	[MetadataAttribute(
 		'/v2/tab/rename',
 		'patch'
 	)]
-	Param(
+	param(
 		# Payload e.g. @{ tabId = 5; name = 'New Name' }
-		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
+		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$rename
 	)
 	process {
 		try {
-			if($PSCmdlet.ShouldProcess('Tab','Rename')){ return (New-NinjaOnePATCHRequest -Resource 'v2/tab/rename' -Body $rename) }
+			if ($PSCmdlet.ShouldProcess('Tab', 'Rename')) { return (New-NinjaOnePATCHRequest -Resource 'v2/tab/rename' -Body $rename) }
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+

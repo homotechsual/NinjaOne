@@ -10,6 +10,13 @@ function New-NinjaOneDocumentTemplate {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/documenttemplate
+	
+	.EXAMPLE
+		PS> $newObject = @{ Name = 'Example' }
+		PS> New-NinjaOneDocumentTemplate @newObject
+
+		Creates a new resource with the specified properties.
+
 	#>
 	[CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
 	[OutputType([Object])]

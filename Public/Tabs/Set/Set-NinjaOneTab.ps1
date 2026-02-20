@@ -15,24 +15,25 @@ function Set-NinjaOneTab {
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/tab
 	#>
-	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('snotab')]
 	[MetadataAttribute(
 		'/v2/tab/{tabId}',
 		'patch'
 	)]
-	Param(
-		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
+	param(
+		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$tabId,
-		[Parameter(Mandatory, Position=1, ValueFromPipelineByPropertyName)]
+		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$tab
 	)
 	process {
 		try {
-			$res='v2/tab/{0}' -f $tabId
-			if($PSCmdlet.ShouldProcess(('Tab {0}' -f $tabId),'Update')){ return (New-NinjaOnePATCHRequest -Resource $res -Body $tab) }
+			$res = 'v2/tab/{0}' -f $tabId
+			if ($PSCmdlet.ShouldProcess(('Tab {0}' -f $tabId), 'Update')) { return (New-NinjaOnePATCHRequest -Resource $res -Body $tab) }
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+

@@ -1,60 +1,46 @@
-
-function Get-NinjaOneRelatedItemAttachmentSignedURLs {
+function Set-NinjaOneUnmanagedDevice {
 	<#
 		.SYNOPSIS
-			Gets related item attachment signed URLs from the NinjaOne API.
+			Updates an unmanaged device.
 		.DESCRIPTION
-			Retrieves a related item attachment signed URLs from the NinjaOne v2 API.
+			Updates an unmanaged device via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Related Item Attachment Signed URLs
+			Unmanaged Devices
 		.EXAMPLE
-			PS> Get-NinjaOneRelatedItemAttachmentSignedURLs -entityType 'KB_DOCUMENT' -entityId 1
+			PS> Set-NinjaOneUnmanagedDevice -nodeId 5001 -unmanagedDevice @{ hostname = 'asset-5001' }
 
-			Gets the related item attachment signed URLs for the KB_DOCUMENT entity with id 1.
+			Updates unmanaged device 5001.
 		.OUTPUTS
-			A powershell object containing the response.
+			Status code or updated resource per API.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Get/relateditemattachmentsignedurls
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/unmanageddevice
 	#>
-	[CmdletBinding()]
+	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
-	[Alias('gnoriasu')]
-[MetadataAttribute(
-	'/v2/related-items/with-entity/{entityType}/{entityId}/attachments/signed-urls',
-	'get'
-)]
-	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
-		# The entity type of the related item.
-		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-		[ValidateSet('ORGANIZATION', 'DOCUMENT', 'LOCATION', 'NODE', 'CHECKLIST', 'KB_DOCUMENT')]
-		[String]$entityType,
-		# The entity id of the related item.
-		[Parameter(Mandatory, Position = 1, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-		[Alias('id')]
-		[Int]$entityId
+	[Alias('snoud')]
+	[MetadataAttribute(
+		'/v2/itam/unmanaged-device/{nodeId}',
+		'put'
+	)]
+	param(
+		# Unmanaged device node Id
+		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
+		[Int]$nodeId,
+		# Update payload
+		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
+		[Alias('body')]
+		[Object]$unmanagedDevice
 	)
-	begin {
-		$CommandName = $MyInvocation.InvocationName
-		$Parameters = (Get-Command -Name $CommandName).Parameters
-		# Workaround to prevent the query string processor from adding an 'entityType=' parameter by removing it from the set parameters.
-		$Parameters.Remove('entityType') | Out-Null
-		# Workaround to prevent the query string processor from adding an 'entityId=' parameter by removing it from the set parameters.
-		$Parameters.Remove('entityId') | Out-Null
-		$QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-	}
 	process {
 		try {
-			Write-Verbose ('Getting related item attachment signed urls for {0} entity {1}.' -f $entityType, $entityId)
-			$Resource = ('v2/related-items/with-entity/{0}/{1}/attachments/signed-urls' -f $entityType, $entityId)
-			$RequestParams = @{
-				Resource = $Resource
-				QSCollection = $QSCollection
+			$Resource = ('v2/itam/unmanaged-device/{0}' -f $nodeId)
+			$RequestParams = @{ Resource = $Resource; Body = $unmanagedDevice }
+			if ($PSCmdlet.ShouldProcess(('Unmanaged Device {0}' -f $nodeId), 'Update')) {
+				$Result = New-NinjaOnePUTRequest @RequestParams
+				return $Result
 			}
-			$RelatedItemAttachmentSignedURLsResults = New-NinjaOneGETRequest @RequestParams
-			return $RelatedItemAttachmentSignedURLsResults
-		} catch {
-			New-NinjaOneError -ErrorRecord $_
-		}
+		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+

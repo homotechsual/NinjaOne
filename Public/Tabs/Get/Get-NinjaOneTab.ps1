@@ -38,7 +38,11 @@ function Get-NinjaOneTab {
 			$Resource = ('v2/tab/{0}' -f $tabId)
 			$RequestParams = @{ Resource = $Resource; QSCollection = $QSCollection }
 			$Result = New-NinjaOneGETRequest @RequestParams
-			if ($Result) { return $Result } else { throw ('Tab {0} not found.' -f $tabId) }
+			if ($Result) {
+				return $Result
+			} else {
+				throw ('Tab {0} not found.' -f $tabId)
+			}
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }

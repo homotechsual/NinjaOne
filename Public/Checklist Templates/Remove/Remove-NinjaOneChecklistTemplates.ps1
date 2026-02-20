@@ -15,16 +15,17 @@ function Remove-NinjaOneChecklistTemplates {
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Remove/checklisttemplates
 	#>
-	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('rnocltm')]
 	[MetadataAttribute(
 		'/v2/checklist/templates/delete',
 		'post'
 	)]
-	Param(
-		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
+	param(
+		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int[]]$templateIds
 	)
-	process { try { if($PSCmdlet.ShouldProcess('Checklist Templates','Delete')){ return (New-NinjaOnePOSTRequest -Resource 'v2/checklist/templates/delete' -Body $templateIds) } } catch { New-NinjaOneError -ErrorRecord $_ } }
+	process { try { if ($PSCmdlet.ShouldProcess('Checklist Templates', 'Delete')) { return (New-NinjaOnePOSTRequest -Resource 'v2/checklist/templates/delete' -Body $templateIds) } } catch { New-NinjaOneError -ErrorRecord $_ } }
 }
+

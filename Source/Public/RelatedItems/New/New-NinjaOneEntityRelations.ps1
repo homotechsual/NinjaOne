@@ -10,6 +10,13 @@ function New-NinjaOneEntityRelations {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/entityrelations
+	
+	.EXAMPLE
+		PS> $newObject = @{ Name = 'Example' }
+		PS> New-NinjaOneEntityRelations @newObject
+
+		Creates a new resource with the specified properties.
+
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]

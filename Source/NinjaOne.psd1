@@ -252,6 +252,8 @@
 		'New-NinjaOneCustomFieldsPolicyCondition',
 		'New-NinjaOneDocumentTemplate',
 		'New-NinjaOneDocumentTemplateFieldObject',
+		'New-NinjaOneTicketBoardFilter',
+		'New-NinjaOneTicketBoardSort',
 		'New-NinjaOneEntityRelation',
 		'New-NinjaOneEntityRelations',
 		'New-NinjaOneInstaller',
@@ -329,7 +331,7 @@
 			# Tags applied to this module. These help with module discovery in online galleries.
 			Tags = @(
 				'NinjaRMM',
-				'NinjaOne'
+				'NinjaOne',
 				'RMM',
 				'Ninja',
 				'API',
@@ -342,13 +344,13 @@
 			LicenseUri = 'https://mit.license.homotechsual.dev/'
 
 			# A URL to the main website for this project.
-			ProjectUri = 'https://github.com/homotechsual/NinjaOne'
+			ProjectUri = 'https://docs.homotechsual.dev/modules/ninjaone'
 
 			# A URL to an icon representing this module.
 			IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
 			# ReleaseNotes of this module
-			ReleaseNotes = 'https://github.com/homotechsual/NinjaOne/releases/tag/2.0.3'
+			ReleaseNotes = 'https://github.com/homotechsual/NinjaOne/releases/tag/2.0.5'
 
 			# Prerelease string of this module
 			Prerelease = ''

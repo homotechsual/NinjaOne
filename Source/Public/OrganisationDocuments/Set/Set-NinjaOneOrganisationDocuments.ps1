@@ -10,6 +10,12 @@ function Set-NinjaOneOrganisationDocuments {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/organisationdocument
+	
+	.EXAMPLE
+		PS> Set-NinjaOneOrganisationDocuments -Identity 123 -Property 'Value'
+
+		Updates the specified resource.
+
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]

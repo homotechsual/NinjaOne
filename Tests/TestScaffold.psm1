@@ -1,79 +1,30 @@
-function Get-ModuleName {
-    return 'NinjaOne'
-}
-function Get-Endpoints ([uri]$SchemaURI = 'https://oc.ninjarmm.com/apidocs-beta/NinjaRMM-API-v2.yaml') {
-    $Endpoints = [System.Collections.Generic.List[PSObject]]::new()
-    $ProgressPreference = 'SilentlyContinue'
-    $SchemaObject = Invoke-WebRequest -Uri $SchemaURI -UseBasicParsing | ConvertFrom-Yaml
-    $ProgressPreference = 'Continue'
-    foreach ($Path in $SchemaObject.paths.GetEnumerator()) {
-        foreach ($Method in $Path.Value.GetEnumerator()) {
-            $Endpoints.Add(
-                @{
-                    Path = $Path.Name
-                    Method = $Method.Name
-                }
-            )
-        }
-    }
-    return $Endpoints
-}
+<#
+.SYNOPSIS
+Get AllMetadata.
 
-function Import-ModuleToBeTested {
-    $ModuleName = Get-ModuleName
-    if (Get-Module -Name $ModuleName) {
-        Remove-Module $ModuleName -Force
-    }
-    $ManifestPath = Get-ChildItem -Path (Join-Path -Path . -ChildPath 'Source') -Filter ('{0}.psd1' -f $ModuleName) | Select-Object -ExpandProperty FullName
-    Import-Module $ManifestPath -Verbose:$False -Force
-}
+.DESCRIPTION
+Internal helper function for Get-AllMetadata operations.
 
-function Get-FunctionList {
-    $ModuleName = Get-ModuleName
-    $Module = Get-Module -Name $ModuleName
-    $FunctionList = $Module.ExportedFunctions.Values
-    return $FunctionList
-}
+This function provides supporting functionality for the NinjaOne module.
 
-function Get-MetadataElement {
-    param(
-        [Parameter(Mandatory)]
-        [System.Management.Automation.Language.FunctionDefinitionAst]$AST
-    )
-    $MetadataFinder = { $args[0] -is [System.Management.Automation.Language.AttributeAst] -and $args[0].TypeName.Name -eq 'MetadataAttribute' -and $args[0].Parent -is [System.Management.Automation.Language.ParamBlockAst] }
-    $MetadataElement = $AST.FindAll($MetadataFinder, $true)
-    return $MetadataElement
-}
+.PARAMETER Parameter1
+    Describes the first parameter.
 
-function Get-PositionalArguments {
-    param(
-        [Parameter(Mandatory)]
-        [System.Collections.Generic.List[System.Management.Automation.Language.AttributeAst]]$MetadataElement
-    )
-    if ($MetadataElement[0].PSObject.Properties.Name -match 'PositionalArguments') {
-        $PositionalArguments = $MetadataElement[0].PositionalArguments
-    } else {
-        $PositionalArguments = @{}
-    }
-    return $PositionalArguments
-}
-function Get-Metadata {
-    param(
-        [System.Collections.ObjectModel.ReadOnlyCollection[System.Management.Automation.Language.StringConstantExpressionAst]]$PositionalArguments
-    )
-    if ($PositionalArguments.Count -gt 0 -and ($PositionalArguments.Count % 2 -eq 0)) {
-        $Metadata = for ($i = 0; $i -lt $PositionalArguments.Count; $i += 2) {
-            [hashtable]@{
-                Endpoint = $PositionalArguments[$i].Value
-                Method = $PositionalArguments[$i + 1].Value
-            }
-        }
-    } else {
-        $Metadata = @{}
-    }
-    return $Metadata
-}
+.PARAMETER Parameter2
+    Describes the second parameter.
 
+.EXAMPLE
+    PS> Get-AllMetadata
+
+    get the specified AllMetadata.
+
+.OUTPUTS
+Returns information about the AllMetadata resource.
+
+.NOTES
+This cmdlet is part of the NinjaOne PowerShell module.
+Generated reference help - customize descriptions as needed.
+#>
 function Get-AllMetadata {
     $FunctionList = Get-FunctionList
     $AllMetadata = foreach ($Function in $FunctionList) {

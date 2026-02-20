@@ -2,8 +2,17 @@
 	.SYNOPSIS
 		Archive document templates.
 
+	.DESCRIPTION
+		Archive document templates using the NinjaOne v2 API.
+
 	.FUNCTIONALITY
 		Archive Document Templates
+	
+	.EXAMPLE
+		PS> Invoke-NinjaOneDocumentTemplatesArchive -Identity 123
+
+		Invokes the specified operation.
+
 #>
 function Invoke-NinjaOneDocumentTemplatesArchive {
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]

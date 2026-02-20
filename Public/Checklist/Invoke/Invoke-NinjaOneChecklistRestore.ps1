@@ -15,17 +15,18 @@ function Invoke-NinjaOneChecklistRestore {
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Invoke/checklist-restore
 	#>
-	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('inoclrest')]
 	[MetadataAttribute(
 		'/v2/checklist/restore',
 		'post'
 	)]
-	Param(
-		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
+	param(
+		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$request
 	)
-	process { try { if($PSCmdlet.ShouldProcess('Checklists','Restore')){ return (New-NinjaOnePOSTRequest -Resource 'v2/checklist/restore' -Body $request) } } catch { New-NinjaOneError -ErrorRecord $_ } }
+	process { try { if ($PSCmdlet.ShouldProcess('Checklists', 'Restore')) { return (New-NinjaOnePOSTRequest -Resource 'v2/checklist/restore' -Body $request) } } catch { New-NinjaOneError -ErrorRecord $_ } }
 }
+

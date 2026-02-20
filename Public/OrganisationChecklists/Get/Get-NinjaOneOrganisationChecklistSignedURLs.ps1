@@ -38,7 +38,11 @@ function Get-NinjaOneOrganisationChecklistSignedURLs {
 			$Resource = ('v2/organization/checklist/{0}/signed-urls' -f $checklistId)
 			$RequestParams = @{ Resource = $Resource; QSCollection = $QSCollection }
 			$Result = New-NinjaOneGETRequest @RequestParams
-			if ($Result) { return $Result } else { throw ('No signed URLs found for checklist {0}.' -f $checklistId) }
+			if ($Result) {
+				return $Result
+			} else {
+				throw ('No signed URLs found for checklist {0}.' -f $checklistId)
+			}
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }

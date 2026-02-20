@@ -3,11 +3,12 @@
         Core test suite for the NinjaOne module.
 #>
 
-$ModuleName = Get-ChildItem -Path '.\Source' -Filter '*.psd1' | Select-Object -ExpandProperty BaseName
+$ModuleName = 'NinjaOne'
 
 BeforeAll {
-    $ModuleName = Get-ChildItem -Path '.\Source' -Filter '*.psd1' | Select-Object -ExpandProperty BaseName
-    $ManifestPath = Get-ChildItem -Path '.\Source' -Filter '*.psd1'  | Select-Object -ExpandProperty FullName
+    $ModuleName = 'NinjaOne'
+    $ModulePath = Resolve-Path -Path '.\Output\*\*' | Sort-Object -Property BaseName | Select-Object -Last 1 -ExpandProperty Path
+    $ManifestPath = Get-ChildItem -Path ('{0}\*' -f $ModulePath) -Filter '*.psd1' | Select-Object -ExpandProperty FullName
     if (Get-Module -Name $ModuleName) {
         Remove-Module $ModuleName -Force
     }

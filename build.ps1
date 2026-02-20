@@ -10,7 +10,7 @@ param (
 	[ValidateSet('clean', 'build', 'updateManifest', 'publish', 'publishDocs', 'updateHelp', 'generateShortNamesMapping', 'push')]
 	[String[]]$TaskNames = ('clean', 'build', 'updateManifest', 'publish', 'updateHelp', 'generateShortNamesMapping', 'push'),
 	[Hashtable]$BuildConfig = (
-		Join-Path -Path $PSScriptRoot -ChildPath 'Source' | Join-Path -ChildPath 'build.psd1' | Import-PowerShellDataFile -LiteralPath { $_ } -ErrorAction SilentlyContinue
+		Join-Path -Path $PSScriptRoot -ChildPath 'build.config.psd1' | Import-PowerShellDataFile -LiteralPath { $_ } -ErrorAction SilentlyContinue
 	),
 	[Switch]$ExcludeCustomTasks = $false,
 	[System.Management.Automation.SemanticVersion]$SemVer
@@ -133,7 +133,7 @@ function Push {
 	}
 }
 # Task: (Re)Generate the mapping file for the short names of the commandlets. Stored in the Functionality item of the comment based help. The file will be stored in .\.build\CommandletShortNames.yaml
-## Requres YAYAML installed.
+## Requires YAYAML installed.
 function GenerateShortNamesMapping {
 	$OutputFilePath = [System.IO.FileInfo]'.\.build\CommandletShortNames.yaml'
 	$ShortNameOutput = [System.Collections.Generic.Dictionary[String, String]]::new()
@@ -337,12 +337,13 @@ function AssertOutputBinariesUnlocked {
 	$dlls | ForEach-Object {
 		$originalPath = $_.FullName
 		Get-Process -ErrorAction SilentlyContinue | ForEach-Object {
+			$proc = $_
 			try {
-				if ($_.Modules | Where-Object { $_.FileName -eq $originalPath }) {
-					$processInfo.Add("$($_.ProcessName)($($_.Id)) -> $originalPath")
+				if ($proc.Modules | Where-Object { $_.FileName -eq $originalPath }) {
+					$processInfo.Add("$($proc.ProcessName)($($proc.Id)) -> $originalPath")
 				}
 			} catch {
-				Write-Verbose -Message "Unable to inspect process $($_.ProcessName): $_"
+				Write-Verbose -Message "Unable to inspect process $($proc.ProcessName): $_"
 			}
 		}
 	}
@@ -359,8 +360,16 @@ function AssertOutputBinariesUnlocked {
 	}
 
 	if ($locked.Count -gt 0 -or $processInfo.Count -gt 0) {
-		$details = if ($locked.Count -gt 0) { $locked -join '; ' } else { 'None detected by rename check' }
-		$procDetails = if ($processInfo.Count -gt 0) { $processInfo -join '; ' } else { 'Unknown process' }
+		if ($locked.Count -gt 0) {
+			$details = $locked -join '; '
+		} else {
+			$details = 'None detected by rename check'
+		}
+		if ($processInfo.Count -gt 0) {
+			$procDetails = $processInfo -join '; '
+		} else {
+			$procDetails = 'Unknown process'
+		}
 		throw "Build output DLLs are in use. Close any process using these files and retry. Locked: $details. Processes: $procDetails"
 	}
 }

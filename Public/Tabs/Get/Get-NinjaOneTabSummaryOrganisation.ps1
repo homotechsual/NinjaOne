@@ -17,19 +17,24 @@ function Get-NinjaOneTabSummaryOrganisation {
 	#>
 	[CmdletBinding()]
 	[OutputType([Object])]
-	[Alias('gnotabso','Get-NinjaOneTabSummaryOrganization')]
+	[Alias('gnotabso', 'Get-NinjaOneTabSummaryOrganization')]
 	[MetadataAttribute(
 		'/v2/tab/summary/organization',
 		'get'
 	)]
-	Param()
+	param()
 	process {
 		try {
 			$Resource = 'v2/tab/summary/organization'
 			$RequestParams = @{ Resource = $Resource }
 			$Result = New-NinjaOneGETRequest @RequestParams
-			if ($Result) { return $Result } else { throw 'No organisation tab summary found.' }
+			if ($Result) {
+				return $Result
+			} else {
+				throw 'No organisation tab summary found.'
+			}
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 

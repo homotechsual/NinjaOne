@@ -10,6 +10,12 @@ function Remove-NinjaOneRelatedItems {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Remove/relateditems
+	
+	.EXAMPLE
+		PS> Remove-NinjaOneRelatedItems -Identity 123
+
+		Removes the specified resource.
+
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]

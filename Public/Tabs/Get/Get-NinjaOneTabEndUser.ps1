@@ -38,7 +38,11 @@ function Get-NinjaOneTabEndUser {
 			$Resource = ('v2/tab/{0}/end-user' -f $tabId)
 			$RequestParams = @{ Resource = $Resource; QSCollection = $QSCollection }
 			$Result = New-NinjaOneGETRequest @RequestParams
-			if ($Result) { return $Result } else { throw ('End-user for tab {0} not found.' -f $tabId) }
+			if ($Result) {
+				return $Result
+			} else {
+				throw ('End-user for tab {0} not found.' -f $tabId)
+			}
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }

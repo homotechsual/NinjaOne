@@ -15,17 +15,18 @@ function Set-NinjaOneChecklistTemplates {
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/checklisttemplates
 	#>
-	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('snocltm')]
 	[MetadataAttribute(
 		'/v2/checklist/templates',
 		'put'
 	)]
-	Param(
-		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
+	param(
+		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$templates
 	)
-	process { try { if($PSCmdlet.ShouldProcess('Checklist Templates','Update')){ return (New-NinjaOnePUTRequest -Resource 'v2/checklist/templates' -Body $templates) } } catch { New-NinjaOneError -ErrorRecord $_ } }
+	process { try { if ($PSCmdlet.ShouldProcess('Checklist Templates', 'Update')) { return (New-NinjaOnePUTRequest -Resource 'v2/checklist/templates' -Body $templates) } } catch { New-NinjaOneError -ErrorRecord $_ } }
 }
+

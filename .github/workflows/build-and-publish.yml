@@ -27,9 +27,26 @@ jobs:
       - name: Run PSScriptAnalyzer
         shell: pwsh
         run: |
+          $ErrorActionPreference = 'Stop'
           $Results = @()
-          $Results += Invoke-ScriptAnalyzer -Path Source -Recurse -Settings PSScriptAnalyzerSettings.psd1
-          $Results += Invoke-ScriptAnalyzer -Path build.ps1 -Settings PSScriptAnalyzerSettings.psd1
+          $Results += @(Invoke-ScriptAnalyzer -Path Source -Recurse -Settings PSScriptAnalyzerSettings.psd1)
+
+          $buildResults = $null
+          $buildScanSucceeded = $false
+          $attempt = 0
+          while (-not $buildScanSucceeded -and $attempt -lt 2) {
+            try {
+              $attempt++
+              $buildResults = Invoke-ScriptAnalyzer -Path build.ps1 -Settings PSScriptAnalyzerSettings.psd1
+              $buildScanSucceeded = $true
+            } catch {
+              if ($attempt -ge 2) { throw }
+              Write-Host "PSScriptAnalyzer failed on build.ps1 (attempt $attempt). Retrying..."
+              Start-Sleep -Seconds 2
+            }
+          }
+          $Results += @($buildResults)
+
           $Results = $Results | Where-Object { $null -ne $_ }
           if ($Results) {
             $Results | Format-Table -AutoSize

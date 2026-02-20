@@ -2,8 +2,17 @@
 	.SYNOPSIS
 		Restore document templates.
 
+	.DESCRIPTION
+		Restore document templates using the NinjaOne v2 API.
+
 	.FUNCTIONALITY
 		Restore Document Templates
+	
+	.EXAMPLE
+		PS> Invoke-NinjaOneDocumentTemplatesRestore -Identity 123
+
+		Invokes the specified operation.
+
 #>
 function Invoke-NinjaOneDocumentTemplatesRestore {
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]

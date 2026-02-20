@@ -17,12 +17,12 @@ function Get-NinjaOneOrganisationEndUsers {
 	#>
 	[CmdletBinding()]
 	[OutputType([Object])]
-	[Alias('gnooeu','Get-NinjaOneOrganizationEndUsers')]
+	[Alias('gnooeu', 'Get-NinjaOneOrganizationEndUsers')]
 	[MetadataAttribute(
 		'/v2/organization/{id}/end-users',
 		'get'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('organizationId')]
 		[Int]$organisationId,
@@ -41,8 +41,13 @@ function Get-NinjaOneOrganisationEndUsers {
 			$Resource = ('v2/organization/{0}/end-users' -f $organisationId)
 			$RequestParams = @{ Resource = $Resource; QSCollection = $QSCollection }
 			$Results = New-NinjaOneGETRequest @RequestParams
-			if ($Results) { return $Results } else { throw ('No end users found for organisation {0}.' -f $organisationId) }
+			if ($Results) {
+				return $Results
+			} else {
+				throw ('No end users found for organisation {0}.' -f $organisationId)
+			}
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 

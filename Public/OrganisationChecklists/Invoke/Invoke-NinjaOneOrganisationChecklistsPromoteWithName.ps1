@@ -15,17 +15,18 @@ function Invoke-NinjaOneOrganisationChecklistsPromoteWithName {
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Invoke/organisationchecklists-promote-with-name
 	#>
-	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('inOoClPromName')]
 	[MetadataAttribute(
 		'/v2/organization/checklists/promote-with-name',
 		'post'
 	)]
-	Param(
-		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
+	param(
+		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$request
 	)
-	process { try { if($PSCmdlet.ShouldProcess('Organisation Checklists','Promote With Name')){ return (New-NinjaOnePOSTRequest -Resource 'v2/organization/checklists/promote-with-name' -Body $request) } } catch { New-NinjaOneError -ErrorRecord $_ } }
+	process { try { if ($PSCmdlet.ShouldProcess('Organisation Checklists', 'Promote With Name')) { return (New-NinjaOnePOSTRequest -Resource 'v2/organization/checklists/promote-with-name' -Body $request) } } catch { New-NinjaOneError -ErrorRecord $_ } }
 }
+

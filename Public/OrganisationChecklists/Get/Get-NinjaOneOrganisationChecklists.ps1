@@ -28,7 +28,11 @@ function Get-NinjaOneOrganisationChecklists {
 			$Resource = 'v2/organization/checklists'
 			$RequestParams = @{ Resource = $Resource }
 			$Results = New-NinjaOneGETRequest @RequestParams
-			if ($Results) { return $Results } else { throw 'No organisation checklists found.' }
+			if ($Results) {
+				return $Results
+			} else {
+				throw 'No organisation checklists found.'
+			}
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }

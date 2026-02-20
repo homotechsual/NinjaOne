@@ -15,21 +15,22 @@ function Set-NinjaOneKnowledgeBaseArticles {
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/knowledgebase-articles
 	#>
-	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('snonkba')]
 	[MetadataAttribute(
 		'/v2/knowledgebase/articles',
 		'patch'
 	)]
-	Param(
-		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
+	param(
+		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$articles
 	)
 	process {
 		try {
-			if($PSCmdlet.ShouldProcess('Knowledge Base Articles','Update')){ return (New-NinjaOnePATCHRequest -Resource 'v2/knowledgebase/articles' -Body $articles) }
+			if ($PSCmdlet.ShouldProcess('Knowledge Base Articles', 'Update')) { return (New-NinjaOnePATCHRequest -Resource 'v2/knowledgebase/articles' -Body $articles) }
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+

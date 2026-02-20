@@ -23,10 +23,10 @@ function Get-NinjaOneEntityCustomFieldsSignedURLs {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The entity type.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
-		[ValidateSet('ORGANIZATION','DOCUMENT','LOCATION','NODE','ATTACHMENT','TECHNICIAN','CREDENTIAL','CHECKLIST','END_USER','CONTACT','KB_DOCUMENT')]
+		[ValidateSet('ORGANIZATION', 'DOCUMENT', 'LOCATION', 'NODE', 'ATTACHMENT', 'TECHNICIAN', 'CREDENTIAL', 'CHECKLIST', 'END_USER', 'CONTACT', 'KB_DOCUMENT')]
 		[String]$entityType,
 		# The entity Id.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
@@ -36,7 +36,7 @@ function Get-NinjaOneEntityCustomFieldsSignedURLs {
 		$CommandName = $MyInvocation.InvocationName
 		$Parameters = (Get-Command -Name $CommandName).Parameters
 		if ($entityType) { $Parameters.Remove('entityType') | Out-Null }
-		if ($entityId)   { $Parameters.Remove('entityId')   | Out-Null }
+		if ($entityId) { $Parameters.Remove('entityId') | Out-Null }
 		$QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
 	}
 	process {
@@ -44,8 +44,13 @@ function Get-NinjaOneEntityCustomFieldsSignedURLs {
 			$Resource = ('v2/custom-fields/entity-type/{0}/{1}/signed-urls' -f $entityType, $entityId)
 			$RequestParams = @{ Resource = $Resource; QSCollection = $QSCollection }
 			$Result = New-NinjaOneGETRequest @RequestParams
-			if ($Result) { return $Result } else { throw ('No custom field signed URLs found for {0} {1}.' -f $entityType, $entityId) }
+			if ($Result) {
+				return $Result
+			} else {
+				throw ('No custom field signed URLs found for {0} {1}.' -f $entityType, $entityId)
+			}
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 

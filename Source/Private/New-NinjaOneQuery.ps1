@@ -1,3 +1,36 @@
+<#
+.SYNOPSIS
+Create Query.
+
+.DESCRIPTION
+Internal helper function for New-NinjaOneQuery operations.
+
+This function provides supporting functionality for the NinjaOne module.
+
+.PARAMETER CommandName
+    Specifies the name of the Query resource.
+
+.PARAMETER Parameters
+    Specifies the Parameters parameter.
+
+.PARAMETER CommaSeparatedArrays
+    Specifies the CommaSeparatedArrays parameter.
+
+.PARAMETER AsString
+    Specifies the AsString parameter.
+
+.EXAMPLE
+    PS> New-NinjaOneQuery -CommandName "*search*"
+
+    create the specified Query.
+
+.OUTPUTS
+Returns information about the Query resource.
+
+.NOTES
+This cmdlet is part of the NinjaOne PowerShell module.
+Generated reference help - customize descriptions as needed.
+#>
 function New-NinjaOneQuery {
 	[CmdletBinding()]
 	[OutputType([String], [HashTable])]
@@ -79,7 +112,7 @@ function New-NinjaOneQuery {
 			}
 		}
 		if ($Parameter.ParameterType.Name -eq 'Boolean') {
-			Write-Verbose "Found Boolearn param $($ParameterVariable.Name) with value $($ParameterVariable.Value)."
+			Write-Verbose "Found Boolean param $($ParameterVariable.Name) with value $($ParameterVariable.Value)."
 			if ($Parameter.Aliases) {
 				# Use the first alias as the query string name.
 				$Query = ([String]$Parameter.Aliases[0])

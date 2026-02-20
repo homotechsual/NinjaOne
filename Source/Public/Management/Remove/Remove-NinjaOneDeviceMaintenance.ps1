@@ -10,6 +10,12 @@ function Remove-NinjaOneDeviceMaintenance {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Remove/maintenance
+	
+	.EXAMPLE
+		PS> Remove-NinjaOneDeviceMaintenance -Identity 123
+
+		Removes the specified resource.
+
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]

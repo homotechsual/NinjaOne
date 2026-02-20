@@ -1,0 +1,43 @@
+{
+  "version": "0.2",
+  "language": "en-GB",
+  "allowCompoundWords": true,
+  "words": [
+    "AVSCANS",
+    "Color",
+    "homotechsual",
+    "Homotechsual",
+    "homotechsualdocs",
+    "intelephense",
+    "MAML",
+    "NRAPI",
+    "organization",
+    "OTBS",
+    "PassThru",
+    "Platy",
+    "pluralized",
+    "PSGallery",
+    "PSSA",
+    "Thru",
+    "Whitelock",
+    "YAYAML"
+  ],
+  "ignoreRegExpList": [
+    "\\[Alias\\([^)]*\\)\\]",
+    "\\$[a-zA-Z0-9_]+",
+    "\\[Parameter\\([^)]*\\)\\]",
+    "\\[Diagnostics\\.CodeAnalysis\\.[^\\]]+\\]",
+    "https?://[^\\s]+",
+    "[a-z][a-zA-Z0-9]*=",
+    "\\[MetadataAttribute\\([\\s\\S]*?\\)\\]",
+    "'[^']*\\/[^']*'",
+    "\\{[^}]+\\}"
+  ],
+  "languageSettings": [
+    {
+      "languageId": "powershell",
+      "allowCompoundWords": true,
+      "dictionaries": ["powershell"]
+    }
+  ]
+}

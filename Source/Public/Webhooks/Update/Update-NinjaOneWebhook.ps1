@@ -8,6 +8,12 @@ function Update-NinjaOneWebhook {
 			Webhook
 		.OUTPUTS
 			A powershell object containing the response.
+	
+	.EXAMPLE
+		PS> Update-NinjaOneWebhook
+
+		Updates the resource.
+
 	#>
 	[CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
 	[OutputType([Object])]

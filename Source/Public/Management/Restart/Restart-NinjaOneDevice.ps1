@@ -10,6 +10,12 @@ function Restart-NinjaOneDevice {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Restart/device
+	
+	.EXAMPLE
+		PS> Restart-NinjaOneDevice -Identity 123
+
+		Restarts the specified resource.
+
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]

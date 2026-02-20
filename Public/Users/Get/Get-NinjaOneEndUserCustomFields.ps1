@@ -38,7 +38,11 @@ function Get-NinjaOneEndUserCustomFields {
 			$Resource = ('v2/user/end-user/{0}/custom-fields' -f $id)
 			$RequestParams = @{ Resource = $Resource; QSCollection = $QSCollection }
 			$Result = New-NinjaOneGETRequest @RequestParams
-			if ($Result) { return $Result } else { throw ('No custom fields found for end user {0}.' -f $id) }
+			if ($Result) {
+				return $Result
+			} else {
+				throw ('No custom fields found for end user {0}.' -f $id)
+			}
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }

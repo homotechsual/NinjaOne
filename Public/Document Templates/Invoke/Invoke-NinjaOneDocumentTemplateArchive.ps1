@@ -15,16 +15,17 @@ function Invoke-NinjaOneDocumentTemplateArchive {
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Invoke/documenttemplate-archive
 	#>
-	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('inodta')]
 	[MetadataAttribute(
 		'/v2/document-templates/{documentTemplateId}/archive',
 		'post'
 	)]
-	Param(
-		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
+	param(
+		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$documentTemplateId
 	)
-	process { try { $res='v2/document-templates/{0}/archive' -f $documentTemplateId; if($PSCmdlet.ShouldProcess(('Document Template {0}' -f $documentTemplateId),'Archive')){ return (New-NinjaOnePOSTRequest -Resource $res) } } catch { New-NinjaOneError -ErrorRecord $_ } }
+	process { try { $res = 'v2/document-templates/{0}/archive' -f $documentTemplateId; if ($PSCmdlet.ShouldProcess(('Document Template {0}' -f $documentTemplateId), 'Archive')) { return (New-NinjaOnePOSTRequest -Resource $res) } } catch { New-NinjaOneError -ErrorRecord $_ } }
 }
+

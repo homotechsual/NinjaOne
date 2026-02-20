@@ -2,8 +2,17 @@
 	.SYNOPSIS
 		Archive organisation documents.
 
+	.DESCRIPTION
+		Archive organisation documents using the NinjaOne v2 API.
+
 	.FUNCTIONALITY
 		Archive Organisation Documents
+	
+	.EXAMPLE
+		PS> Invoke-NinjaOneOrganisationDocumentsArchive -Identity 123
+
+		Invokes the specified operation.
+
 #>
 function Invoke-NinjaOneOrganisationDocumentsArchive {
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]

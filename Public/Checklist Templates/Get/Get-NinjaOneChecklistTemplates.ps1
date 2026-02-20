@@ -28,7 +28,11 @@ function Get-NinjaOneChecklistTemplates {
 			$Resource = 'v2/checklist/templates'
 			$RequestParams = @{ Resource = $Resource }
 			$Results = New-NinjaOneGETRequest @RequestParams
-			if ($Results) { return $Results } else { throw 'No checklist templates found.' }
+			if ($Results) {
+				return $Results
+			} else {
+				throw 'No checklist templates found.'
+			}
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }

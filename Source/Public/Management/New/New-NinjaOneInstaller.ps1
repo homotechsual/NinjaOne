@@ -10,6 +10,13 @@ function New-NinjaOneInstaller {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/installer
+	
+	.EXAMPLE
+		PS> $newObject = @{ Name = 'Example' }
+		PS> New-NinjaOneInstaller @newObject
+
+		Creates a new resource with the specified properties.
+
 	#>
 	[CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
 	[OutputType([Object])]

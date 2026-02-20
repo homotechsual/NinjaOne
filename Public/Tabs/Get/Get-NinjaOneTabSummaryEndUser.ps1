@@ -28,7 +28,11 @@ function Get-NinjaOneTabSummaryEndUser {
 			$Resource = 'v2/tab/summary/end-user'
 			$RequestParams = @{ Resource = $Resource }
 			$Result = New-NinjaOneGETRequest @RequestParams
-			if ($Result) { return $Result } else { throw 'No end-user tab summary found.' }
+			if ($Result) {
+				return $Result
+			} else {
+				throw 'No end-user tab summary found.'
+			}
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }

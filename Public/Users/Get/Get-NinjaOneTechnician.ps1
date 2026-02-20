@@ -38,7 +38,11 @@ function Get-NinjaOneTechnician {
 			$Resource = ('v2/user/technician/{0}' -f $id)
 			$RequestParams = @{ Resource = $Resource; QSCollection = $QSCollection }
 			$Result = New-NinjaOneGETRequest @RequestParams
-			if ($Result) { return $Result } else { throw ('Technician {0} not found.' -f $id) }
+			if ($Result) {
+				return $Result
+			} else {
+				throw ('Technician {0} not found.' -f $id)
+			}
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }

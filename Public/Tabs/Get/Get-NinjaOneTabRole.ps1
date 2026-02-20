@@ -41,7 +41,11 @@ function Get-NinjaOneTabRole {
 			$Resource = ('v2/tab/{0}/role/{1}' -f $tabId, $roleId)
 			$RequestParams = @{ Resource = $Resource; QSCollection = $QSCollection }
 			$Result = New-NinjaOneGETRequest @RequestParams
-			if ($Result) { return $Result } else { throw ('Tab {0} for role {1} not found.' -f $tabId, $roleId) }
+			if ($Result) {
+				return $Result
+			} else {
+				throw ('Tab {0} for role {1} not found.' -f $tabId, $roleId)
+			}
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }

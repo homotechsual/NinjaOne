@@ -10,6 +10,12 @@ function Set-NinjaOneOrganisationPolicies {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/set/organisationpolicies
+	
+	.EXAMPLE
+		PS> Set-NinjaOneOrganisationPolicies -Identity 123 -Property 'Value'
+
+		Updates the specified resource.
+
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Array])]

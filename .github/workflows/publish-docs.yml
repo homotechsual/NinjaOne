@@ -32,10 +32,6 @@ jobs:
           
           Push-Location docs-repo
           try {
-            # Checkout dev branch
-            git fetch origin
-            git checkout dev
-            
             # Replace docs
             if (Test-Path 'docs/ninjaone/commandlets') {
               Remove-Item -Path 'docs/ninjaone/commandlets' -Recurse -Force
@@ -53,9 +49,9 @@ jobs:
             git add docs/ninjaone/commandlets
             $commitMsg = "Docs update for NinjaOne ${{ github.event.workflow_run.head_branch }}"
             git commit -m $commitMsg
-            git push origin dev
+            git push origin
             
-            Write-Host "✓ Documentation published to homotechsualdocs/dev" -ForegroundColor Green
+            Write-Host "✓ Documentation published to homotechsualdocs" -ForegroundColor Green
           } finally {
             Pop-Location
           }

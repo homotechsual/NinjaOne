@@ -15,24 +15,25 @@ function Remove-NinjaOneUserRoleMembers {
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/userrole-removemembers
 	#>
-	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('rnourm')]
 	[MetadataAttribute(
 		'/v2/user/role/{roleId}/remove-members',
 		'patch'
 	)]
-	Param(
-		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
+	param(
+		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$roleId,
-		[Parameter(Mandatory, Position=1, ValueFromPipelineByPropertyName)]
+		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$members
 	)
 	process {
 		try {
-			$res='v2/user/role/{0}/remove-members' -f $roleId
-			if($PSCmdlet.ShouldProcess(('Role {0}' -f $roleId),'Remove Members')){ return (New-NinjaOnePATCHRequest -Resource $res -Body $members) }
+			$res = 'v2/user/role/{0}/remove-members' -f $roleId
+			if ($PSCmdlet.ShouldProcess(('Role {0}' -f $roleId), 'Remove Members')) { return (New-NinjaOnePATCHRequest -Resource $res -Body $members) }
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+

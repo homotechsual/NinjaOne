@@ -10,6 +10,12 @@ function Remove-NinjaOneOrganisationDocument {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Remove/organisationdocument
+	
+	.EXAMPLE
+		PS> Remove-NinjaOneOrganisationDocument -Identity 123
+
+		Removes the specified resource.
+
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]

@@ -28,7 +28,11 @@ function Get-NinjaOneTechnicians {
 			$Resource = 'v2/user/technicians'
 			$RequestParams = @{ Resource = $Resource }
 			$Results = New-NinjaOneGETRequest @RequestParams
-			if ($Results) { return $Results } else { throw 'No technicians found.' }
+			if ($Results) {
+				return $Results
+			} else {
+				throw 'No technicians found.'
+			}
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
