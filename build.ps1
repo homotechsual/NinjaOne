@@ -135,6 +135,15 @@ function Push {
 # Task: (Re)Generate the mapping file for the short names of the commandlets. Stored in the Functionality item of the comment based help. The file will be stored in .\.build\CommandletShortNames.yaml
 ## Requires YAYAML installed.
 function GenerateShortNamesMapping {
+	<#
+	.SYNOPSIS
+		Generate short names mapping for commandlets.
+	.DESCRIPTION
+		Generates a YAML mapping file containing commandlet short names from the Functionality metadata in comment-based help.
+		The output file is stored at .\build\CommandletShortNames.yaml.
+	.NOTES
+		Requires YAYAML module to be installed.
+	#>
 	$OutputFilePath = [System.IO.FileInfo]'.\.build\CommandletShortNames.yaml'
 	$ShortNameOutput = [System.Collections.Generic.Dictionary[String, String]]::new()
 	$CommandletList = GetFunctions -ModuleName $Script:ModuleName
@@ -157,6 +166,19 @@ function GenerateShortNamesMapping {
 # Task: Update the PowerShell Module Help Files.
 ## Requires PlatyPS, Pester, PSScriptAnalyzer and Alt3.Docusaurus.PowerShell installed.
 function UpdateHelp {
+	<#
+	.SYNOPSIS
+		Update PowerShell module help files.
+	.DESCRIPTION
+		Updates the PowerShell Module Help Files using PlatyPS, generating markdown documentation from comment-based help.
+		Generates docs in the specified Docusaurus path.
+	.PARAMETER DocusaurusPath
+		Path to the Docusaurus documentation directory. Defaults to '.\docs'.
+	.PARAMETER ForceUpdateCategoryFiles
+		Force update of category files. Defaults to $true.
+	.NOTES
+		Requires PlatyPS, Pester, PSScriptAnalyzer, and Alt3.Docusaurus.PowerShell modules.
+	#>
 	[CmdletBinding()]
 	param (
 		[System.IO.DirectoryInfo]$DocusaurusPath = '.\docs',
@@ -303,6 +325,15 @@ This page has been generated from the {0} PowerShell module source. To make chan
 }
 # Task: Build the PowerShell Module
 function Build {
+	<#
+	.SYNOPSIS
+		Build the PowerShell module.
+	.DESCRIPTION
+		Builds the PowerShell module from source files, with optional semantic versioning.
+		Verifies that output binaries are not locked before the build proceeds.
+	.NOTES
+		Uses Invoke-Build with the Source directory as input.
+	#>
 	$moduleOutputRoot = Join-Path -Path $PSScriptRoot -ChildPath ($BuildConfig.OutputDirectory ?? '..\output')
 	$moduleOutputPath = Join-Path -Path $moduleOutputRoot -ChildPath $Script:ModuleName
 	AssertOutputBinariesUnlocked -OutputPath $moduleOutputPath
@@ -375,6 +406,16 @@ function AssertOutputBinariesUnlocked {
 }
 # Task: Update the Module Manifest file with info from the Changelog.
 function UpdateManifest {
+	<#
+	.SYNOPSIS
+		Update module manifest from changelog.
+	.DESCRIPTION
+		Updates the PowerShell module manifest file with version information and release notes
+		extracted from the CHANGELOG.md file.
+	.NOTES
+		Requires PlatyPS module for parsing changelog versions.
+		Throws an error if no new version is found in CHANGELOG.md.
+	#>
 	# Import PlatyPS. Needed for parsing the versions in the Changelog.
 	Import-Module -Name PlatyPS
 	# Find Latest Version in Change log.
@@ -428,6 +469,15 @@ function Publish {
 # Task: Export docs for publishing (local file ops only)
 # Note: GitHub Actions workflow will handle git commit and push to remote repo
 function PublishDocsTask {
+	<#
+	.SYNOPSIS
+		Export documentation for publishing.
+	.DESCRIPTION
+		Wrapper task that exports generated documentation for publishing.
+		Performs local file operations only; GitHub Actions workflow handles git operations.
+	.NOTES
+		Called during the build process to prepare docs for external publishing.
+	#>
 	[CmdletBinding()]
 	param()
 	PublishDocs -DocsOutputPath $DocsOutputPath
@@ -441,6 +491,17 @@ function PublishDocsTask {
 #   - Workflow will replace docs\ninjaone\commandlets with output from this task
 #   - Workflow will commit and push with GITHUB_TOKEN (automatic in GitHub Actions)
 function PublishDocs {
+	<#
+	.SYNOPSIS
+		Export docs for publishing to external repository.
+	.DESCRIPTION
+		Copies generated documentation to the output directory for GitHub Actions workflow to push to remote repository.
+		Integrates with GitHub Actions to automatically commit and push documentation updates.
+	.PARAMETER DocsOutputPath
+		Path where generated documentation will be exported. Optional parameter.
+	.NOTES
+		GitHub Actions workflow will handle git commit and push operations.
+	#>
 	[CmdletBinding()]
 	param(
 		[Parameter(Mandatory = $false)]
