@@ -62,7 +62,7 @@ Describe ('<ModuleName> - Schema Completeness') -Tags 'Module' {
 			}
 		}
 	}
-	Context 'Endpoint <Method>: <Path>' -ForEach $Endpoints -Skip:($Endpoints.Count -eq 0) {
+	Context 'Endpoint <_.Method>: <_.Path>' -ForEach $Endpoints -Skip:($Endpoints.Count -eq 0) {
 		BeforeDiscovery {
 			$AllMetadata = Get-AllMetadata
 		}
@@ -70,8 +70,9 @@ Describe ('<ModuleName> - Schema Completeness') -Tags 'Module' {
 			$AllMetadata = Get-AllMetadata
 		}
 		It ('should match a metadata attribute') {
-			$MetadataPair = $AllMetadata | Where-Object { $_.Endpoint -eq $Path -and $_.Method -eq $Method } 
-			$MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $Method, $Path)
+			$CurrentEndpoint = $_
+			$MetadataPair = $AllMetadata | Where-Object { $_.Endpoint -eq $CurrentEndpoint.Path -and $_.Method -eq $CurrentEndpoint.Method } 
+			$MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path)
 		}
 	}
 }
