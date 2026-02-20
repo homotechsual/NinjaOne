@@ -61,6 +61,10 @@
       "New-TemporaryFile": true,
       "Rename-Item": true,
       "Invoke-Pester": true,
+      "Get-FunctionList": true,
+      "Get-MetadataElement": true,
+      "Get-PositionalArguments": true,
+      "Get-Metadata": true,
     },
   },
   "launch": {
