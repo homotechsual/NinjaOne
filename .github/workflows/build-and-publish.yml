@@ -138,7 +138,7 @@ jobs:
       - name: Build module
         shell: pwsh
         run: |
-          ./build.ps1 -TaskNames 'clean', 'build', 'updateManifest'
+          ./build.ps1 -TaskNames 'clean', 'build'
 
       - name: Generate documentation  
         shell: pwsh
