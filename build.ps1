@@ -455,7 +455,7 @@ function UpdateManifest {
 	$MarkdownObject = [Markdown.MAML.Parser.MarkdownParser]::new()
 	$ReleaseNotes = ((($MarkdownObject.ParseString($CHANGELOG).Children.Spans.Text) -match '\d\.\d\.\d') -split ' - ')[1]
 	# Update Module with new version
-	Update-ModuleManifest -ModuleVersion $ChangeLogVersion -Path "$($PSScriptRoot)\$Script:ModuleName.psd1" -ReleaseNotes $ReleaseNotes
+	Update-ModuleManifest -ModuleVersion $ChangeLogVersion -Path $ManifestPath -ReleaseNotes $ReleaseNotes
 }
 # Task: Publish Module to PowerShell Gallery
 function Publish {
