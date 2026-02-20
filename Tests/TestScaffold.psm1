@@ -30,9 +30,11 @@ function Get-AllMetadata {
     $AllMetadata = foreach ($Function in $FunctionList) {
         $AST = $Function.ScriptBlock.Ast
         $MetadataElement = Get-MetadataElement -AST $AST
-        $PositionalArguments = Get-PositionalArguments -MetadataElement $MetadataElement
-        $Metadata = Get-Metadata -PositionalArguments $PositionalArguments
-        $Metadata
+        if ($MetadataElement -and $MetadataElement.Count -gt 0) {
+            $PositionalArguments = @(Get-PositionalArguments -MetadataElement $MetadataElement)
+            $Metadata = @(Get-Metadata -PositionalArguments $PositionalArguments)
+            $Metadata
+        }
     }
     return $AllMetadata
 }
