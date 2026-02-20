@@ -25,7 +25,7 @@ function Get-NinjaOneCustomField {
 	param(
 		# The field name of the custom field
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
-		[Alias('name', 'fieldname')]
+		[Alias('name')]
 		[String]$FieldName
 	)
 	process {

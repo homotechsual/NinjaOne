@@ -25,7 +25,7 @@ function Set-NinjaOneCustomField {
 	param(
 		# The field name of the custom field to update
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
-		[Alias('name', 'fieldname')]
+		[Alias('name')]
 		[String]$FieldName,
 		# Custom field update payload per API schema
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]

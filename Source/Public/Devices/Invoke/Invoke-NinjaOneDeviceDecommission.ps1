@@ -25,7 +25,7 @@ function Invoke-NinjaOneDeviceDecommission {
 	param(
 		# The ID of the device to decommission
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
-		[Alias('id', 'deviceid', 'nodeid')]
+		[Alias('id')]
 		[Int]$DeviceId
 	)
 	process {

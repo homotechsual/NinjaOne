@@ -25,7 +25,7 @@ function Invoke-NinjaOneUnmanagedDeviceDecommission {
 	param(
 		# The ID of the unmanaged device to decommission
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
-		[Alias('id', 'deviceid', 'nodeid')]
+		[Alias('id')]
 		[Int]$NodeId
 	)
 	process {

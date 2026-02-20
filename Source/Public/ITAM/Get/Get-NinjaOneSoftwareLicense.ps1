@@ -25,7 +25,7 @@ function Get-NinjaOneSoftwareLicense {
 	param(
 		# The ID of the software license
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
-		[Alias('id', 'licenseid')]
+		[Alias('id')]
 		[Int]$LicenseId
 	)
 	process {

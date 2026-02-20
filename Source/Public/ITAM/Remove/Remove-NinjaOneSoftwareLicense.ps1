@@ -25,7 +25,7 @@ function Remove-NinjaOneSoftwareLicense {
 	param(
 		# The ID of the software license to delete
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
-		[Alias('id', 'licenseid')]
+		[Alias('id')]
 		[Int]$LicenseId
 	)
 	process {

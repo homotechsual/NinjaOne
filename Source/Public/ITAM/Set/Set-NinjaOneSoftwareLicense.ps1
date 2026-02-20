@@ -25,7 +25,7 @@ function Set-NinjaOneSoftwareLicense {
 	param(
 		# The ID of the software license to update
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
-		[Alias('id', 'licenseid')]
+		[Alias('id')]
 		[Int]$LicenseId,
 		# Software license update payload per API schema
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
