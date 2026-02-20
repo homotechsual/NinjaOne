@@ -20,7 +20,7 @@ function Start-NinjaOneOSPatchScan {
 	[Alias('snoossc', 'unoossc')]
 	[MetadataAttribute(
 		'/v2/device/{id}/patch/os/scan',
-		'patch'
+		'post'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
 	param(
@@ -35,10 +35,9 @@ function Start-NinjaOneOSPatchScan {
 			$Resource = ('v2/device/{0}/patch/os/scan' -f $deviceId)
 			$RequestParams = @{
 				Resource = $Resource
-				Body = $deviceOSScan
 			}
-			if ($PSCmdlet.ShouldProcess(('OS Patch Scan for {0}' -f $deviceId), 'Set')) {
-				$OSScanTrigger = New-NinjaOnePATCHRequest @RequestParams
+			if ($PSCmdlet.ShouldProcess(('OS Patch Scan for {0}' -f $deviceId), 'Start')) {
+				$OSScanTrigger = New-NinjaOnePOSTRequest @RequestParams
 				if ($OSScanTrigger -eq 204) {
 					Write-Information ('OS Patch Scan for {0} started successfully.' -f $deviceId)
 				}

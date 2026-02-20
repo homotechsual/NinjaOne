@@ -302,6 +302,11 @@
 		'Set-NinjaOneContact',
 		'Set-NinjaOneTicket',
 		'Set-NinjaOneWindowsServiceConfiguration',
+		'Get-NinjaOneNodeRoles',
+		'Invoke-NinjaOneTempAttachmentUpload',
+		'New-NinjaOneNodeRoles',
+		'Remove-NinjaOneNodeRoles',
+		'Set-NinjaOneNodeRoles',
 		'Update-NinjaOneWebhook'
 	)
 

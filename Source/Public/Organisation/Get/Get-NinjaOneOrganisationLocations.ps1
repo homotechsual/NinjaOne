@@ -18,7 +18,10 @@ function Get-NinjaOneOrganisationLocations {
 	[CmdletBinding()]
 	[OutputType([Object])]
 	[Alias('gnool', 'Get-NinjaOneOrganizationLocations')]
-	[MetadataAttribute()]
+	[MetadataAttribute(
+		'/v2/organization/{id}/locations',
+		'get'
+	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
 	Param(
 		# Filter by organisation id.

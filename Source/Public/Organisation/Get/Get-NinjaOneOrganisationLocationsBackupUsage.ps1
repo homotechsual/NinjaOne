@@ -18,7 +18,10 @@ function Get-NinjaOneOrganisationLocationsBackupUsage {
 	[CmdletBinding()]
 	[OutputType([Object])]
 	[Alias('gnoolbu', 'Get-NinjaOneOrganizationLocationsBackupUsage')]
-	[MetadataAttribute()]
+	[MetadataAttribute(
+		'/v2/organization/{id}/locations/backup/usage',
+		'get'
+	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
 	Param(
 		# Filter by organisation id.

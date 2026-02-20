@@ -1,5 +1,5 @@
 
-function Get-NinjaOneOrganisationKnowledgeBaseArticles {
+function Get-NinjaOneGlobalKnowledgeBaseArticles {
 	<#
 		.SYNOPSIS
 			Gets global knowledge base articles from the NinjaOne API.

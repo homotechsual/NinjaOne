@@ -18,7 +18,10 @@ function Get-NinjaOneDeviceSoftwareInventory {
 	[CmdletBinding()]
 	[OutputType([Object])]
 	[Alias('gnodsi', 'gnods', 'Get-NinjaOneDeviceSoftware')]
-	[MetadataAttribute()]
+	[MetadataAttribute(
+		'/v2/device/{id}/software',
+		'get'
+	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
 	Param(
 		# Filter by device id.

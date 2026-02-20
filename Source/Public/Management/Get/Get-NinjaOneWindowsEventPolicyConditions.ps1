@@ -1,5 +1,5 @@
 
-function Get-NinjaOnePolicyConditionsWindowsEvent {
+function Get-NinjaOneWindowsEventPolicyConditions {
 	<#
         .SYNOPSIS
             Gets windows event conditions for a given policy from the NinjaOne API.
@@ -8,7 +8,7 @@ function Get-NinjaOnePolicyConditionsWindowsEvent {
         .FUNCTIONALITY
 			Windows Event Policy Conditions
         .EXAMPLE
-            PS> Get-NinjaOnePolicyConditionsWindowsEvent -policyId 1
+			PS> Get-NinjaOneWindowsEventPolicyConditions -policyId 1
 
             Gets the windows event policy conditions for the policy with id 1.
         .OUTPUTS

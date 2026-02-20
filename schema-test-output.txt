@@ -1,0 +1,82 @@
+[95m
+[95mStarting discovery in 1 files.[0m
+[95mDiscovery found 1684 tests in 5.97s.[0m
+[95mRunning tests.[0m
+[-] NinjaOne - Schema Completeness.Endpoint post: /v2/knowledgebase/articles/upload.should match a metadata attribute 15ms (14ms|1ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because post: /v2/knowledgebase/articles/upload should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint put: /v2/custom-fields/bulk.should match a metadata attribute 11ms (3ms|8ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because put: /v2/custom-fields/bulk should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint post: /v2/custom-fields/bulk.should match a metadata attribute 3ms (3ms|0ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because post: /v2/custom-fields/bulk should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint delete: /v2/custom-fields/bulk.should match a metadata attribute 3ms (3ms|1ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because delete: /v2/custom-fields/bulk should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint get: /v2/custom-fields.should match a metadata attribute 3ms (2ms|0ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because get: /v2/custom-fields should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint post: /v2/custom-fields.should match a metadata attribute 3ms (3ms|0ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because post: /v2/custom-fields should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint get: /v2/custom-fields/field-name/{fieldName}.should match a metadata attribute 2ms (2ms|0ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because get: /v2/custom-fields/field-name/{fieldName} should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint put: /v2/custom-fields/field-name/{fieldName}.should match a metadata attribute 3ms (2ms|0ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because put: /v2/custom-fields/field-name/{fieldName} should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint delete: /v2/custom-fields/field-name/{fieldName}.should match a metadata attribute 3ms (2ms|0ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because delete: /v2/custom-fields/field-name/{fieldName} should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint post: /v2/software-license.should match a metadata attribute 3ms (2ms|0ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because post: /v2/software-license should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint get: /v2/software-license/{licenseId}.should match a metadata attribute 2ms (2ms|0ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because get: /v2/software-license/{licenseId} should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint put: /v2/software-license/{licenseId}.should match a metadata attribute 2ms (2ms|0ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because put: /v2/software-license/{licenseId} should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint delete: /v2/software-license/{licenseId}.should match a metadata attribute 2ms (2ms|0ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because delete: /v2/software-license/{licenseId} should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint post: /v2/software-license/upsert.should match a metadata attribute 3ms (3ms|0ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because post: /v2/software-license/upsert should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint post: /v2/itam/unmanaged-device/{nodeId}/decommission.should match a metadata attribute 3ms (3ms|0ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because post: /v2/itam/unmanaged-device/{nodeId}/decommission should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint post: /v2/itam/unmanaged-device/decommissionList.should match a metadata attribute 2ms (2ms|0ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because post: /v2/itam/unmanaged-device/decommissionList should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint post: /v2/backup/bandwidth-throttle.should match a metadata attribute 3ms (2ms|0ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because post: /v2/backup/bandwidth-throttle should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint post: /v2/staged-device.should match a metadata attribute 3ms (3ms|0ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because post: /v2/staged-device should match a metadata attribute, but got $null or empty.
+[-] NinjaOne - Schema Completeness.Endpoint post: /v2/device/{id}/decommission.should match a metadata attribute 3ms (3ms|0ms)
+ at $MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path), J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ at <ScriptBlock>, J:\Projects\NinjaOne\Tests\NinjaOne.Schema.Tests.ps1:75
+ Expected a value, because post: /v2/device/{id}/decommission should match a metadata attribute, but got $null or empty.
+[97mTests completed in 24.16s[0m
+[97mTests Passed: 1663, [0m[91mFailed: 19, [0m[93mSkipped: 2, [0m[90mInconclusive: 0, [0m[37m[0m[90mNotRun: 0[0m
