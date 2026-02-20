@@ -334,7 +334,9 @@ function Build {
 	.NOTES
 		Uses Invoke-Build with the Source directory as input.
 	#>
-	$moduleOutputRoot = Join-Path -Path $PSScriptRoot -ChildPath ($BuildConfig.OutputDirectory ?? '..\output')
+	$outputDirConfig = $BuildConfig.OutputDirectory ?? 'output'
+	# ModuleBuilder creates output relative to the Source directory
+	$moduleOutputRoot = Join-Path -Path $PSScriptRoot -ChildPath $outputDirConfig
 	$moduleOutputPath = Join-Path -Path $moduleOutputRoot -ChildPath $Script:ModuleName
 	AssertOutputBinariesUnlocked -OutputPath $moduleOutputPath
 
@@ -342,6 +344,20 @@ function Build {
 		Build-Module -Path '.\Source' -SemVer $SemVer.ToString()
 	} else {
 		Build-Module -Path '.\Source'
+	}
+
+	# Ensure Binaries folder is copied to output module (post-build step)
+	# Find all module manifest files (which tells us where the module was built)
+	$moduleManifests = Get-ChildItem -Path './Output' -Recurse -Filter '*.psd1' -ErrorAction SilentlyContinue | Where-Object { $_.Name -like 'NinjaOne.psd1' -and $_.Directory.Name -match '^[\d\.]' }
+	
+	foreach ($manifest in $moduleManifests) {
+		$moduleDir = $manifest.Directory.FullName
+		$binariesDir = Join-Path -Path $moduleDir -ChildPath 'Binaries'
+		
+		if ((Test-Path '.\Source\Binaries') -and (-not (Test-Path $binariesDir))) {
+			Copy-Item -Path '.\Source\Binaries' -Destination $binariesDir -Recurse -Force
+			Write-Host "✓ Copied Binaries folder to: $binariesDir" -ForegroundColor Green
+		}
 	}
 }
 

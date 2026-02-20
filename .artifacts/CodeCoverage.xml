@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd"[]>
-<report name="Pester (02/20/2026 15:32:55)">
-  <sessioninfo id="this" start="1771601564329" dump="1771601575594" />
+<report name="Pester (02/20/2026 15:43:23)">
+  <sessioninfo id="this" start="1771602194847" dump="1771602203975" />
   <package name="Tests">
     <class name="Tests/TestScaffold" sourcefilename="TestScaffold.psm1">
       <method name="Get-AllMetadata" desc="()" line="29">
