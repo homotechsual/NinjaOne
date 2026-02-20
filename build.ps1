@@ -441,9 +441,9 @@ function UpdateManifest {
 	$Versions = $Regex.Matches($MarkdownObject.ParseString($CHANGELOG).Children.Spans.Text) | ForEach-Object { $_.Value }
 	$ChangeLogVersion = ($Versions | Measure-Object -Maximum).Maximum
 	$ManifestPath = Join-Path -Path $PSScriptRoot -ChildPath (Join-Path -Path 'Source' -ChildPath "$Script:ModuleName.psd1")
-	# Start by importing the manifest to determine the version, then add 1 to the Build
-	$Manifest = Test-ModuleManifest -Path $ManifestPath
-	[System.Version]$Version = $Manifest.Version
+	# Read the manifest as a hashtable to determine the current version
+	$Manifest = Import-PowerShellDataFile -Path $ManifestPath
+	[System.Version]$Version = $Manifest.ModuleVersion
 
 	if ($ChangeLogVersion -eq $Version) {
 		throw 'No new version found in CHANGELOG.md'
