@@ -65,6 +65,10 @@
       "Get-MetadataElement": true,
       "Get-PositionalArguments": true,
       "Get-Metadata": true,
+      "/^\\$publicFiles = Get-ChildItem -Path Public -Recurse -File -ErrorAction SilentlyContinue ; foreach \\(\\$file in \\$publicFiles\\) \\{ \\$rel = \\$file\\.FullName\\.Substring\\(\\(Join-Path \\(Get-Location\\) 'Public'\\)\\.Length \\+ 1\\) ; \\$dest = Join-Path \\(Join-Path \\(Get-Location\\) 'Source\\\\Public'\\) \\$rel ; if \\(-not \\(Test-Path -Path \\$dest\\)\\) \\{ \\[PSCustomObject\\]@\\{RelativePath=\\$rel\\} \\} \\} \\| Sort-Object RelativePath$/": {
+        "approve": true,
+        "matchCommandLine": true,
+      },
     },
   },
   "launch": {

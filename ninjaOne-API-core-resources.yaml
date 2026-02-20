@@ -53,6 +53,16 @@ tags:
     description: Organization Checklists
   - name: Vulnerability Management
     description: Vulnerability Management
+  - name: Node Roles
+    description: Node Roles
+  - name: Custom Tabs
+    description: Custom Tabs
+  - name: Unmanaged Devices
+    description: Unmanaged Devices
+  - name: Software Licenses
+    description: Software Licenses
+  - name: Asset Tags
+    description: Asset Tags
 paths:
   /v2/contacts:
     get:
@@ -184,6 +194,82 @@ paths:
           description: Forbidden
         "401":
           description: Unauthorized
+  /v2/noderole:
+    post:
+      tags:
+        - Node Roles
+      summary: Create node roles
+      description: Create multiple node roles
+      operationId: createNodeRoles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/CreateNodeRoleRequest"
+      responses:
+        "200":
+          description: Returns list of created node role
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CreateNodeRoleRequest"
+    patch:
+      tags:
+        - Node Roles
+      summary: Update node roles
+      description: Update multiple node roles
+      operationId: updateNodeRoles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/UpdateNodeRoleRequest"
+      responses:
+        "200":
+          description: Returns list of created node role
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UpdateNodeRoleRequest"
+  /v2/noderole/delete:
+    post:
+      tags:
+        - Node Roles
+      summary: Delete node roles
+      description: Delete node roles
+      operationId: deleteNodeRoles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteNodeRoleRequest"
+      responses:
+        "204":
+          description: No Content
+  /v2/noderole/list:
+    get:
+      tags:
+        - Node Roles
+      summary: Get all node roles
+      description: Get all node roles
+      operationId: getNodeRoles
+      parameters:
+        - name: isAssignable
+          in: query
+          schema:
+            type: boolean
+            default: false
+      responses:
+        "200":
+          description: Returns list of all node roles
   /v2/policies/{policy_id}/condition/custom-fields:
     get:
       tags:
@@ -546,6 +632,7 @@ paths:
               - FILE_TRANSFER_AUTOMATION
               - END_USER
               - EMAIL_TEMPLATE
+              - POLICY
       requestBody:
         content:
           multipart/form-data:
@@ -1605,7 +1692,7 @@ paths:
         default:
           description: default response
           content:
-            application/json: {}
+            "*/*": {}
   /v2/tag/delete:
     post:
       tags:
@@ -1653,6 +1740,7 @@ paths:
     put:
       tags:
         - Asset Tags
+      summary: Set tags for an asset
       description: Set the tags for an asset to exactly the supplied values
       operationId: setTagsForAsset
       parameters:
@@ -2037,6 +2125,207 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/KnowledgeBaseArticlePublicApiDTO"
+  /v2/custom-fields/bulk:
+    put:
+      tags:
+        - Custom Fields
+      summary: Bulk update custom fields
+      description: Updates multiple custom fields in a single request. All operations
+        succeed or all fail.
+      operationId: bulkUpdateNodeAttributes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BulkUpdateNodeAttributePublicApiRequest"
+      responses:
+        "200":
+          description: All custom fields updated successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AttributePublicApiDTO"
+        "400":
+          description: Invalid request data - no fields updated
+        "404":
+          description: One or more fields not found - no fields updated
+    post:
+      tags:
+        - Custom Fields
+      summary: Bulk create custom fields
+      description: Creates multiple custom fields in a single request. All operations
+        succeed or all fail.
+      operationId: bulkCreateNodeAttributes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BulkCreateNodeAttributePublicApiRequest"
+      responses:
+        "200":
+          description: All custom fields created successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AttributePublicApiDTO"
+        "400":
+          description: Invalid request data - no fields created
+    delete:
+      tags:
+        - Custom Fields
+      summary: Bulk delete custom fields
+      description: Deletes multiple custom fields in a single request. All operations
+        succeed or all fail.
+      operationId: bulkDeleteNodeAttributes
+      parameters:
+        - name: fieldNames
+          in: query
+          description: Comma-separated list of field names to delete
+          schema:
+            type: string
+      responses:
+        "200":
+          description: All custom fields deleted successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        "400":
+          description: Invalid request data - no fields deleted
+        "404":
+          description: One or more fields not found - no fields deleted
+  /v2/custom-fields:
+    get:
+      tags:
+        - Custom Fields
+      summary: Get custom fields with pagination
+      description: Retrieves custom fields (node attributes) with pagination support.
+        Maximum 500 items per page.
+      operationId: getAllNodeAttributes
+      parameters:
+        - name: cursorName
+          in: query
+          description: Pagination Cursor - Cursor provided by previous query. Used to
+            fetch the next page of results
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          description: "Number of items per page (default: 50, min: 5, max: 500)"
+          schema:
+            maximum: 500
+            minimum: 5
+            type: integer
+            format: int32
+            default: 50
+      responses:
+        "200":
+          description: Paginated list of custom fields
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportPaginationResponse"
+        "400":
+          description: Invalid pagination parameters
+    post:
+      tags:
+        - Custom Fields
+      summary: Create a new custom field
+      description: Creates a new custom field (node attribute) with the specified
+        configuration
+      operationId: createNodeAttribute
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNodeAttributePublicApiRequest"
+      responses:
+        "200":
+          description: Custom field created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AttributePublicApiDTO"
+        "400":
+          description: Invalid request data
+  /v2/custom-fields/field-name/{fieldName}:
+    get:
+      tags:
+        - Custom Fields
+      summary: Get custom field by field name
+      description: Retrieves a specific custom field by its unique field name
+      operationId: getNodeAttributeByFieldName
+      parameters:
+        - name: fieldName
+          in: path
+          description: The unique field name of the custom field
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Custom field found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AttributePublicApiDTO"
+        "404":
+          description: Custom field not found
+    put:
+      tags:
+        - Custom Fields
+      summary: Update custom field by field name
+      description: Updates an existing custom field identified by its unique field
+        name
+      operationId: updateNodeAttributeByFieldName
+      parameters:
+        - name: fieldName
+          in: path
+          description: The unique field name of the custom field to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateNodeAttributePublicApiRequest"
+      responses:
+        "200":
+          description: Custom field updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AttributePublicApiDTO"
+        "400":
+          description: Invalid request data
+        "404":
+          description: Custom field not found
+    delete:
+      tags:
+        - Custom Fields
+      summary: Delete custom field by field name
+      description: Deletes an existing custom field identified by its unique field
+        name
+      operationId: deleteNodeAttributeByFieldName
+      parameters:
+        - name: fieldName
+          in: path
+          description: The unique field name of the custom field to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Custom field deleted successfully
+        "404":
+          description: Custom field not found
   /v2/custom-fields/entity-type/{entityType}/{entityId}/signed-urls:
     get:
       tags:
@@ -2049,12 +2338,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
-            enum:
-              - NODE
-              - END_USER
-              - LOCATION
-              - ORGANIZATION
+            $ref: "#/components/schemas/DefinitionScope"
         - name: entityId
           in: path
           required: true
@@ -2090,6 +2374,7 @@ paths:
               - CHECKLIST
               - KB_DOCUMENT
               - END_USER
+              - SOFTWARE_LICENSE
         - name: entityId
           in: path
           required: true
@@ -2132,6 +2417,7 @@ paths:
               - CHECKLIST
               - KB_DOCUMENT
               - END_USER
+              - SOFTWARE_LICENSE
         - name: entityId
           in: path
           required: true
@@ -2171,6 +2457,7 @@ paths:
               - CHECKLIST
               - KB_DOCUMENT
               - END_USER
+              - SOFTWARE_LICENSE
         - name: entityId
           in: path
           required: true
@@ -2214,6 +2501,7 @@ paths:
               - CHECKLIST
               - KB_DOCUMENT
               - END_USER
+              - SOFTWARE_LICENSE
         - name: entityId
           in: path
           required: true
@@ -2274,6 +2562,7 @@ paths:
               - END_USER
               - CONTACT
               - KB_DOCUMENT
+              - SOFTWARE_LICENSE
         - name: entityId
           in: path
           required: true
@@ -2337,6 +2626,7 @@ paths:
               - CHECKLIST
               - KB_DOCUMENT
               - END_USER
+              - SOFTWARE_LICENSE
         - name: entityId
           in: path
           required: true
@@ -2372,6 +2662,7 @@ paths:
               - CHECKLIST
               - KB_DOCUMENT
               - END_USER
+              - SOFTWARE_LICENSE
         - name: entityId
           in: path
           required: true
@@ -2421,6 +2712,7 @@ paths:
               - END_USER
               - CONTACT
               - KB_DOCUMENT
+              - SOFTWARE_LICENSE
         - name: relEntityId
           in: path
           required: true
@@ -2461,6 +2753,7 @@ paths:
               - END_USER
               - CONTACT
               - KB_DOCUMENT
+              - SOFTWARE_LICENSE
       responses:
         "200":
           description: Returns list of references for a related entity type
@@ -2491,6 +2784,7 @@ paths:
               - CHECKLIST
               - KB_DOCUMENT
               - END_USER
+              - SOFTWARE_LICENSE
       responses:
         "200":
           description: Returns a list of relations and references for an entity type
@@ -2500,6 +2794,111 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/RelatedItemPublicApiDTO"
+  /v2/software-license:
+    post:
+      tags:
+        - Software Licenses
+      summary: Create a Software License
+      description: Create a Software License with the provided name and description
+      operationId: create
+      requestBody:
+        description: The Software License to be created
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SoftwareLicenseAPIDTO"
+      responses:
+        "200":
+          description: The Software License that was created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoftwareLicenseDTO"
+  /v2/software-license/{licenseId}:
+    get:
+      tags:
+        - Software Licenses
+      summary: Get Software License
+      description: Get a Software License by Id
+      operationId: getById
+      parameters:
+        - name: licenseId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Returns a Software License
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoftwareLicenseRequest"
+    put:
+      tags:
+        - Software Licenses
+      summary: Update a Software License
+      description: Update a Software License with the provided metadata
+      operationId: update
+      parameters:
+        - name: licenseId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        description: Updated Software License data
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SoftwareLicenseAPIDTO"
+      responses:
+        "200":
+          description: The Software License that was updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoftwareLicenseDTO"
+    delete:
+      tags:
+        - Software Licenses
+      summary: Delete a Software License
+      description: Delete the Software License with the provided id
+      operationId: delete
+      parameters:
+        - name: licenseId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/software-license/upsert:
+    post:
+      tags:
+        - Software Licenses
+      summary: Create or Update a Software License
+      description: Create or Update a Software License in a simple way
+      operationId: upsert
+      requestBody:
+        description: The Software License to be created or updated
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SoftwareLicenseUpsertAPIDTO"
+      responses:
+        "200":
+          description: The Software License that was created/updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoftwareLicenseDTO"
   /v2/itam/unmanaged-device:
     post:
       tags:
@@ -2520,6 +2919,50 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CreateUnmanagedDevicePublicApiResponseDTO"
+  /v2/itam/unmanaged-device/{nodeId}/decommission:
+    post:
+      tags:
+        - Unmanaged Devices
+      summary: Decommission an Unmanaged Device
+      description: Decommission an Unmanaged Device with the provided id
+      operationId: decommissionUnmanagedDevicePublicApi
+      parameters:
+        - name: nodeId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: The Unmanaged Device was successfully decommissioned
+        "400":
+          description: Request validation failed
+        "403":
+          description: Insufficient permissions to perform operation
+        "404":
+          description: An Unmanaged Device with the provided nodeId was not found
+  /v2/itam/unmanaged-device/decommissionList:
+    post:
+      tags:
+        - Unmanaged Devices
+      summary: Decommission an Unmanaged Device List
+      description: Decommission an Unmanaged Device List with the provided ids
+      operationId: decommissionUnmanagedDevicePublicApiList
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DecommissionUnmanagedDeviceListPublicApiRequest"
+      responses:
+        "200":
+          description: The Unmanaged Device List was successfully decommissioned
+        "400":
+          description: Request validation failed
+        "403":
+          description: Insufficient permissions to perform operation
+        "404":
+          description: An Unmanaged Device with the provided nodeId was not found
   /v2/itam/unmanaged-device/{nodeId}:
     put:
       tags:
@@ -2563,6 +3006,22 @@ paths:
           description: The Unmanaged Device was successfully deleted
         "404":
           description: An Unmanaged Device with the provided nodeId was not found
+  /v2/backup/bandwidth-throttle:
+    post:
+      tags:
+        - Backup
+      summary: Sets the bandwidth throttle for a device
+      description: Sets the bandwidth throttle for a device
+      operationId: setBandwidthThrottleForDevice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeviceBackupBandwidthThrottleSettingRequest"
+      responses:
+        "200":
+          description: "Returns SUCCESS if the bandwidth throttle was set, FAILURE\
+            \ otherwise."
   /v2/backup/integrity-check-jobs:
     get:
       tags:
@@ -2641,6 +3100,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LockhartIntegrityCheckJobCreationResponse"
+  /v2/staged-device:
+    post:
+      tags:
+        - management
+      summary: Create staged device
+      description: Create staged device
+      operationId: createStagedDevice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateStagedDevicePublicApiRequest"
+      responses:
+        "200":
+          description: The id of the Staged Device that was created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateStagedDevicePublicApiResponse"
+        "400":
+          description: Request validation failed
+        "403":
+          description: Insufficient permissions to perform operation
   /v2/tab:
     post:
       tags:
@@ -2690,7 +3172,7 @@ paths:
         - Custom Tabs
       summary: Delete a Custom Tab
       description: Delete a Custom Tab
-      operationId: deleteUnmanagedDevicePublicApi_1
+      operationId: deleteCustomTabPublicApi
       parameters:
         - name: tabId
           in: path
@@ -2851,7 +3333,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateTabNamePublicApiRequest"
+              $ref: "#/components/schemas/UpdateTabDetailPublicApiRequest"
       responses:
         "200":
           description: The Custom Tab was successfully rename
@@ -2958,7 +3440,7 @@ paths:
         - ticketing
       summary: Create ticket
       description: "Create a new ticket, does not accept files"
-      operationId: create
+      operationId: create_1
       requestBody:
         description: NewTicket object that needs to be added to the store
         content:
@@ -3032,7 +3514,7 @@ paths:
         - ticketing
       summary: Update ticket
       description: Change ticket fields. Does not accept comments
-      operationId: update
+      operationId: update_1
       parameters:
         - name: ticketId
           in: path
@@ -3079,6 +3561,7 @@ paths:
               - SAVE
               - DELETE
               - PRODUCT
+              - INFO
         - name: createTime
           in: query
           schema:
@@ -3161,11 +3644,12 @@ paths:
             type: integer
             format: int64
       requestBody:
-        description: Multi-part form data which contains the CSV file to upload
+        description: Multi-part form data which contains the CSV file to upload. Field
+          uses key "csv" in request body.
         content:
           multipart/form-data:
             schema:
-              type: object
+              $ref: "#/components/schemas/CsvUploadRequest"
             encoding:
               csv:
                 contentType: text/csv
@@ -3253,6 +3737,33 @@ paths:
           description: default response
           content:
             "*/*": {}
+  /v2/device/{id}/decommission:
+    post:
+      tags:
+        - management
+      summary: Decommission device
+      description: Decommission device
+      operationId: decommissionDevice
+      parameters:
+        - name: id
+          in: path
+          description: Device identifier
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: The device was successfully decommissioned
+        "400":
+          description: Request validation failed
+        "403":
+          description: Insufficient permissions to perform operation
+        "404":
+          description: A device with the provided nodeId was not found
+      security:
+        - oauth2:
+            - management
   /v2/device/{id}:
     get:
       tags:
@@ -4352,6 +4863,7 @@ paths:
             type: string
             enum:
               - WINDOWS_MSI
+              - WINDOWS_ARM64_MSI
               - MAC_DMG
               - MAC_PKG
               - LINUX_DEB
@@ -5800,12 +6312,12 @@ paths:
           description: Activity Class (System/Device) filter
           schema:
             type: string
-            default: ALL
             enum:
               - SYSTEM
               - DEVICE
               - USER
               - ALL
+            default: ALL
         - name: before
           in: query
           description: Return activities recorded prior to specified date
@@ -6104,7 +6616,7 @@ paths:
         - system
       summary: List device roles
       description: Returns list of device roles
-      operationId: getNodeRoles
+      operationId: getNodeRoles_1
       responses:
         default:
           description: default response
@@ -6993,6 +7505,197 @@ components:
           type: string
           description: Phone number
       description: Patch contact request payload
+    CreateNodeRoleRequest:
+      type: object
+      properties:
+        nodeClass:
+          type: string
+          description: Node Class of the Device Role. Should match Parent Device Role's
+            Node Class.
+          enum:
+            - WINDOWS_SERVER
+            - WINDOWS_WORKSTATION
+            - LINUX_WORKSTATION
+            - MAC
+            - ANDROID
+            - APPLE_IOS
+            - APPLE_IPADOS
+            - VMWARE_VM_HOST
+            - VMWARE_VM_GUEST
+            - HYPERV_VMM_HOST
+            - HYPERV_VMM_GUEST
+            - LINUX_SERVER
+            - MAC_SERVER
+            - CLOUD_MONITOR_TARGET
+            - NMS_SWITCH
+            - NMS_ROUTER
+            - NMS_FIREWALL
+            - NMS_PRIVATE_NETWORK_GATEWAY
+            - NMS_PRINTER
+            - NMS_SCANNER
+            - NMS_DIAL_MANAGER
+            - NMS_WAP
+            - NMS_IPSLA
+            - NMS_COMPUTER
+            - NMS_VM_HOST
+            - NMS_APPLIANCE
+            - NMS_OTHER
+            - NMS_SERVER
+            - NMS_PHONE
+            - NMS_VIRTUAL_MACHINE
+            - NMS_NETWORK_MANAGEMENT_AGENT
+            - UNMANAGED_DEVICE
+            - MANAGED_DEVICE
+        nodeRoleParentName:
+          type: string
+          description: Name of a Device Parent that will be created in this request
+            that will act as the Parent Device Role for this Device Role. Should be
+            null if nodeRoleParentId is assigned.
+        nodeRoleParentId:
+          type: integer
+          description: Id of an already existing Device Role to create this Node Role
+            Under. Should be null if nodeRoleParentName is assigned.
+          format: int32
+        name:
+          type: string
+          description: Device Role Name. Must be unique.
+        description:
+          type: string
+          description: Device Role Description.
+        chassisType:
+          type: string
+          description: Chassis Type for the Managed Device Roles that utilize it such
+            as Workstations. Should be null if unused.
+          enum:
+            - UNKNOWN
+            - DESKTOP
+            - LAPTOP
+            - MOBILE
+        icon:
+          type: string
+          description: Icon Name of white-listed icon to be used for Unmanaged Device
+            Roles. Should be null for all Managed Device Roles.
+    NodeRolePublicApiDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Device Role Id
+          format: int32
+        nodeClass:
+          type: string
+          description: Node Class of the Device Role
+          enum:
+            - WINDOWS_SERVER
+            - WINDOWS_WORKSTATION
+            - LINUX_WORKSTATION
+            - MAC
+            - ANDROID
+            - APPLE_IOS
+            - APPLE_IPADOS
+            - VMWARE_VM_HOST
+            - VMWARE_VM_GUEST
+            - HYPERV_VMM_HOST
+            - HYPERV_VMM_GUEST
+            - LINUX_SERVER
+            - MAC_SERVER
+            - CLOUD_MONITOR_TARGET
+            - NMS_SWITCH
+            - NMS_ROUTER
+            - NMS_FIREWALL
+            - NMS_PRIVATE_NETWORK_GATEWAY
+            - NMS_PRINTER
+            - NMS_SCANNER
+            - NMS_DIAL_MANAGER
+            - NMS_WAP
+            - NMS_IPSLA
+            - NMS_COMPUTER
+            - NMS_VM_HOST
+            - NMS_APPLIANCE
+            - NMS_OTHER
+            - NMS_SERVER
+            - NMS_PHONE
+            - NMS_VIRTUAL_MACHINE
+            - NMS_NETWORK_MANAGEMENT_AGENT
+            - UNMANAGED_DEVICE
+            - MANAGED_DEVICE
+        nodeClassGroup:
+          type: string
+          description: Node Class Group
+          enum:
+            - RMM
+            - RMM_INTEGRATION
+            - MDM
+            - VMM
+            - NMS
+            - CLOUD_MONITORING
+            - UNMANAGED_DEVICE
+            - MANAGED_DEVICE
+        policyId:
+          type: integer
+          description: Policy Id
+          format: int32
+        policyName:
+          type: string
+          description: Policy Name
+        nodeRoleParentId:
+          type: integer
+          description: Parent Device Role Id
+          format: int32
+        custom:
+          type: boolean
+          description: Custom
+        name:
+          type: string
+          description: Device Role Name
+        description:
+          type: string
+          description: Device Role Description
+        chassisType:
+          type: string
+          description: Device Role Chassis Type
+          enum:
+            - UNKNOWN
+            - DESKTOP
+            - LAPTOP
+            - MOBILE
+        created:
+          type: number
+          description: Created Time
+          format: double
+        entityType:
+          type: string
+          description: Device Role custom Icon name. Only applicable for Unmanaged
+            Device Role
+    DeleteNodeRoleRequest:
+      type: object
+      properties:
+        ids:
+          type: array
+          description: Ids of the Custom Device Roles to delete. System Default Device
+            Roles can not be deleted.
+          items:
+            type: integer
+            description: Ids of the Custom Device Roles to delete. System Default
+              Device Roles can not be deleted.
+            format: int32
+    UpdateNodeRoleRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Id of the Device Role to update.
+          format: int32
+        name:
+          type: string
+          description: Device Role Name. Must be unique.
+        description:
+          type: string
+          description: Device Role Description
+        icon:
+          type: string
+          description: Icon Name of white-listed icon to be used for Unmanaged Device
+            Roles. Should be null for all Managed Device Roles.
     CustomFieldPolicyConditionResponse:
       type: object
       properties:
@@ -7120,7 +7823,6 @@ components:
         runAs:
           type: string
           description: Policy condition script runAs
-          default: SYSTEM
           enum:
             - SYSTEM
             - LOGGED_ON_USER
@@ -7128,6 +7830,7 @@ components:
             - DOMAIN_ADMIN
             - PREFERRED_CREDENTIAL_MAC
             - PREFERRED_CREDENTIAL_LINUX
+          default: SYSTEM
         scriptParam:
           type: string
           description: Policy condition script parameter
@@ -7166,22 +7869,22 @@ components:
         severity:
           type: string
           description: Policy condition severity
-          default: NONE
           enum:
             - NONE
             - MINOR
             - MODERATE
             - MAJOR
             - CRITICAL
+          default: NONE
         priority:
           type: string
           description: Policy condition priority
-          default: NONE
           enum:
             - NONE
             - LOW
             - MEDIUM
             - HIGH
+          default: NONE
         channels:
           maxItems: 20
           minItems: 0
@@ -7202,10 +7905,10 @@ components:
         notificationAction:
           type: string
           description: Policy condition notification action
-          default: NONE
           enum:
             - NONE
             - SEND
+          default: NONE
         notifyOnReset:
           type: boolean
           description: Policy condition notify on reset
@@ -7339,17 +8042,17 @@ components:
         condition:
           type: string
           description: Text condition
-          default: CONTAINS
           enum:
             - CONTAINS
             - NOT_CONTAINS
+          default: CONTAINS
         include:
           type: string
           description: Text include
-          default: ALL
           enum:
             - ALL
             - ANY
+          default: ALL
       description: Windows event policy condition text
     WindowsEventPolicyConditionCreateRequest:
       required:
@@ -7369,22 +8072,22 @@ components:
         severity:
           type: string
           description: Policy condition severity
-          default: NONE
           enum:
             - NONE
             - MINOR
             - MODERATE
             - MAJOR
             - CRITICAL
+          default: NONE
         priority:
           type: string
           description: Policy condition priority
-          default: NONE
           enum:
             - NONE
             - LOW
             - MEDIUM
             - HIGH
+          default: NONE
         channels:
           maxItems: 20
           minItems: 0
@@ -7405,10 +8108,10 @@ components:
         notificationAction:
           type: string
           description: Policy condition notification action
-          default: NONE
           enum:
             - NONE
             - SEND
+          default: NONE
         notifyOnReset:
           type: boolean
           description: Policy condition notify on reset
@@ -7520,18 +8223,6 @@ components:
           type: object
           additionalProperties: true
           description: Custom attributes
-        tags:
-          type: array
-          description: Tags
-          items:
-            type: string
-            description: Tags
-        fields:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom Fields
-          description: Custom Fields
         id:
           type: integer
           description: Location identifier
@@ -7569,18 +8260,6 @@ components:
             - AUTOMATIC
             - MANUAL
             - REJECT
-        tags:
-          type: array
-          description: Tags
-          items:
-            type: string
-            description: Tags
-        fields:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom Fields
-          description: Custom Fields
         id:
           type: integer
           description: Organization identifier
@@ -7627,18 +8306,6 @@ components:
           type: object
           additionalProperties: true
           description: Custom attributes
-        tags:
-          type: array
-          description: Tags
-          items:
-            type: string
-            description: Tags
-        fields:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom Fields
-          description: Custom Fields
     OrganizationWithLocationsAndPolicyAssignmentsModel:
       type: object
       properties:
@@ -7659,18 +8326,6 @@ components:
             - AUTOMATIC
             - MANUAL
             - REJECT
-        tags:
-          type: array
-          description: Tags
-          items:
-            type: string
-            description: Tags
-        fields:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom Fields
-          description: Custom Fields
         locations:
           type: array
           description: List of locations
@@ -7804,14 +8459,14 @@ components:
           $ref: "#/components/schemas/MultiPart"
         providers:
           type: object
+        formDataContentDisposition:
+          $ref: "#/components/schemas/FormDataContentDisposition"
         simple:
           type: boolean
         name:
           type: string
         value:
           type: string
-        formDataContentDisposition:
-          $ref: "#/components/schemas/FormDataContentDisposition"
         parameterizedHeaders:
           type: object
           additionalProperties:
@@ -7979,6 +8634,8 @@ components:
       type: object
       properties:
         position:
+          maximum: 2147483647
+          minimum: 1
           type: integer
           description: Position of the task
           format: int32
@@ -8390,6 +9047,15 @@ components:
         deleted:
           type: boolean
       description: Indicates who archived the template
+    AttributeApiPermission:
+      type: string
+      description: "Public API access level for custom fields (NOTE: This permission\
+        \ affects attribute VALUES, not attributes themselves)"
+      enum:
+        - NONE
+        - READ_ONLY
+        - WRITE_ONLY
+        - READ_WRITE
     AttributeContentAdvancedSettings:
       type: object
       properties:
@@ -8455,13 +9121,19 @@ components:
               - UNMANAGED_DEVICE
               - MANAGED_DEVICE
         ipAddressType:
-          type: string
-          enum:
-            - ALL
-            - IPV4
-            - IPV6
+          $ref: "#/components/schemas/AttributeContentAdvancedSettingsIpAddressType"
         expandLargeValueOnRender:
           type: boolean
+        identifier:
+          $ref: "#/components/schemas/AttributeContentAdvancedSettingsIdentifier"
+        monetary:
+          $ref: "#/components/schemas/AttributeContentAdvancedSettingsMonetary"
+        templates:
+          uniqueItems: true
+          type: array
+          items:
+            type: integer
+            format: int32
     AttributeContentAdvancedSettingsComplexityRules:
       type: object
       properties:
@@ -8477,18 +9149,218 @@ components:
       type: object
       properties:
         type:
-          type: string
-          enum:
-            - NONE
-            - INCLUDE
-            - EXCLUDE
-            - PAST_DATES_ONLY
-            - FUTURE_DATES_ONLY
-            - RANGE
+          $ref: "#/components/schemas/AttributeContentAdvancedSettingsDateFiltersType"
         selected:
           type: array
           items:
             type: string
+    AttributeContentAdvancedSettingsDateFiltersType:
+      type: string
+      description: Date filtering options for date/time custom fields
+      enum:
+        - NONE
+        - INCLUDE
+        - EXCLUDE
+        - PAST_DATES_ONLY
+        - FUTURE_DATES_ONLY
+        - RANGE
+    AttributeContentAdvancedSettingsIdentifier:
+      type: object
+      properties:
+        automaticGenerationEnabled:
+          type: boolean
+        scope:
+          type: string
+          enum:
+            - NONE
+            - GLOBAL
+            - ORGANIZATION
+        assignTo:
+          type: string
+          enum:
+            - NEW_ASSETS_ONLY
+            - NEW_AND_EXISTING_ASSETS
+        type:
+          type: string
+          enum:
+            - CUSTOM
+            - SEQUENCE
+        nextSequenceNumber:
+          type: integer
+          format: int64
+        prefix:
+          type: string
+        suffix:
+          type: string
+    AttributeContentAdvancedSettingsIpAddressType:
+      type: string
+      description: IP address validation type for IP address custom fields
+      enum:
+        - ALL
+        - IPV4
+        - IPV6
+    AttributeContentAdvancedSettingsMonetary:
+      type: object
+      properties:
+        currency:
+          type: string
+          enum:
+            - USD
+            - EUR
+            - CAD
+            - GBP
+            - AUD
+            - JPY
+            - SEK
+            - NOK
+            - DKK
+            - CHF
+            - AED
+            - AFN
+            - ALL
+            - AMD
+            - AOA
+            - ARS
+            - AWG
+            - AZN
+            - BAM
+            - BBD
+            - BDT
+            - BGN
+            - BHD
+            - BIF
+            - BMD
+            - BND
+            - BOB
+            - BRL
+            - BSD
+            - BTN
+            - BWP
+            - BYN
+            - BZD
+            - CDF
+            - CHE
+            - CHW
+            - CLF
+            - CLP
+            - CNY
+            - COP
+            - CRC
+            - CVE
+            - CZK
+            - DJF
+            - DOP
+            - DZD
+            - EGP
+            - ERN
+            - ETB
+            - FJD
+            - FKP
+            - GEL
+            - GHS
+            - GIP
+            - GMD
+            - GNF
+            - GTQ
+            - GYD
+            - HKD
+            - HNL
+            - HTG
+            - HUF
+            - IDR
+            - ILS
+            - INR
+            - IRR
+            - ISK
+            - JMD
+            - JOD
+            - KES
+            - KGS
+            - KHR
+            - KMF
+            - KRW
+            - KWD
+            - KYD
+            - KZT
+            - LAK
+            - LBP
+            - LKR
+            - LRD
+            - LSL
+            - LYD
+            - MAD
+            - MDL
+            - MGA
+            - MKD
+            - MMK
+            - MNT
+            - MOP
+            - MRU
+            - MUR
+            - MVR
+            - MWK
+            - MXN
+            - MXV
+            - MYR
+            - MZN
+            - NAD
+            - NGN
+            - NIO
+            - NPR
+            - NZD
+            - OMR
+            - PAB
+            - PEN
+            - PGK
+            - PHP
+            - PKR
+            - PLN
+            - PYG
+            - QAR
+            - RON
+            - RSD
+            - RUB
+            - RWF
+            - SAR
+            - SBD
+            - SCR
+            - SDG
+            - SGD
+            - SHP
+            - SLE
+            - SOS
+            - SRD
+            - SSP
+            - STN
+            - SVC
+            - SYP
+            - SZL
+            - THB
+            - TJS
+            - TMT
+            - TND
+            - TOP
+            - TRY
+            - TTD
+            - TWD
+            - TZS
+            - UAH
+            - UGX
+            - UYI
+            - UYU
+            - UZS
+            - VES
+            - VND
+            - VUV
+            - WST
+            - XAD
+            - XAF
+            - XCD
+            - XPF
+            - YER
+            - ZAR
+            - ZMW
+            - ZWG
     AttributeContentAdvancedSettingsNumericRange:
       type: object
       properties:
@@ -8496,6 +9368,54 @@ components:
           type: number
         max:
           type: number
+    AttributeScriptPermission:
+      type: string
+      description: Script access level for custom fields via automation
+      enum:
+        - NONE
+        - READ_ONLY
+        - WRITE_ONLY
+        - READ_WRITE
+    AttributeTechnicianPermission:
+      type: string
+      description: Technician access level for custom fields
+      enum:
+        - NONE
+        - EDITABLE
+        - READ_ONLY
+    AttributeType:
+      type: string
+      description: The type of custom field that determines how data is stored and
+        displayed
+      enum:
+        - DROPDOWN
+        - MULTI_SELECT
+        - CHECKBOX
+        - TEXT
+        - TEXT_MULTILINE
+        - TEXT_ENCRYPTED
+        - NUMERIC
+        - DECIMAL
+        - DATE
+        - DATE_TIME
+        - TIME
+        - ATTACHMENT
+        - NODE_DROPDOWN
+        - NODE_MULTI_SELECT
+        - CLIENT_DROPDOWN
+        - CLIENT_MULTI_SELECT
+        - CLIENT_LOCATION_DROPDOWN
+        - CLIENT_LOCATION_MULTI_SELECT
+        - CLIENT_DOCUMENT_DROPDOWN
+        - CLIENT_DOCUMENT_MULTI_SELECT
+        - EMAIL
+        - PHONE
+        - IP_ADDRESS
+        - WYSIWYG
+        - URL
+        - MONETARY
+        - IDENTIFIER
+        - TOTP
     DocumentAttributeContentPublicApi:
       type: object
       properties:
@@ -8547,57 +9467,13 @@ components:
           type: string
           description: Field description
         fieldType:
-          type: string
-          description: Field type
-          enum:
-            - DROPDOWN
-            - MULTI_SELECT
-            - CHECKBOX
-            - TEXT
-            - TEXT_MULTILINE
-            - TEXT_ENCRYPTED
-            - NUMERIC
-            - DECIMAL
-            - DATE
-            - DATE_TIME
-            - TIME
-            - ATTACHMENT
-            - NODE_DROPDOWN
-            - NODE_MULTI_SELECT
-            - CLIENT_DROPDOWN
-            - CLIENT_MULTI_SELECT
-            - CLIENT_LOCATION_DROPDOWN
-            - CLIENT_LOCATION_MULTI_SELECT
-            - CLIENT_DOCUMENT_DROPDOWN
-            - CLIENT_DOCUMENT_MULTI_SELECT
-            - EMAIL
-            - PHONE
-            - IP_ADDRESS
-            - WYSIWYG
-            - URL
+          $ref: "#/components/schemas/AttributeType"
         fieldTechnicianPermission:
-          type: string
-          description: Field technician permission
-          enum:
-            - NONE
-            - EDITABLE
-            - READ_ONLY
+          $ref: "#/components/schemas/AttributeTechnicianPermission"
         fieldScriptPermission:
-          type: string
-          description: Field script permission
-          enum:
-            - NONE
-            - READ_ONLY
-            - WRITE_ONLY
-            - READ_WRITE
+          $ref: "#/components/schemas/AttributeScriptPermission"
         fieldApiPermission:
-          type: string
-          description: Field public API permission
-          enum:
-            - NONE
-            - READ_ONLY
-            - WRITE_ONLY
-            - READ_WRITE
+          $ref: "#/components/schemas/AttributeApiPermission"
         fieldDefaultValue:
           type: string
           description: Default value
@@ -8724,57 +9600,13 @@ components:
           type: string
           description: Field description
         fieldType:
-          type: string
-          description: Field type (Immutable value)
-          enum:
-            - DROPDOWN
-            - MULTI_SELECT
-            - CHECKBOX
-            - TEXT
-            - TEXT_MULTILINE
-            - TEXT_ENCRYPTED
-            - NUMERIC
-            - DECIMAL
-            - DATE
-            - DATE_TIME
-            - TIME
-            - ATTACHMENT
-            - NODE_DROPDOWN
-            - NODE_MULTI_SELECT
-            - CLIENT_DROPDOWN
-            - CLIENT_MULTI_SELECT
-            - CLIENT_LOCATION_DROPDOWN
-            - CLIENT_LOCATION_MULTI_SELECT
-            - CLIENT_DOCUMENT_DROPDOWN
-            - CLIENT_DOCUMENT_MULTI_SELECT
-            - EMAIL
-            - PHONE
-            - IP_ADDRESS
-            - WYSIWYG
-            - URL
+          $ref: "#/components/schemas/AttributeType"
         fieldTechnicianPermission:
-          type: string
-          description: Field technician permission
-          enum:
-            - NONE
-            - EDITABLE
-            - READ_ONLY
+          $ref: "#/components/schemas/AttributeTechnicianPermission"
         fieldScriptPermission:
-          type: string
-          description: Field script permission
-          enum:
-            - NONE
-            - READ_ONLY
-            - WRITE_ONLY
-            - READ_WRITE
+          $ref: "#/components/schemas/AttributeScriptPermission"
         fieldApiPermission:
-          type: string
-          description: Field public API permission
-          enum:
-            - NONE
-            - READ_ONLY
-            - WRITE_ONLY
-            - READ_WRITE
+          $ref: "#/components/schemas/AttributeApiPermission"
         fieldDefaultValue:
           type: string
           description: Default value
@@ -8843,57 +9675,13 @@ components:
           type: string
           description: Field description
         fieldType:
-          type: string
-          description: Field type (Immutable except for new fields)
-          enum:
-            - DROPDOWN
-            - MULTI_SELECT
-            - CHECKBOX
-            - TEXT
-            - TEXT_MULTILINE
-            - TEXT_ENCRYPTED
-            - NUMERIC
-            - DECIMAL
-            - DATE
-            - DATE_TIME
-            - TIME
-            - ATTACHMENT
-            - NODE_DROPDOWN
-            - NODE_MULTI_SELECT
-            - CLIENT_DROPDOWN
-            - CLIENT_MULTI_SELECT
-            - CLIENT_LOCATION_DROPDOWN
-            - CLIENT_LOCATION_MULTI_SELECT
-            - CLIENT_DOCUMENT_DROPDOWN
-            - CLIENT_DOCUMENT_MULTI_SELECT
-            - EMAIL
-            - PHONE
-            - IP_ADDRESS
-            - WYSIWYG
-            - URL
+          $ref: "#/components/schemas/AttributeType"
         fieldTechnicianPermission:
-          type: string
-          description: Field technician permission
-          enum:
-            - NONE
-            - EDITABLE
-            - READ_ONLY
+          $ref: "#/components/schemas/AttributeTechnicianPermission"
         fieldScriptPermission:
-          type: string
-          description: Field script permission
-          enum:
-            - NONE
-            - READ_ONLY
-            - WRITE_ONLY
-            - READ_WRITE
+          $ref: "#/components/schemas/AttributeScriptPermission"
         fieldApiPermission:
-          type: string
-          description: Field public API permission
-          enum:
-            - NONE
-            - READ_ONLY
-            - WRITE_ONLY
-            - READ_WRITE
+          $ref: "#/components/schemas/AttributeApiPermission"
         fieldDefaultValue:
           type: string
           description: Default value
@@ -9243,9 +10031,9 @@ components:
     KnowledgeBaseFolderItemPublicApiDTO:
       type: object
       properties:
-        archived:
-          type: boolean
         folder:
+          type: boolean
+        archived:
           type: boolean
         id:
           type: integer
@@ -9370,6 +10158,335 @@ components:
           description: Article name
         content:
           $ref: "#/components/schemas/KnowledgeBaseArticlePublicApiContent"
+    AttributeContent:
+      type: object
+      properties:
+        customizeForEndUser:
+          type: boolean
+        endUserCustomization:
+          $ref: "#/components/schemas/EndUserCustomization"
+        values:
+          type: array
+          items:
+            $ref: "#/components/schemas/AttributeContentValue"
+        required:
+          type: boolean
+        footerText:
+          type: string
+        tooltipText:
+          type: string
+        advancedSettings:
+          $ref: "#/components/schemas/AttributeContentAdvancedSettings"
+    AttributeContentValue:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        active:
+          type: boolean
+        system:
+          type: boolean
+    AttributeEndUserOption:
+      type: string
+      description: End user access level for custom fields in the UI
+      enum:
+        - HIDDEN
+        - EDITABLE_OPTIONAL
+        - EDITABLE_REQUIRED
+        - READ_ONLY
+    AttributePublicApiDTO:
+      type: object
+      properties:
+        entityType:
+          $ref: "#/components/schemas/EntityType"
+        scope:
+          $ref: "#/components/schemas/AttributeScope"
+        definitionScope:
+          uniqueItems: true
+          type: array
+          description: Definition Scope
+          items:
+            $ref: "#/components/schemas/DefinitionScope"
+        type:
+          $ref: "#/components/schemas/AttributeType"
+        label:
+          type: string
+          description: Label
+        description:
+          type: string
+          description: Description
+        name:
+          type: string
+          description: Name
+        defaultValue:
+          type: string
+          description: Default Value
+        endUserPermission:
+          $ref: "#/components/schemas/AttributeEndUserOption"
+        technicianPermission:
+          $ref: "#/components/schemas/AttributeTechnicianPermission"
+        scriptPermission:
+          $ref: "#/components/schemas/AttributeScriptPermission"
+        apiPermission:
+          $ref: "#/components/schemas/AttributeApiPermission"
+        content:
+          $ref: "#/components/schemas/AttributeContent"
+        system:
+          type: boolean
+          description: System
+        active:
+          type: boolean
+          description: Active
+        createTime:
+          type: number
+          description: Create Time
+          format: double
+        updateTime:
+          type: number
+          description: Update Time
+          format: double
+    AttributeScope:
+      type: string
+      description: "Scope that determines where the custom field applies (NOTE: This\
+        \ is depricated and will be removed in a future release. The use of DefinitionScope\
+        \ is strongly preferred)"
+      enum:
+        - NODE_GLOBAL
+        - NODE_ROLE
+        - NODE_CLASS
+    DefinitionScope:
+      type: string
+      description: Defines what entity types can use this custom field definition
+      enum:
+        - NODE
+        - END_USER
+        - LOCATION
+        - ORGANIZATION
+    EndUserCustomization:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        label:
+          type: string
+    EntityType:
+      type: string
+      description: Entity type that this custom field or operation applies to
+      enum:
+        - USER
+        - NODE
+        - TICKET
+        - DOCUMENT
+    BulkCreateNodeAttributePublicApiRequest:
+      type: object
+      properties:
+        customFields:
+          type: array
+          description: List of custom fields to create
+          items:
+            $ref: "#/components/schemas/CreateNodeAttributePublicApiRequest"
+    CreateNodeAttributeContentPublicApi:
+      type: object
+      properties:
+        values:
+          type: array
+          description: List of predefined values for dropdown/radio types
+          items:
+            $ref: "#/components/schemas/CreateNodeAttributeContentValuePublicApi"
+        required:
+          type: boolean
+          description: Whether the field is required
+        footerText:
+          type: string
+          description: Footer text displayed below the field
+        tooltipText:
+          type: string
+          description: Tooltip text for the field
+        advancedSettings:
+          $ref: "#/components/schemas/AttributeContentAdvancedSettings"
+      description: Content configuration for the custom field
+    CreateNodeAttributeContentValuePublicApi:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Display name for the option
+      description: List of predefined values for dropdown/radio types
+    CreateNodeAttributePublicApiRequest:
+      required:
+        - fieldName
+        - label
+      type: object
+      properties:
+        label:
+          type: string
+          description: Display label for the custom field
+        fieldName:
+          type: string
+          description: Unique field name for API access (used when accessing the value
+            programmatically)
+        description:
+          type: string
+          description: Description of the custom field
+        type:
+          $ref: "#/components/schemas/AttributeType"
+        technicianPermission:
+          $ref: "#/components/schemas/AttributeTechnicianPermission"
+        scriptPermission:
+          $ref: "#/components/schemas/AttributeScriptPermission"
+        apiPermission:
+          $ref: "#/components/schemas/AttributeApiPermission"
+        defaultValue:
+          type: string
+          description: Default value for the custom field. This only has an effect
+            for DROPDOWN and MULTI_SELECT attributes
+        content:
+          $ref: "#/components/schemas/CreateNodeAttributeContentPublicApi"
+        scope:
+          $ref: "#/components/schemas/AttributeScope"
+        definitionScope:
+          uniqueItems: true
+          type: array
+          description: Definition scope for the custom field
+          items:
+            $ref: "#/components/schemas/DefinitionScope"
+        groupId:
+          type: integer
+          description: Group ID for organizing custom fields
+          format: int32
+        addToDefaultTab:
+          type: boolean
+          description: Whether to add to the default tab
+    BulkUpdateNodeAttributePublicApiRequest:
+      type: object
+      properties:
+        customFields:
+          type: array
+          description: List of custom fields to update
+          items:
+            $ref: "#/components/schemas/UpdateNodeAttributePublicApiRequest"
+    UpdateNodeAttributeContentPublicApi:
+      type: object
+      properties:
+        values:
+          type: array
+          description: List of predefined values for dropdown/radio types
+          items:
+            $ref: "#/components/schemas/UpdateNodeAttributeContentValuePublicApi"
+        required:
+          type: boolean
+          description: Whether the field is required
+        footerText:
+          type: string
+          description: Footer text displayed below the field
+        tooltipText:
+          type: string
+          description: Tooltip text for the field
+        advancedSettings:
+          $ref: "#/components/schemas/AttributeContentAdvancedSettings"
+      description: Content configuration for the custom field
+    UpdateNodeAttributeContentValuePublicApi:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the existing option (null for new options)
+          format: uuid
+        name:
+          type: string
+          description: Display name for the option
+        active:
+          type: boolean
+          description: Whether the option is active
+        system:
+          type: boolean
+          description: Whether the option is a system option
+      description: List of predefined values for dropdown/radio types
+    UpdateNodeAttributePublicApiRequest:
+      type: object
+      properties:
+        label:
+          type: string
+          description: Display label for the custom field
+        fieldName:
+          type: string
+          description: Unique field name for API access (recommended for programmatic
+            access)
+        description:
+          type: string
+          description: Description of the custom field
+        type:
+          $ref: "#/components/schemas/AttributeType"
+        technicianPermission:
+          $ref: "#/components/schemas/AttributeTechnicianPermission"
+        scriptPermission:
+          $ref: "#/components/schemas/AttributeScriptPermission"
+        apiPermission:
+          $ref: "#/components/schemas/AttributeApiPermission"
+        defaultValue:
+          type: string
+          description: Default value for the custom field
+        content:
+          $ref: "#/components/schemas/UpdateNodeAttributeContentPublicApi"
+        active:
+          type: boolean
+          description: Whether the custom field is active
+        scope:
+          $ref: "#/components/schemas/AttributeScope"
+        definitionScope:
+          uniqueItems: true
+          type: array
+          description: Definition scope for the custom field
+          items:
+            $ref: "#/components/schemas/DefinitionScope"
+        groupId:
+          type: integer
+          description: Group ID for organizing custom fields
+          format: int32
+    SupportPaginationResponse:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        count:
+          type: integer
+          format: int32
+        results:
+          type: array
+          items:
+            type: object
+    Cursor:
+      type: object
+      properties:
+        name:
+          type: string
+        offset:
+          type: integer
+          format: int32
+        count:
+          type: integer
+          format: int32
+        expires:
+          type: number
+          format: double
+    NodeAttributesPublicDtoReport:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/AttributePublicApiDTO"
+        cursor:
+          $ref: "#/components/schemas/Cursor"
     RelatedItemPublicApiDTO:
       type: object
       properties:
@@ -9401,6 +10518,7 @@ components:
             - CHECKLIST
             - KB_DOCUMENT
             - END_USER
+            - SOFTWARE_LICENSE
         relEntity:
           type: object
           description: Related Entity
@@ -9423,6 +10541,7 @@ components:
             - END_USER
             - CONTACT
             - KB_DOCUMENT
+            - SOFTWARE_LICENSE
             - SECURE
         value:
           type: object
@@ -9461,6 +10580,7 @@ components:
             - END_USER
             - CONTACT
             - KB_DOCUMENT
+            - SOFTWARE_LICENSE
         relEntityId:
           type: integer
           description: Related Entity Identifier
@@ -9486,19 +10606,578 @@ components:
         totpSecret:
           type: string
           description: TOTP Secret
+    AssigmentAutomationSettings:
+      required:
+        - type
+      type: object
+      properties:
+        assignmentType:
+          type: string
+          enum:
+            - NORMALIZED_SOFTWARE
+            - SOFTWARE_INVENTORY
+            - DEVICE_SEARCH_GROUPS
+            - END_USER_ROLES
+        type:
+          type: string
+      discriminator:
+        propertyName: type
+    DeviceAutomationSettings:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/AssigmentAutomationSettings"
+        - type: object
+          properties:
+            normalizedSoftwareName:
+              type: string
+            inventory:
+              $ref: "#/components/schemas/SoftwareInventory"
+            deviceSearchGroups:
+              $ref: "#/components/schemas/DeviceSearchGroups"
+    DeviceSearchGroups:
+      type: object
+      properties:
+        groupIds:
+          uniqueItems: true
+          type: array
+          items:
+            type: integer
+            format: int32
+        operator:
+          type: string
+          enum:
+            - ANY
+            - ALL
+    EndUserAutomationSettings:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/AssigmentAutomationSettings"
+        - type: object
+          properties:
+            endUserRoles:
+              $ref: "#/components/schemas/EndUserRoles"
+    EndUserRoles:
+      type: object
+      properties:
+        roleIds:
+          uniqueItems: true
+          type: array
+          items:
+            type: integer
+            format: int32
+        operator:
+          type: string
+          enum:
+            - ANY
+            - ALL
+    LicenseAssignmentListDTO:
+      type: object
+      properties:
+        licenseeId:
+          type: integer
+          format: int32
+        licenseeName:
+          type: string
+        licenseeOrganizationName:
+          type: string
+        licenseeOrganizationId:
+          type: integer
+          format: int32
+        licenseeEmail:
+          type: string
+    LicenseScope:
+      type: object
+      properties:
+        global:
+          type: boolean
+        organizationIds:
+          type: array
+          items:
+            type: integer
+            format: int32
+        locationIds:
+          type: array
+          items:
+            type: integer
+            format: int32
+    NotificationConfiguration:
+      type: object
+      properties:
+        email:
+          type: string
+        sms:
+          type: string
+        pushNotification:
+          type: string
+    PublisherDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        description:
+          type: string
+    SoftwareInventory:
+      type: object
+      properties:
+        criteriaArgs:
+          type: object
+          additionalProperties:
+            type: object
+    SoftwareLicenseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+          enum:
+            - PER_DEVICE
+            - PER_END_USER
+            - CUSTOM
+        automated:
+          type: boolean
+        purchaseDate:
+          type: integer
+          format: int64
+        publisherId:
+          type: integer
+          format: int32
+        vendorId:
+          type: integer
+          format: int32
+        publisher:
+          $ref: "#/components/schemas/PublisherDTO"
+        vendor:
+          $ref: "#/components/schemas/VendorDTO"
+        scope:
+          $ref: "#/components/schemas/LicenseScope"
+        quantity:
+          type: integer
+          format: int32
+        term:
+          $ref: "#/components/schemas/Term"
+        notificationChannelInfo:
+          $ref: "#/components/schemas/NotificationConfiguration"
+        assigmentAutomationSettings:
+          $ref: "#/components/schemas/AssigmentAutomationSettings"
+        licenseAssignmentList:
+          type: array
+          items:
+            $ref: "#/components/schemas/LicenseAssignmentListDTO"
+        currentUsage:
+          type: integer
+          format: int32
+        expired:
+          type: boolean
+        daysToExpire:
+          type: integer
+          format: int32
+        note:
+          type: string
+    Term:
+      type: object
+      properties:
+        renewalUnit:
+          type: string
+          enum:
+            - MONTH
+            - YEAR
+        value:
+          type: integer
+          format: int32
+        expirationDate:
+          type: number
+          format: double
+        autoRenewal:
+          type: boolean
+        generateActivityAlert:
+          type: boolean
+        daysBeforeExpiration:
+          type: integer
+          format: int32
+        hasNotifiedExpirationDate:
+          type: boolean
+        hasNotifiedUpToRenewal:
+          type: boolean
+    VendorDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        description:
+          type: string
+    SoftwareLicenseAPIDTO:
+      required:
+        - currentUsage
+        - description
+        - name
+        - notificationChannelInfo
+        - publisherId
+        - purchaseDate
+        - quantity
+        - scope
+        - term
+        - type
+        - vendorId
+      type: object
+      properties:
+        name:
+          type: string
+          description: Indicates of the name of the software license
+        description:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: Indicates a description for the software license
+        type:
+          type: string
+          description: Indicates the type of the software license
+          example: PER_DEVICE
+          enum:
+            - PER_DEVICE
+            - PER_END_USER
+            - CUSTOM
+        purchaseDate:
+          type: integer
+          description: Indicates the purchase date of the software license in unix
+            epoch milliseconds
+          format: int64
+          example: 1672531199000
+        publisherId:
+          type: integer
+          description: Identifier of the publisher
+          format: int32
+        vendorId:
+          type: integer
+          description: Identifier of the vendor
+          format: int32
+        scope:
+          $ref: "#/components/schemas/LicenseScope"
+        quantity:
+          type: integer
+          description: Indicates the quantity of the software license
+          format: int32
+        currentUsage:
+          type: integer
+          description: Indicates the current usage of the software license
+          format: int32
+        term:
+          $ref: "#/components/schemas/Term"
+        notificationChannelInfo:
+          $ref: "#/components/schemas/NotificationConfiguration"
+        assigmentAutomationSettings:
+          $ref: "#/components/schemas/AssigmentAutomationSettings"
+        assignedLicenses:
+          uniqueItems: true
+          type: array
+          description: Indicates the ids of the assigned licensees
+          nullable: true
+          items:
+            type: integer
+            description: Indicates the ids of the assigned licensees
+            format: int32
+            nullable: true
+        unassignedLicenses:
+          uniqueItems: true
+          type: array
+          description: Indicates the ids of the unassigned licensees
+          nullable: true
+          items:
+            type: integer
+            description: Indicates the ids of the unassigned licensees
+            format: int32
+            nullable: true
+        note:
+          type: string
+          description: Indicates a note about the software license
+          nullable: true
+    SoftwareLicenseRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+          enum:
+            - PER_DEVICE
+            - PER_END_USER
+            - CUSTOM
+        automated:
+          type: boolean
+        purchaseDate:
+          type: integer
+          format: int64
+        publisherId:
+          type: integer
+          format: int32
+        vendorId:
+          type: integer
+          format: int32
+        scope:
+          $ref: "#/components/schemas/LicenseScope"
+        quantity:
+          type: integer
+          format: int32
+        currentUsage:
+          type: integer
+          format: int32
+        term:
+          $ref: "#/components/schemas/Term"
+        notificationChannelInfo:
+          $ref: "#/components/schemas/NotificationConfiguration"
+        assigmentAutomationSettings:
+          $ref: "#/components/schemas/AssigmentAutomationSettings"
+        assignedLicenses:
+          uniqueItems: true
+          type: array
+          items:
+            type: integer
+            format: int32
+        unassignedLicenses:
+          uniqueItems: true
+          type: array
+          items:
+            type: integer
+            format: int32
+        note:
+          type: string
+        characterLimit:
+          type: integer
+          format: int32
+    ScopeClientDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+    ScopeClientLocationDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        organizationId:
+          type: integer
+          format: int32
+    SoftwareLicenseResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+          enum:
+            - PER_DEVICE
+            - PER_END_USER
+            - CUSTOM
+        automated:
+          type: boolean
+        purchaseDate:
+          type: integer
+          format: int64
+        publisher:
+          $ref: "#/components/schemas/PublisherDTO"
+        vendor:
+          $ref: "#/components/schemas/VendorDTO"
+        scope:
+          $ref: "#/components/schemas/SoftwareLicenseScopeDTO"
+        quantity:
+          type: integer
+          format: int32
+        term:
+          $ref: "#/components/schemas/Term"
+        notificationChannelInfo:
+          $ref: "#/components/schemas/NotificationConfiguration"
+        assigmentAutomationSettings:
+          $ref: "#/components/schemas/AssigmentAutomationSettings"
+        licenseAssignmentList:
+          type: array
+          items:
+            $ref: "#/components/schemas/LicenseAssignmentListDTO"
+        currentUsage:
+          type: integer
+          format: int32
+        expired:
+          type: boolean
+        daysToExpire:
+          type: integer
+          format: int32
+        note:
+          type: string
+        automation:
+          $ref: "#/components/schemas/AssigmentAutomationSettings"
+    SoftwareLicenseScopeDTO:
+      type: object
+      properties:
+        global:
+          type: boolean
+        organizations:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScopeClientDTO"
+        locations:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScopeClientLocationDTO"
+    LicenseScopeAPIDTO:
+      type: object
+      properties:
+        global:
+          type: boolean
+          description: Indicates if the scope is global
+        organizationNames:
+          type: array
+          description: Indicates the organization names for the scope
+          items:
+            type: string
+            description: Indicates the organization names for the scope
+        locationNames:
+          type: array
+          description: Indicates the location names for the scope
+          items:
+            type: string
+            description: Indicates the location names for the scope
+      description: Indicates the scope of the software license
+    SoftwareLicenseUpsertAPIDTO:
+      required:
+        - name
+        - publisherName
+        - quantity
+        - scope
+        - type
+        - vendorName
+      type: object
+      properties:
+        name:
+          type: string
+          description: Indicates the name of the software license
+        description:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: Indicates a description for the software license
+          nullable: true
+        type:
+          type: string
+          description: Indicates the type of the software license
+          example: PER_DEVICE
+          enum:
+            - PER_DEVICE
+            - PER_END_USER
+            - CUSTOM
+        date:
+          type: integer
+          description: Indicates the purchase date of the software license in unix
+            epoch milliseconds
+          format: int64
+          nullable: true
+          example: 1672531199000
+        publisherName:
+          type: string
+          description: Name of the publisher
+        vendorName:
+          type: string
+          description: Name of the vendor
+        scope:
+          $ref: "#/components/schemas/LicenseScopeAPIDTO"
+        quantity:
+          type: integer
+          description: Indicates the quantity of the software license
+          format: int32
+        currentUsage:
+          type: integer
+          description: Indicates the current usage of the software license
+          format: int32
+          nullable: true
+        currentLicensees:
+          uniqueItems: true
+          type: array
+          description: Indicates the names of assigned licensees and removes those
+            not specified
+          items:
+            type: string
+            description: Indicates the names of assigned licensees and removes those
+              not specified
+        licenseesToAssign:
+          uniqueItems: true
+          type: array
+          description: Indicates the names of the licensees on which the license will
+            be assigned
+          items:
+            type: string
+            description: Indicates the names of the licensees on which the license
+              will be assigned
+        licenseesToRemove:
+          uniqueItems: true
+          type: array
+          description: Indicates the names of the licensees on which the license will
+            be remowed
+          items:
+            type: string
+            description: Indicates the names of the licensees on which the license
+              will be remowed
+        note:
+          type: string
+          description: Indicates a note about the software license
+          nullable: true
     CreateUnmanagedDevicePublicApiResponseDTO:
       type: object
       properties:
         nodeId:
           type: integer
           format: int32
+    AssetFieldsPublicApiRequest:
+      type: object
+      properties:
+        serialNumber:
+          type: string
+          description: The SerialNumber to use for the new device
+        assetId:
+          type: string
+          description: The asset id to use for the new device
+        assetStatus:
+          type: string
+          description: The asset status to use for the new device
+        assetPurchaseDate:
+          type: number
+          description: The purchase date of the new device
+          format: double
+        assetPurchaseAmount:
+          type: number
+          description: The purchase amount of the new device
+          format: double
+        assetExpectedLifetime:
+          type: string
+          description: The expected lifetime of the new device
+      description: The asset information
     CreateUnmanagedDevicePublicApiRequest:
       required:
         - locationId
         - name
         - orgId
         - roleId
-        - serialNumber
       type: object
       properties:
         name:
@@ -9519,9 +11198,6 @@ components:
           description: "The id of the role to use for this device. Must be a sub-role
             of Unmanaged Device "
           format: int32
-        serialNumber:
-          type: string
-          description: The serial number of the device
         assignedUserUid:
           type: string
           description: The UUID of the user this device is assigned to
@@ -9534,12 +11210,27 @@ components:
           type: number
           description: "The warranty end date for the device, in unix epoch seconds"
           format: double
+        assetFields:
+          $ref: "#/components/schemas/AssetFieldsPublicApiRequest"
+    DecommissionUnmanagedDeviceListPublicApiRequest:
+      required:
+        - nodeIds
+      type: object
+      properties:
+        nodeIds:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: The ids of the devices to be decommissioned
+          items:
+            type: integer
+            description: The ids of the devices to be decommissioned
+            format: int32
     UpdateUnmanagedDevicePublicApiRequest:
       required:
         - locationId
         - name
         - orgId
-        - serialNumber
       type: object
       properties:
         name:
@@ -9555,9 +11246,6 @@ components:
           type: integer
           description: The id of the location the device belongs to
           format: int32
-        serialNumber:
-          type: string
-          description: The serial number of the device
         assignedUserUid:
           type: string
           description: The UUID of the user this device is assigned to
@@ -9570,6 +11258,66 @@ components:
           type: number
           description: "The warranty end date for the device, in unix epoch seconds"
           format: double
+        assetFields:
+          $ref: "#/components/schemas/AssetFieldsPublicApiRequest"
+    BackupBandwidthThrottle:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether bandwidth throttle is enabled/true or disabled/false
+        workHoursKbps:
+          type: integer
+          description: Bandwidth work hours limit
+          format: int32
+        nonWorkHoursKbps:
+          type: integer
+          description: Bandwidth nonwork hours limit
+          format: int32
+        workHoursUserUnit:
+          type: string
+          description: Bandwidth work hours unit
+        nonWorkHoursUserUnit:
+          type: string
+          description: Bandwidth nonwork hours unit
+        workSchedule:
+          $ref: "#/components/schemas/BackupBandwidthThrottleWorkSchedule"
+      description: Device Backup Bandwidth Throttle
+    BackupBandwidthThrottleWorkSchedule:
+      type: object
+      properties:
+        endHour:
+          type: integer
+          description: Work schedule end hour (0 to 23)
+          format: int32
+        endMinute:
+          type: integer
+          description: Work schedule end minute (0 to 59)
+          format: int32
+        startHour:
+          type: integer
+          description: Work schedule start hour (0 to 23)
+          format: int32
+        startMinute:
+          type: integer
+          description: Work schedule start minute (0 to 59)
+          format: int32
+        weekDays:
+          type: array
+          description: Work schedule week days list
+          items:
+            type: string
+            description: Work schedule week days list
+      description: Bandwidth work schedule
+    DeviceBackupBandwidthThrottleSettingRequest:
+      type: object
+      properties:
+        deviceId:
+          type: integer
+          format: int32
+        bandwidthThrottle:
+          $ref: "#/components/schemas/BackupBandwidthThrottle"
+      description: Request of the Device Bandwidth Throttle setting.
     LockhartIntegrityCheckJobCreationResponse:
       type: object
       properties:
@@ -9604,6 +11352,72 @@ components:
           type: string
           format: uuid
       description: Request of the Integrity Check Job creation.
+    CreateStagedDevicePublicApiResponse:
+      type: object
+      properties:
+        nodeId:
+          type: integer
+          format: int32
+    CreateStagedDevicePublicApiRequest:
+      required:
+        - locationId
+        - name
+        - orgId
+        - roleId
+      type: object
+      properties:
+        name:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: The display name of the device to be created
+        orgId:
+          type: integer
+          description: The id of the organization the device belongs to
+          format: int32
+        locationId:
+          type: integer
+          description: The id of the location the device belongs to
+          format: int32
+        roleId:
+          type: integer
+          description: The id of the role to use for this device
+          format: int32
+        assignedUserUid:
+          type: string
+          description: The UUID of the user this device is assigned to
+          format: uuid
+        warrantyStartDate:
+          type: number
+          description: "The warranty start date for the device, in unix epoch seconds"
+          format: double
+        warrantyEndDate:
+          type: number
+          description: "The warranty end date for the device, in unix epoch seconds"
+          format: double
+        itamAssetId:
+          type: string
+          description: The asset id to use for the new device
+        itamAssetStatus:
+          type: string
+          description: The asset status to use for the new device
+        itamAssetPurchaseDate:
+          type: number
+          description: The purchase date of the new device
+          format: double
+        itamAssetPurchaseAmount:
+          type: number
+          description: The purchase amount of the new device
+          format: float
+        itamAssetExpectedLifetime:
+          type: string
+          description: The expected lifetime of the new device
+        itamAssetEndOfLifeDate:
+          type: number
+          description: The end of life date for the new device
+          format: double
+        itamAssetSerialNumber:
+          type: string
     AttributeContentPublicApiDTO:
       type: object
       properties:
@@ -9629,18 +11443,6 @@ components:
         advancedSettings:
           $ref: "#/components/schemas/AttributeContentAdvancedSettings"
       description: "For multi-select attributes, these are the available content options"
-    AttributeContentValue:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        active:
-          type: boolean
-        system:
-          type: boolean
     AttributeFormContentCommonItemPublicApiDTO:
       type: object
       properties:
@@ -9658,85 +11460,23 @@ components:
           type: string
           description: Description of the content item
         entityType:
-          type: string
-          description: "If the attribute references a specific entity, its type will\
-            \ be specified in this field"
-          enum:
-            - USER
-            - NODE
-            - TICKET
-            - DOCUMENT
+          $ref: "#/components/schemas/EntityType"
         attributeType:
-          type: string
-          description: Type of the attribute
-          enum:
-            - DROPDOWN
-            - MULTI_SELECT
-            - CHECKBOX
-            - TEXT
-            - TEXT_MULTILINE
-            - TEXT_ENCRYPTED
-            - NUMERIC
-            - DECIMAL
-            - DATE
-            - DATE_TIME
-            - TIME
-            - ATTACHMENT
-            - NODE_DROPDOWN
-            - NODE_MULTI_SELECT
-            - CLIENT_DROPDOWN
-            - CLIENT_MULTI_SELECT
-            - CLIENT_LOCATION_DROPDOWN
-            - CLIENT_LOCATION_MULTI_SELECT
-            - CLIENT_DOCUMENT_DROPDOWN
-            - CLIENT_DOCUMENT_MULTI_SELECT
-            - EMAIL
-            - PHONE
-            - IP_ADDRESS
-            - WYSIWYG
-            - URL
+          $ref: "#/components/schemas/AttributeType"
         attributeScope:
-          type: string
-          description: "Scope of the attribute. NOTE: This field is being depricated"
-          enum:
-            - NODE_GLOBAL
-            - NODE_ROLE
-            - NODE_CLASS
+          $ref: "#/components/schemas/AttributeScope"
         definitionScope:
           uniqueItems: true
           type: array
           description: Definition scopes of the attribute
           items:
-            type: string
-            description: Definition scopes of the attribute
-            enum:
-              - NODE
-              - END_USER
-              - LOCATION
-              - ORGANIZATION
+            $ref: "#/components/schemas/DefinitionScope"
         technicianPermission:
-          type: string
-          description: Type of technician permission on the attribute
-          enum:
-            - NONE
-            - EDITABLE
-            - READ_ONLY
+          $ref: "#/components/schemas/AttributeTechnicianPermission"
         scriptPermission:
-          type: string
-          description: Type of script permission on the attribute
-          enum:
-            - NONE
-            - READ_ONLY
-            - WRITE_ONLY
-            - READ_WRITE
+          $ref: "#/components/schemas/AttributeScriptPermission"
         apiPermission:
-          type: string
-          description: Type of API permission on the attribute
-          enum:
-            - NONE
-            - READ_ONLY
-            - WRITE_ONLY
-            - READ_WRITE
+          $ref: "#/components/schemas/AttributeApiPermission"
         defaultValue:
           type: string
           description: "For multi-select attributes, this is the id of the default\
@@ -9792,6 +11532,9 @@ components:
         name:
           type: string
           description: Display name of tab
+        description:
+          type: string
+          description: The description to use for the custom tab
         entityType:
           type: string
           description: "The type of object the tab is for (ie, NODE_ROLE, ORGANIZATION,\
@@ -9800,6 +11543,7 @@ components:
             - NODE_ROLE
             - ORGANIZATION
             - END_USER
+            - SYSTEM
         entityId:
           type: integer
           description: "For entity types that are bound to an ID, this will be the\
@@ -9823,15 +11567,6 @@ components:
         isDefault:
           type: boolean
           description: "True if this is a default tab, false otherwise"
-    EndUserCustomization:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        label:
-          type: string
     AttributeFormContentItemPublicApiDTO:
       type: object
       properties:
@@ -9873,6 +11608,11 @@ components:
         name:
           type: string
           description: The display name to use for the custom tab
+        description:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: The description to use for the custom tab
         entityType:
           type: string
           description: The type to use for the custom tab. Organizations and Locations
@@ -9881,6 +11621,7 @@ components:
             - NODE_ROLE
             - ORGANIZATION
             - END_USER
+            - SYSTEM
         entityId:
           minimum: 1
           type: integer
@@ -9916,6 +11657,9 @@ components:
         name:
           type: string
           description: Display name of tab
+        description:
+          type: string
+          description: The description to use for the custom tab
         nodeRoleId:
           type: integer
           description: "For tabs associated with a role, this will be the roleId the\
@@ -9961,7 +11705,7 @@ components:
               \ to the requested roleId. This is useful for sorting tabs, since that\
               \ is done on a per-role basis"
             format: int32
-    UpdateTabNamePublicApiRequest:
+    UpdateTabDetailPublicApiRequest:
       required:
         - name
       type: object
@@ -9971,6 +11715,10 @@ components:
           type: integer
           format: int32
         name:
+          type: string
+        description:
+          maxLength: 250
+          minLength: 0
           type: string
     UpdateCustomTabPublicApiRequest:
       type: object
@@ -10010,6 +11758,8 @@ components:
           type: integer
           format: int32
         name:
+          type: string
+        description:
           type: string
         nodeRoleId:
           type: integer
@@ -10113,6 +11863,11 @@ components:
             - QUESTION
             - INCIDENT
             - TASK
+            - CHANGE_REQUEST
+            - SERVICE_REQUEST
+            - PROJECT
+            - APPOINTMENT
+            - MISCELLANEOUS
         cc:
           $ref: "#/components/schemas/CarbonCopy"
         assignedAppUserId:
@@ -10125,22 +11880,22 @@ components:
         severity:
           type: string
           nullable: true
-          default: NONE
           enum:
             - NONE
             - MINOR
             - MODERATE
             - MAJOR
             - CRITICAL
+          default: NONE
         priority:
           type: string
           nullable: true
-          default: NONE
           enum:
             - NONE
             - LOW
             - MEDIUM
             - HIGH
+          default: NONE
         parentTicketId:
           type: integer
           description: Ticket parent identifier
@@ -10175,6 +11930,11 @@ components:
             description: Additional assigned technician identifiers
             format: int32
             nullable: true
+        followupTime:
+          type: number
+          description: Follow-up time for the ticket in epoch seconds
+          format: double
+          nullable: true
     NewTicketLogEntry:
       required:
         - public
@@ -10279,6 +12039,11 @@ components:
             - QUESTION
             - INCIDENT
             - TASK
+            - CHANGE_REQUEST
+            - SERVICE_REQUEST
+            - PROJECT
+            - APPOINTMENT
+            - MISCELLANEOUS
         priority:
           type: string
           enum:
@@ -10329,6 +12094,9 @@ components:
           items:
             type: integer
             format: int32
+        followupTime:
+          type: number
+          format: double
     TicketStatusPublicApiDTO:
       type: object
       properties:
@@ -10389,7 +12157,7 @@ components:
       properties:
         id:
           type: integer
-          format: int32
+          format: int64
         appUserContactUid:
           type: string
           format: uuid
@@ -10411,6 +12179,7 @@ components:
             - SAVE
             - DELETE
             - PRODUCT
+            - INFO
         body:
           type: string
         htmlBody:
@@ -10454,15 +12223,27 @@ components:
       properties:
         ticketLogEntryId:
           type: integer
-          format: int32
-        invoiceId:
-          type: integer
-          format: int32
+          format: int64
         startDate:
           type: integer
           format: int64
         remote:
           type: boolean
+        timeTracked:
+          type: integer
+          format: int32
+        inHours:
+          $ref: "#/components/schemas/TimeTimeEntryBillingDataDTO"
+        offHours:
+          $ref: "#/components/schemas/TimeTimeEntryBillingDataDTO"
+    TimeTimeEntryBillingDataDTO:
+      type: object
+      properties:
+        price:
+          type: number
+        timeTracked:
+          type: integer
+          format: int32
         billing:
           type: string
           enum:
@@ -10475,21 +12256,20 @@ components:
             - BILLED
             - PENDING
             - NOT_BILLABLE
+            - UNASSIGNED
         agreementOriginType:
           type: string
           enum:
             - NONE
             - SELF
             - TICKET
-        price:
-          type: number
-        timeTracked:
-          type: integer
-          format: int32
-        agreement:
-          $ref: "#/components/schemas/AgreementDTO"
         agreementProduct:
           $ref: "#/components/schemas/AgreementProductTimeEntryDTO"
+        agreement:
+          $ref: "#/components/schemas/AgreementDTO"
+        invoiceId:
+          type: integer
+          format: int32
     UpdateTicket:
       required:
         - clientId
@@ -10545,6 +12325,11 @@ components:
             - QUESTION
             - INCIDENT
             - TASK
+            - CHANGE_REQUEST
+            - SERVICE_REQUEST
+            - PROJECT
+            - APPOINTMENT
+            - MISCELLANEOUS
         cc:
           $ref: "#/components/schemas/CarbonCopy"
         assignedAppUserId:
@@ -10557,22 +12342,22 @@ components:
         severity:
           type: string
           nullable: true
-          default: NONE
           enum:
             - NONE
             - MINOR
             - MODERATE
             - MAJOR
             - CRITICAL
+          default: NONE
         priority:
           type: string
           nullable: true
-          default: NONE
           enum:
             - NONE
             - LOW
             - MEDIUM
             - HIGH
+          default: NONE
         parentTicketId:
           type: integer
           description: Ticket parent identifier
@@ -10607,6 +12392,11 @@ components:
             description: Additional assigned technician identifiers
             format: int32
             nullable: true
+        followupTime:
+          type: number
+          description: Follow-up time for the ticket in epoch seconds
+          format: double
+          nullable: true
     PublicScanGroup:
       type: object
       properties:
@@ -10638,6 +12428,16 @@ components:
         recordsProcessed:
           type: integer
           format: int32
+    CsvUploadRequest:
+      required:
+        - csv
+      type: object
+      properties:
+        csv:
+          type: string
+          description: The CSV file containing vulnerability data. The maximum file
+            size is 200MB.
+          format: binary
     WindowsServiceControlRequest:
       type: object
       properties:
@@ -10712,6 +12512,10 @@ components:
         cloudImageV2Size:
           type: integer
           description: Revisions cloud image v2 size
+          format: int64
+        cloudNetworkShareSize:
+          type: integer
+          description: Revisions cloud network share size
           format: int64
         lastSuccessfulBackupJob:
           type: number
@@ -10867,6 +12671,9 @@ components:
         serialNumber:
           type: string
           description: Serial Number
+        assetSerialNumber:
+          type: string
+          description: Asset Serial Number
         domain:
           type: string
         domainRole:
@@ -10965,7 +12772,9 @@ components:
           description: Approval Status
           enum:
             - PENDING
+            - STAGED
             - APPROVED
+            - DECOMMISSIONED
         offline:
           type: boolean
           description: Is Offline?
@@ -11003,12 +12812,6 @@ components:
           items:
             type: string
             description: Tags
-        fields:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom Fields
-          description: Custom Fields
         maintenance:
           $ref: "#/components/schemas/Maintenance"
         references:
@@ -11055,11 +12858,74 @@ components:
           type: number
           description: Maintenance mode end time
           format: double
+        reasonMessage:
+          type: string
+          description: Maintenance reason message
       description: Maintenance mode status
     MdmDevice:
       type: object
       allOf:
         - $ref: "#/components/schemas/Device"
+        - type: object
+          properties:
+            system:
+              $ref: "#/components/schemas/MdmSystem"
+            memory:
+              $ref: "#/components/schemas/Memory"
+            network:
+              type: array
+              description: Network information
+              items:
+                $ref: "#/components/schemas/MdmNetworkInterface"
+            volumes:
+              type: array
+              description: Disk Volumes
+              items:
+                $ref: "#/components/schemas/Volume"
+    MdmNetworkInterface:
+      type: object
+      properties:
+        imei:
+          type: string
+          description: International Mobile Equipment Identity
+        eid:
+          type: string
+          description: eUICC Identifier
+        meid:
+          type: string
+          description: Mobile Equipment Identifier
+        phoneNumber:
+          type: string
+          description: Device phone number
+        carrier:
+          type: string
+          description: Network carrier name
+        iccId:
+          type: string
+          description: Integrated Circuit Card Identifier
+      description: Network information
+    MdmSystem:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: Display Name
+        name:
+          type: string
+          description: Name
+        manufacturer:
+          type: string
+          description: Manufacturer
+        model:
+          type: string
+          description: Model
+        serialNumber:
+          type: string
+          description: Serial Number
+        build:
+          type: string
+          description: Build
+      description: Mdm System
     Memory:
       type: object
       properties:
@@ -11095,6 +12961,8 @@ components:
           $ref: "#/components/schemas/WarrantyDates"
         assignedOwner:
           $ref: "#/components/schemas/User"
+        backupBandwidthThrottle:
+          $ref: "#/components/schemas/BackupBandwidthThrottle"
       description: Expanded entity references
     NodeRole:
       type: object
@@ -11161,18 +13029,6 @@ components:
           type: number
           description: Date created
           format: double
-        tags:
-          type: array
-          description: Tags
-          items:
-            type: string
-            description: Tags
-        fields:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom Fields
-          description: Custom Fields
         nodeRoleParentId:
           type: integer
           description: Node Role Parent Id
@@ -11248,18 +13104,6 @@ components:
             - AUTOMATIC
             - MANUAL
             - REJECT
-        tags:
-          type: array
-          description: Tags
-          items:
-            type: string
-            description: Tags
-        fields:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom Fields
-          description: Custom Fields
         id:
           type: integer
           description: Organization identifier
@@ -11326,18 +13170,6 @@ components:
         nodeClassDefault:
           type: boolean
           description: Is Default Policy for Node Class
-        tags:
-          type: array
-          description: Tags
-          items:
-            type: string
-            description: Tags
-        fields:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom Fields
-          description: Custom Fields
       description: Assigned policy (overrides organization and location policy mapping)
     Processor:
       type: object
@@ -11429,18 +13261,6 @@ components:
             type: integer
             description: Device IDs which user is assigned
             format: int32
-        tags:
-          type: array
-          description: Tags
-          items:
-            type: string
-            description: Tags
-        fields:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom Fields
-          description: Custom Fields
         roles:
           type: array
           description: A list of role names assigned to the user. This is provided
@@ -11880,6 +13700,7 @@ components:
             - CHECKLIST_TEMPLATE
             - DOCUMENTATION
             - MICROSOFT_INTUNE
+            - DYNAMIC_POLICY
     NodeWithDetailedReferences:
       type: object
       properties:
@@ -11963,7 +13784,9 @@ components:
           description: Approval Status
           enum:
             - PENDING
+            - STAGED
             - APPROVED
+            - DECOMMISSIONED
         offline:
           type: boolean
           description: Is Offline?
@@ -12001,12 +13824,6 @@ components:
           items:
             type: string
             description: Tags
-        fields:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom Fields
-          description: Custom Fields
         maintenance:
           $ref: "#/components/schemas/Maintenance"
         references:
@@ -12089,6 +13906,7 @@ components:
             - CHECKLIST_TEMPLATE
             - DOCUMENTATION
             - MICROSOFT_INTUNE
+            - DYNAMIC_POLICY
         statusCode:
           type: string
           description: Activity status code
@@ -12143,6 +13961,7 @@ components:
             - APP_USER_MFA_DELETED
             - APP_USER_CRITICAL_ACTION
             - APP_USER_AUDIT_FAILED_LOGIN
+            - APP_USER_AUTO_ASSIGN_CHANGED
             - END_USER_CREATED
             - END_USER_CREATED_API
             - END_USER_UPDATED
@@ -12432,8 +14251,6 @@ components:
             - CLOUDBERRY_NETWORK_CREDENTIAL_CREATED
             - CLOUDBERRY_NETWORK_CREDENTIAL_CREATION_FAILED
             - RDP_CONNECTION_INITIATED
-            - RDP_CONNECTION_ESTABLISHED
-            - RDP_CONNECTION_TERMINATED
             - RDP_AUTO_PROVISION
             - SCHEDULED_TASK_CREATED
             - SCHEDULED_TASK_UPDATED
@@ -12557,11 +14374,13 @@ components:
             - GRAVITYZONE_THREAT_DELETE_FROM_QUARANTINE_FAILED
             - GRAVITYZONE_THREAT_RESTORE_FROM_QUARANTINE_FAILED
             - GRAVITYZONE_INSTALLATION_SUCCEEDED
+            - GRAVITYZONE_INSTALLATION_SUCCEEDED_WITH_WARNINGS
             - GRAVITYZONE_INSTALLATION_FAILED
             - GRAVITYZONE_THREAT_IGNORED
             - GRAVITYZONE_THREAT_PRESENT
             - GRAVITYZONE_THREAT_DELETED
             - GRAVITYZONE_THREAT_BLOCKED
+            - GRAVITYZONE_THREAT_REPORTED
             - GRAVITYZONE_THREAT_QUARANTINED
             - GRAVITYZONE_THREAT_CLEANED
             - GRAVITYZONE_PURGE_QUARANTINE_FAILED
@@ -12592,6 +14411,10 @@ components:
             - GRAVITYZONE_DEVICE_UNMANAGED
             - GRAVITYZONE_COMPANY_CANNOT_BE_ACCESSED
             - GRAVITYZONE_QUARANTINED_THREAT_DELETED_OR_RESTORED
+            - GRAVITYZONE_SUCCEEDED_TO_REQUEST_RECONFIGURE_TASK
+            - GRAVITYZONE_FAILED_TO_REQUEST_RECONFIGURE_TASK
+            - GRAVITYZONE_ADVANCED_THREAT_DISINFECTED
+            - GRAVITYZONE_ADVANCED_THREAT_BLOCKED
             - ATTACHMENT_FILE_SUSPICIOUS
             - SMTP_SEND_ERROR
             - TECHNICIAN_ROLE_CREATED
@@ -12633,6 +14456,8 @@ components:
             - SENTINEL_ONE_SCAN_ABORTED
             - SENTINEL_ONE_COMMAND_RECEIVED
             - SENTINEL_ONE_COMMAND_FAILED
+            - SENTINEL_ONE_AGENT_UPGRADE_SUCCEEDED
+            - SENTINEL_ONE_SITE_TOKEN_REGENERATED
             - OAUTH2_CREATED
             - OAUTH2_UPDATED
             - OAUTH2_DELETED
@@ -12956,6 +14781,21 @@ components:
           description: Alert data
         device:
           $ref: "#/components/schemas/NodeWithDetailedReferences"
+        priority:
+          type: string
+        severity:
+          type: string
+        conditionName:
+          type: string
+        conditionHealthStatus:
+          type: string
+          enum:
+            - UNKNOWN
+            - HEALTHY
+            - NEEDS_ATTENTION
+            - UNHEALTHY
+        useGlobalHealthStatus:
+          type: boolean
     DiskDrive:
       type: object
       properties:
@@ -13182,6 +15022,9 @@ components:
         productCode:
           type: string
           description: Product Code
+        isSystemComponent:
+          type: boolean
+          description: Is System Component
     PolicyOverrides:
       type: object
       properties:
@@ -13371,12 +15214,17 @@ components:
               - TASKS
         start:
           type: number
-          description: "Maintenance window start (optional, defaults to now)"
+          description: "Maintenance window start (optional, defaults to now). Allowed\
+            \ formats: ISO-8601 date-time string or epoch milliseconds."
           format: double
         end:
           type: number
-          description: Maintenance window end
+          description: "Maintenance window end. Allowed formats: ISO-8601 date-time\
+            \ string or epoch milliseconds."
           format: double
+        reasonMessage:
+          type: string
+          description: Reason for maintenance window
     Link:
       type: object
       properties:
@@ -13399,6 +15247,7 @@ components:
           description: Agent installer type
           enum:
             - WINDOWS_MSI
+            - WINDOWS_ARM64_MSI
             - MAC_DMG
             - MAC_PKG
             - LINUX_DEB
@@ -13464,6 +15313,9 @@ components:
         cloudImageV2Size:
           type: integer
           format: int64
+        cloudNetworkShareSize:
+          type: integer
+          format: int64
         lastSuccessfulBackupJob:
           type: number
           format: double
@@ -13510,18 +15362,6 @@ components:
             - AUTOMATIC
             - MANUAL
             - REJECT
-        tags:
-          type: array
-          description: Tags
-          items:
-            type: string
-            description: Tags
-        fields:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom Fields
-          description: Custom Fields
     AntivirusStatusReport:
       type: object
       properties:
@@ -13531,20 +15371,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/DeviceAntivirusStatus"
-    Cursor:
-      type: object
-      properties:
-        name:
-          type: string
-        offset:
-          type: integer
-          format: int32
-        count:
-          type: integer
-          format: int32
-        expires:
-          type: number
-          format: double
     DeviceAntivirusStatus:
       type: object
       properties:
@@ -13646,6 +15472,9 @@ components:
         serialNumber:
           type: string
           description: Serial Number
+        assetSerialNumber:
+          type: string
+          description: Asset Serial Number
         domain:
           type: string
         domainRole:
@@ -13677,6 +15506,7 @@ components:
             - API
             - USER
             - SCRIPT
+            - SYSTEM
         user:
           $ref: "#/components/schemas/UserBasicInfo"
       description: Value source (who/what updated the value)
@@ -13709,13 +15539,7 @@ components:
           format: int32
           writeOnly: true
         entityType:
-          type: string
-          description: Entity type
-          enum:
-            - NODE
-            - END_USER
-            - LOCATION
-            - ORGANIZATION
+          $ref: "#/components/schemas/DefinitionScope"
         fields:
           type: array
           description: Field values
@@ -13855,6 +15679,22 @@ components:
             - HEALTHY
             - NEEDS_ATTENTION
             - UNHEALTHY
+        criticalVulnerabilityCount:
+          type: integer
+          description: Critical Vulnerability Count
+          format: int32
+        highVulnerabilityCount:
+          type: integer
+          description: High Vulnerability Count
+          format: int32
+        mediumVulnerabilityCount:
+          type: integer
+          description: Medium Vulnerability Count
+          format: int32
+        lowVulnerabilityCount:
+          type: integer
+          description: Low Vulnerability Count
+          format: int32
         installationIssuesCount:
           type: integer
           format: int32
@@ -14363,13 +16203,7 @@ components:
       type: object
       properties:
         scope:
-          type: string
-          description: Value definition scope (entity type)
-          enum:
-            - NODE
-            - END_USER
-            - LOCATION
-            - ORGANIZATION
+          $ref: "#/components/schemas/DefinitionScope"
         entityId:
           type: integer
           description: "Entity identifier (device, organization, location)"
@@ -14392,13 +16226,7 @@ components:
       type: object
       properties:
         scope:
-          type: string
-          description: Value definition scope (entity type)
-          enum:
-            - NODE
-            - END_USER
-            - LOCATION
-            - ORGANIZATION
+          $ref: "#/components/schemas/DefinitionScope"
         entityId:
           type: integer
           description: "Entity identifier (device, organization, location)"
@@ -14444,6 +16272,9 @@ components:
         productCode:
           type: string
           description: Product Code
+        isSystemComponent:
+          type: boolean
+          description: Is System Component
         deviceId:
           type: integer
           description: Device identifier
@@ -14736,143 +16567,6 @@ components:
             type: string
             description: Script Variable List of Possible Values
       description: Script Variables
-    AttributeContent:
-      type: object
-      properties:
-        customizeForEndUser:
-          type: boolean
-        endUserCustomization:
-          $ref: "#/components/schemas/EndUserCustomization"
-        values:
-          type: array
-          items:
-            $ref: "#/components/schemas/AttributeContentValue"
-        required:
-          type: boolean
-        footerText:
-          type: string
-        tooltipText:
-          type: string
-        advancedSettings:
-          $ref: "#/components/schemas/AttributeContentAdvancedSettings"
-    AttributePublicApiDTO:
-      type: object
-      properties:
-        entityType:
-          type: string
-          description: Entity Type
-          enum:
-            - USER
-            - NODE
-            - TICKET
-            - DOCUMENT
-        scope:
-          type: string
-          description: Scope
-          enum:
-            - NODE_GLOBAL
-            - NODE_ROLE
-            - NODE_CLASS
-        definitionScope:
-          uniqueItems: true
-          type: array
-          description: Definition Scope
-          items:
-            type: string
-            description: Definition Scope
-            enum:
-              - NODE
-              - END_USER
-              - LOCATION
-              - ORGANIZATION
-        type:
-          type: string
-          description: Type
-          enum:
-            - DROPDOWN
-            - MULTI_SELECT
-            - CHECKBOX
-            - TEXT
-            - TEXT_MULTILINE
-            - TEXT_ENCRYPTED
-            - NUMERIC
-            - DECIMAL
-            - DATE
-            - DATE_TIME
-            - TIME
-            - ATTACHMENT
-            - NODE_DROPDOWN
-            - NODE_MULTI_SELECT
-            - CLIENT_DROPDOWN
-            - CLIENT_MULTI_SELECT
-            - CLIENT_LOCATION_DROPDOWN
-            - CLIENT_LOCATION_MULTI_SELECT
-            - CLIENT_DOCUMENT_DROPDOWN
-            - CLIENT_DOCUMENT_MULTI_SELECT
-            - EMAIL
-            - PHONE
-            - IP_ADDRESS
-            - WYSIWYG
-            - URL
-        label:
-          type: string
-          description: Label
-        description:
-          type: string
-          description: Description
-        name:
-          type: string
-          description: Name
-        defaultValue:
-          type: string
-          description: Default Value
-        endUserPermission:
-          type: string
-          description: End User Permission
-          enum:
-            - HIDDEN
-            - EDITABLE_OPTIONAL
-            - EDITABLE_REQUIRED
-            - READ_ONLY
-        technicianPermission:
-          type: string
-          description: Technician Permission
-          enum:
-            - NONE
-            - EDITABLE
-            - READ_ONLY
-        scriptPermission:
-          type: string
-          description: Script Permission
-          enum:
-            - NONE
-            - READ_ONLY
-            - WRITE_ONLY
-            - READ_WRITE
-        apiPermission:
-          type: string
-          description: Public API Permission
-          enum:
-            - NONE
-            - READ_ONLY
-            - WRITE_ONLY
-            - READ_WRITE
-        content:
-          $ref: "#/components/schemas/AttributeContent"
-        system:
-          type: boolean
-          description: System
-        active:
-          type: boolean
-          description: Active
-        createTime:
-          type: number
-          description: Create Time
-          format: double
-        updateTime:
-          type: number
-          description: Update Time
-          format: double
     NotificationChannel:
       type: object
       properties:
@@ -14934,18 +16628,6 @@ components:
           type: number
           description: Last evaluation time of group membership for nodes (search)
           format: double
-        tags:
-          type: array
-          description: Tags
-          items:
-            type: string
-            description: Tags
-        fields:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom Fields
-          description: Custom Fields
     LocationWithOrganizationRef:
       type: object
       properties:
@@ -14962,18 +16644,6 @@ components:
           type: object
           additionalProperties: true
           description: Custom attributes
-        tags:
-          type: array
-          description: Tags
-          items:
-            type: string
-            description: Tags
-        fields:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom Fields
-          description: Custom Fields
         id:
           type: integer
           description: Location identifier
@@ -15112,7 +16782,9 @@ components:
           description: Approval Status
           enum:
             - PENDING
+            - STAGED
             - APPROVED
+            - DECOMMISSIONED
         offline:
           type: boolean
           description: Is Offline?
@@ -15150,12 +16822,6 @@ components:
           items:
             type: string
             description: Tags
-        fields:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom Fields
-          description: Custom Fields
         maintenance:
           $ref: "#/components/schemas/Maintenance"
         references:
@@ -15182,6 +16848,29 @@ components:
           description: Devices matching search query
           items:
             $ref: "#/components/schemas/DeviceSearchMatch"
+    BackupApiUpsyncJobDto:
+      type: object
+      properties:
+        startTime:
+          type: number
+          description: Upsync job start time
+          format: double
+        endTime:
+          type: number
+          description: Upsync job end time
+          format: double
+        status:
+          type: string
+          description: Upsync job status
+        filesUploaded:
+          type: integer
+          description: Upsync job files uploaded
+          format: int64
+        bytesUploaded:
+          type: integer
+          description: Upsync job bytes uploaded
+          format: int64
+      description: Upsync job details
     BackupJob:
       type: object
       properties:
@@ -15200,6 +16889,13 @@ components:
         jobStatus:
           type: string
           description: Job status
+        destination:
+          type: string
+          description: Job destination
+        sourceJobId:
+          type: string
+          description: Job source id
+          format: uuid
         planGuid:
           type: string
           description: Plan id
@@ -15214,6 +16910,14 @@ components:
           type: integer
           description: Total bytes
           format: int64
+        totalStoredBytes:
+          type: integer
+          description: Total stored bytes
+          format: int64
+        filesUploaded:
+          type: integer
+          description: Files uploaded
+          format: int64
         organizationId:
           type: integer
           description: Organization id
@@ -15226,6 +16930,8 @@ components:
           type: integer
           description: Device id
           format: int32
+        upsyncJob:
+          $ref: "#/components/schemas/BackupApiUpsyncJobDto"
     BackupJobReport:
       type: object
       properties:
@@ -15433,6 +17139,8 @@ components:
           type: string
         value:
           type: string
+        params:
+          $ref: "#/components/schemas/TicketingTriggerRepeatParameters"
     TicketingBoardPublicApiDTO:
       type: object
       properties:
@@ -15471,39 +17179,20 @@ components:
         ticketCount:
           type: integer
           format: int32
+    TicketingTriggerRepeatParameters:
+      type: object
+      properties:
+        repeat:
+          type: boolean
+        value:
+          type: string
     AttributeData:
       type: object
       properties:
         name:
           type: string
         type:
-          type: string
-          enum:
-            - DROPDOWN
-            - MULTI_SELECT
-            - CHECKBOX
-            - TEXT
-            - TEXT_MULTILINE
-            - TEXT_ENCRYPTED
-            - NUMERIC
-            - DECIMAL
-            - DATE
-            - DATE_TIME
-            - TIME
-            - ATTACHMENT
-            - NODE_DROPDOWN
-            - NODE_MULTI_SELECT
-            - CLIENT_DROPDOWN
-            - CLIENT_MULTI_SELECT
-            - CLIENT_LOCATION_DROPDOWN
-            - CLIENT_LOCATION_MULTI_SELECT
-            - CLIENT_DOCUMENT_DROPDOWN
-            - CLIENT_DOCUMENT_MULTI_SELECT
-            - EMAIL
-            - PHONE
-            - IP_ADDRESS
-            - WYSIWYG
-            - URL
+          $ref: "#/components/schemas/AttributeType"
     SortBy:
       type: object
       properties:
@@ -15546,6 +17235,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Rule"
+        lastCursorId:
+          type: integer
+          format: int32
         allRequiredColumns:
           uniqueItems: true
           type: array
