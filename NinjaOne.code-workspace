@@ -53,6 +53,9 @@
       "Remove-Module": true,
       ".\\CustomRules\\CustomRules.psm1": true,
       ".\\Add-ExampleSections.ps1": true,
+      "Con": true,
+      "git checkout": true,
+      "Test-Path": true,
     },
   },
   "launch": {
