@@ -19,7 +19,7 @@ function Get-NinjaOneContacts {
 	[OutputType([Object])]
 	[Alias('gnoc')]
 	[MetadataAttribute(
-		'/v2/ticketing/contact/contacts',
+		'/v2/contacts',
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
@@ -31,7 +31,7 @@ function Get-NinjaOneContacts {
 	}
 	process {
 		try {
-			$Resource = 'v2/ticketing/contact/contacts'
+			$Resource = 'v2/contacts'
 			$RequestParams = @{
 				Resource = $Resource
 				QSCollection = $QSCollection

@@ -83,6 +83,7 @@
 		'Get-NinjaOneBackupJobs',
 		'Get-NinjaOneComputerSystems',
 		'Get-NinjaOneContacts',
+		'Get-NinjaOneTicketingContacts',
 		'Get-NinjaOneSystemContacts',
 		'Get-NinjaOneContact',
 		'Get-NinjaOneCustomFields',
