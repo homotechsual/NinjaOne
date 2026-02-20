@@ -106,35 +106,6 @@ jobs:
         run: |
           ./build.ps1 -TaskNames 'clean', 'build'
 
-      - name: Debug - Check built module and AllMetadata
-        shell: pwsh
-        run: |
-          Write-Host "=== Checking built module exports ===" -ForegroundColor Cyan
-          Import-Module ./Output/NinjaOne/2.0.5/NinjaOne.psd1 -Force
-          Import-Module ./Tests/TestScaffold.psm1 -Force
-          
-          $contactFuncs = Get-Command -Module NinjaOne | Where-Object { $_.Name -match 'Contact' }
-          Write-Host "Found $($contactFuncs.Count) contact-related functions" -ForegroundColor Yellow
-          foreach ($func in $contactFuncs) {
-            $ast = $func.ScriptBlock.Ast
-            $attr = $ast.Find({$args[0] -is [System.Management.Automation.Language.AttributeAst] -and $args[0].TypeName.Name -eq 'MetadataAttribute'}, $true)
-            if ($attr -and $attr.PositionalArguments.Count -gt 0) {
-              $endpoint = $attr.PositionalArguments[0].Value
-              $method = if ($attr.PositionalArguments.Count -gt 1) { $attr.PositionalArguments[1].Value } else { 'N/A' }
-              Write-Host "  $($func.Name): $method $endpoint" -ForegroundColor Green
-            }
-          }
-          
-          Write-Host "`n=== Checking AllMetadata for contacts ===" -ForegroundColor Cyan
-          $allMeta = Get-AllMetadata
-          $contactMeta = $allMeta | Where-Object { $_.Endpoint -match 'contact' }
-          Write-Host "Found $($contactMeta.Count) contact-related metadata entries" -ForegroundColor Yellow
-          $contactMeta | ForEach-Object { Write-Host "  $($_.Method) $($_.Endpoint)" -ForegroundColor Green }
-          
-          Write-Host "`n=== Checking specific /v2/contacts GET ===" -ForegroundColor Cyan
-          $v2ContactsGet = $allMeta | Where-Object { $_.Endpoint -eq '/v2/contacts' -and $_.Method -eq 'get' }
-          Write-Host "Matches for '/v2/contacts' GET: $($v2ContactsGet.Count)" -ForegroundColor $(if ($v2ContactsGet.Count -gt 0) { 'Green' } else { 'Red' })
-
       - name: Run Pester tests
         shell: pwsh
         run: |

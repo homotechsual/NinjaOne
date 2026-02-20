@@ -10,6 +10,8 @@ BeforeDiscovery {
 	$ModuleName = Get-ModuleName
 }
 BeforeAll {
+	Import-Module ('{0}\TestScaffold.psm1' -f $PSScriptRoot) -Force
+	Import-ModuleToBeTested
 	$Endpoints = Get-Endpoints
 	$FunctionList = Get-FunctionList
 	$ModuleName = Get-ModuleName
