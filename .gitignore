@@ -432,3 +432,4 @@ docs
 .artifacts
 test-markdown-direct
 HelpGeneration
+schema-test-clean-build.txt
