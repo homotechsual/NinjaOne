@@ -106,11 +106,13 @@ jobs:
         run: |
           ./build.ps1 -TaskNames 'clean', 'build'
 
-      - name: Debug - Check built module
+      - name: Debug - Check built module and AllMetadata
         shell: pwsh
         run: |
           Write-Host "=== Checking built module exports ===" -ForegroundColor Cyan
           Import-Module ./Output/NinjaOne/2.0.5/NinjaOne.psd1 -Force
+          Import-Module ./Tests/TestScaffold.psm1 -Force
+          
           $contactFuncs = Get-Command -Module NinjaOne | Where-Object { $_.Name -match 'Contact' }
           Write-Host "Found $($contactFuncs.Count) contact-related functions" -ForegroundColor Yellow
           foreach ($func in $contactFuncs) {
@@ -122,6 +124,16 @@ jobs:
               Write-Host "  $($func.Name): $method $endpoint" -ForegroundColor Green
             }
           }
+          
+          Write-Host "`n=== Checking AllMetadata for contacts ===" -ForegroundColor Cyan
+          $allMeta = Get-AllMetadata
+          $contactMeta = $allMeta | Where-Object { $_.Endpoint -match 'contact' }
+          Write-Host "Found $($contactMeta.Count) contact-related metadata entries" -ForegroundColor Yellow
+          $contactMeta | ForEach-Object { Write-Host "  $($_.Method) $($_.Endpoint)" -ForegroundColor Green }
+          
+          Write-Host "`n=== Checking specific /v2/contacts GET ===" -ForegroundColor Cyan
+          $v2ContactsGet = $allMeta | Where-Object { $_.Endpoint -eq '/v2/contacts' -and $_.Method -eq 'get' }
+          Write-Host "Matches for '/v2/contacts' GET: $($v2ContactsGet.Count)" -ForegroundColor $(if ($v2ContactsGet.Count -gt 0) { 'Green' } else { 'Red' })
 
       - name: Run Pester tests
         shell: pwsh
