@@ -106,6 +106,23 @@ jobs:
         run: |
           ./build.ps1 -TaskNames 'clean', 'build'
 
+      - name: Debug - Check built module
+        shell: pwsh
+        run: |
+          Write-Host "=== Checking built module exports ===" -ForegroundColor Cyan
+          Import-Module ./Output/NinjaOne/2.0.5/NinjaOne.psd1 -Force
+          $contactFuncs = Get-Command -Module NinjaOne | Where-Object { $_.Name -match 'Contact' }
+          Write-Host "Found $($contactFuncs.Count) contact-related functions" -ForegroundColor Yellow
+          foreach ($func in $contactFuncs) {
+            $ast = $func.ScriptBlock.Ast
+            $attr = $ast.Find({$args[0] -is [System.Management.Automation.Language.AttributeAst] -and $args[0].TypeName.Name -eq 'MetadataAttribute'}, $true)
+            if ($attr -and $attr.PositionalArguments.Count -gt 0) {
+              $endpoint = $attr.PositionalArguments[0].Value
+              $method = if ($attr.PositionalArguments.Count -gt 1) { $attr.PositionalArguments[1].Value } else { 'N/A' }
+              Write-Host "  $($func.Name): $method $endpoint" -ForegroundColor Green
+            }
+          }
+
       - name: Run Pester tests
         shell: pwsh
         run: |
