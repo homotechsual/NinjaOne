@@ -69,6 +69,7 @@
         "approve": true,
         "matchCommandLine": true,
       },
+      "act": true,
     },
   },
   "launch": {
