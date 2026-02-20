@@ -56,6 +56,11 @@
       "Con": true,
       "git checkout": true,
       "Test-Path": true,
+      "git rm": true,
+      "./test.ps1": true,
+      "New-TemporaryFile": true,
+      "Rename-Item": true,
+      "Invoke-Pester": true,
     },
   },
   "launch": {

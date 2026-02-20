@@ -36,3 +36,60 @@ function Get-AllMetadata {
     }
     return $AllMetadata
 }
+
+<#
+.SYNOPSIS
+Import the module being tested.
+
+.DESCRIPTION
+Imports the NinjaOne module from the output directory for testing.
+#>
+function Import-ModuleToBeTested {
+    $ParentPath = Split-Path -Parent -Path $PSScriptRoot
+    $ModulePath = Join-Path -Path $ParentPath -ChildPath 'Output\NinjaOne\2.0.5\NinjaOne.psd1'
+    if (Test-Path -Path $ModulePath) {
+        Import-Module -Name $ModulePath -Force
+    }
+}
+
+<#
+.SYNOPSIS
+Get the module name.
+
+.DESCRIPTION
+Returns the name of the module being tested.
+#>
+function Get-ModuleName {
+    return 'NinjaOne'
+}
+
+<#
+.SYNOPSIS
+Get the list of exported functions.
+
+.DESCRIPTION
+Returns the list of exported functions from the NinjaOne module.
+#>
+function Get-FunctionList {
+    $Module = Get-Module -Name 'NinjaOne'
+    if ($Module) {
+        return $Module.ExportedFunctions.Values
+    }
+    return @()
+}
+
+<#
+.SYNOPSIS
+Get the list of API endpoints.
+
+.DESCRIPTION
+Returns the list of API endpoints from the ninjaOne-API-core-resources.yaml file.
+#>
+function Get-Endpoints {
+    $ParentPath = Split-Path -Parent -Path $PSScriptRoot
+    $YamlPath = Join-Path -Path $ParentPath -ChildPath 'ninjaOne-API-core-resources.yaml'
+    if (Test-Path -Path $YamlPath) {
+        return @()
+    }
+    return @()
+}

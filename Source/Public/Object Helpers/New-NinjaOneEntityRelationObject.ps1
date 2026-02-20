@@ -9,52 +9,39 @@ function New-NinjaOneEntityRelationObject {
 		.OUTPUTS
 			[Object]
 
-			A new Document Template Field or UI Element object.
+			A new Entity Relation object.
 	
 	.EXAMPLE
-		PS> $newObject = @{ Name = 'Example' }
+		PS> $newObject = @{ entityType = 'device'; relationEntityType = 'organization' }
 		PS> New-NinjaOneEntityRelationObject @newObject
 
-		Creates a new resource with the specified properties.
+		Creates a new entity relation object with the specified properties.
 
 	#>
 	[CmdletBinding()]
 	[OutputType([Object])]
-	[Alias('nnoer')]
+	[Alias('nnorer')]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Does not change system state, creates a new object.')]
 	param(
 		# The entity type of the relation.
-		[EntityType]$Entity,
-		[EntityType]$relationEntityType,
-		[FilterOperator]$Operator,
-		[ValidateScript({ $_ -is [string] -or $_ -is [int] })][Object]$Value
+		[Parameter(Mandatory, Position = 0)]
+		[String]$EntityType,
+		# The related entity type.
+		[Parameter(Mandatory, Position = 1)]
+		[String]$RelationEntityType,
+		# The relation property name.
+		[Parameter(Position = 2)]
+		[String]$Property
 	)
-
-	NinjaOneTicketBoardFilter([String]$Field, [String]$Operator, [Object]$Value) {
-		if ($Operator -in @('present', 'not_present') -and ($null -ne $Value)) {
-			throw [MetadataException]::new("Operator '$Operator' does not accept a value.")
+	process {
+		$OutputObject = [PSCustomObject]@{
+			entityType = $EntityType
+			relationEntityType = $RelationEntityType
 		}
-		if ($Operator -notin @('present', 'not_present') -and ($null -eq $Value)) {
-			throw [MetadataException]::new("Operator '$Operator' requires a value.")
+		if ($Property) {
+			$OutputObject | Add-Member -MemberType NoteProperty -Name 'property' -Value $Property
 		}
-		if ($Operator -in @('greater_than', 'less_than', 'greater_or_equal_than', 'less_or_equal_than') -and ($Value -isnot [Int])) {
-			throw [MetadataException]::new("Operator '$Operator' requires a numeric value.")
-		}
-		if ($Operator -in @('contains_any', 'contains_none') -and ($Value -notlike '*,*')) {
-			throw [MetadataException]::new("Operator '$Operator' requires a value in the format 'value1,value2,value3'.")
-		}
-		if ($Operator -eq 'between' -and ($Value -notlike '*:*')) {
-			throw [MetadataException]::new("Operator '$Operator' requires a value in the format 'start:end'.")
-		}
-		if ($Operator -eq 'is' -and ($Value -notlike '*:is')) {
-			throw [MetadataException]::new("Operator '$Operator' requires a value in the format 'property:is'.")
-		}
-		# ToDo: Get clarification on the in and not_in operators from NinjaOne. Support request #279234
-		#if ($Operator -in @('in', 'not_in')) {
-		#    throw [MetadataException]::new("Operator '$Operator' requires a value in the format 'property:value'.")
-		#}
-		$this.Field = $Field
-		$this.Operator = $Operator
-		$this.Value = $Value
+		$OutputObject.PSTypeNames.Insert(0, 'EntityRelation')
+		return $OutputObject
 	}
 }
