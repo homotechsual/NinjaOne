@@ -69,6 +69,32 @@ jobs:
         run: |
           ./bootstrap.ps1
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Build C# projects
+        shell: pwsh
+        run: |
+          # Ensure Binaries directory exists
+          if (-not (Test-Path "Source\Binaries")) {
+            New-Item -Path "Source\Binaries" -ItemType Directory -Force | Out-Null
+          }
+          
+          Push-Location "C# Classes"
+          try {
+            dotnet build "C# Classes.sln" -c Release
+            # Copy compiled DLLs to module Binaries folder
+            $dlls = Get-ChildItem -Path . -Filter "*.dll" -Recurse -Include @("MetadataAttribute.dll", "ValidateNodeRoleId.dll", "ValidateStringOrInt.dll", "Enums.dll")
+            foreach ($dll in $dlls) {
+              Copy-Item $dll.FullName -Destination "..\Source\Binaries\" -Force
+            }
+            Write-Host "✓ C# projects built and DLLs copied to Source\Binaries" -ForegroundColor Green
+          } finally {
+            Pop-Location
+          }
+
       - name: Build module
         shell: pwsh
         run: |

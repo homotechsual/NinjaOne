@@ -88,7 +88,7 @@ if (-not $installCmdPath) {
 }
 
 & $installCmdPath -RequiredModulesFile ('{0}\RequiredModules.psd1' -f $PSScriptRoot) -Scope CurrentUser -TrustRegisteredRepositories -Import -Quiet
-Import-Module 'J:\Projects\Docusaurus.PowerShell\Output\Alt3.Docusaurus.Powershell\1.0.37\Alt3.Docusaurus.Powershell.psd1' -Force
+# Alt3.Docusaurus.PowerShell is imported via the RequiredModules script above
 # Use strict mode when building.
 Set-StrictMode -Version Latest
 # Helper: Get the module PSD1 file path.
