@@ -141,14 +141,14 @@ jobs:
         with:
           name: test-results
           path: |
-            ${{ github.workspace }}/.artifacts/*.xml
+            ${{ github.workspace }}\.artifacts\*.xml
 
       - name: Upload code coverage
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: code-coverage
-          path: ${{ github.workspace }}/.artifacts/CodeCoverage.xml
+          path: ${{ github.workspace }}\.artifacts\CodeCoverage.xml
 
   build:
     name: Build Module
