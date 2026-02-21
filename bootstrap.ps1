@@ -50,7 +50,7 @@ if (Test-Path -Path $RequiredModulesPath) {
 			$manifestPath = Microsoft.PowerShell.Management\Get-ChildItem -LiteralPath $moduleDir -Filter '*.psd1' -Recurse | Select-Object -First 1
 			if ($manifestPath) {
 				Write-Host "Bootstrap: Loading bundled module version from: $($_.Name)" -ForegroundColor Green
-				Import-Module -Path $manifestPath.FullName -Force -WarningAction SilentlyContinue
+				Import-Module -Name $manifestPath.FullName -Force -WarningAction SilentlyContinue
 			}
 		}
 	}
