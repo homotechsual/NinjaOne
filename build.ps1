@@ -203,6 +203,7 @@ This page has been generated from the {0} PowerShell module source. To make chan
 		Exclude = $ExcludeFiles
 		Sidebar = 'commandlets'
 		# MetaDescription = 'Generated cmdlet help for the %1 commandlet.'
+		GroupByVerb = $true
 		NoPlaceHolderExamples = $true
 		UseCustomShortTitles = $true
 		ShortTitles = $ShortNamesDictionary
