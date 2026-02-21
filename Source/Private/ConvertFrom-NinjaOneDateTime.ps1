@@ -81,6 +81,12 @@ function ConvertFrom-NinjaOneDateTime {
 		return $Value
 	}
 	function Convert-NinjaOneEpoch {
+		<#
+		.SYNOPSIS
+			Converts Unix epoch integer values to [DateTime].
+		.DESCRIPTION
+			Helper function to convert Unix epoch values (seconds or milliseconds) to PowerShell DateTime objects.
+		#>
 		param (
 			[Parameter(Mandatory = $True)]
 			[long]$EpochValue
@@ -106,6 +112,12 @@ function ConvertFrom-NinjaOneDateTime {
 		return $EpochValue
 	}
 	function Convert-NinjaOneEpochFraction {
+		<#
+		.SYNOPSIS
+			Converts Unix epoch fractional values to [DateTime].
+		.DESCRIPTION
+			Helper function to convert Unix epoch values with fractional seconds (as double) to PowerShell DateTime objects.
+		#>
 		param (
 			[Parameter(Mandatory = $True)]
 			[double]$EpochValue
