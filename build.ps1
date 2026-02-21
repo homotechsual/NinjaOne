@@ -472,7 +472,13 @@ function Publish {
 		# Build a splat containing the required details and make sure to Stop for errors which will trigger the catch
 		$PublishParams = @{
 			Path = Join-Path -Path $PSScriptRoot -ChildPath 'output\*\*\*.psd1' | Get-Item | Where-Object { $_.BaseName -eq $_.Directory.Parent.Name } | Select-Object -ExpandProperty Directory
-			NuGetApiKey = $ENV:TF_BUILD ? $ENV:PSGalleryAPIKey : (Get-AzKeyVaultSecret -VaultName $ENV:PSGalleryVault -Name $ENV:PSGallerySecret -AsPlainText) # If running in Azure DevOps, use the Environment Variable, otherwise use the Key Vault
+			NuGetApiKey = if ($ENV:PSGalleryAPIKey) {
+				$ENV:PSGalleryAPIKey
+			} elseif ($ENV:TF_BUILD) {
+				$ENV:PSGalleryAPIKey
+			} else {
+				Get-AzKeyVaultSecret -VaultName $ENV:PSGalleryVault -Name $ENV:PSGallerySecret -AsPlainText
+			}
 			ErrorAction = 'Stop'
 		}
 		$ManifestPath = Get-ChildItem -Path $PublishParams.Path -Filter '*.psd1'
