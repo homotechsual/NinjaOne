@@ -29,7 +29,12 @@ jobs:
         run: |
           Write-Host "PSModulePath: $env:PSModulePath"
           Get-Module -ListAvailable Alt3.Docusaurus.PowerShell | Sort-Object Version -Descending | Select-Object -First 5 | Format-Table Name,Version,Path
-          Get-Command New-DocusaurusHelp -All | Select-Object Name,ModuleName,Version,Source | Format-Table
+          $cmd = Get-Command New-DocusaurusHelp -All -ErrorAction SilentlyContinue
+          if ($cmd) {
+            $cmd | Select-Object Name,ModuleName,Version,Source | Format-Table
+          } else {
+            Write-Host "New-DocusaurusHelp not available in this job." -ForegroundColor Yellow
+          }
 
       - name: Run PSScriptAnalyzer
         shell: pwsh
