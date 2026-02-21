@@ -199,13 +199,13 @@ function Connect-NinjaOne {
 			# Set a script-scoped variable to hold authentication information.
 			Set-Variable -Name 'NRAPIAuthenticationInformation' -Value $AuthenticationInformation -Visibility Private -Scope Script -Force
 		}
-		if ($Script.NRAPIConnectionInformation.AuthMode -eq 'Token Authentication' -and $null -eq $UseTokenAuth) {
+		if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Token Authentication' -and $null -eq $UseTokenAuth) {
 			$UseTokenAuth = $true
 		}
-		if ($Script.NRAPIConnectionInformation.AuthMode -eq 'Client Credentials' -and $null -eq $UseClientAuth) {
+		if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials' -and $null -eq $UseClientAuth) {
 			$UseClientAuth = $true
 		}
-		if ($Script.NRAPIConnectionInformation.AuthMode -eq 'Authorisation Code' -and $null -eq $UseWebAuth) {
+		if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Authorisation Code' -and $null -eq $UseWebAuth) {
 			$UseWebAuth = $true
 		}
 		if ($UseWebAuth) {

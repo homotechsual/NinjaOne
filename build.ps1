@@ -348,9 +348,9 @@ function Build {
 	AssertOutputBinariesUnlocked -OutputPath $moduleOutputPath
 
 	if ($SemVer) {
-		Build-Module -Path '.\Source' -SemVer $SemVer.ToString()
+		Build-Module -Path '.\Source' -SemVer $SemVer.ToString() -Prefix 'Initialisation.ps1'
 	} else {
-		Build-Module -Path '.\Source'
+		Build-Module -Path '.\Source' -Prefix 'Initialisation.ps1'
 	}
 
 	# Ensure Binaries folder is copied to output module (post-build step)
