@@ -2,7 +2,7 @@
 Import-Module '.\Modules\Alt3.Docusaurus.Powershell\1.0.37\Alt3.Docusaurus.Powershell.psd1' -Force
 
 $ErrorActionPreference = 'Continue'
-$modulePath = '.\Output\NinjaOne\2.0.5\NinjaOne.psd1'
+$modulePath = '.\Output\NinjaOne\2.1.0\NinjaOne.psd1'
 $ExcludeFiles = Get-ChildItem -Path "$($PSScriptRoot)\..\Source\Private" -Filter '*.ps1' -Recurse | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_.FullName) }
 
 Write-Host "Module path: $modulePath"

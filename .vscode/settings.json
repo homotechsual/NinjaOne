@@ -15,5 +15,15 @@
     "pluralised",
     "Whitelock"
   ],
-  "cSpell.language": "en-GB"
+  "cSpell.language": "en-GB",
+  "[json]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.detectIndentation": false
+  },
+  "[markdown]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.detectIndentation": false
+  }
 }

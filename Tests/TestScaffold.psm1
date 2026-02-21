@@ -48,7 +48,7 @@ Imports the NinjaOne module from the output directory for testing.
 #>
 function Import-ModuleToBeTested {
     $ParentPath = Split-Path -Parent -Path $PSScriptRoot
-    $ModulePath = Join-Path -Path $ParentPath -ChildPath 'Output\NinjaOne\2.0.5\NinjaOne.psd1'
+    $ModulePath = Join-Path -Path $ParentPath -ChildPath 'Output\NinjaOne\2.1.0\NinjaOne.psd1'
     if (Test-Path -Path $ModulePath) {
         Import-Module -Name $ModulePath -Force
     }

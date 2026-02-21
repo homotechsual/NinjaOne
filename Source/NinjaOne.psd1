@@ -12,7 +12,7 @@
 	RootModule = '.\NinjaOne.psm1'
 
 	# Version number of this module.
-	ModuleVersion = '2.0.5'
+	ModuleVersion = '2.1.0'
 
 	# Supported PSEditions
 	# CompatiblePSEditions = @()
@@ -373,7 +373,7 @@
 			IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
 			# ReleaseNotes of this module
-			ReleaseNotes = 'https://github.com/homotechsual/NinjaOne/releases/tag/2.0.5'
+			ReleaseNotes = 'https://github.com/homotechsual/NinjaOne/releases/tag/2.1.0'
 
 			# Prerelease string of this module
 			Prerelease = ''

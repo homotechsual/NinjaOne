@@ -2,7 +2,7 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
-## 2025-09-04 - Version TBD
+## 2026-02-21 - Version 2.1.0
 
 * Add new commandlets:
   * `Get-NinjaOneChecklistTemplates`
@@ -102,6 +102,8 @@ Please note that backwards compatibility breaks are prefixed with `{"BC"}` (shor
 * Updates:
   * Update module manifest `NinjaOne.psd1`.
   * Improve `Get-NinjaOneRelatedItemAttachmentSignedURLs` internals.
+  * Improve build, test and code lint workflows.
+  * Automate builds from GitHub main branch v* tags.
 
 ## 2024-10-01 - Version 2.0.4
 
@@ -441,4 +443,3 @@ Please note that backwards compatibility breaks are prefixed with `{"BC"}` (shor
 ## 2021-08-19 - Version 0.0.1-alpha
 
 * Initial preview release of the NinjaRMM API PowerShell module.
-  
