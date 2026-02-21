@@ -14,6 +14,14 @@ $ErrorActionPreference = 'Stop'
 
 Write-Host 'Bootstrap: Setting up build environment for NinjaOne module' -ForegroundColor Cyan
 
+# Add bundled Modules directory to PSModulePath so bundled versions take precedence
+$BundledModulesPath = Join-Path -Path $PSScriptRoot -ChildPath 'Modules'
+if (Test-Path -Path $BundledModulesPath) {
+	Write-Host 'Bootstrap: Adding bundled modules to PSModulePath' -ForegroundColor Cyan
+	$env:PSModulePath = "$BundledModulesPath;$($env:PSModulePath)"
+	Write-Host "Bootstrap: PSModulePath updated to prioritize: $BundledModulesPath" -ForegroundColor Cyan
+}
+
 # Ensure we're using TLS 1.2 for downloads
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
