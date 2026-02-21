@@ -123,20 +123,32 @@ jobs:
         run: |
           ./test.ps1
 
+      - name: List test artifacts
+        shell: pwsh
+        if: always()
+        run: |
+          $artifactsPath = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath '.artifacts'
+          Write-Host "Artifacts path: $artifactsPath"
+          if (Test-Path -Path $artifactsPath) {
+            Get-ChildItem -Path $artifactsPath | Format-Table Name,Length,LastWriteTime
+          } else {
+            Write-Host 'Artifacts path not found.' -ForegroundColor Yellow
+          }
+
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-results
           path: |
-            .artifacts/*.xml
+            ${{ github.workspace }}/.artifacts/*.xml
 
       - name: Upload code coverage
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: code-coverage
-          path: .artifacts/CodeCoverage.xml
+          path: ${{ github.workspace }}/.artifacts/CodeCoverage.xml
 
   build:
     name: Build Module
