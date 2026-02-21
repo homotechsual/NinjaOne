@@ -11,6 +11,7 @@ using assembly '.\Binaries\ValidateNodeRoleId.dll'
 	'ca' = 'https://ca.ninjarmm.com'
 	'us2' = 'https://us2.ninjarmm.com'
 }
+
 enum EntityType {
 	ORGANIZATION = 1
 	DOCUMENT = 2

@@ -75,6 +75,21 @@ function Get-NinjaOneDevices {
 		[Parameter(Mandatory, ParameterSetName = 'Organisation', Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('organizationId')]
 		[Int]$organisationId,
+		# Expand referenced entities in the response. Valid values: location, organization, rolePolicy, policy, role, backupUsage, warranty, assignedOwner, backupBandwidthThrottle
+		[Parameter(ParameterSetName = 'Multi', Position = 5)]
+		[Parameter(ParameterSetName = 'Organisation', Position = 3)]	
+		[ValidateScript({
+			$validValues = @('location', 'organization', 'rolePolicy', 'policy', 'role', 'backupUsage', 'warranty', 'assignedOwner', 'backupBandwidthThrottle')
+			if ($_ -is [string[]]) {
+				foreach ($value in $_) {
+					if ($value -notin $validValues) {
+						throw "Invalid expand value '$value'."
+					}
+				}
+			}
+			$true
+		})]
+		[String[]]$expand,
 		# Parse date/time values in the response.
 		[Switch]$ParseDateTime
 	)
@@ -92,6 +107,10 @@ function Get-NinjaOneDevices {
 		# Similarly we don't want an `organisationid=` parameter since we're targetting a different resource.
 		if ($organisationId) {
 			$Parameters.Remove('organisationId') | Out-Null
+		}
+		# If $expand has more than one value preprocess the value to a comma separated string.
+		if ($expand.Count -gt 1) {
+			$expand = $expand -join ','
 		}
 		$QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
 	}

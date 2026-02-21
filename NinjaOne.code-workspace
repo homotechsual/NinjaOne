@@ -1,10 +1,10 @@
 {
-  "folders": [
-    {
-      "path": "."
-    }
-  ],
-  "settings": {
+	"folders": [
+		{
+			"path": ".",
+		},
+	],
+	"settings": {
 		"editor.insertSpaces": false,
 		"editor.tabSize": 4,
 		"editor.detectIndentation": false,
@@ -74,29 +74,34 @@
 			"gh": true,
 			"git tag": true,
 			"Get-Module": true,
+			"/^pwsh -File \\.\\\\DevOps\\\\Build\\\\build\\.ps1 -TaskNames build$/": {
+				"approve": true,
+				"matchCommandLine": true,
+			},
+			"Get-Item": true,
 		},
-  },
-  "launch": {
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "name": "PowerShell Attach to Host Process",
-        "type": "PowerShell",
-        "request": "attach",
-        "runspaceId": 1
-      },
-      {
-        "name": "PowerShell Attach Interactive Session Runspace",
-        "type": "PowerShell",
-        "request": "attach"
-      },
-      {
-        "name": "PowerShell: Launch Current File",
-        "type": "PowerShell",
-        "request": "launch",
-        "script": "${file}",
-        "cwd": "${file}"
-      }
-    ]
-  }
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "PowerShell Attach to Host Process",
+				"type": "PowerShell",
+				"request": "attach",
+				"runspaceId": 1,
+			},
+			{
+				"name": "PowerShell Attach Interactive Session Runspace",
+				"type": "PowerShell",
+				"request": "attach",
+			},
+			{
+				"name": "PowerShell: Launch Current File",
+				"type": "PowerShell",
+				"request": "launch",
+				"script": "${file}",
+				"cwd": "${file}",
+			},
+		],
+	},
 }
