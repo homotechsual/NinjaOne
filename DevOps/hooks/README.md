@@ -19,6 +19,7 @@ This sets `core.hooksPath` to point to this directory, similar to how Husky work
 Runs PSScriptAnalyzer on all PowerShell files before allowing a commit. This ensures code quality standards are maintained.
 
 **To bypass the hook** (not recommended):
+
 ```bash
 git commit --no-verify
 ```

@@ -16,6 +16,11 @@
     "Whitelock"
   ],
   "cSpell.language": "en-GB",
+  "[powershell]": {
+    "editor.insertSpaces": false,
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false
+  },
   "[json]": {
     "editor.insertSpaces": true,
     "editor.tabSize": 2,

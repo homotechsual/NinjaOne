@@ -89,13 +89,13 @@ function Insert-HelpIntoFile {
     return $true
 }
 
-<#
-.SYNOPSIS
-    Processes a PowerShell file to apply comment-based help.
-.DESCRIPTION
-    Parses a PowerShell file and applies generated comment-based help to functions.
-#>
 function Process-File {
+	<#
+    .SYNOPSIS
+        Processes a PowerShell file to apply comment-based help.
+    .DESCRIPTION
+        Parses a PowerShell file and applies generated comment-based help to functions.
+    #>
     param([System.IO.FileInfo]$File)
     
     try {
