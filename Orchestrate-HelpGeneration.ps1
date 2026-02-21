@@ -173,6 +173,12 @@ function Invoke-GeneratePhase {
 }
 
 # ==================== PHASE 2: APPLY TO PUBLIC ====================
+<#
+.SYNOPSIS
+    Applies generated help to public functions.
+.DESCRIPTION
+    Phase 2 of the help generation orchestration that applies comment-based help to public functions.
+#>
 function Invoke-ApplyPublicPhase {
     param($GenerationData)
     
@@ -194,8 +200,12 @@ function Invoke-ApplyPublicPhase {
     Write-Host "`nNote: This is a preview. Run 'Apply-CommentBasedHelpToFunctions.ps1' to execute." -ForegroundColor Yellow
 }
 
-# ==================== PHASE 3: VERIFY ====================
-function Invoke-VerifyPhase {
+# ==================== PHASE 3: VERIFY ====================<#
+.SYNOPSIS
+    Verifies and validates generated help.
+.DESCRIPTION
+    Phase 3 of the help generation orchestration that runs PSScriptAnalyzer to verify all help is in place.
+#>function Invoke-VerifyPhase {
     Write-Host "`n[PHASE 3] Verification & Validation" -ForegroundColor Yellow
     Write-Host "-" * 60 -ForegroundColor Gray
     
