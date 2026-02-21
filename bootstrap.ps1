@@ -42,6 +42,20 @@ if (-not (Get-InstalledScript -Name 'Install-RequiredModule' -ErrorAction Silent
 $RequiredModulesPath = Join-Path -Path $PSScriptRoot -ChildPath 'RequiredModules.psd1'
 if (Test-Path -Path $RequiredModulesPath) {
 	Write-Host 'Bootstrap: Installing required modules from RequiredModules.psd1' -ForegroundColor Yellow
+	
+	# First, import bundled modules from the bundled path
+	if (Test-Path -Path $BundledModulesPath) {
+		Get-ChildItem -Path $BundledModulesPath -Directory | ForEach-Object {
+			$moduleDir = $_.FullName
+			$manifestPath = Get-ChildItem -Path $moduleDir -Filter '*.psd1' -Recurse | Select-Object -First 1
+			if ($manifestPath) {
+				Write-Host "Bootstrap: Loading bundled module version from: $($_.Name)" -ForegroundColor Green
+				Import-Module -Path $manifestPath.FullName -Force -WarningAction SilentlyContinue
+			}
+		}
+	}
+	
+	# Then install/update any missing modules
 	Install-RequiredModule -RequiredModulesFile $RequiredModulesPath -Scope CurrentUser -TrustRegisteredRepositories -Import -Quiet
 } else {
 	throw "RequiredModules.psd1 not found at: $RequiredModulesPath"
