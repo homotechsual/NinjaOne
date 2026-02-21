@@ -127,7 +127,9 @@ function Get-NinjaOneActivities {
 		[Parameter(Position = 14)]
 		[String]$sourceConfigUid,
 		# return the activities object instead of the default return with `lastActivityId` and `activities` properties.
-		[Switch]$expandActivities
+		[Switch]$expandActivities,
+		# Parse date/time values in the response.
+		[Switch]$ParseDateTime
 	)
 	begin {
 		$CommandName = $MyInvocation.InvocationName
@@ -177,6 +179,9 @@ function Get-NinjaOneActivities {
 			$RequestParams = @{
 				Resource = $Resource
 				QSCollection = $QSCollection
+			}
+			if ($ParseDateTime) {
+				$RequestParams.ParseDateTime = $ParseDateTime
 			}
 			$ActivityResults = New-NinjaOneGETRequest @RequestParams
 			if ($ActivityResults) {

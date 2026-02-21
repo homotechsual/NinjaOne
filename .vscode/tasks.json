@@ -1,127 +1,93 @@
 {
 	"version": "2.0.0",
 	"tasks": [
-		{
-			"label": "Build NinjaOne",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1"
-			],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		},
-		{
-			"label": "Build NinjaOne (build only)",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1",
-				"-TaskNames",
-				"build"
-			],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		},
-		{
-			"label": "Build NinjaOne (build only)",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1",
-				"-TaskNames",
-				"build"
-			],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		},
-		{
-			"label": "Build NinjaOne (build only)",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1",
-				"-TaskNames",
-				"build"
-			],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		},
-		{
-			"label": "Build NinjaOne (build only)",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1",
-				"-TaskNames",
-				"build"
-			],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		},
-		{
-			"label": "Build NinjaOne (build only)",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1",
-				"-TaskNames",
-				"build"
-			],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		},
-		{
-			"label": "Build NinjaOne (build only)",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1",
-				"-TaskNames",
-				"build"
-			],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		},
-		{
-			"label": "Build NinjaOne Module",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1",
-				"-TaskNames",
-				"build"
-			],
-			"group": "build"
-		},
-		{
-			"label": "Build NinjaOne (build only)",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1",
-				"-TaskNames",
-				"build"
-			],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		}
-	]
+    {
+      "label": "Build NinjaOne",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\build.ps1"],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Build NinjaOne (build only)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\build.ps1", "-TaskNames", "build"],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Build NinjaOne (build only)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\build.ps1", "-TaskNames", "build"],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Build NinjaOne (build only)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\build.ps1", "-TaskNames", "build"],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Build NinjaOne (build only)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\build.ps1", "-TaskNames", "build"],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Build NinjaOne (build only)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\build.ps1", "-TaskNames", "build"],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Build NinjaOne (build only)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\build.ps1", "-TaskNames", "build"],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Build NinjaOne Module",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\build.ps1", "-TaskNames", "build"],
+      "group": "build"
+    },
+    {
+      "label": "Build NinjaOne (build only)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\build.ps1", "-TaskNames", "build"],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Test NinjaOne",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\test.ps1", "-IncludeVSCodeMarker"],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "test"
+    }
+  ]
 }

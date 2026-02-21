@@ -17,7 +17,9 @@ function New-NinjaOneDELETERequest {
 	param (
 		# The resource to send the request to.
 		[Parameter(Mandatory = $True)]
-		[String]$Resource
+		[String]$Resource,
+		# Parse date/time values returned in JSON.
+		[Switch]$ParseDateTime
 	)
 	if ($null -eq $Script:NRAPIConnectionInformation) {
 		throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
@@ -43,6 +45,9 @@ function New-NinjaOneDELETERequest {
 		$WebRequestParams = @{
 			Method = 'DELETE'
 			Uri = $RequestUri.ToString()
+		}
+		if ($ParseDateTime -or $Script:ParseDateTimes) {
+			$WebRequestParams.ParseDateTime = $true
 		}
 		Write-Verbose "Building new NinjaOneRequest with params: $($WebRequestParams | Out-String)"
 		try {

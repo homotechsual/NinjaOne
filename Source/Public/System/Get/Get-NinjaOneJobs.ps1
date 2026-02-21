@@ -57,7 +57,9 @@ function Get-NinjaOneJobs {
 		# Filter by timezone.
 		[Parameter(Position = 4)]
 		[Alias('ts')]
-		[String]$timeZone
+		[String]$timeZone,
+		# Parse date/time values in the response.
+		[Switch]$ParseDateTime
 	)
 	begin {
 		$CommandName = $MyInvocation.InvocationName
@@ -81,6 +83,9 @@ function Get-NinjaOneJobs {
 				Resource = $Resource
 				QSCollection = $QSCollection
 				NoDrill = $True
+			}
+			if ($ParseDateTime) {
+				$RequestParams.ParseDateTime = $ParseDateTime
 			}
 			$JobResults = New-NinjaOneGETRequest @RequestParams
 			if ($JobResults) {

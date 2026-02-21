@@ -22,7 +22,9 @@ function New-NinjaOnePUTRequest {
 		[Parameter(Mandatory = $True)]
 		[Object]$Body,
 		# Force body to an array.
-		[Switch]$AsArray
+		[Switch]$AsArray,
+		# Parse date/time values returned in JSON.
+		[Switch]$ParseDateTime
 	)
 	if ($null -eq $Script:NRAPIConnectionInformation) {
 		throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
@@ -54,6 +56,9 @@ function New-NinjaOnePUTRequest {
 		$WebRequestParams = @{
 			Method = 'PUT'
 			Uri = $RequestUri.ToString()
+		}
+		if ($ParseDateTime -or $Script:ParseDateTimes) {
+			$WebRequestParams.ParseDateTime = $true
 		}
 		if ($Body) {
 			Write-Verbose 'Building [HttpBody] for New-NinjaOnePUTRequest'

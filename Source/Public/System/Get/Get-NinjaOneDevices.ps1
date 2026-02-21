@@ -74,7 +74,9 @@ function Get-NinjaOneDevices {
 		# Filter by organisation id.
 		[Parameter(Mandatory, ParameterSetName = 'Organisation', Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('organizationId')]
-		[Int]$organisationId
+		[Int]$organisationId,
+		# Parse date/time values in the response.
+		[Switch]$ParseDateTime
 	)
 	begin {
 		$CommandName = $MyInvocation.InvocationName
@@ -119,6 +121,9 @@ function Get-NinjaOneDevices {
 			$RequestParams = @{
 				Resource = $Resource
 				QSCollection = $QSCollection
+			}
+			if ($ParseDateTime) {
+				$RequestParams.ParseDateTime = $ParseDateTime
 			}
 			try {
 				$DeviceResults = New-NinjaOneGETRequest @RequestParams
