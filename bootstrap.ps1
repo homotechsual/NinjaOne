@@ -61,6 +61,19 @@ if (Test-Path -Path $RequiredModulesPath) {
 	throw "RequiredModules.psd1 not found at: $RequiredModulesPath"
 }
 
+# Configure Git hooks (like Husky)
+if (Test-Path (Join-Path $PSScriptRoot '.git')) {
+	Write-Host 'Bootstrap: Configuring Git hooks...' -ForegroundColor Cyan
+	try {
+		git config core.hooksPath 'DevOps/hooks' 2>$null
+		if ($LASTEXITCODE -eq 0) {
+			Write-Host '  ✓ Git hooks configured (PSScriptAnalyzer will run pre-commit)' -ForegroundColor Green
+		}
+	} catch {
+		Write-Host '  ⚠ Could not configure Git hooks (git not available or not a repository)' -ForegroundColor Yellow
+	}
+}
+
 Write-Host 'Bootstrap: Environment setup complete!' -ForegroundColor Green
 Write-Host 'Bootstrap: The following modules are now available:' -ForegroundColor Cyan
 $RequiredModules = Import-PowerShellDataFile -Path $RequiredModulesPath

@@ -1,0 +1,18 @@
+#!/bin/sh
+# Pre-commit hook to run PSScriptAnalyzer
+# Ensures code quality before commits
+
+pwsh.exe -NoProfile -ExecutionPolicy Bypass -Command "
+    Write-Host 'Running PSScriptAnalyzer...' -ForegroundColor Cyan
+    \$Results = & './run-pssa.ps1'
+    if (\$Results) {
+        Write-Host '❌ PSScriptAnalyzer found issues:' -ForegroundColor Red
+        \$Results | Format-Table -AutoSize
+        Write-Host ''
+        Write-Host 'Please fix the issues above before committing.' -ForegroundColor Yellow
+        Write-Host 'To bypass this check (not recommended), use: git commit --no-verify' -ForegroundColor Yellow
+        exit 1
+    }
+    Write-Host '✓ PSScriptAnalyzer passed - no issues found' -ForegroundColor Green
+    exit 0
+"
