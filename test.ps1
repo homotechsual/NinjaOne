@@ -26,6 +26,7 @@ Remove-Module $ModuleName -ErrorAction Ignore -Force
 $ModuleUnderTest = Import-Module $FoundModule.FullName -PassThru -Force -DisableNameChecking -Verbose:$false
 Write-Verbose ('Invoke-Pester for Module {0} version {1}' -f $ModuleUnderTest, $ModuleUnderTest.Version)
 $PesterConfiguration = New-PesterConfiguration
+$null = New-Item -Path '.\.artifacts' -ItemType Directory -Force
 $PesterConfiguration.CodeCoverage.Enabled = $true
 $PesterConfiguration.CodeCoverage.OutputPath = '.\.artifacts\CodeCoverage.xml'
 $PesterConfiguration.Output.Verbosity = 'Detailed'
