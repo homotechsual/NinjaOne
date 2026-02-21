@@ -20,7 +20,7 @@ jobs:
       - name: Bootstrap environment
         shell: pwsh
         run: |
-          ./bootstrap.ps1
+          ./DevOps/Build/bootstrap.ps1
 
       - name: Show Docusaurus module version
         shell: pwsh
@@ -47,11 +47,11 @@ jobs:
           while (-not $buildScanSucceeded -and $attempt -lt 2) {
             try {
               $attempt++
-              $buildResults = Invoke-ScriptAnalyzer -Path build.ps1 -Settings PSScriptAnalyzerSettings.psd1
+              $buildResults = Invoke-ScriptAnalyzer -Path DevOps/Build/build.ps1 -Settings PSScriptAnalyzerSettings.psd1
               $buildScanSucceeded = $true
             } catch {
               if ($attempt -ge 2) { throw }
-              Write-Host "PSScriptAnalyzer failed on build.ps1 (attempt $attempt). Retrying..."
+              Write-Host "PSScriptAnalyzer failed on DevOps/Build/build.ps1 (attempt $attempt). Retrying..."
               Start-Sleep -Seconds 2
             }
           }
@@ -77,7 +77,7 @@ jobs:
       - name: Bootstrap environment
         shell: pwsh
         run: |
-          ./bootstrap.ps1
+          ./DevOps/Build/bootstrap.ps1
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -114,12 +114,12 @@ jobs:
       - name: Build module
         shell: pwsh
         run: |
-          ./build.ps1 -TaskNames 'clean', 'build'
+          ./DevOps/Build/build.ps1 -TaskNames 'clean', 'build'
 
       - name: Run Pester tests
         shell: pwsh
         run: |
-          ./test.ps1
+          ./DevOps/Quality/test.ps1
 
       - name: List test artifacts
         shell: pwsh
@@ -161,17 +161,17 @@ jobs:
       - name: Bootstrap environment
         shell: pwsh
         run: |
-          ./bootstrap.ps1
+          ./DevOps/Build/bootstrap.ps1
 
       - name: Build module
         shell: pwsh
         run: |
-          ./build.ps1 -TaskNames 'clean', 'build'
+          ./DevOps/Build/build.ps1 -TaskNames 'clean', 'build'
 
       - name: Generate documentation
         shell: pwsh
         run: |
-          ./build.ps1 -TaskNames 'generateShortNamesMapping', 'updateHelp', 'publishDocs'
+          ./DevOps/Build/build.ps1 -TaskNames 'generateShortNamesMapping', 'updateHelp', 'publishDocs'
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

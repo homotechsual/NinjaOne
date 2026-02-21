@@ -8,8 +8,13 @@ param(
     [switch]$Force = $false
 )
 
+$RepoRoot = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\\..')
+$semanticHelpPath = Join-Path -Path $PSScriptRoot -ChildPath 'New-SemanticHelp.ps1'
+$helpGenerationPath = Join-Path -Path $RepoRoot -ChildPath 'HelpGeneration'
+$settingsPath = Join-Path -Path $RepoRoot -ChildPath 'PSScriptAnalyzerSettings.psd1'
+
 # Load database
-$dbFile = Get-ChildItem -Path .\HelpGeneration -Filter 'functions_needing_help*.json' | Sort-Object Name -Descending | Select-Object -First 1
+$dbFile = Get-ChildItem -Path $helpGenerationPath -Filter 'functions_needing_help*.json' | Sort-Object Name -Descending | Select-Object -First 1
 $db = Get-Content $dbFile.FullName | ConvertFrom-Json
 
 # Get all private functions
@@ -79,7 +84,7 @@ foreach ($funcName in $privateFunctions | Sort-Object) {
         
         # Generate help
         $params = @($funcMetadata.Parameters)
-        $help = & .\New-SemanticHelp.ps1 `
+        $help = & $semanticHelpPath `
             -FunctionName $funcName `
             -Parameters $params `
             -FunctionType 'private'
@@ -118,4 +123,4 @@ Write-Host "Results:" -ForegroundColor Cyan
 Write-Host "  ✓ Successfully added help: $successful" -ForegroundColor Green
 Write-Host "  ✗ Failed: $failed" -ForegroundColor $(if ($failed -eq 0) { 'Green' } else { 'Red' })
 Write-Host "  → Already had help: $skipped" -ForegroundColor Gray
-Write-Host "`nRun PSSA to validate: Get-ChildItem -Path . -Recurse -File -Include '*.ps1','*.psm1' | Where-Object { \$_.FullName -notmatch '\\output\\' -and \$_.FullName -notmatch '\\HelpGeneration\\' } | Invoke-ScriptAnalyzer -Settings '.\PSScriptAnalyzerSettings.psd1' -IncludeRule 'PSRequiredCommentBasedHelp' | Measure-Object" -ForegroundColor Cyan
+Write-Host "`nRun PSSA to validate: Get-ChildItem -Path . -Recurse -File -Include '*.ps1','*.psm1' | Where-Object { \$_.FullName -notmatch '\\output\\' -and \$_.FullName -notmatch '\\HelpGeneration\\' } | Invoke-ScriptAnalyzer -Settings '$settingsPath' -IncludeRule 'PSRequiredCommentBasedHelp' | Measure-Object" -ForegroundColor Cyan

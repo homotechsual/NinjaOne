@@ -4,10 +4,13 @@
 Add missing .EXAMPLE sections to public functions that have .SYNOPSIS and .DESCRIPTION.
 #>
 
+$RepoRoot = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\\..')
+$settingsPath = Join-Path -Path $RepoRoot -ChildPath 'PSScriptAnalyzerSettings.psd1'
+
 # Get violations and filter to only .EXAMPLE missing
-$result = Get-ChildItem -Path . -Recurse -File -Include *.ps1,*.psm1,*.psd1 | 
+$result = Get-ChildItem -Path $RepoRoot -Recurse -File -Include *.ps1,*.psm1,*.psd1 | 
     Where-Object { $_.FullName -notmatch '\\output\\' -and $_.FullName -notmatch '\\HelpGeneration\\' } |
-    Invoke-ScriptAnalyzer -Settings '.\PSScriptAnalyzerSettings.psd1' -IncludeRule 'PSRequiredCommentBasedHelp' |
+    Invoke-ScriptAnalyzer -Settings $settingsPath -IncludeRule 'PSRequiredCommentBasedHelp' |
     Where-Object { $_.Message -like '*missing .EXAMPLE*' }
 
 Write-Host "Found $($result.Count) functions missing .EXAMPLE sections" -ForegroundColor Cyan

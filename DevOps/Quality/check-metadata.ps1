@@ -1,4 +1,5 @@
-$basePath = 'j:\Projects\NinjaOne\Source\Public\'
+$RepoRoot = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\\..')
+$basePath = Join-Path -Path $RepoRoot -ChildPath 'Source\Public'
 $allFiles = @(Get-ChildItem -Path $basePath -Filter '*.ps1' -Recurse)
 
 Write-Output '=== METADATA ATTRIBUTE ANALYSIS ==='

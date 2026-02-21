@@ -25,9 +25,12 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$output = 'HelpGeneration'
 $timestamp = Get-Date -Format 'yyyyMMdd_HHmmss'
-$generationLog = "$output/generation_$timestamp.log"
+$RepoRoot = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\\..')
+$output = Join-Path -Path $RepoRoot -ChildPath 'HelpGeneration'
+$generationLog = Join-Path -Path $output -ChildPath "generation_$timestamp.log"
+$semanticHelpPath = Join-Path -Path $PSScriptRoot -ChildPath 'New-SemanticHelp.ps1'
+$settingsPath = Join-Path -Path $RepoRoot -ChildPath 'PSScriptAnalyzerSettings.psd1'
 
 # Ensure output directory exists
 if (-not (Test-Path $output)) {
@@ -50,7 +53,7 @@ function Invoke-GeneratePhase {
 	}
     
 	# Scan all files for functions needing help
-	$files = Get-ChildItem -Path . -Recurse -File -Include '*.ps1', '*.psm1' | 
+	$files = Get-ChildItem -Path $RepoRoot -Recurse -File -Include '*.ps1', '*.psm1' | 
 	Where-Object { 
 		$_.FullName -notmatch '\\output\\' -and 
 		$_.FullName -notmatch '\\bin\\' -and 
@@ -109,7 +112,7 @@ function Invoke-GeneratePhase {
                     
 					$helpDatabase[$funcName] = @{
 						File = $file.FullName
-						FilePath = $file.FullName -replace [regex]::Escape($PWD), '.'
+						FilePath = $file.FullName -replace [regex]::Escape($RepoRoot), '.'
 						IsPublic = $isPublic
 						LineNumber = $funcStartLine
 						Parameters = $params
@@ -135,7 +138,7 @@ function Invoke-GeneratePhase {
 		$funcType = if ($funcData.IsPublic) { 'public' } else { 'private' }
         
 		# Generate help using the semantic generator
-		$help = & .\New-SemanticHelp.ps1 `
+		$help = & $semanticHelpPath `
 			-FunctionName $funcName `
 			-Parameters $funcData.Parameters `
 			-FunctionType $funcType
@@ -196,7 +199,7 @@ function Invoke-ApplyPublicPhase {
     
 	Write-Host 'Ready to apply help to public functions.' -ForegroundColor Green
 	Write-Host 'Implementation will insert help blocks and validate syntax.' -ForegroundColor Gray
-	Write-Host "`nNote: This is a preview. Run 'Apply-CommentBasedHelpToFunctions.ps1' to execute." -ForegroundColor Yellow
+	Write-Host "`nNote: This is a preview. Run 'DevOps/Help/Apply-CommentBasedHelpToFunctions.ps1' to execute." -ForegroundColor Yellow
 }
 
 # ==================== PHASE 3: VERIFY ====================
@@ -212,12 +215,12 @@ function Invoke-VerifyPhase {
     
 	Write-Host 'Run PSSA to verify all help is in place:' -ForegroundColor Cyan
     
-	$command = @'
+	$command = @"
 Get-ChildItem -Path . -Recurse -File -Include *.ps1,*.psm1,*.psd1 | `
-  Where-Object { $_.FullName -notmatch '\\output\\' -and $_.FullName -notmatch '\\HelpGeneration\\' } | `
-  Invoke-ScriptAnalyzer -Settings '.\PSScriptAnalyzerSettings.psd1' -IncludeRule 'PSRequiredCommentBasedHelp' | `
-  Measure-Object
-'@
+	Where-Object { $_.FullName -notmatch '\\output\\' -and $_.FullName -notmatch '\\HelpGeneration\\' } | `
+	Invoke-ScriptAnalyzer -Settings '$settingsPath' -IncludeRule 'PSRequiredCommentBasedHelp' | `
+	Measure-Object
+"@
     
 	Write-Host "`nCommand:`n  $command" -ForegroundColor Gray
 	Write-Host "`nExpected result: Count = 0 (all functions have help)" -ForegroundColor Cyan

@@ -7,6 +7,7 @@ using assembly '.\Binaries\ValidateNodeRoleId.dll'
 	'eu' = 'https://eu.ninjarmm.com'
 	'oc' = 'https://oc.ninjarmm.com'
 	'us' = 'https://app.ninjarmm.com'
+	'app' = 'https://app.ninjarmm.com'
 	'ca' = 'https://ca.ninjarmm.com'
 	'us2' = 'https://us2.ninjarmm.com'
 }

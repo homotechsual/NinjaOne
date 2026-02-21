@@ -1,7 +1,7 @@
 # NinjaOne - A [PowerShell](https://microsoft.com/powershell) module for [NinjaOne](https://NinjaOne.com/) software
 
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/homotechsual/NinjaOne/build-and-publish?branch=main&style=for-the-badge)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/homotechsual/NinjaOne/ci?branch=develop&style=for-the-badge)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/homotechsual/NinjaOne/build-and-publish.yml?branch=main&style=for-the-badge)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/homotechsual/NinjaOne/ci.yml?branch=develop&style=for-the-badge)
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/NinjaOne?style=for-the-badge)](https://www.powershellgallery.com/packages/NinjaOne/)
 [![License](https://img.shields.io/github/license/homotechsual/NinjaOne?style=for-the-badge)](https://mit.license.homotechsual.dev/)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/homotechsual?style=for-the-badge)](https://github.com/sponsors/homotechsual/)
@@ -12,3 +12,11 @@
 ## Where's the content?
 
 Use the [docs website](https://docs.homotechsual.dev/modules/ninjaone) for the most up-to-date information and a full automatically generated commandlet reference.
+
+## Tooling locations
+
+Common dev and build tooling lives under DevOps:
+
+- Build: DevOps/Build/build.ps1, DevOps/Build/bootstrap.ps1
+- Quality: DevOps/Quality/run-pssa.ps1, DevOps/Quality/test.ps1
+- Help generation: DevOps/Help/Orchestrate-HelpGeneration.ps1

@@ -4,7 +4,7 @@
 
 pwsh.exe -NoProfile -ExecutionPolicy Bypass -Command "
     Write-Host 'Running PSScriptAnalyzer...' -ForegroundColor Cyan
-    \$Results = & './run-pssa.ps1'
+    \$Results = & 'DevOps/Quality/run-pssa.ps1'
     if (\$Results) {
         Write-Host '❌ PSScriptAnalyzer found issues:' -ForegroundColor Red
         \$Results | Format-Table -AutoSize
