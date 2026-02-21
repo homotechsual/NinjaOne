@@ -45,9 +45,9 @@ if (Test-Path -Path $RequiredModulesPath) {
 	
 	# First, import bundled modules from the bundled path
 	if (Test-Path -Path $BundledModulesPath) {
-		Get-ChildItem -Path $BundledModulesPath -Directory | ForEach-Object {
+		Microsoft.PowerShell.Management\Get-ChildItem -LiteralPath $BundledModulesPath -Directory | ForEach-Object {
 			$moduleDir = $_.FullName
-			$manifestPath = Get-ChildItem -Path $moduleDir -Filter '*.psd1' -Recurse | Select-Object -First 1
+			$manifestPath = Microsoft.PowerShell.Management\Get-ChildItem -LiteralPath $moduleDir -Filter '*.psd1' -Recurse | Select-Object -First 1
 			if ($manifestPath) {
 				Write-Host "Bootstrap: Loading bundled module version from: $($_.Name)" -ForegroundColor Green
 				Import-Module -Path $manifestPath.FullName -Force -WarningAction SilentlyContinue
