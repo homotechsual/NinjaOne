@@ -188,6 +188,13 @@ function UpdateHelp {
 	if (-not(Test-Path -Path $DocsFolderPath)) {
 		New-Item -Path $DocsFolderPath -ItemType Directory | Out-Null
 	}
+	$bundledDocusaurusRoot = Join-Path -Path $PSScriptRoot -ChildPath 'Modules\Alt3.Docusaurus.Powershell'
+	if (Test-Path -Path $bundledDocusaurusRoot) {
+		$bundledManifest = Get-ChildItem -Path $bundledDocusaurusRoot -Filter 'Alt3.Docusaurus.Powershell.psd1' -Recurse | Sort-Object FullName -Descending | Select-Object -First 1
+		if ($bundledManifest) {
+			Import-Module -Name $bundledManifest.FullName -Force -ErrorAction Stop
+		}
+	}
 	$ShortNamesFilePath = [System.IO.FileInfo]'.\.build\CommandletShortNames.yaml'
 	$ShortNamesYAML = Get-Content -Path $ShortNamesFilePath
 	$ShortNamesDictionary = ConvertFrom-Yaml -InputObject $ShortNamesYAML
