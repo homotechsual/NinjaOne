@@ -18,7 +18,10 @@ function Get-NinjaOneDeviceActivities {
 	[CmdletBinding()]
 	[OutputType([Object])]
 	[Alias('gnodac')]
-	[MetadataAttribute()]
+	[MetadataAttribute(
+		'/v2/device/{id}/activities',
+		'get'
+	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
 	Param(
 		# Filter by device id.

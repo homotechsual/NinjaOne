@@ -22,7 +22,7 @@ function Restore-NinjaOneKnowledgeBaseFolders {
 		'/v2/knowledgebase/folders/restore',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int[]]$folderIds
 	)

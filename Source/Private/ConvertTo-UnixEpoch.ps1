@@ -23,12 +23,12 @@ function ConvertTo-UnixEpoch {
 	if ($DateTime -is [String]) {
 		$DateTime = [DateTime]::Parse($DateTime)
 	} elseif ($DateTime -is [Int]) {
-								(Get-Date 01.01.1970).AddSeconds($unixTimeStamp)
+		$DateTime = (Get-Date 01.01.1970).AddSeconds($unixTimeStamp)
 	} elseif ($DateTime -is [DateTime]) {
 		$DateTime = $DateTime
 	} else {
 		Write-Error 'The DateTime parameter must be a DateTime object, a string, or an integer.'
-		Exit 1
+		exit 1
 	}
 	$UniversalDateTime = $DateTime.ToUniversalTime()
 	$UnixEpochTimestamp = Get-Date -Date $UniversalDateTime -UFormat %s

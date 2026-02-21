@@ -22,7 +22,7 @@ function Remove-NinjaOneKnowledgeBaseFolders {
 		'/v2/knowledgebase/folders/delete',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int[]]$folderIds
 	)

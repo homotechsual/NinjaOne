@@ -8,6 +8,12 @@ function Update-NinjaOneWebhook {
 			Webhook
 		.OUTPUTS
 			A powershell object containing the response.
+	
+	.EXAMPLE
+		PS> Update-NinjaOneWebhook
+
+		Updates the resource.
+
 	#>
 	[CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
 	[OutputType([Object])]
@@ -17,7 +23,7 @@ function Update-NinjaOneWebhook {
 		'put'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The webhook configuration object.
 		[Parameter( Mandatory )]
 		[Object]$webhookConfiguration

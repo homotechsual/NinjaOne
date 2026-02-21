@@ -22,7 +22,7 @@ function Get-NinjaOneTabSummaryEndUser {
 		'/v2/tab/summary/end-user',
 		'get'
 	)]
-	Param()
+	param()
 	process {
 		try {
 			$Resource = 'v2/tab/summary/end-user'

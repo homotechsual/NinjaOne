@@ -22,7 +22,7 @@ function New-NinjaOneTagGlobal {
 		'/v2/tag',
 		'post'
 	)]
-	Param(
+	param(
 		# Tag payload per API schema
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]

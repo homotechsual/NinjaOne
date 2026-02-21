@@ -18,7 +18,10 @@ function Get-NinjaOneOrganisationInformation {
 	[CmdletBinding()]
 	[OutputType([Object])]
 	[Alias('gnooi', 'Get-NinjaOneOrganizationInformation')]
-	[MetadataAttribute()]
+	[MetadataAttribute(
+		'/v2/organization/{id}',
+		'get'
+	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
 	Param(
 		# Filter by organisation id.

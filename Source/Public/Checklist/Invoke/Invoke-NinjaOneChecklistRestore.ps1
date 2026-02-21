@@ -22,7 +22,7 @@ function Invoke-NinjaOneChecklistRestore {
 		'/v2/checklist/restore',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$request

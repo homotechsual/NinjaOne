@@ -24,7 +24,7 @@ function Get-NinjaOnePolicies {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param()
+	param()
 	begin {
 		$CommandName = $MyInvocation.InvocationName
 		$Parameters = (Get-Command -Name $CommandName).Parameters

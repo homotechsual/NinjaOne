@@ -5,10 +5,8 @@
 		https://github.com/PowerShell/PSScriptAnalyzer/blob/master/Engine/Settings/
 #>
 @{
-	Filter = @(
-		'**/*.ps1',
-		'**/*.psm1',
-		!'* * / Tests/*.ps1'
+	CustomRulePath = @(
+		'.\CustomRules'
 	)
 	Severity = @(
 		'Error',
@@ -48,7 +46,7 @@
 		'PSPlaceOpenBrace',
 		'PSPossibleIncorrectComparisonWithNull',
 		'PSPossibleIncorrectUsageOfAssignmentOperator',
-		'PSPossibleIncorrectUsageOfRedirectionOperator'
+		'PSPossibleIncorrectUsageOfRedirectionOperator',
 		'PSProvideCommentHelp',
 		'PSReservedCmdletChar',
 		'PSReservedParams',
@@ -58,27 +56,19 @@
 		'PSUseBOMForUnicodeEncodedFile',
 		'PSUseCmdletCorrectly',
 		'PSUseCompatibleCmdlets',
-		'PSUseCompatibleCommands',
 		'PSUseCompatibleSyntax',
-		'PSUseCompatibleTypes',
-		'PSUseConsistentIndentation',
-		'PSUseConsistentWhitespace',
-		'PSUseCorrectCasing',
 		'PSUseDeclaredVarsMoreThanAssignments',
 		'PSUseLiteralInitializerForHashtable',
 		'PSUseOutputTypeCorrectly',
 		'PSUseProcessBlockForPipelineCommand',
 		'PSUsePSCredentialType',
 		'PSUseShouldProcessForStateChangingFunctions',
-		'PSUseLowerCaseForBooleanVariables',
-		'PSUseLowerCaseForBuiltInFunctions',
-		'PSUseLowerCaseForParameters',
-		'PSUseSingularNouns',
-		'PSUseTitleCaseForCmdletParameters',
-		'PSUseTitleCaseForConstants',
-		'PSUseTitleCaseForNonConstants',
-		'PSUseTitleCaseFunctionNames',
-		'PSUseTitleCaseVerbs'
+		'PSUseConsistentIndentation',
+		'PSUseConsistentWhitespace',
+		'PSUseCorrectCasing',
+		'Measure-AvoidDoubleQuoteInterpolation',
+		'Measure-AvoidOneLineIfElse',
+		'Measure-RequiredCommentBasedHelp'
 	)
 	Rules = @{
 		PSAlignAssignmentStatement = @{
@@ -87,14 +77,14 @@
 		PSPlaceCloseBrace = @{
 			Enable = $true
 			NewLineAfter = $false
-			IgnoreOneLineBlock = $true
+			IgnoreOneLineBlock = $false
 			NoEmptyLineBefore = $false
 		}
 		PSPlaceOpenBrace = @{
 			Enable = $true
 			OnSameLine = $true
 			NewLineAfter = $true
-			IgnoreOneLineBlock = $true
+			IgnoreOneLineBlock = $false
 		}
 		PSReviewUnusedParameter = @{
 			Enable = $true
@@ -111,9 +101,6 @@
 				'core-6.1.0-linux-arm'
 				'core-6.1.0-macos'
 			)
-		}
-		PSUseCompatibleCommands = @{
-			Enable = $false
 		}
 		PSUseCompatibleSyntax = @{
 			Enable = $true
@@ -141,12 +128,6 @@
 			IgnoreAssignmentOperatorInsideHashTable = $true
 		}
 		PSUseCorrectCasing = @{
-			Enable = $true
-		}
-		PSUseSingularNouns = @{
-			Enable = $false
-		}
-		PSAvoidUsingDoubleQuotesForConstantString = @{
 			Enable = $true
 		}
 	}

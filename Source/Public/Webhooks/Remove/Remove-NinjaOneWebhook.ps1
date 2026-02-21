@@ -10,6 +10,12 @@ function Remove-NinjaOneWebhook {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Remove/webhook
+	
+	.EXAMPLE
+		PS> Remove-NinjaOneWebhook -Identity 123
+
+		Removes the specified resource.
+
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
@@ -19,7 +25,7 @@ function Remove-NinjaOneWebhook {
 		'delete'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param()
+	param()
 	process {
 		try {
 			$Resource = 'v2/webhook'

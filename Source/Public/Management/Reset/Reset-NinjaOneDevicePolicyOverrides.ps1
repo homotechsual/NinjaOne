@@ -10,6 +10,12 @@ function Reset-NinjaOneDevicePolicyOverrides {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Reset/devicepolicyoverrides
+	
+	.EXAMPLE
+		PS> Reset-NinjaOneDevicePolicyOverrides -Identity 123
+
+		Resets the specified resource to default state.
+
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
@@ -19,7 +25,7 @@ function Reset-NinjaOneDevicePolicyOverrides {
 		'delete'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The device Id to reset policy overrides for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]

@@ -23,7 +23,7 @@ function Get-NinjaOneTabRole {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$tabId,
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]

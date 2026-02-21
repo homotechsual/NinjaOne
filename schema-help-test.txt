@@ -1,0 +1,7 @@
+[95m
+[95mStarting discovery in 1 files.[0m
+[95mDiscovery found 2107 tests in 16.06s.[0m
+[95mRunning tests.[0m
+[32m[+] J:\Projects\NinjaOne\Tests\NinjaOne.Help.Tests.ps1[0m[90m 20.58s (1.24s|3.31s)[0m
+[97mTests completed in 20.61s[0m
+[32mTests Passed: 2107, [0m[90mFailed: 0, [0m[90mSkipped: 0, [0m[90mInconclusive: 0, [0m[37m[0m[90mNotRun: 0[0m

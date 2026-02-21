@@ -22,7 +22,7 @@ function Set-NinjaOneAssetTag {
 		'/v2/tag/{assetType}/{assetId}',
 		'put'
 	)]
-	Param(
+	param(
 		# Asset type (e.g. NODE, ORGANIZATION, LOCATION)
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[String]$assetType,

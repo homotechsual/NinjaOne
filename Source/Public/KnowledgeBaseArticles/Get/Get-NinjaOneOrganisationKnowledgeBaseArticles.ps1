@@ -32,7 +32,7 @@ function Get-NinjaOneOrganisationKnowledgeBaseArticles {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The knowledge base article name to get.
 		[Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[String]$articleName,

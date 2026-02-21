@@ -25,7 +25,7 @@ function Set-NinjaOneTabRoleOrder {
 		'/v2/tab/role/{roleId}/order',
 		'patch'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$roleId,
 		# Array payload specifying the tab ordering (CustomTabsOrderPublicApiDTO[])

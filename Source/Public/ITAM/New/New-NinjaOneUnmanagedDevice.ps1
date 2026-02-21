@@ -22,7 +22,7 @@ function New-NinjaOneUnmanagedDevice {
 		'/v2/itam/unmanaged-device',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$unmanagedDevice

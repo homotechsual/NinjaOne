@@ -22,7 +22,7 @@ function Remove-NinjaOneTechnician {
 		'/v2/user/technician/{id}',
 		'delete'
 	)]
-	Param(
+	param(
 		# Technician Id to delete.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Int]$id

@@ -10,6 +10,12 @@ function Reset-NinjaOneAlert {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Reset/alert
+	
+	.EXAMPLE
+		PS> Reset-NinjaOneAlert -Identity 123
+
+		Resets the specified resource to default state.
+
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
@@ -21,7 +27,7 @@ function Reset-NinjaOneAlert {
 		'delete'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The alert Id to reset status for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
@@ -42,7 +48,7 @@ function Reset-NinjaOneAlert {
 					$Alert = New-NinjaOnePOSTRequest @RequestParams
 					if ($Alert -eq 204) {
 						$OIP = $InformationPreference
-						$InformationPreference = 'Continue'
+						$InformationPreference = 'continue'
 						Write-Information 'Alert reset successfully.'
 						$InformationPreference = $OIP
 					}

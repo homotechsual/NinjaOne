@@ -22,7 +22,7 @@ function Get-NinjaOneTabSummaryOrganisation {
 		'/v2/tab/summary/organization',
 		'get'
 	)]
-	Param()
+	param()
 	process {
 		try {
 			$Resource = 'v2/tab/summary/organization'

@@ -31,7 +31,7 @@ function Get-NinjaOneNotificationChannels {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# Get all enabled notification channels.
 		[Switch]$enabled
 	)

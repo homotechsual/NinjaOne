@@ -1,5 +1,5 @@
 
-function Get-NinjaOneOrganisationKnowledgeBaseArticles {
+function Get-NinjaOneGlobalKnowledgeBaseArticles {
 	<#
 		.SYNOPSIS
 			Gets global knowledge base articles from the NinjaOne API.
@@ -28,7 +28,7 @@ function Get-NinjaOneOrganisationKnowledgeBaseArticles {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The knowledge base article name to get.
 		[Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[String]$articleName

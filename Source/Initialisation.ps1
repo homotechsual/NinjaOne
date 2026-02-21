@@ -1,3 +1,6 @@
+using assembly '.\Binaries\MetadataAttribute.dll'
+using assembly '.\Binaries\ValidateNodeRoleId.dll'
+
 [int32]$Script:NRAPIDefaultPageSize = 2000
 [Hashtable]$Script:NRAPIInstances = @{
 	'eu' = 'https://eu.ninjarmm.com'

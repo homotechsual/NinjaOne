@@ -10,6 +10,13 @@ function New-NinjaOneOrganisation {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/organisation
+	
+	.EXAMPLE
+		PS> $newObject = @{ Name = 'Example' }
+		PS> New-NinjaOneOrganisation @newObject
+
+		Creates a new resource with the specified properties.
+
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
@@ -19,7 +26,7 @@ function New-NinjaOneOrganisation {
 		'post'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The Id of the organisation to use as a template.
 		[Parameter(Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('templateOrganizationId', 'templateId')]

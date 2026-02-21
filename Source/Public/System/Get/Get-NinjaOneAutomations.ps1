@@ -29,7 +29,7 @@ function Get-NinjaOneAutomations {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# Return built in automation script names in the given language.
 		[Parameter(Position = 0)]
 		[Alias('lang')]

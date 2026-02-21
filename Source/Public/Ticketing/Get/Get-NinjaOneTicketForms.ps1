@@ -29,7 +29,7 @@ function Get-NinjaOneTicketForms {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# Ticket form id.
 		[Parameter(ValueFromPipelineByPropertyName)]
 		[Alias('id')]

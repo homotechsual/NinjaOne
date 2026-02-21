@@ -22,7 +22,7 @@ function Remove-NinjaOneEndUser {
 		'/v2/user/end-user/{id}',
 		'delete'
 	)]
-	Param(
+	param(
 		# End-user Id to delete.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Int]$id

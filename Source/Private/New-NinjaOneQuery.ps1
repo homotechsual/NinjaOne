@@ -1,3 +1,36 @@
+<#
+.SYNOPSIS
+Create Query.
+
+.DESCRIPTION
+Internal helper function for New-NinjaOneQuery operations.
+
+This function provides supporting functionality for the NinjaOne module.
+
+.PARAMETER CommandName
+    Specifies the name of the Query resource.
+
+.PARAMETER Parameters
+    Specifies the Parameters parameter.
+
+.PARAMETER CommaSeparatedArrays
+    Specifies the CommaSeparatedArrays parameter.
+
+.PARAMETER AsString
+    Specifies the AsString parameter.
+
+.EXAMPLE
+    PS> New-NinjaOneQuery -CommandName "*search*"
+
+    create the specified Query.
+
+.OUTPUTS
+Returns information about the Query resource.
+
+.NOTES
+This cmdlet is part of the NinjaOne PowerShell module.
+Generated reference help - customize descriptions as needed.
+#>
 function New-NinjaOneQuery {
 	[CmdletBinding()]
 	[OutputType([String], [HashTable])]
@@ -21,12 +54,12 @@ function New-NinjaOneQuery {
 		# Skip system parameters.
 		if (([System.Management.Automation.Cmdlet]::CommonParameters).Contains($Parameter.Name)) {
 			Write-Verbose "Excluding system parameter $($Parameter.Name)."
-			Continue
+			continue
 		}
 		# Skip optional system parameters.
 		if (([System.Management.Automation.Cmdlet]::OptionalCommonParameters).Contains($Parameter.Name)) {
 			Write-Verbose "Excluding optional system parameter $($Parameter.Name)."
-			Continue
+			continue
 		}
 		$ParameterVariable = Get-Variable -Name $Parameter.Name -ErrorAction SilentlyContinue
 		Write-Verbose "Parameter variable: $($ParameterVariable | Out-String)"
@@ -34,7 +67,7 @@ function New-NinjaOneQuery {
 			Write-Verbose "Found String or String Array param $($ParameterVariable.Name) with value $($ParameterVariable.Value)."
 			if ([String]::IsNullOrEmpty($ParameterVariable.Value)) {
 				Write-Verbose "Skipping unset param $($ParameterVariable.Name)"
-				Continue
+				continue
 			} else {
 				if ($Parameter.Aliases) {
 					# Use the first alias as the query.
@@ -64,7 +97,7 @@ function New-NinjaOneQuery {
 			Write-Verbose "Found Switch param $($ParameterVariable.Name) with value $($ParameterVariable.Value)."
 			if ($ParameterVariable.Value -eq $False) {
 				Write-Verbose "Skipping unset param $($ParameterVariable.Name)"
-				Continue
+				continue
 			} else {
 				if ($Parameter.Aliases) {
 					# Use the first alias as the query string name.
@@ -79,7 +112,7 @@ function New-NinjaOneQuery {
 			}
 		}
 		if ($Parameter.ParameterType.Name -eq 'Boolean') {
-			Write-Verbose "Found Boolearn param $($ParameterVariable.Name) with value $($ParameterVariable.Value)."
+			Write-Verbose "Found Boolean param $($ParameterVariable.Name) with value $($ParameterVariable.Value)."
 			if ($Parameter.Aliases) {
 				# Use the first alias as the query string name.
 				$Query = ([String]$Parameter.Aliases[0])
@@ -95,7 +128,7 @@ function New-NinjaOneQuery {
 			Write-Verbose "Found Int or Int Array param $($ParameterVariable.Name) with value $($ParameterVariable.Value)."
 			if (($ParameterVariable.Value -eq 0) -or ($null -eq $ParameterVariable.Value)) {
 				Write-Verbose "Skipping unset param $($ParameterVariable.Name)"
-				Continue
+				continue
 			} else {
 				if ($Parameter.Aliases) {
 					# Use the first alias as the query string name.
@@ -125,7 +158,7 @@ function New-NinjaOneQuery {
 			Write-Verbose "Found DateTime or DateTime Array param $($ParameterVariable.Name) with value $($ParameterVariable.Value)."
 			if ($null -eq $ParameterVariable.Value) {
 				Write-Verbose "Skipping unset param $($ParameterVariable.Name)"
-				Continue
+				continue
 			} else {
 				if ($Parameter.Aliases) {
 					# Use the first alias as the query.

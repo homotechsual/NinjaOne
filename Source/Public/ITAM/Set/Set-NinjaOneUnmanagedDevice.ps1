@@ -22,7 +22,7 @@ function Set-NinjaOneUnmanagedDevice {
 		'/v2/itam/unmanaged-device/{nodeId}',
 		'put'
 	)]
-	Param(
+	param(
 		# Unmanaged device node Id
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$nodeId,

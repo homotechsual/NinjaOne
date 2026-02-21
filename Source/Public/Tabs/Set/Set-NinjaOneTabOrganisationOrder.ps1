@@ -25,7 +25,7 @@ function Set-NinjaOneTabOrganisationOrder {
 		'/v2/tab/organization/order',
 		'patch'
 	)]
-	Param(
+	param(
 		# Array payload specifying the tab ordering (CustomTabsOrderPublicApiDTO[])
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]

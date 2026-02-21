@@ -1,5 +1,30 @@
-using namespace System.Collections.Generic
-using namespace System.Management.Automation
+<#
+.SYNOPSIS
+Create Error.
+
+.DESCRIPTION
+Internal helper function for New-NinjaOneError operations.
+
+This function provides supporting functionality for the NinjaOne module.
+
+.PARAMETER ErrorRecord
+    Specifies the ErrorRecord parameter.
+
+.PARAMETER HasResponse
+    Specifies the HasResponse parameter.
+
+.EXAMPLE
+    PS> New-NinjaOneError -ErrorRecord "value"
+
+    create the specified Error.
+
+.OUTPUTS
+Returns information about the Error resource.
+
+.NOTES
+This cmdlet is part of the NinjaOne PowerShell module.
+Generated reference help - customize descriptions as needed.
+#>
 function New-NinjaOneError {
 	[CmdletBinding()]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Private function - no need to support.')]
@@ -40,7 +65,7 @@ function New-NinjaOneError {
 					}
 				}
 			} elseif ($ErrorRecord.ErrorDetails -like $APIResultMatchString -and $ErrorRecord.ErrorDetails -like $HTTPResponseMatchString) {
-				$Errors = $ErrorRecord.ErrorDetails -Split "`r`n"
+				$Errors = $ErrorRecord.ErrorDetails -split "`r`n"
 				if ($Errors -is [array]) {
 					ForEach-Object -InputObject $Errors {
 						$ExceptionMessage.Add($_) | Out-Null

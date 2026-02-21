@@ -25,7 +25,7 @@ function Set-NinjaOneTabEndUserOrder {
 		'/v2/tab/end-user/order',
 		'patch'
 	)]
-	Param(
+	param(
 		# Array payload specifying the tab order per API schema (CustomTabsOrderPublicApiDTO[])
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]

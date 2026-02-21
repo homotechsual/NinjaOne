@@ -26,7 +26,10 @@ function Get-NinjaOneOrganisationUsers {
 	[CmdletBinding()]
 	[OutputType([Object])]
 	[Alias('gnood', 'Get-NinjaOneOrganizationDevices')]
-	[MetadataAttribute()]
+	[MetadataAttribute(
+		'/v2/organization/{id}/devices',
+		'get'
+	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
 	Param(
 		# Filter by organisation id.

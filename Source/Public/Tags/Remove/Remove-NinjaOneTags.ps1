@@ -22,7 +22,7 @@ function Remove-NinjaOneTags {
 		'/v2/tag/delete',
 		'post'
 	)]
-	Param(
+	param(
 		# Delete request payload as per API schema (e.g. tagIds array)
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]

@@ -22,7 +22,7 @@ function Set-NinjaOneChecklistTemplates {
 		'/v2/checklist/templates',
 		'put'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$templates

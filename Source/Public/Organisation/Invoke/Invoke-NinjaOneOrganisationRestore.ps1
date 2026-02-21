@@ -1,3 +1,17 @@
+<#
+	.SYNOPSIS
+		Restore an organisation.
+	.DESCRIPTION
+		Restore organisation using the NinjaOne v2 API.
+	.FUNCTIONALITY
+		Restore Organisation
+	
+	.EXAMPLE
+		PS> Invoke-NinjaOneOrganisationRestore -Identity 123
+
+		Invokes the specified operation.
+
+#>
 function Invoke-NinjaOneOrganisationRestore {
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
 	[OutputType([Object])]
@@ -6,7 +20,7 @@ function Invoke-NinjaOneOrganisationRestore {
 		'/v2/organization/restore',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$request

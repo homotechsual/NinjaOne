@@ -22,7 +22,7 @@ function Get-NinjaOneTechnicians {
 		'/v2/user/technicians',
 		'get'
 	)]
-	Param()
+	param()
 	process {
 		try {
 			$Resource = 'v2/user/technicians'

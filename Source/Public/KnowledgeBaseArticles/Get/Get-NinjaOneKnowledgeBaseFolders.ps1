@@ -38,7 +38,7 @@ function Get-NinjaOneKnowledgeBaseFolders {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The knowledge base folder id to get.
 		[Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]

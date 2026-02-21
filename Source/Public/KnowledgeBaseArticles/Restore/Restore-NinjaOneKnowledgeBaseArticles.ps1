@@ -22,7 +22,7 @@ function Restore-NinjaOneKnowledgeBaseArticles {
 		'/v2/knowledgebase/articles/restore',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int[]]$articleIds
 	)

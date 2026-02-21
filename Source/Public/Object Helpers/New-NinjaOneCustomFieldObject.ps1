@@ -10,6 +10,13 @@ function New-NinjaOneCustomFieldObject {
 			[Object]
 
 			A new Custom Field object.
+	
+	.EXAMPLE
+		PS> $newObject = @{ Name = 'Example' }
+		PS> New-NinjaOneCustomFieldObject @newObject
+
+		Creates a new resource with the specified properties.
+
 	#>
 	[CmdletBinding()]
 	[OutputType([Object])]

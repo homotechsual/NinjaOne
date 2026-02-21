@@ -22,7 +22,7 @@ function Get-NinjaOneUserRoles {
 		'/v2/user/roles',
 		'get'
 	)]
-	Param()
+	param()
 	process {
 		try {
 			return (New-NinjaOneGETRequest -Resource 'v2/user/roles')

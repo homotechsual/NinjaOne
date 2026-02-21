@@ -10,6 +10,13 @@ function New-NinjaOneDocumentTemplateFieldObject {
 			[Object]
 
 			A new Document Template Field or UI Element object.
+	
+	.EXAMPLE
+		PS> $newObject = @{ Name = 'Example' }
+		PS> New-NinjaOneDocumentTemplateFieldObject @newObject
+
+		Creates a new resource with the specified properties.
+
 	#>
 	[CmdletBinding()]
 	[OutputType([Object])]

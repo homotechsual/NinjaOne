@@ -1,3 +1,17 @@
+<#
+	.SYNOPSIS
+		Archive an organisation document.
+	.DESCRIPTION
+		Archive organisation document using the NinjaOne v2 API.
+	.FUNCTIONALITY
+		Archive Organisation Document
+	
+	.EXAMPLE
+		PS> Invoke-NinjaOneOrganisationDocumentArchive -Identity 123
+
+		Invokes the specified operation.
+
+#>
 function Invoke-NinjaOneOrganisationDocumentArchive {
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
 	[OutputType([Object])]
@@ -6,7 +20,7 @@ function Invoke-NinjaOneOrganisationDocumentArchive {
 		'/v2/organization/document/{clientDocumentId}/archive',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$clientDocumentId
 	)

@@ -76,7 +76,7 @@ function Get-NinjaOneBackupJobs {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# Cursor name.
 		[Parameter(Position = 0, ValueFromPipelineByPropertyName)]
 		[String]$cursor,

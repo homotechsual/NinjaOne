@@ -22,7 +22,7 @@ function Start-NinjaOneOSPatchScanJob {
 		'/v2/device/{id}/patch/os/scan',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
 		[Int]$deviceId

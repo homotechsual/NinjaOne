@@ -27,7 +27,7 @@ function Get-NinjaOneAntiVirusThreats {
 		'get'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# Filter devices.
 		[Parameter(Position = 0)]
 		[Alias('df')]

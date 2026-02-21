@@ -9,7 +9,7 @@ function Start-NinjaOneOSPatchScan {
 		.OUTPUTS
 			A powershell object containing the response.
 		.EXAMPLE
-			PS> Start-NinjaOneOSPatchScan -deviceId 1 
+			PS> Start-NinjaOneOSPatchScan -deviceId 1
 
 			Start an OS Patch Scan on the device with id 1.
 		.LINK
@@ -17,13 +17,13 @@ function Start-NinjaOneOSPatchScan {
 	#>
 	[CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
-	[Alias('snoossc', 'unoossc', 'Start-NinjaOneOSPatchScan')]
+	[Alias('snoossc', 'unoossc')]
 	[MetadataAttribute(
 		'/v2/device/{id}/patch/os/scan',
-		'patch'
+		'post'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The device to start the OS patch scan for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
@@ -35,10 +35,9 @@ function Start-NinjaOneOSPatchScan {
 			$Resource = ('v2/device/{0}/patch/os/scan' -f $deviceId)
 			$RequestParams = @{
 				Resource = $Resource
-				Body = $deviceOSScan
 			}
-			if ($PSCmdlet.ShouldProcess(('OS Patch Scan for {0}' -f $deviceId), 'Set')) {
-				$OSScanTrigger = New-NinjaOnePATCHRequest @RequestParams
+			if ($PSCmdlet.ShouldProcess(('OS Patch Scan for {0}' -f $deviceId), 'Start')) {
+				$OSScanTrigger = New-NinjaOnePOSTRequest @RequestParams
 				if ($OSScanTrigger -eq 204) {
 					Write-Information ('OS Patch Scan for {0} started successfully.' -f $deviceId)
 				}

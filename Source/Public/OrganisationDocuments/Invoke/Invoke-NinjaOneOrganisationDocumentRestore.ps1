@@ -1,3 +1,17 @@
+<#
+	.SYNOPSIS
+		Restore an organisation document.
+	.DESCRIPTION
+		Restore organisation document using the NinjaOne v2 API.
+	.FUNCTIONALITY
+		Restore Organisation Document
+	
+	.EXAMPLE
+		PS> Invoke-NinjaOneOrganisationDocumentRestore -Identity 123
+
+		Invokes the specified operation.
+
+#>
 function Invoke-NinjaOneOrganisationDocumentRestore {
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
 	[OutputType([Object])]
@@ -6,7 +20,7 @@ function Invoke-NinjaOneOrganisationDocumentRestore {
 		'/v2/organization/document/{clientDocumentId}/restore',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$clientDocumentId
 	)

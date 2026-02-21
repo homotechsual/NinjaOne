@@ -22,7 +22,7 @@ function Rename-NinjaOneTab {
 		'/v2/tab/rename',
 		'patch'
 	)]
-	Param(
+	param(
 		# Payload e.g. @{ tabId = 5; name = 'New Name' }
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]

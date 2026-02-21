@@ -5,4 +5,5 @@
 	YAYAML = '0.2.1'
 	Metadata = '1.*'
 	ModuleBuilder = '3.*'
+	'Alt3.Docusaurus.PowerShell' = '1.*'
 }

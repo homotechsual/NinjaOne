@@ -26,14 +26,16 @@ Remove-Module $ModuleName -ErrorAction Ignore -Force
 $ModuleUnderTest = Import-Module $FoundModule.FullName -PassThru -Force -DisableNameChecking -Verbose:$false
 Write-Verbose ('Invoke-Pester for Module {0} version {1}' -f $ModuleUnderTest, $ModuleUnderTest.Version)
 $PesterConfiguration = New-PesterConfiguration
+$artifactsPath = Join-Path -Path $PSScriptRoot -ChildPath '.artifacts'
+$null = New-Item -Path $artifactsPath -ItemType Directory -Force
 $PesterConfiguration.CodeCoverage.Enabled = $true
-$PesterConfiguration.CodeCoverage.OutputPath = '.\.artifacts\CodeCoverage.xml'
+$PesterConfiguration.CodeCoverage.OutputPath = Join-Path -Path $artifactsPath -ChildPath 'CodeCoverage.xml'
 $PesterConfiguration.Output.Verbosity = 'Detailed'
 $PesterConfiguration.Run.Path = '.\Tests'
 $PesterConfiguration.Run.PassThru = $true
 $PesterConfiguration.TestResult.Enabled = $true
-$PesterConfiguration.TestResult.OutputPath = '.\.artifacts\TestResults.xml'
-$PesterConfiguration.TestResult.OutputFormat = 'JUnitXML'
+$PesterConfiguration.TestResult.OutputPath = Join-Path -Path $artifactsPath -ChildPath 'TestResults.xml'
+$PesterConfiguration.TestResult.OutputFormat = 'JUnitXml'
 if ($IncludeVSCodeMarker) {
 	$PesterConfiguration.VSCodeMarker = $true
 }

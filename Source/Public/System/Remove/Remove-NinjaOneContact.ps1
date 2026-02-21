@@ -22,7 +22,7 @@ function Remove-NinjaOneContact {
 		'/v2/contact/{id}',
 		'delete'
 	)]
-	Param(
+	param(
 		# Contact Id to delete.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('contactId')]

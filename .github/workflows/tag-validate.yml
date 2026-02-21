@@ -1,0 +1,40 @@
+name: Validate Tag Source
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate tag source
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG_NAME="${GITHUB_REF_NAME}"
+          TAG_COMMIT="${GITHUB_SHA}"
+
+          if [[ "${TAG_NAME}" =~ -(alpha|beta|rc) ]]; then
+            echo "Pre-release tag detected: ${TAG_NAME}"
+            if git merge-base --is-ancestor "${TAG_COMMIT}" origin/develop; then
+              echo "Tag commit is reachable from develop."
+            else
+              echo "Tag commit is NOT reachable from develop." >&2
+              exit 1
+            fi
+          else
+            echo "Stable tag detected: ${TAG_NAME}"
+            if git merge-base --is-ancestor "${TAG_COMMIT}" origin/main; then
+              echo "Tag commit is reachable from main."
+            else
+              echo "Tag commit is NOT reachable from main." >&2
+              exit 1
+            fi
+          fi

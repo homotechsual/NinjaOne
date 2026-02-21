@@ -1,0 +1,57 @@
+name: Publish Documentation
+
+on:
+  workflow_run:
+    workflows: ["Build and Publish Module"]
+    types:
+      - completed
+    branches:
+      - develop
+
+jobs:
+  publish-docs:
+    name: Publish docs to homotechsualdocs
+    runs-on: windows-latest
+    if: github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_commit.ref, 'refs/tags/v') && !startsWith(github.event.workflow_run.head_commit.ref, 'refs/tags/test-v')
+    steps:
+      - name: Checkout NinjaOne repository
+        uses: actions/checkout@v4
+
+      - name: Download documentation artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: module-docs
+          path: docs/
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Clone and update homotechsualdocs
+        shell: pwsh
+        run: |
+          # Clone homotechsualdocs
+          git clone https://github.com/homotechsual/homotechsualdocs.git docs-repo
+          
+          Push-Location docs-repo
+          try {
+            # Replace docs
+            if (Test-Path 'docs/ninjaone/commandlets') {
+              Remove-Item -Path 'docs/ninjaone/commandlets' -Recurse -Force
+            }
+            New-Item -Path 'docs/ninjaone/commandlets' -ItemType Directory -Force | Out-Null
+            
+            # Copy generated docs
+            Copy-Item -Path '../docs/NinjaOne/commandlets/*' -Destination 'docs/ninjaone/commandlets' -Recurse -Force
+            
+            # Configure git
+            git config user.email "action@github.com"
+            git config user.name "GitHub Action"
+            
+            # Commit and push
+            git add docs/ninjaone/commandlets
+            $commitMsg = "Docs update for NinjaOne ${{ github.event.workflow_run.head_branch }}"
+            git commit -m $commitMsg
+            git push origin
+            
+            Write-Host "✓ Documentation published to homotechsualdocs" -ForegroundColor Green
+          } finally {
+            Pop-Location
+          }

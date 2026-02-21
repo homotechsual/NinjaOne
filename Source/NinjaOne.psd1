@@ -12,7 +12,7 @@
 	RootModule = '.\NinjaOne.psm1'
 
 	# Version number of this module.
-	ModuleVersion = '2.0.3'
+	ModuleVersion = '2.1.0'
 
 	# Supported PSEditions
 	# CompatiblePSEditions = @()
@@ -56,8 +56,7 @@
 	# Assemblies that must be loaded prior to importing this module
 	RequiredAssemblies = @(
 		'./Binaries/MetadataAttribute.dll',
-		'./Binaries/ValidateNodeRoleId.dll',
-		'./Binaries/ValidateStringOrInt.dll'
+		'./Binaries/ValidateNodeRoleId.dll'
 	)
 
 	# Script files (.ps1) that are run in the caller's environment prior to importing this module.
@@ -84,9 +83,12 @@
 		'Get-NinjaOneBackupJobs',
 		'Get-NinjaOneComputerSystems',
 		'Get-NinjaOneContacts',
+		'Get-NinjaOneTicketingContacts',
 		'Get-NinjaOneSystemContacts',
 		'Get-NinjaOneContact',
 		'Get-NinjaOneCustomFields',
+		'Get-NinjaOneCustomField',
+		'Get-NinjaOneCustomFieldsSchema',
 		'Get-NinjaOneCustomFieldSignedURLs',
 		'Get-NinjaOneCustomFieldsPolicyCondition',
 		'Get-NinjaOneCustomFieldsPolicyConditions',
@@ -181,6 +183,7 @@
 		'Invoke-NinjaOneVulnerabilityScanGroupUpload',
 		'Invoke-NinjaOneChecklistArchive',
 		'Invoke-NinjaOneChecklistRestore',
+		'Invoke-NinjaOneCustomFieldsBulk',
 		'New-NinjaOneChecklistTemplate',
 		'Remove-NinjaOneChecklistTemplates',
 		'Set-NinjaOneChecklistTemplates',
@@ -202,6 +205,7 @@
 		'Remove-NinjaOneOrganisationChecklist',
 		'Invoke-NinjaOneOrganisationArchive',
 		'New-NinjaOneKnowledgeBaseArticles',
+		'New-NinjaOneKnowledgeBaseArticlesUpload',
 		'Invoke-NinjaOneKnowledgeBaseArticlesArchive',
 		'Invoke-NinjaOneKnowledgeBaseFoldersArchive',
 		'Remove-NinjaOneKnowledgeBaseArticles',
@@ -229,6 +233,7 @@
 		'Set-NinjaOneDeviceOwner',
 		'Remove-NinjaOneDeviceOwner',
 		'Get-NinjaOneSoftwareInventory',
+		'Get-NinjaOneSoftwareLicense',
 		'Get-NinjaOneSoftwarePatches',
 		'Get-NinjaOneSoftwarePatchInstalls',
 		'Get-NinjaOneSoftwareProducts',
@@ -250,13 +255,17 @@
 		'Invoke-NinjaOneWindowsServiceAction',
 		'New-NinjaOneAttachmentRelation',
 		'New-NinjaOneCustomFieldObject',
+		'New-NinjaOneCustomField',
 		'New-NinjaOneCustomFieldsPolicyCondition',
 		'New-NinjaOneDocumentTemplate',
 		'New-NinjaOneDocumentTemplateFieldObject',
+		'New-NinjaOneTicketBoardFilter',
+		'New-NinjaOneTicketBoardSort',
 		'New-NinjaOneEntityRelation',
 		'New-NinjaOneEntityRelations',
 		'New-NinjaOneInstaller',
 		'New-NinjaOneContact',
+		'New-NinjaOneSoftwareLicense',
 		'New-NinjaOneIntegrityCheckJob',
 		'New-NinjaOneLocation',
 		'New-NinjaOneOrganisation',
@@ -264,6 +273,7 @@
 		'New-NinjaOneOrganisationDocuments',
 		'New-NinjaOnePolicy',
 		'New-NinjaOneSecureRelation',
+		'New-NinjaOneStagedDevice',
 		'New-NinjaOneTicket',
 		'New-NinjaOneTicketComment',
 		'New-NinjaOneWindowsEventPolicyCondition',
@@ -274,18 +284,22 @@
 		'Remove-NinjaOnePolicyCondition',
 		'Remove-NinjaOneRelatedItem',
 		'Remove-NinjaOneContact',
+		'Remove-NinjaOneCustomField',
 		'Remove-NinjaOneEndUser',
 		'Remove-NinjaOneTechnician',
 		'Remove-NinjaOneRematedItems',
+		'Remove-NinjaOneSoftwareLicense',
 		'Remove-NinjaOneWebhook',
 		'Reset-NinjaOneAlert',
 		'Reset-NinjaOneDevicePolicyOverrides',
 		'Restart-NinjaOneDevice',
+		'Invoke-NinjaOneDeviceDecommission',
 		'Set-NinjaOneDeviceOwner',
 		'Set-NinjaOneDevice',
 		'Set-NinjaOneDeviceApproval',
 		'Set-NinjaOneDeviceCustomFields',
 		'Set-NinjaOneDeviceMaintenance',
+		'Set-NinjaOneBackupBandwidthThrottle',
 		'Start-NinjaOneOSPatchScanJob',
 		'Start-NinjaOneOSPatchApply',
 		'Start-NinjaOneSoftwarePatchScan',
@@ -299,8 +313,18 @@
 		'Set-NinjaOneOrganisationDocuments',
 		'Set-NinjaOneOrganisationPolicies',
 		'Set-NinjaOneContact',
+		'Set-NinjaOneCustomField',
 		'Set-NinjaOneTicket',
 		'Set-NinjaOneWindowsServiceConfiguration',
+		'Get-NinjaOneNodeRoles',
+		'Invoke-NinjaOneSoftwareLicenseUpsert',
+		'Invoke-NinjaOneUnmanagedDeviceDecommission',
+		'Invoke-NinjaOneUnmanagedDeviceDecommissionList',
+		'Invoke-NinjaOneTempAttachmentUpload',
+		'New-NinjaOneNodeRoles',
+		'Remove-NinjaOneNodeRoles',
+		'Set-NinjaOneSoftwareLicense',
+		'Set-NinjaOneNodeRoles',
 		'Update-NinjaOneWebhook'
 	)
 
@@ -330,7 +354,7 @@
 			# Tags applied to this module. These help with module discovery in online galleries.
 			Tags = @(
 				'NinjaRMM',
-				'NinjaOne'
+				'NinjaOne',
 				'RMM',
 				'Ninja',
 				'API',
@@ -343,13 +367,13 @@
 			LicenseUri = 'https://mit.license.homotechsual.dev/'
 
 			# A URL to the main website for this project.
-			ProjectUri = 'https://github.com/homotechsual/NinjaOne'
+			ProjectUri = 'https://docs.homotechsual.dev/modules/ninjaone'
 
 			# A URL to an icon representing this module.
 			IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
 			# ReleaseNotes of this module
-			ReleaseNotes = 'https://github.com/homotechsual/NinjaOne/releases/tag/2.0.3'
+			ReleaseNotes = 'https://github.com/homotechsual/NinjaOne/releases/tag/2.1.0'
 
 			# Prerelease string of this module
 			Prerelease = ''

@@ -22,7 +22,7 @@ function New-NinjaOneEndUser {
 		'/v2/user/end-users',
 		'post'
 	)]
-	Param(
+	param(
 		# End user payload per API schema.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]

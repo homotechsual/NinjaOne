@@ -22,7 +22,7 @@ function Get-NinjaOneEndUsers {
 		'/v2/user/end-users',
 		'get'
 	)]
-	Param()
+	param()
 	process {
 		try {
 			$Resource = 'v2/user/end-users'

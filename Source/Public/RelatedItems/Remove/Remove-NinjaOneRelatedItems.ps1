@@ -10,6 +10,12 @@ function Remove-NinjaOneRelatedItems {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Remove/relateditems
+	
+	.EXAMPLE
+		PS> Remove-NinjaOneRelatedItems -Identity 123
+
+		Removes the specified resource.
+
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
@@ -19,7 +25,7 @@ function Remove-NinjaOneRelatedItems {
 		'delete'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The entity type to remove related items for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[ValidateSet('ORGANIZATION', 'DOCUMENT', 'LOCATION', 'NODE', 'ATTACHMENT', 'TECHNICIAN', 'CREDENTIAL', 'CHECKLIST', 'END_USER', 'CONTACT', 'KB_DOCUMENT')]

@@ -10,6 +10,13 @@ function New-NinjaOnePolicy {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/policy
+	
+	.EXAMPLE
+		PS> $newObject = @{ Name = 'Example' }
+		PS> New-NinjaOnePolicy @newObject
+
+		Creates a new resource with the specified properties.
+
 	#>
 	[CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
 	[OutputType([Object])]
@@ -19,7 +26,7 @@ function New-NinjaOnePolicy {
 		'post'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The mode to run in, new, child or copy.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[ValidateSet('NEW', 'CHILD', 'COPY')]

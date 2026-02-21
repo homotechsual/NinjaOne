@@ -22,7 +22,7 @@ function Invoke-NinjaOneKnowledgeBaseArticlesArchive {
 		'/v2/knowledgebase/articles/archive',
 		'post'
 	)]
-	Param(
+	param(
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int[]]$articleIds
 	)

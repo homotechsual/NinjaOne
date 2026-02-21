@@ -19,12 +19,12 @@ function Get-NinjaOneRelatedItemAttachmentSignedURLs {
 	[CmdletBinding()]
 	[OutputType([Object])]
 	[Alias('gnoriasu')]
-[MetadataAttribute(
-	'/v2/related-items/with-entity/{entityType}/{entityId}/attachments/signed-urls',
-	'get'
-)]
+	[MetadataAttribute(
+		'/v2/related-items/with-entity/{entityType}/{entityId}/attachments/signed-urls',
+		'get'
+	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	Param(
+	param(
 		# The entity type of the related item.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[ValidateSet('ORGANIZATION', 'DOCUMENT', 'LOCATION', 'NODE', 'CHECKLIST', 'KB_DOCUMENT')]

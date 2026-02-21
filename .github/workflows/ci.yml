@@ -1,0 +1,188 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint with PSScriptAnalyzer
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Bootstrap environment
+        shell: pwsh
+        run: |
+          ./bootstrap.ps1
+
+      - name: Show Docusaurus module version
+        shell: pwsh
+        run: |
+          Write-Host "PSModulePath: $env:PSModulePath"
+          Get-Module -ListAvailable Alt3.Docusaurus.PowerShell | Sort-Object Version -Descending | Select-Object -First 5 | Format-Table Name,Version,Path
+          $cmd = Get-Command New-DocusaurusHelp -All -ErrorAction SilentlyContinue
+          if ($cmd) {
+            $cmd | Select-Object Name,ModuleName,Version,Source | Format-Table
+          } else {
+            Write-Host "New-DocusaurusHelp not available in this job." -ForegroundColor Yellow
+          }
+
+      - name: Run PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $Results = @()
+          $Results += @(Invoke-ScriptAnalyzer -Path Source -Recurse -Settings PSScriptAnalyzerSettings.psd1)
+
+          $buildResults = $null
+          $buildScanSucceeded = $false
+          $attempt = 0
+          while (-not $buildScanSucceeded -and $attempt -lt 2) {
+            try {
+              $attempt++
+              $buildResults = Invoke-ScriptAnalyzer -Path build.ps1 -Settings PSScriptAnalyzerSettings.psd1
+              $buildScanSucceeded = $true
+            } catch {
+              if ($attempt -ge 2) { throw }
+              Write-Host "PSScriptAnalyzer failed on build.ps1 (attempt $attempt). Retrying..."
+              Start-Sleep -Seconds 2
+            }
+          }
+          $Results += @($buildResults)
+
+          $Results = $Results | Where-Object { $null -ne $_ }
+          if ($Results) {
+            $Results | Format-Table -AutoSize
+            Write-Error "PSScriptAnalyzer found $($Results.Count) issue(s)"
+            exit 1
+          } else {
+            Write-Host "PSScriptAnalyzer passed!" -ForegroundColor Green
+          }
+
+  test:
+    name: Run Tests
+    runs-on: windows-latest
+    needs: lint
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Bootstrap environment
+        shell: pwsh
+        run: |
+          ./bootstrap.ps1
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Build C# projects
+        shell: pwsh
+        run: |
+          # Ensure Binaries directory exists
+          if (-not (Test-Path "Source\Binaries")) {
+            New-Item -Path "Source\Binaries" -ItemType Directory -Force | Out-Null
+          }
+
+          Push-Location "C# Classes"
+          try {
+            dotnet build "C# Classes.sln" -c Release
+
+            # Copy all built DLLs from bin/Release directories to module Binaries folder
+            $projectDirs = @("MetadataAttribute", "ValidateNodeRoleId", "ValidateStringOrInt", "Enums")
+            foreach ($projectDir in $projectDirs) {
+              $dllPath = Join-Path -Path $projectDir -ChildPath "bin\Release\*\*.dll"
+              $dlls = Get-ChildItem -Path $dllPath -ErrorAction SilentlyContinue
+              if ($dlls) {
+                Copy-Item -Path $dlls -Destination "..\Source\Binaries\" -Force
+                Write-Host "  ✓ Copied $($dlls.Count) DLL(s) from $projectDir"
+              }
+            }
+            Write-Host "✓ C# projects built and DLLs copied to Source\Binaries" -ForegroundColor Green
+          } finally {
+            Pop-Location
+          }
+
+      - name: Build module
+        shell: pwsh
+        run: |
+          ./build.ps1 -TaskNames 'clean', 'build'
+
+      - name: Run Pester tests
+        shell: pwsh
+        run: |
+          ./test.ps1
+
+      - name: List test artifacts
+        shell: pwsh
+        if: always()
+        run: |
+          $artifactsPath = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath '.artifacts'
+          Write-Host "Artifacts path: $artifactsPath"
+          if (Test-Path -Path $artifactsPath) {
+            Get-ChildItem -Path $artifactsPath | Format-Table Name,Length,LastWriteTime
+          } else {
+            Write-Host 'Artifacts path not found.' -ForegroundColor Yellow
+          }
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: |
+            .artifacts/TestResults.xml
+
+      - name: Upload code coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: code-coverage
+          path: .artifacts/CodeCoverage.xml
+
+  build:
+    name: Build Module
+    runs-on: windows-latest
+    needs: test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Bootstrap environment
+        shell: pwsh
+        run: |
+          ./bootstrap.ps1
+
+      - name: Build module
+        shell: pwsh
+        run: |
+          ./build.ps1 -TaskNames 'clean', 'build'
+
+      - name: Generate documentation
+        shell: pwsh
+        run: |
+          ./build.ps1 -TaskNames 'generateShortNamesMapping', 'updateHelp', 'publishDocs'
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: module-build
+          path: output/
+          retention-days: 30
+
+      - name: Upload documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: module-docs
+          path: .build/docs/
+          retention-days: 30

@@ -22,7 +22,7 @@ function Get-NinjaOneTags {
 		'/v2/tag',
 		'get'
 	)]
-	Param()
+	param()
 	process {
 		try {
 			$RequestParams = @{ Resource = 'v2/tag' }
