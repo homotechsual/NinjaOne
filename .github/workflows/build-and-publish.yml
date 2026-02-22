@@ -20,10 +20,11 @@ jobs:
           fetch-depth: 0  # Full history for versioning
 
       - name: Bootstrap environment
-        shell: pwsh -ExecutionPolicy Bypass
+        shell: pwsh
         working-directory: ${{ github.workspace }}
         run: |
-          . "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
 
       - name: Build module
         shell: pwsh

@@ -18,10 +18,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Bootstrap environment
-        shell: pwsh -ExecutionPolicy Bypass
+        shell: pwsh
         working-directory: ${{ github.workspace }}
         run: |
-          . "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
 
       - name: Show Docusaurus module version
         shell: pwsh
@@ -76,10 +77,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Bootstrap environment
-        shell: pwsh -ExecutionPolicy Bypass
+        shell: pwsh
         working-directory: ${{ github.workspace }}
         run: |
-          . "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -114,9 +116,10 @@ jobs:
           }
 
       - name: Build module
-        shell: pwsh -ExecutionPolicy Bypass
+        shell: pwsh
         run: |
-          . "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'clean', 'build'
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'clean', 'build'
 
       - name: Run Pester tests
         shell: pwsh
@@ -162,15 +165,17 @@ jobs:
           fetch-depth: 0
 
       - name: Bootstrap environment
-        shell: pwsh -ExecutionPolicy Bypass
+        shell: pwsh
         working-directory: ${{ github.workspace }}
         run: |
-          . "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
 
       - name: Build module
-        shell: pwsh -ExecutionPolicy Bypass
+        shell: pwsh
         run: |
-          . "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'clean', 'build'
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'clean', 'build'
 
       - name: Generate documentation
         shell: pwsh
