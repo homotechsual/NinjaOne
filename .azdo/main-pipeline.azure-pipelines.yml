@@ -14,7 +14,7 @@ stages:
     jobs: 
       - job: Setup
         steps:
-          - powershell: .\bootstrap.ps1
+          - powershell: .\DevOps\Build\bootstrap.ps1
             displayName: 'Install pre-requisites'
 
   - stage: Release

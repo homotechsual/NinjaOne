@@ -14,13 +14,18 @@ Path to scan for PS1/PSM1 files (defaults to current directory)
 Skip confirmations and apply all changes automatically
 
 .EXAMPLE
-.\Generate-CommentBasedHelp.ps1 -Path .\Source\Public -Force
+.\DevOps\Help\Generate-CommentBasedHelp.ps1 -Path .\Source\Public -Force
 #>
 
 param(
     [string]$Path = '.',
     [switch]$Force
 )
+
+$RepoRoot = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\\..')
+if ($Path -eq '.') {
+	$Path = $RepoRoot
+}
 
 # Verb mapping for common PowerShell verbs to help descriptions
 $verbDescriptions = @{
@@ -169,8 +174,8 @@ function Add-HelpToFile {
         }
     }
     
-    if ($modifications.Count -gt 0) {
-        Write-Host "Ready to add help to $($modifications.Count) functions. Preview first modification? (Y/n)" -ForegroundColor Cyan
+    if (@($modifications).Count -gt 0) {
+        Write-Host "Ready to add help to $(@($modifications).Count) functions. Preview first modification? (Y/n)" -ForegroundColor Cyan
         
         if (-not $Force) {
             $response = Read-Host

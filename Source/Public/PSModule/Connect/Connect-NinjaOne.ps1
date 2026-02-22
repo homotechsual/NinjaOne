@@ -118,7 +118,14 @@ function Connect-NinjaOne {
 		# The prefix to add to the name of the secrets stored in the secret vault.
 		[Parameter( ParameterSetName = 'Secret Vault Write' )]
 		[Parameter( ParameterSetName = 'Secret Vault Read' )]
-		[String]$SecretPrefix = 'NinjaOne'
+		[String]$SecretPrefix = 'NinjaOne',
+		# Automatically parse date/time values in API responses.
+		[Parameter( ParameterSetName = 'Authorisation Code' )]
+		[Parameter( ParameterSetName = 'Token Authentication' )]
+		[Parameter( ParameterSetName = 'Client Credentials' )]
+		[Parameter( ParameterSetName = 'Secret Vault Write' )]
+		[Parameter( ParameterSetName = 'Secret Vault Read' )]
+		[Switch]$ParseDateTimes
 	)
 	process {
 		# Run the pre-flight check.
@@ -192,6 +199,11 @@ function Connect-NinjaOne {
 				SecretPrefix = $SecretPrefix
 			}
 			Set-Variable -Name 'NRAPIConnectionInformation' -Value $ConnectionInformation -Visibility Private -Scope Script -Force
+		}
+		# Set the ParseDateTimes module variable based on the parameter
+		if ($ParseDateTimes) {
+			$Script:ParseDateTimes = $true
+			Write-Verbose 'Automatic date/time parsing enabled.'
 		}
 		Write-Verbose "Connection information set to: $($Script:NRAPIConnectionInformation | Format-List | Out-String)"
 		if ($null -eq $Script:NRAPIAuthenticationInformation) {
@@ -332,6 +344,7 @@ function Connect-NinjaOne {
 				Expires = $Script:NRAPIAuthenticationInformation.Expires
 				Refresh = $Script:NRAPIAuthenticationInformation.Refresh
 				SecretPrefix = $Script:NRAPIConnectionInformation.SecretPrefix
+				ParseDateTimes = $Script:ParseDateTimes
 			}
 			Write-Verbose 'Using secret management to store credentials.'
 			Set-NinjaOneSecrets @SecretManagementParams

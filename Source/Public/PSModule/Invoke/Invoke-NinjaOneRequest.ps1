@@ -5,12 +5,22 @@ function Invoke-NinjaOneRequest {
 			Sends a request to the NinjaOne API.
 		.DESCRIPTION
 			Wrapper function to send web requests to the NinjaOne API.
+		.PARAMETER ParseDateTime
+			Convert ISO 8601 or Unix epoch values in JSON responses to [DateTime].
 		.FUNCTIONALITY
 			API Request
 		.EXAMPLE
 			PS> Invoke-NinjaOneRequest -Method 'GET' -Uri 'https://eu.ninjarmm.com/v2/activities'
 
 			Make a GET request to the activities resource.
+		.EXAMPLE
+			PS> Invoke-NinjaOneRequest -Method 'GET' -Uri 'https://eu.ninjarmm.com/v2/activities' -ParseDateTime
+
+			Parse ISO 8601 and Unix epoch values in the response to [DateTime].
+		.EXAMPLE
+			PS> Invoke-NinjaOneRequest -Method 'GET' -Uri 'https://eu.ninjarmm.com/v2/activities' -ParseDateTime
+
+			Make a GET request and convert ISO 8601 or Unix epoch values to [DateTime].
 		.OUTPUTS
 			Outputs an object containing the response from the web request.
 		.LINK
@@ -32,7 +42,9 @@ function Invoke-NinjaOneRequest {
 		[Parameter(Position = 2)]
 		[String]$Body,
 		# Return the raw response - don't convert from JSON.
-		[Switch]$Raw
+		[Switch]$Raw,
+		# Parse date/time values returned in JSON.
+		[Switch]$ParseDateTime
 
 	)
 	begin {
@@ -91,6 +103,9 @@ function Invoke-NinjaOneRequest {
 			} else {
 				Write-Verbose 'Raw switch not present, converting response from JSON.'
 				$Results = $Response.Content | ConvertFrom-Json
+				if ($ParseDateTime) {
+					$Results = ConvertFrom-NinjaOneDateTime -InputObject $Results
+				}
 			}
 			if ($null -eq $Results) {
 				if ($Response.StatusCode -and $WebRequestParams.Method -ne 'GET') {

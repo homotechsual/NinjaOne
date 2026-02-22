@@ -62,8 +62,8 @@ function New-NinjaOneInstaller {
 				Resource = $Resource
 				Body = $InstallerBody
 			}
-			$OrganisationExists = (Get-NinjaOneOrganisations -organisationId $organisationId).Count -gt 0
-			$LocationExists = (Get-NinjaOneLocations -organisationId $organisationId | Where-Object { $_.id -eq $locationId }).Count -gt 0
+			$OrganisationExists = @(Get-NinjaOneOrganisations -organisationId $organisationId).Count -gt 0
+			$LocationExists = @(Get-NinjaOneLocations -organisationId $organisationId | Where-Object { $_.id -eq $locationId }).Count -gt 0
 			if ($OrganisationExists -and $LocationExists) {
 				if ($PSCmdlet.ShouldProcess('Installer', 'Create')) {
 					$InstallerCreate = New-NinjaOnePOSTRequest @RequestParams

@@ -32,7 +32,9 @@ function Set-NinjaOneTicket {
 		[Int]$ticketId,
 		# The ticket object.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
-		[Object]$ticket
+		[Object]$ticket,
+		# Parse date/time values in the response.
+		[Switch]$ParseDateTime
 	)
 	begin { }
 	process {
@@ -42,6 +44,9 @@ function Set-NinjaOneTicket {
 			$RequestParams = @{
 				Resource = $Resource
 				Body = $ticket
+			}
+			if ($ParseDateTime) {
+				$RequestParams.ParseDateTime = $ParseDateTime
 			}
 			if ($PSCmdlet.ShouldProcess(('Ticket {0}' -f $ticketId), 'Update')) {
 				$TicketUpdate = New-NinjaOnePUTRequest @RequestParams

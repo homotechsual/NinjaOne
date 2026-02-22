@@ -14,13 +14,17 @@ List of function names to update
 Skip confirmations
 
 .EXAMPLE
-.\Apply-GeneratedHelpToFunctions.ps1 -FunctionNames @('Get-NinjaOneDevices')
+.\DevOps\Help\Apply-GeneratedHelpToFunctions.ps1 -FunctionNames @('Get-NinjaOneDevices')
 #>
 
 param(
     [string[]]$FunctionNames,
     [switch]$Force
 )
+
+$RepoRoot = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\\..')
+$semanticHelpPath = Join-Path -Path $PSScriptRoot -ChildPath 'New-SemanticHelp.ps1'
+$helpGenerationPath = Join-Path -Path $RepoRoot -ChildPath 'HelpGeneration'
 
 function Insert-HelpBeforeFunction {
     param(
@@ -104,9 +108,9 @@ Write-Host "NinjaOne Help Application Tool" -ForegroundColor Cyan
 Write-Host "==============================`n" -ForegroundColor Cyan
 
 # Load database
-$dbFile = Get-ChildItem -Path .\HelpGeneration -Filter 'functions_needing_help*.json' | Sort-Object Name -Descending | Select-Object -First 1
+$dbFile = Get-ChildItem -Path $helpGenerationPath -Filter 'functions_needing_help*.json' | Sort-Object Name -Descending | Select-Object -First 1
 if (-not $dbFile) {
-    Write-Error "No help generation database found. Run Orchestrate-HelpGeneration.ps1 first."
+    Write-Error "No help generation database found. Run DevOps/Help/Orchestrate-HelpGeneration.ps1 first."
     exit 1
 }
 
@@ -159,7 +163,7 @@ foreach ($funcName in $FunctionNames) {
     $params = @($funcMetadata.Parameters)
     $funcType = if ($funcMetadata.IsPublic) { 'public' } else { 'private' }
     
-    $helpContent = & .\New-SemanticHelp.ps1 `
+    $helpContent = & $semanticHelpPath `
         -FunctionName $funcName `
         -Parameters $params `
         -FunctionType $funcType

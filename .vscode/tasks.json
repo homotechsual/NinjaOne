@@ -1,127 +1,89 @@
 {
 	"version": "2.0.0",
 	"tasks": [
-		{
-			"label": "Build NinjaOne",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1"
-			],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		},
-		{
-			"label": "Build NinjaOne (build only)",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1",
-				"-TaskNames",
-				"build"
-			],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		},
-		{
-			"label": "Build NinjaOne (build only)",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1",
-				"-TaskNames",
-				"build"
-			],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		},
-		{
-			"label": "Build NinjaOne (build only)",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1",
-				"-TaskNames",
-				"build"
-			],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		},
-		{
-			"label": "Build NinjaOne (build only)",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1",
-				"-TaskNames",
-				"build"
-			],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		},
-		{
-			"label": "Build NinjaOne (build only)",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1",
-				"-TaskNames",
-				"build"
-			],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		},
-		{
-			"label": "Build NinjaOne (build only)",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1",
-				"-TaskNames",
-				"build"
-			],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		},
-		{
-			"label": "Build NinjaOne Module",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1",
-				"-TaskNames",
-				"build"
-			],
-			"group": "build"
-		},
-		{
-			"label": "Build NinjaOne (build only)",
-			"type": "shell",
-			"command": "pwsh",
-			"args": [
-				"-File",
-				".\\build.ps1",
-				"-TaskNames",
-				"build"
-			],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		}
-	]
+    {
+      "label": "Build NinjaOne",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\DevOps\\Build\\build.ps1"],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Build NinjaOne (build only)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\DevOps\\Build\\build.ps1", "-TaskNames", "build"],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Bootstrap Environment",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\DevOps\\Build\\bootstrap.ps1"],
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
+      "label": "Test NinjaOne",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\DevOps\\Quality\\test.ps1", "-IncludeVSCodeMarker"],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Run PSScriptAnalyzer",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\DevOps\\Quality\\run-pssa.ps1"],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Check Metadata",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\DevOps\\Quality\\check-metadata.ps1"],
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
+      "label": "Generate Help (Orchestrate)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\DevOps\\Help\\Orchestrate-HelpGeneration.ps1"],
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
+      "label": "Apply Comment-Based Help",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-File",
+        ".\\DevOps\\Help\\Apply-CommentBasedHelpToFunctions.ps1"
+      ],
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
+      "label": "Generate Documentation",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-File",
+        ".\\DevOps\\Build\\build.ps1",
+        "-TaskNames",
+        "generateShortNamesMapping,updateHelp,publishDocs"
+      ],
+      "isBackground": false,
+      "problemMatcher": []
+    }
+  ]
 }

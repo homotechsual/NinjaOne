@@ -428,6 +428,8 @@ FodyWeavers.xsd
 # Custom
 output
 build
+!DevOps/Build/
+!DevOps/Build/**
 docs
 .artifacts
 test-markdown-direct

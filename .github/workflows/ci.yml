@@ -19,8 +19,10 @@ jobs:
 
       - name: Bootstrap environment
         shell: pwsh
+        working-directory: ${{ github.workspace }}
         run: |
-          ./bootstrap.ps1
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
 
       - name: Show Docusaurus module version
         shell: pwsh
@@ -47,11 +49,11 @@ jobs:
           while (-not $buildScanSucceeded -and $attempt -lt 2) {
             try {
               $attempt++
-              $buildResults = Invoke-ScriptAnalyzer -Path build.ps1 -Settings PSScriptAnalyzerSettings.psd1
+              $buildResults = Invoke-ScriptAnalyzer -Path DevOps/Build/build.ps1 -Settings PSScriptAnalyzerSettings.psd1
               $buildScanSucceeded = $true
             } catch {
               if ($attempt -ge 2) { throw }
-              Write-Host "PSScriptAnalyzer failed on build.ps1 (attempt $attempt). Retrying..."
+              Write-Host "PSScriptAnalyzer failed on DevOps/Build/build.ps1 (attempt $attempt). Retrying..."
               Start-Sleep -Seconds 2
             }
           }
@@ -76,8 +78,10 @@ jobs:
 
       - name: Bootstrap environment
         shell: pwsh
+        working-directory: ${{ github.workspace }}
         run: |
-          ./bootstrap.ps1
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -114,12 +118,22 @@ jobs:
       - name: Build module
         shell: pwsh
         run: |
-          ./build.ps1 -TaskNames 'clean', 'build'
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'clean', 'build'
 
       - name: Run Pester tests
         shell: pwsh
         run: |
-          ./test.ps1
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Quality\test.ps1"
+
+      - name: Publish test results
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Pester Tests
+          path: .artifacts/TestResults.xml
+          reporter: java-junit
 
       - name: List test artifacts
         shell: pwsh
@@ -148,6 +162,14 @@ jobs:
           name: code-coverage
           path: .artifacts/CodeCoverage.xml
 
+      - name: Upload coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@v4
+        with:
+          files: .artifacts/CodeCoverage.xml
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
   build:
     name: Build Module
     runs-on: windows-latest
@@ -160,18 +182,22 @@ jobs:
 
       - name: Bootstrap environment
         shell: pwsh
+        working-directory: ${{ github.workspace }}
         run: |
-          ./bootstrap.ps1
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
 
       - name: Build module
         shell: pwsh
         run: |
-          ./build.ps1 -TaskNames 'clean', 'build'
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'clean', 'build'
 
       - name: Generate documentation
         shell: pwsh
         run: |
-          ./build.ps1 -TaskNames 'generateShortNamesMapping', 'updateHelp', 'publishDocs'
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'generateShortNamesMapping', 'updateHelp', 'publishDocs'
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

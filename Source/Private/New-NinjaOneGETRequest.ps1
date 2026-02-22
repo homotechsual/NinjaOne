@@ -21,7 +21,9 @@ function New-NinjaOneGETRequest {
 		# A hashtable used to build the query string.
 		[HashTable]$QSCollection,
 		# return the raw response.
-		[Switch]$Raw
+		[Switch]$Raw,
+		# Parse date/time values returned in JSON.
+		[Switch]$ParseDateTime
 	)
 	if ($null -eq $Script:NRAPIConnectionInformation) {
 		throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
@@ -54,6 +56,8 @@ function New-NinjaOneGETRequest {
 		}
 		if ($Raw) {
 			$WebRequestParams.Add('Raw', $Raw)
+		} elseif ($ParseDateTime -or $Script:ParseDateTimes) {
+			$WebRequestParams.Add('ParseDateTime', $true)
 		} else {
 			Write-Verbose 'Raw switch not present.'
 		}

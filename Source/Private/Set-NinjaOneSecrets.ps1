@@ -53,7 +53,9 @@ function Set-NinjaOneSecrets {
 		# The refresh token to use for authentication.
 		[String]$Refresh,
 		# The prefix to use for the secret names.
-		[String]$SecretPrefix = 'NinjaOne'
+		[String]$SecretPrefix = 'NinjaOne',
+		# Whether to automatically parse date/time values.
+		[Boolean]$ParseDateTimes
 	)
 	# Check if the secret vault exists.
 	$SecretVault = Get-SecretVault -Name $VaultName -ErrorAction SilentlyContinue
@@ -115,6 +117,9 @@ function Set-NinjaOneSecrets {
 	}
 	if ($null -ne $Script:NRAPIConnectionInformation.VaultName) {
 		$Secrets.('{0}VaultName' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.VaultName
+	}
+	if ($null -ne $Script:ParseDateTimes) {
+		$Secrets.('{0}ParseDateTimes' -f $SecretPrefix) = $Script:ParseDateTimes.ToString()
 	}
 	foreach ($Secret in $Secrets.GetEnumerator()) {
 		Write-Verbose ('Processing secret {0} for vault storage.' -f $Secret.Key)

@@ -21,7 +21,9 @@ function New-NinjaOnePOSTRequest {
 		# A hashtable used to build the query string.
 		[Hashtable]$QSCollection,
 		# A hashtable used to build the body of the request.
-		[Object]$Body
+		[Object]$Body,
+		# Parse date/time values returned in JSON.
+		[Switch]$ParseDateTime
 	)
 	if ($null -eq $Script:NRAPIConnectionInformation) {
 		throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
@@ -53,6 +55,9 @@ function New-NinjaOnePOSTRequest {
 		$WebRequestParams = @{
 			Method = 'POST'
 			Uri = $RequestUri.ToString()
+		}
+		if ($ParseDateTime -or $Script:ParseDateTimes) {
+			$WebRequestParams.ParseDateTime = $true
 		}
 		if ($Body) {
 			Write-Verbose 'Building [HttpBody] for New-NinjaOnePOSTRequest'

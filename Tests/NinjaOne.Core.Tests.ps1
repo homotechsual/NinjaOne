@@ -69,6 +69,33 @@ Describe ('{0} - Module Load Test' -f $ModuleName) -Tags 'Module' {
     }
 }
 
+Describe ('{0} - DateTime Parsing' -f $ModuleName) -Tags 'Module' {
+    It 'Converts ISO 8601 and Unix epoch values' {
+        $module = Get-Module -Name $ModuleName
+        & $module {
+            $input = [pscustomobject]@{
+                createdAt = '2024-01-01T12:34:56Z'
+                updatedAt = 1704112496
+                createdFloat = 1769013679.4855
+                nested = [pscustomobject]@{
+                    time = '1704112496000'
+                    lastUpdate = '1771675908.804'
+                    raw = 'not-a-date'
+                    smallNumber = 1234
+                }
+            }
+            $result = ConvertFrom-NinjaOneDateTime -InputObject $input
+            $result.createdAt | Should -BeOfType ([DateTime])
+            $result.updatedAt | Should -BeOfType ([DateTime])
+            $result.createdFloat | Should -BeOfType ([DateTime])
+            $result.nested.time | Should -BeOfType ([DateTime])
+            $result.nested.lastUpdate | Should -BeOfType ([DateTime])
+            $result.nested.raw | Should -Be 'not-a-date'
+            $result.nested.smallNumber | Should -Be 1234
+        }
+    }
+}
+
 AfterAll {
     Remove-Module $ModuleName -Force
 }

@@ -10,12 +10,15 @@ param(
 	[Switch]$Force
 )
 
+$BuildToolsRoot = $PSScriptRoot
+$RepoRoot = Resolve-Path -Path (Join-Path -Path $BuildToolsRoot -ChildPath '..\\..')
+
 $ErrorActionPreference = 'Stop'
 
 Write-Host 'Bootstrap: Setting up build environment for NinjaOne module' -ForegroundColor Cyan
 
 # Add bundled Modules directory to PSModulePath so bundled versions take precedence
-$BundledModulesPath = Join-Path -Path $PSScriptRoot -ChildPath 'Modules'
+$BundledModulesPath = Join-Path -Path $RepoRoot -ChildPath 'Modules'
 if (Test-Path -Path $BundledModulesPath) {
 	Write-Host 'Bootstrap: Adding bundled modules to PSModulePath' -ForegroundColor Cyan
 	$env:PSModulePath = "$BundledModulesPath;$($env:PSModulePath)"
@@ -39,7 +42,7 @@ if (-not (Get-InstalledScript -Name 'Install-RequiredModule' -ErrorAction Silent
 }
 
 # Install required modules from RequiredModules.psd1
-$RequiredModulesPath = Join-Path -Path $PSScriptRoot -ChildPath 'RequiredModules.psd1'
+$RequiredModulesPath = Join-Path -Path $BuildToolsRoot -ChildPath 'RequiredModules.psd1'
 if (Test-Path -Path $RequiredModulesPath) {
 	Write-Host 'Bootstrap: Installing required modules from RequiredModules.psd1' -ForegroundColor Yellow
 	
@@ -59,6 +62,19 @@ if (Test-Path -Path $RequiredModulesPath) {
 	Install-RequiredModule -RequiredModulesFile $RequiredModulesPath -Scope CurrentUser -TrustRegisteredRepositories -Import -Quiet
 } else {
 	throw "RequiredModules.psd1 not found at: $RequiredModulesPath"
+}
+
+# Configure Git hooks (like Husky)
+if (Test-Path (Join-Path $RepoRoot '.git')) {
+	Write-Host 'Bootstrap: Configuring Git hooks...' -ForegroundColor Cyan
+	try {
+		git -C $RepoRoot config core.hooksPath 'DevOps/hooks' 2>$null
+		if ($LASTEXITCODE -eq 0) {
+			Write-Host '  ✓ Git hooks configured (PSScriptAnalyzer will run pre-commit)' -ForegroundColor Green
+		}
+	} catch {
+		Write-Host '  ⚠ Could not configure Git hooks (git not available or not a repository)' -ForegroundColor Yellow
+	}
 }
 
 Write-Host 'Bootstrap: Environment setup complete!' -ForegroundColor Green

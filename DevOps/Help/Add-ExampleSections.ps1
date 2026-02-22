@@ -4,10 +4,13 @@
 Add .EXAMPLE sections to public functions that are missing them.
 #>
 
+$RepoRoot = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\\..')
+$settingsPath = Join-Path -Path $RepoRoot -ChildPath 'PSScriptAnalyzerSettings.psd1'
+
 # Get all functions missing examples
-$violations = Get-ChildItem -Path . -Recurse -File -Include *.ps1,*.psm1,*.psd1 | 
+$violations = Get-ChildItem -Path $RepoRoot -Recurse -File -Include *.ps1,*.psm1,*.psd1 | 
     Where-Object { $_.FullName -notmatch '\\output\\' -and $_.FullName -notmatch '\\HelpGeneration\\' } |
-    Invoke-ScriptAnalyzer -Settings '.\PSScriptAnalyzerSettings.psd1' -IncludeRule 'PSRequiredCommentBasedHelp' |
+    Invoke-ScriptAnalyzer -Settings $settingsPath -IncludeRule 'PSRequiredCommentBasedHelp' |
     Where-Object { $_.Message -like '*missing .EXAMPLE*' }
 
 Write-Host "Adding .EXAMPLE sections to $($violations.Count) functions" -ForegroundColor Cyan

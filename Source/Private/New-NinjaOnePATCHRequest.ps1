@@ -22,7 +22,9 @@ function New-NinjaOnePATCHRequest {
 		[HashTable]$QSCollection,
 		# A hashtable used to build the body of the request.
 		[Parameter(Mandatory = $True)]
-		[Object]$Body
+		[Object]$Body,
+		# Parse date/time values returned in JSON.
+		[Switch]$ParseDateTime
 	)
 	if ($null -eq $Script:NRAPIConnectionInformation) {
 		throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
@@ -55,6 +57,9 @@ function New-NinjaOnePATCHRequest {
 			Method = 'PATCH'
 			Uri = $RequestUri.ToString()
 			Body = (ConvertTo-Json -InputObject $Body -Depth 100)
+		}
+		if ($ParseDateTime -or $Script:ParseDateTimes) {
+			$WebRequestParams.ParseDateTime = $true
 		}
 		Write-Verbose "Raw body is $($WebRequestParams.Body)"
 		Write-Verbose "Building new NinjaOneRequest with params: $($WebRequestParams | Out-String)"

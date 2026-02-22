@@ -2,13 +2,16 @@ using assembly '.\Binaries\MetadataAttribute.dll'
 using assembly '.\Binaries\ValidateNodeRoleId.dll'
 
 [int32]$Script:NRAPIDefaultPageSize = 2000
+[bool]$Script:ParseDateTimes = $false
 [Hashtable]$Script:NRAPIInstances = @{
 	'eu' = 'https://eu.ninjarmm.com'
 	'oc' = 'https://oc.ninjarmm.com'
 	'us' = 'https://app.ninjarmm.com'
+	'app' = 'https://app.ninjarmm.com'
 	'ca' = 'https://ca.ninjarmm.com'
 	'us2' = 'https://us2.ninjarmm.com'
 }
+
 enum EntityType {
 	ORGANIZATION = 1
 	DOCUMENT = 2

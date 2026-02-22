@@ -5,14 +5,12 @@ on:
     workflows: ["Build and Publish Module"]
     types:
       - completed
-    branches:
-      - develop
 
 jobs:
   publish-docs:
     name: Publish docs to homotechsualdocs
     runs-on: windows-latest
-    if: github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_commit.ref, 'refs/tags/v') && !startsWith(github.event.workflow_run.head_commit.ref, 'refs/tags/test-v')
+    if: github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_branch, 'v') && !startsWith(github.event.workflow_run.head_branch, 'test-v')
     steps:
       - name: Checkout NinjaOne repository
         uses: actions/checkout@v4
@@ -23,15 +21,24 @@ jobs:
           name: module-docs
           path: docs/
           run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Clone and update homotechsualdocs
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.DOCS_REPO_TOKEN }}
         run: |
-          # Clone homotechsualdocs
-          git clone https://github.com/homotechsual/homotechsualdocs.git docs-repo
+          # Clone homotechsualdocs with authentication
+          git clone https://x-access-token:$env:GH_TOKEN@github.com/homotechsual/homotechsualdocs.git docs-repo
           
           Push-Location docs-repo
           try {
+            # Verify documentation was generated
+            if (-not (Test-Path '../docs/NinjaOne/commandlets')) {
+              Write-Error "Documentation not found in artifact. Build may have failed to generate docs."
+              exit 1
+            }
+            
             # Replace docs
             if (Test-Path 'docs/ninjaone/commandlets') {
               Remove-Item -Path 'docs/ninjaone/commandlets' -Recurse -Force
@@ -45,11 +52,18 @@ jobs:
             git config user.email "action@github.com"
             git config user.name "GitHub Action"
             
+            # Check if there are changes
+            $changes = git status --porcelain
+            if (-not $changes) {
+              Write-Host "No documentation changes to commit." -ForegroundColor Yellow
+              exit 0
+            }
+            
             # Commit and push
             git add docs/ninjaone/commandlets
             $commitMsg = "Docs update for NinjaOne ${{ github.event.workflow_run.head_branch }}"
             git commit -m $commitMsg
-            git push origin
+            git push origin main
             
             Write-Host "✓ Documentation published to homotechsualdocs" -ForegroundColor Green
           } finally {

@@ -31,6 +31,7 @@ function Get-NinjaOneSecrets {
 			'WriteToSecretVault' = ('{0}WriteToSecretVault' -f $SecretPrefix)
 			'ReadFromSecretVault' = ('{0}ReadFromSecretVault' -f $SecretPrefix)
 			'VaultName' = ('{0}VaultName' -f $SecretPrefix)
+			'ParseDateTimes' = ('{0}ParseDateTimes' -f $SecretPrefix)
 		}
 		AuthenticationInfo = @{
 			'Type' = ('{0}Type' -f $SecretPrefix)
@@ -81,6 +82,11 @@ function Get-NinjaOneSecrets {
 	}
 	if ($null -ne $Script:NRAPIConnectionInformation.ReadFromSecretVault) {
 		$Script:NRAPIConnectionInformation.ReadFromSecretVault = [Boolean]::Parse($Script:NRAPIConnectionInformation.ReadFromSecretVault)
+	}
+	# If we have the ParseDateTimes value, convert it to boolean and set the module variable.
+	if ($null -ne $Script:NRAPIConnectionInformation.ParseDateTimes) {
+		$Script:ParseDateTimes = [Boolean]::Parse($Script:NRAPIConnectionInformation.ParseDateTimes)
+		Write-Verbose ('Automatic date/time parsing set to {0} from secret vault.' -f $Script:ParseDateTimes)
 	}
 	# If we have the expires value, convert it to a DateTime object.
 	if ($null -ne $Script:NRAPIAuthenticationInformation.Expires) {
