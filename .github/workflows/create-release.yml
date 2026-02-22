@@ -13,6 +13,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Validate tag source (main)
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG_COMMIT="${GITHUB_SHA}"
+          if git merge-base --is-ancestor "${TAG_COMMIT}" origin/main; then
+            echo "Tag commit is reachable from main."
+          else
+            echo "Tag commit is NOT reachable from main." >&2
+            exit 1
+          fi
       - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -24,6 +24,18 @@ jobs:
         with:
           fetch-depth: 0  # Full history for versioning
 
+      - name: Validate tag source (main)
+        shell: pwsh
+        if: startsWith(github.ref, 'refs/tags/v') && !startsWith(github.ref, 'refs/tags/test-v')
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tagCommit = $env:GITHUB_SHA
+          $mainCommit = (git rev-parse origin/main)
+          $mergeBase = (git merge-base $tagCommit $mainCommit)
+          if ($mergeBase -ne $tagCommit) {
+            throw 'Stable tag commit is not reachable from main.'
+          }
+
       - name: Bootstrap environment
         shell: pwsh
         working-directory: ${{ github.workspace }}
@@ -104,7 +116,7 @@ jobs:
       - name: Publish to GitHub Packages
         shell: pwsh
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
         run: |
           $ErrorActionPreference = 'Stop'
           $repoOwner = '${{ github.repository_owner }}'
@@ -116,7 +128,10 @@ jobs:
           if (-not $moduleManifest) {
             throw 'Module manifest not found under output/. Ensure build artifacts are present.'
           }
-          Publish-Module -Path $moduleManifest.Directory.FullName -Repository 'GitHub' -NuGetApiKey $env:GITHUB_TOKEN
+          if (-not $env:GH_PACKAGES_TOKEN) {
+            throw 'GH_PACKAGES_TOKEN is not set. Add a classic PAT with packages:write scope.'
+          }
+          Publish-Module -Path $moduleManifest.Directory.FullName -Repository 'GitHub' -NuGetApiKey $env:GH_PACKAGES_TOKEN
 
       - name: Close matching milestone
         shell: pwsh
