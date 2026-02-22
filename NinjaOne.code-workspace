@@ -3,6 +3,9 @@
 		{
 			"path": ".",
 		},
+		{
+			"path": "../Homotechsual/homotechsualdocs",
+		},
 	],
 	"settings": {
 		"editor.insertSpaces": false,
@@ -81,6 +84,7 @@
 			"Get-Item": true,
 		},
 		"codeQL.githubDatabase.download": "never",
+		"cSpell.words": ["Analyzer"],
 	},
 	"launch": {
 		"version": "0.2.0",
