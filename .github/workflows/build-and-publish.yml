@@ -23,7 +23,7 @@ jobs:
         shell: pwsh
         working-directory: ${{ github.workspace }}
         run: |
-          pwsh -File "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
 
       - name: Build module
         shell: pwsh
@@ -65,7 +65,7 @@ jobs:
         shell: pwsh
         working-directory: ${{ github.workspace }}
         run: |
-          pwsh -File "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
