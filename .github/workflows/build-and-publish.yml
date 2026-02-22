@@ -22,7 +22,7 @@ jobs:
       - name: Bootstrap environment
         shell: pwsh
         run: |
-          .\DevOps\Build\bootstrap.ps1
+          pwsh -File .\DevOps\Build\bootstrap.ps1
 
       - name: Build module
         shell: pwsh
@@ -63,7 +63,7 @@ jobs:
       - name: Bootstrap environment
         shell: pwsh
         run: |
-            .\DevOps\Build\bootstrap.ps1
+          pwsh -File .\DevOps\Build\bootstrap.ps1
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
