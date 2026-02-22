@@ -119,9 +119,10 @@ jobs:
           . "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'clean', 'build'
 
       - name: Run Pester tests
-        shell: pwsh -ExecutionPolicy Bypass
+        shell: pwsh
         run: |
-          . "$env:GITHUB_WORKSPACE\DevOps\Quality\test.ps1"
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Quality\test.ps1"
 
       - name: List test artifacts
         shell: pwsh
@@ -172,9 +173,10 @@ jobs:
           . "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'clean', 'build'
 
       - name: Generate documentation
-        shell: pwsh -ExecutionPolicy Bypass
+        shell: pwsh
         run: |
-          . "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'generateShortNamesMapping', 'updateHelp', 'publishDocs'
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'generateShortNamesMapping', 'updateHelp', 'publishDocs'
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
