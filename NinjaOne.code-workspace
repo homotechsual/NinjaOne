@@ -2,10 +2,7 @@
 	"folders": [
 		{
 			"path": ".",
-		},
-		{
-			"path": "../Homotechsual/homotechsualdocs",
-		},
+		}
 	],
 	"settings": {
 		"editor.insertSpaces": false,

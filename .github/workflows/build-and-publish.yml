@@ -9,6 +9,10 @@ on:
       - develop
   workflow_dispatch:
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   build:
     name: Build Module
@@ -77,6 +81,17 @@ jobs:
           name: module-build
           path: output/
 
+      - name: Package module for release
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tagName = "$env:GITHUB_REF_NAME"
+          $zipName = "NinjaOne-$tagName.zip"
+          $zipPath = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath $zipName
+          if (Test-Path -Path $zipPath) { Remove-Item -Path $zipPath -Force }
+          Compress-Archive -Path (Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath 'output\*') -DestinationPath $zipPath
+          Write-Host "Created release asset: $zipPath"
+
       - name: Publish to PowerShell Gallery
         shell: pwsh
         env:
@@ -84,3 +99,25 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           & "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'publish'
+
+      - name: Publish to GitHub Packages
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $repoOwner = '${{ github.repository_owner }}'
+          $repoSource = "https://nuget.pkg.github.com/$repoOwner/index.json"
+          if (-not (Get-PSRepository -Name 'GitHub' -ErrorAction SilentlyContinue)) {
+            Register-PSRepository -Name 'GitHub' -SourceLocation $repoSource -PublishLocation $repoSource -InstallationPolicy Trusted
+          }
+          $moduleManifest = Get-ChildItem -Path "$env:GITHUB_WORKSPACE\output" -Recurse -Filter 'NinjaOne.psd1' | Select-Object -First 1
+          if (-not $moduleManifest) {
+            throw 'Module manifest not found under output/. Ensure build artifacts are present.'
+          }
+          Publish-Module -Path $moduleManifest.Directory.FullName -Repository 'GitHub' -NuGetApiKey $env:GITHUB_TOKEN
+
+      - name: Upload GitHub Release asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: NinjaOne-${{ github.ref_name }}.zip
