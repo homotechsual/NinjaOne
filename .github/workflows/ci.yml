@@ -17,15 +17,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Diagnostics (paths)
-        shell: pwsh
-        run: |
-          Write-Host "GITHUB_WORKSPACE: $env:GITHUB_WORKSPACE"
-          Write-Host "PWD: $(Get-Location)"
-          Get-ChildItem -Path $env:GITHUB_WORKSPACE | Format-Table Name,Mode
-          Get-ChildItem -Path "$env:GITHUB_WORKSPACE\DevOps" -ErrorAction SilentlyContinue | Format-Table Name,Mode
-          Test-Path -Path "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1" | Write-Host
-
       - name: Bootstrap environment
         shell: pwsh
         working-directory: ${{ github.workspace }}
@@ -85,15 +76,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Diagnostics (paths)
-        shell: pwsh
-        run: |
-          Write-Host "GITHUB_WORKSPACE: $env:GITHUB_WORKSPACE"
-          Write-Host "PWD: $(Get-Location)"
-          Get-ChildItem -Path $env:GITHUB_WORKSPACE | Format-Table Name,Mode
-          Get-ChildItem -Path "$env:GITHUB_WORKSPACE\DevOps" -ErrorAction SilentlyContinue | Format-Table Name,Mode
-          Test-Path -Path "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1" | Write-Host
-
       - name: Bootstrap environment
         shell: pwsh
         working-directory: ${{ github.workspace }}
@@ -145,6 +127,14 @@ jobs:
           $ErrorActionPreference = 'Stop'
           & "$env:GITHUB_WORKSPACE\DevOps\Quality\test.ps1"
 
+      - name: Publish test results
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Pester Tests
+          path: .artifacts/TestResults.xml
+          reporter: java-junit
+
       - name: List test artifacts
         shell: pwsh
         if: always()
@@ -172,6 +162,13 @@ jobs:
           name: code-coverage
           path: .artifacts/CodeCoverage.xml
 
+      - name: Upload coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@v4
+        with:
+          files: .artifacts/CodeCoverage.xml
+          fail_ci_if_error: true
+
   build:
     name: Build Module
     runs-on: windows-latest
@@ -181,15 +178,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Diagnostics (paths)
-        shell: pwsh
-        run: |
-          Write-Host "GITHUB_WORKSPACE: $env:GITHUB_WORKSPACE"
-          Write-Host "PWD: $(Get-Location)"
-          Get-ChildItem -Path $env:GITHUB_WORKSPACE | Format-Table Name,Mode
-          Get-ChildItem -Path "$env:GITHUB_WORKSPACE\DevOps" -ErrorAction SilentlyContinue | Format-Table Name,Mode
-          Test-Path -Path "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1" | Write-Host
 
       - name: Bootstrap environment
         shell: pwsh
