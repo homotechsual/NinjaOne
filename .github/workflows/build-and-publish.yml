@@ -19,6 +19,15 @@ jobs:
         with:
           fetch-depth: 0  # Full history for versioning
 
+      - name: Diagnostics (paths)
+        shell: pwsh
+        run: |
+          Write-Host "GITHUB_WORKSPACE: $env:GITHUB_WORKSPACE"
+          Write-Host "PWD: $(Get-Location)"
+          Get-ChildItem -Path $env:GITHUB_WORKSPACE | Format-Table Name,Mode
+          Get-ChildItem -Path "$env:GITHUB_WORKSPACE\DevOps" -ErrorAction SilentlyContinue | Format-Table Name,Mode
+          Test-Path -Path "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1" | Write-Host
+
       - name: Bootstrap environment
         shell: pwsh
         working-directory: ${{ github.workspace }}
@@ -63,6 +72,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Diagnostics (paths)
+        shell: pwsh
+        run: |
+          Write-Host "GITHUB_WORKSPACE: $env:GITHUB_WORKSPACE"
+          Write-Host "PWD: $(Get-Location)"
+          Get-ChildItem -Path $env:GITHUB_WORKSPACE | Format-Table Name,Mode
+          Get-ChildItem -Path "$env:GITHUB_WORKSPACE\DevOps" -ErrorAction SilentlyContinue | Format-Table Name,Mode
+          Test-Path -Path "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1" | Write-Host
 
       - name: Bootstrap environment
         shell: pwsh
