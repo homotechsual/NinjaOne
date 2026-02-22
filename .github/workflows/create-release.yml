@@ -17,5 +17,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create ${{ github.ref_name }} --generate-notes
+          tag_name="${GITHUB_REF_NAME}"
+          version_name="${tag_name#v}"
+          notes_file="$(mktemp)"
+          awk -v ver="$version_name" '
+            BEGIN { p = 0 }
+            /^## / {
+              if (p) { exit }
+              if ($0 ~ "Version " ver) { p = 1; next }
+            }
+            p { print }
+          ' CHANGELOG.md > "$notes_file"
+
+          if [ -s "$notes_file" ]; then
+            gh release create "$tag_name" --notes-file "$notes_file"
+          else
+            gh release create "$tag_name" --generate-notes
+          fi
 
