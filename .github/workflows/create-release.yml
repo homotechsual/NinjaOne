@@ -41,6 +41,15 @@ jobs:
             p { print }
           ' CHANGELOG.md > "$notes_file"
 
+          {
+            echo ""
+            echo "---"
+            echo ""
+            echo "Release links:"
+            echo "- PowerShell Gallery: https://www.powershellgallery.com/packages/NinjaOne/${version_name}"
+            echo "- GitHub Packages: https://github.com/${GITHUB_REPOSITORY}/packages?package_type=nuget"
+          } >> "$notes_file"
+
           if [ -s "$notes_file" ]; then
             gh release create "$tag_name" --notes-file "$notes_file"
           else
