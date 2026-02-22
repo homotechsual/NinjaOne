@@ -2,6 +2,7 @@
 
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/homotechsual/NinjaOne/build-and-publish.yml?branch=main&style=for-the-badge&label=Build%20and%20Publish)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/homotechsual/NinjaOne/ci.yml?branch=develop&style=for-the-badge&label=CI)
+![Codecov (with branch)](https://img.shields.io/codecov/c/github/homotechsual/NinjaOne/develop?style=for-the-badge)
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/NinjaOne?style=for-the-badge)](https://www.powershellgallery.com/packages/NinjaOne/)
 [![License](https://img.shields.io/github/license/homotechsual/NinjaOne?style=for-the-badge)](https://mit.license.homotechsual.dev/)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/homotechsual?style=for-the-badge)](https://github.com/sponsors/homotechsual/)
