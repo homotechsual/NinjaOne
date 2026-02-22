@@ -1,6 +1,6 @@
 # NinjaOne - A [PowerShell](https://microsoft.com/powershell) module for [NinjaOne](https://NinjaOne.com/) software
 
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/homotechsual/NinjaOne/build-and-publish.yml?branch=main&style=for-the-badge&label=Build%20and%20Publish)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/homotechsual/NinjaOne/build-and-publish.yml?style=for-the-badge&label=Build%20and%20Publish)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/homotechsual/NinjaOne/ci.yml?branch=develop&style=for-the-badge&label=CI)
 ![Codecov (with branch)](https://img.shields.io/codecov/c/github/homotechsual/NinjaOne/develop?style=for-the-badge)
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/NinjaOne?style=for-the-badge)](https://www.powershellgallery.com/packages/NinjaOne/)
