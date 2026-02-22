@@ -91,7 +91,7 @@ if ($Parameters) {
 }
 
 # Build EXAMPLE
-$firstParam = if ($Parameters -and $Parameters.Count -gt 0) {
+$firstParam = if ($Parameters -and @($Parameters).Count -gt 0) {
     if ($Parameters[0] -is [string]) {
         $Parameters[0]
     } else {
@@ -102,7 +102,7 @@ $firstParam = if ($Parameters -and $Parameters.Count -gt 0) {
 }
 
 $example = ".EXAMPLE`n    PS> $FunctionName" + $(
-    if ($Parameters -and $Parameters.Count -gt 0) {
+    if ($Parameters -and @($Parameters).Count -gt 0) {
         switch -Regex ($firstParam) {
             'ID$|Id$' { " -$firstParam 12345" }
             'Identity' { " -$firstParam `"example-id`"" }

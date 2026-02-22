@@ -38,7 +38,7 @@ function Test-FunctionHasHelp {
 	$searchEnd = $LineNumber
     
 	$precedingLines = $lines[$searchStart..$searchEnd] | Where-Object { $_ -match '<#|\.SYNOPSIS|\.DESCRIPTION' }
-	return $precedingLines.Count -gt 0
+	return @($precedingLines).Count -gt 0
 }
 
 function Get-FunctionParameters {
@@ -193,8 +193,8 @@ foreach ($file in $files) {
 }
 
 # Process remaining files
-if ($batch.Count -gt 0) {
-	Write-Host "Processing final batch of $($batch.Count) files..." -ForegroundColor Cyan
+if (@($batch).Count -gt 0) {
+	Write-Host "Processing final batch of $(@($batch).Count) files..." -ForegroundColor Cyan
 	foreach ($f in $batch) {
 		Process-File -File $f | Out-Null
 	}
@@ -205,9 +205,9 @@ Write-Host "`n============================================" -ForegroundColor Cya
 Write-Host 'Summary:' -ForegroundColor Cyan
 Write-Host "  Total functions scanned: $($script:totalProcessed)" -ForegroundColor White
 Write-Host "  Functions helped: $($script:totalModified)" -ForegroundColor Green
-Write-Host "  Failures: $($script:failureLog.Count)" -ForegroundColor $(if ($script:failureLog.Count -eq 0) { 'Green' } else { 'Red' })
+Write-Host "  Failures: $(@($script:failureLog).Count)" -ForegroundColor $(if (@($script:failureLog).Count -eq 0) { 'Green' } else { 'Red' })
 
-if ($script:failureLog.Count -gt 0) {
+if (@($script:failureLog).Count -gt 0) {
 	Write-Host "`nFailure Log:" -ForegroundColor Red
 	$script:failureLog | ForEach-Object { Write-Host "  - $_" -ForegroundColor Red }
 }

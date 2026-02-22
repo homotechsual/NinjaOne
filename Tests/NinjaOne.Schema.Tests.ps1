@@ -20,7 +20,7 @@ Describe ('<ModuleName> - Schema Completeness') -Tags 'Module' {
 	Context 'Function <_.Name>' -ForEach $FunctionList {
 		$AST = $_.ScriptBlock.Ast
 		$MetadataElement = Get-MetadataElement -AST $AST
-		$HasMetadata = $MetadataElement -and $MetadataElement.Count -gt 0
+	$HasMetadata = $MetadataElement -and @($MetadataElement).Count -gt 0
 		$PositionalArguments = @()
 		$Metadata = @()
 		

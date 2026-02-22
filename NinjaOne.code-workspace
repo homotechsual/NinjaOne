@@ -80,6 +80,7 @@
 			},
 			"Get-Item": true,
 		},
+		"codeQL.githubDatabase.download": "never",
 	},
 	"launch": {
 		"version": "0.2.0",

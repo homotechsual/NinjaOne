@@ -30,10 +30,10 @@ foreach ($file in $allFiles) {
 	}
 }
 
-Write-Output "Files WITHOUT MetadataAttribute: $($missingAttributeFiles.Count)"
+Write-Output "Files WITHOUT MetadataAttribute: $(@($missingAttributeFiles).Count)"
 Write-Output ''
 
-if ($missingAttributeFiles.Count -gt 0) {
+if (@($missingAttributeFiles).Count -gt 0) {
 	Write-Output '=== MISSING METADATAATTRIBUTE ==='
 	$missingAttributeFiles | ForEach-Object {
 		$parts = $_.RelativePath -split '\\'

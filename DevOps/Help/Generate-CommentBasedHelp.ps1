@@ -174,8 +174,8 @@ function Add-HelpToFile {
         }
     }
     
-    if ($modifications.Count -gt 0) {
-        Write-Host "Ready to add help to $($modifications.Count) functions. Preview first modification? (Y/n)" -ForegroundColor Cyan
+    if (@($modifications).Count -gt 0) {
+        Write-Host "Ready to add help to $(@($modifications).Count) functions. Preview first modification? (Y/n)" -ForegroundColor Cyan
         
         if (-not $Force) {
             $response = Read-Host
