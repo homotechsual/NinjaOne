@@ -2,6 +2,26 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
+## 2026-02-22 - Version 2.2.0
+
+* Additions:
+  * Add build/CI tooling under `DevOps/Build` (bootstrap, build config, and required modules).
+  * Add help-generation orchestration scripts for comment-based help coverage.
+  * Add pre-commit Git hooks and documentation.
+  * Add expand parameter autocomplete via `Get-NinjaOneExpandCompleter`.
+  * Add date/time parsing support for ISO 8601 and Unix epoch values.
+  * Add GitHub Release assets and GitHub Packages publish in release workflow.
+  * Add Codecov coverage upload and Pester test reporting for PRs.
+
+* Updates:
+  * Update `Get-NinjaOneDevices` with `-Expand` support and validation.
+  * Update request helpers and ticketing cmdlets for consistency.
+  * Update CI workflows to use bootstrap scripts from tracked build tooling.
+  * Close matching milestones after successful PSGallery and GitHub Packages publish.
+
+* Fixes:
+  * Fix empty array count handling in validation logic.
+
 ## 2026-02-21 - Version 2.1.0
 
 * Add new commandlets:

@@ -12,6 +12,7 @@ on:
 permissions:
   contents: write
   packages: write
+  issues: write
 
 jobs:
   build:
@@ -116,6 +117,22 @@ jobs:
             throw 'Module manifest not found under output/. Ensure build artifacts are present.'
           }
           Publish-Module -Path $moduleManifest.Directory.FullName -Repository 'GitHub' -NuGetApiKey $env:GITHUB_TOKEN
+
+      - name: Close matching milestone
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $milestoneTitle = $env:GITHUB_REF_NAME -replace '^v', ''
+          Write-Host "Looking for milestone: $milestoneTitle"
+          $milestoneNumber = gh api repos/$env:GITHUB_REPOSITORY/milestones --jq ".[] | select(.title==\"$milestoneTitle\") | .number" | Select-Object -First 1
+          if ($milestoneNumber) {
+            Write-Host "Closing milestone #$milestoneNumber ($milestoneTitle)"
+            gh api -X PATCH repos/$env:GITHUB_REPOSITORY/milestones/$milestoneNumber -f state=closed
+          } else {
+            Write-Host "No open milestone found matching '$milestoneTitle'"
+          }
 
       - name: Upload GitHub Release asset
         uses: softprops/action-gh-release@v2
