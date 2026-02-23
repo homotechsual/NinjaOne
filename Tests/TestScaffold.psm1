@@ -48,10 +48,26 @@ Imports the NinjaOne module from the output directory for testing.
 #>
 function Import-ModuleToBeTested {
     $ParentPath = Split-Path -Parent -Path $PSScriptRoot
-    $ModulePath = Join-Path -Path $ParentPath -ChildPath 'Output\NinjaOne\2.1.0\NinjaOne.psd1'
-    if (Test-Path -Path $ModulePath) {
-        Import-Module -Name $ModulePath -Force
+    $OutputPath = Join-Path -Path $ParentPath -ChildPath 'Output\NinjaOne'
+    
+    # Find the latest version folder
+    if (Test-Path -Path $OutputPath) {
+        $LatestVersion = Get-ChildItem -Path $OutputPath -Directory | 
+            Where-Object { $_.Name -match '^\d+\.\d+\.\d+' } |
+            Sort-Object { [System.Version]$_.Name } -Descending |
+            Select-Object -First 1
+        
+        if ($LatestVersion) {
+            $ModulePath = Join-Path -Path $LatestVersion.FullName -ChildPath 'NinjaOne.psd1'
+            if (Test-Path -Path $ModulePath) {
+                Import-Module -Name $ModulePath -Force
+                Write-Verbose "Imported module version: $($LatestVersion.Name)"
+                return
+            }
+        }
     }
+    
+    Write-Warning "Could not find NinjaOne module in Output directory"
 }
 
 <#

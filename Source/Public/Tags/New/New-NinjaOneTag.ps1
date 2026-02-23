@@ -23,7 +23,7 @@ function New-NinjaOneTag {
 		'post'
 	)]
 	param(
-		# The asset type the tag applies to (e.g. NODE, ORGANIZATION, LOCATION).
+		# The asset type the tag applies to (e.g. device).
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[String]$assetType,
 		# The tag object payload per API schema.
