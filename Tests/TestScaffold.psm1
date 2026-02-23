@@ -47,6 +47,16 @@ Import the module being tested.
 Imports the NinjaOne module from the output directory for testing.
 #>
 function Import-ModuleToBeTested {
+    $moduleName = Get-ModuleName
+    if (Get-Module -Name $moduleName) {
+        return
+    }
+    if (-not [string]::IsNullOrWhiteSpace($env:NINJAONE_MODULE_MANIFEST) -and (Test-Path -Path $env:NINJAONE_MODULE_MANIFEST)) {
+        Import-Module -Name $env:NINJAONE_MODULE_MANIFEST -Force
+        Write-Verbose "Imported module from NINJAONE_MODULE_MANIFEST"
+        return
+    }
+
     $ParentPath = Split-Path -Parent -Path $PSScriptRoot
     $OutputPath = Join-Path -Path $ParentPath -ChildPath 'Output\NinjaOne'
     

@@ -7,13 +7,19 @@ $ModuleName = 'NinjaOne'
 
 BeforeAll {
     $ModuleName = 'NinjaOne'
-    $ModulePath = Resolve-Path -Path '.\Output\*\*' | Sort-Object -Property BaseName | Select-Object -Last 1 -ExpandProperty Path
-    $ManifestPath = Get-ChildItem -Path ('{0}\*' -f $ModulePath) -Filter '*.psd1' | Select-Object -ExpandProperty FullName
-    if (Get-Module -Name $ModuleName) {
-        Remove-Module $ModuleName -Force
+    $ManifestPath = $env:NINJAONE_MODULE_MANIFEST
+    if ([string]::IsNullOrWhiteSpace($ManifestPath)) {
+        $ModulePath = Resolve-Path -Path '.\Output\*\*' | Sort-Object -Property BaseName | Select-Object -Last 1 -ExpandProperty Path
+        $ManifestPath = Get-ChildItem -Path ('{0}\*' -f $ModulePath) -Filter '*.psd1' | Select-Object -ExpandProperty FullName
     }
-    Import-Module $ManifestPath -Verbose:$False
-    $Script:ModuleInformation = Import-Module -Name $ManifestPath -PassThru
+
+    if (-not (Get-Module -Name $ModuleName)) {
+        Import-Module $ManifestPath -Verbose:$False
+    }
+    $Script:ModuleInformation = Get-Module -Name $ModuleName
+    if (-not $Script:ModuleInformation) {
+        $Script:ModuleInformation = Import-Module -Name $ManifestPath -PassThru
+    }
 
 }
 

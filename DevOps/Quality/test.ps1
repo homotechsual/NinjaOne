@@ -73,6 +73,8 @@ if ($UseBuiltModule) {
 }
 Remove-Module $ModuleName -ErrorAction Ignore -Force
 $ModuleUnderTest = Import-Module $FoundModule.FullName -PassThru -Force -DisableNameChecking -Verbose:$false
+$env:NINJAONE_MODULE_MANIFEST = $FoundModule.FullName
+$env:NINJAONE_MODULE_NAME = $ModuleName
 Write-Verbose ('Invoke-Pester for Module {0} version {1}' -f $ModuleUnderTest, $ModuleUnderTest.Version)
 $PesterConfiguration = New-PesterConfiguration
 
