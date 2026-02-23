@@ -1,14 +1,16 @@
 # NinjaOne - A [PowerShell](https://microsoft.com/powershell) module for [NinjaOne](https://NinjaOne.com/) software
 
+[![Homotechsual Discord](https://img.shields.io/discord/1075421628424523816?style=for-the-badge&logo=discord&logoColor=white&label=Homotechsual%20Discord)](https://discord.gg/NrCjh5ht7K)
+[![NinjaOne Discord](https://img.shields.io/discord/676451788395642880?style=for-the-badge&logo=discord&logoColor=white&label=NinjaOne%20Discord)](https://discord.gg/NinjaOne)
+[![GitHub contributors](https://img.shields.io/github/contributors/homotechsual/ninjaone?style=for-the-badge&logo=github)](https://github.com/homotechsual/ninjaone/)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/homotechsual/NinjaOne/build-and-publish.yml?style=for-the-badge&label=Build%20and%20Publish)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/homotechsual/NinjaOne/ci.yml?branch=develop&style=for-the-badge&label=CI)
 ![Codecov (with branch)](https://img.shields.io/codecov/c/github/homotechsual/NinjaOne/develop?style=for-the-badge)
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/NinjaOne?style=for-the-badge)](https://www.powershellgallery.com/packages/NinjaOne/)
 [![License](https://img.shields.io/github/license/homotechsual/NinjaOne?style=for-the-badge)](https://mit.license.homotechsual.dev/)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/homotechsual?style=for-the-badge)](https://github.com/sponsors/homotechsual/)
-![GitHub Release Date](https://img.shields.io/github/release-date/homotechsual/NinjaOne?style=for-the-badge&link=https%3A%2F%2Fgithub.com%2Fhomotechsual%2FNinjaOne%2Freleases)
-[![Stable Release](https://img.shields.io/powershellgallery/v/NinjaOne?label=Stable+Release\&style=for-the-badge)](https://www.powershellgallery.com/packages/NinjaOne/)
-[![Preview Release](https://img.shields.io/powershellgallery/v/NinjaOne?include_prereleases\&label=Preview%20Release\&style=for-the-badge)](https://www.powershellgallery.com/packages/NinjaOne/)
+[![Stable Release](https://img.shields.io/powershellgallery/v/NinjaOne?label=Stable+Release&style=for-the-badge)](https://www.powershellgallery.com/packages/NinjaOne/)
+[![Preview Release](https://img.shields.io/powershellgallery/v/NinjaOne?label=Preview+Release&include_prereleases&style=for-the-badge)](https://www.powershellgallery.com/packages/NinjaOne/)
 
 ## Where's the content?
 

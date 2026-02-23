@@ -2,6 +2,23 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
+## 2026-02-23 - Version 2.3.0
+
+* Breaking Changes:
+  * `{"BC"}` Renamed `New-NinjaOneTag` to `Set-NinjaOneTagBatch` to accurately reflect batch tag assignment functionality. Old short alias `nnotag` now points to the new tag creation function.
+  * `{"BC"}` Renamed `New-NinjaOneTagGlobal` to `New-NinjaOneTag` as the primary tag creation function. Backward compatibility maintained through aliases `nnotagg`.
+
+* Additions:
+  * Add `Set-NinjaOneTagBatch` for batch tag assignment to multiple assets.
+
+* Updates:
+  * Update tag function naming to align with actual API operations.
+  * Update test scaffold to dynamically load latest module version instead of hardcoded 2.1.0.
+
+* Fixes:
+  * Fix test scaffold module import to support multiple versions in Output directory.
+  * Fix workflow idempotency for PSGallery and GitHub Packages publishing (skip if version exists).
+
 ## 2026-02-22 - Version 2.2.0
 
 * Additions:
