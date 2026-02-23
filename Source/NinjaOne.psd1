@@ -226,6 +226,7 @@
 		'New-NinjaOneTag',
 		'New-NinjaOneTagGlobal',
 		'Set-NinjaOneTag',
+		'Set-NinjaOneTagBatch',
 		'Remove-NinjaOneTags',
 		'Merge-NinjaOneTags',
 		'Set-NinjaOneAssetTag',
