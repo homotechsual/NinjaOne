@@ -170,6 +170,15 @@ jobs:
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
+      - name: Upload test results to Codecov
+        if: always()
+        uses: codecov/test-results-action@v1
+        with:
+          files: .artifacts/TestResults.xml
+          flags: tests
+          name: pester
+          token: ${{ secrets.CODECOV_TOKEN }}
+
   build:
     name: Build Module
     runs-on: windows-latest
