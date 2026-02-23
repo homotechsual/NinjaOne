@@ -16,6 +16,15 @@ $artifactsPath = Join-Path -Path $RepoRoot -ChildPath '.artifacts'
 $null = New-Item -Path $artifactsPath -ItemType Directory -Force
 
 function New-SourceModuleForTesting {
+	<#
+	.SYNOPSIS
+		Creates a temporary source-based module for Pester coverage.
+	.DESCRIPTION
+		Builds a .psm1 that dot-sources all Source scripts and copies required binaries
+		into an artifacts folder so coverage can map to source paths.
+	.OUTPUTS
+		[System.IO.FileInfo]
+	#>
 	param(
 		[Parameter(Mandatory = $true)]
 		[string]$RepoRoot,
