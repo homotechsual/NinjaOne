@@ -127,14 +127,6 @@ jobs:
           $ErrorActionPreference = 'Stop'
           & "$env:GITHUB_WORKSPACE\DevOps\Quality\test.ps1"
 
-      - name: Publish test results
-        if: always()
-        uses: dorny/test-reporter@v1
-        with:
-          name: Pester Tests
-          path: .artifacts/TestResults.*.xml
-          reporter: java-junit
-
       - name: List test artifacts
         shell: pwsh
         if: always()
@@ -147,20 +139,39 @@ jobs:
             Write-Host 'Artifacts path not found.' -ForegroundColor Yellow
           }
 
+      - name: Publish core test results
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Pester Tests (Core)
+          path: .artifacts/TestResults.core.xml
+          reporter: java-junit
+
+      - name: Publish docs test results
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Pester Tests (Docs)
+          path: .artifacts/TestResults.docs.xml
+          reporter: java-junit
+
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-results
           path: |
-            .artifacts/TestResults.*.xml
+            .artifacts/TestResults.core.xml
+            .artifacts/TestResults.docs.xml
 
       - name: Upload code coverage
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: code-coverage
-          path: .artifacts/CodeCoverage.*.xml
+          path: |
+            .artifacts/CodeCoverage.core.xml
+            .artifacts/CodeCoverage.docs.xml
 
       - name: Upload core coverage to Codecov
         if: always()
