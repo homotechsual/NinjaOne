@@ -79,6 +79,7 @@
 				"matchCommandLine": true,
 			},
 			"Get-Item": true,
+			"Import-PowerShellDataFile": true,
 		},
 		"codeQL.githubDatabase.download": "never",
 		"cSpell.words": ["Analyzer"],
