@@ -20,7 +20,7 @@ jobs:
       - name: Bootstrap environment
         shell: pwsh
         working-directory: ${{ github.workspace }}
-        run: |
+        run: |Remo
           $ErrorActionPreference = 'Stop'
           & "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
 

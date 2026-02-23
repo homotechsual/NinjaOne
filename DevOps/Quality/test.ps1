@@ -30,10 +30,8 @@ $PesterConfiguration = New-PesterConfiguration
 $artifactsPath = Join-Path -Path $RepoRoot -ChildPath '.artifacts'
 $null = New-Item -Path $artifactsPath -ItemType Directory -Force
 
-# Get all .ps1 files from the source (excluding test files and initialisation)
-$coverageRoot = Join-Path -Path $RepoRoot -ChildPath 'Source'
-$coverageFiles = @(Get-ChildItem -Path $coverageRoot -Recurse -Include '*.ps1' -Exclude 'Initialisation.ps1' |
-	Where-Object { $_.FullName -notmatch 'TestScaffold|\\Tests\\' } |
+# Measure coverage against the built module file that is actually executed.
+$coverageFiles = @(Get-ChildItem -Path $ModuleUnderTest.ModuleBase -Filter ('{0}.psm1' -f $ModuleName) -File |
 	Select-Object -ExpandProperty FullName)
 
 Write-Verbose "Code coverage will measure $($coverageFiles.Count) files:"
