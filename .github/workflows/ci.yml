@@ -178,6 +178,8 @@ jobs:
           report_type: test_results
           flags: tests
           name: pester
+          verbose: true
+          fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
   build:

@@ -29,9 +29,19 @@ Write-Verbose ('Invoke-Pester for Module {0} version {1}' -f $ModuleUnderTest, $
 $PesterConfiguration = New-PesterConfiguration
 $artifactsPath = Join-Path -Path $RepoRoot -ChildPath '.artifacts'
 $null = New-Item -Path $artifactsPath -ItemType Directory -Force
+
+# Get all .ps1 files from the source (excluding test files and initialisation)
+$coverageRoot = Join-Path -Path $RepoRoot -ChildPath 'Source'
+$coverageFiles = @(Get-ChildItem -Path $coverageRoot -Recurse -Include '*.ps1' -Exclude 'Initialisation.ps1' |
+	Where-Object { $_.FullName -notmatch 'TestScaffold|\\Tests\\' } |
+	Select-Object -ExpandProperty FullName)
+
+Write-Verbose "Code coverage will measure $($coverageFiles.Count) files:"
+$coverageFiles | ForEach-Object { Write-Verbose "  - $_" }
+
 $PesterConfiguration.CodeCoverage.Enabled = $true
 $PesterConfiguration.CodeCoverage.OutputPath = Join-Path -Path $artifactsPath -ChildPath 'CodeCoverage.xml'
-$PesterConfiguration.CodeCoverage.Path = @(Get-ChildItem -Path $ModuleUnderTest.ModuleBase -Recurse -Include '*.ps1' -Exclude 'Initialisation.ps1' | Select-Object -ExpandProperty FullName)
+$PesterConfiguration.CodeCoverage.Path = $coverageFiles
 $PesterConfiguration.Output.Verbosity = 'Detailed'
 $PesterConfiguration.Run.Path = '.\Tests'
 $PesterConfiguration.Run.PassThru = $true
@@ -43,6 +53,32 @@ if ($IncludeVSCodeMarker) {
 }
 
 Invoke-Pester -Configuration $PesterConfiguration
+
+Write-Host "`n=== Test Artifacts ===" -ForegroundColor Cyan
+if (Test-Path $artifactsPath) {
+	Get-ChildItem -Path $artifactsPath -Recurse | Format-Table FullName, Length, LastWriteTime
+	
+	# Show XML file sizes and first few lines
+	$coverageFile = Join-Path -Path $artifactsPath -ChildPath 'CodeCoverage.xml'
+	$testResultsFile = Join-Path -Path $artifactsPath -ChildPath 'TestResults.xml'
+	
+	if (Test-Path $coverageFile) {
+		Write-Host 'CodeCoverage.xml:' -ForegroundColor Green
+		$xmlContent = [xml](Get-Content -Path $coverageFile -Raw)
+		Write-Host "  Root element: $($xmlContent.DocumentElement.Name)"
+		Write-Host "  File count: $(($xmlContent.DocumentElement.SelectNodes('//File')).Count)"
+	}
+	
+	if (Test-Path $testResultsFile) {
+		Write-Host 'TestResults.xml:' -ForegroundColor Green
+		$xmlContent = [xml](Get-Content -Path $testResultsFile -Raw)
+		Write-Host "  Root element: $($xmlContent.DocumentElement.Name)"
+		Write-Host "  Test suites: $(($xmlContent.DocumentElement.SelectNodes('//testcase')).Count)"
+	}
+} else {
+	Write-Host 'No artifacts directory found!' -ForegroundColor Red
+}
+Write-Host "====================`n" -ForegroundColor Cyan
 
 if (-not $SkipScriptAnalyzer) {
 	Invoke-ScriptAnalyzer $ModuleUnderTest.Path -Settings (Join-Path -Path $RepoRoot -ChildPath 'PSScriptAnalyzerSettings.psd1')
