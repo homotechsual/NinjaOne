@@ -164,7 +164,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         if: always()
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: .artifacts/CodeCoverage.xml
           fail_ci_if_error: true
@@ -172,9 +172,10 @@ jobs:
 
       - name: Upload test results to Codecov
         if: always()
-        uses: codecov/test-results-action@v1
+        uses: codecov/codecov-action@v5
         with:
           files: .artifacts/TestResults.xml
+          report_type: test_results
           flags: tests
           name: pester
           token: ${{ secrets.CODECOV_TOKEN }}

@@ -31,6 +31,7 @@ $artifactsPath = Join-Path -Path $RepoRoot -ChildPath '.artifacts'
 $null = New-Item -Path $artifactsPath -ItemType Directory -Force
 $PesterConfiguration.CodeCoverage.Enabled = $true
 $PesterConfiguration.CodeCoverage.OutputPath = Join-Path -Path $artifactsPath -ChildPath 'CodeCoverage.xml'
+$PesterConfiguration.CodeCoverage.Path = @(Get-ChildItem -Path $ModuleUnderTest.ModuleBase -Recurse -Include '*.ps1' -Exclude 'Initialisation.ps1' | Select-Object -ExpandProperty FullName)
 $PesterConfiguration.Output.Verbosity = 'Detailed'
 $PesterConfiguration.Run.Path = '.\Tests'
 $PesterConfiguration.Run.PassThru = $true
