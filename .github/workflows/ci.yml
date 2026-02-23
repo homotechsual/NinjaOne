@@ -167,6 +167,7 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           files: .artifacts/CodeCoverage.xml
+          flags: classes,private,backup,checklist,checklist_templates,custom_fields,devices,document_templates,groups,itam,knowledge_base_articles,location,management,object_helpers,organisation,organisation_checklists,organisation_documents,psmodule,queries,related_items,system,tabs,tags,ticketing,users,vulnerability,webhooks
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
 

@@ -1,0 +1,200 @@
+codecov:
+  require_ci_to_pass: true
+
+flags:
+  classes:
+    paths:
+      - Source/Classes/**
+  private:
+    paths:
+      - Source/Private/**
+  backup:
+    paths:
+      - Source/Public/Backup/**
+  checklist:
+    paths:
+      - Source/Public/Checklist/**
+  checklist_templates:
+    paths:
+      - 'Source/Public/Checklist Templates/**'
+  custom_fields:
+    paths:
+      - Source/Public/CustomFields/**
+  devices:
+    paths:
+      - Source/Public/Devices/**
+  document_templates:
+    paths:
+      - 'Source/Public/Document Templates/**'
+  groups:
+    paths:
+      - Source/Public/Groups/**
+  itam:
+    paths:
+      - Source/Public/ITAM/**
+  knowledge_base_articles:
+    paths:
+      - Source/Public/KnowledgeBaseArticles/**
+  location:
+    paths:
+      - Source/Public/Location/**
+  management:
+    paths:
+      - Source/Public/Management/**
+  object_helpers:
+    paths:
+      - 'Source/Public/Object Helpers/**'
+  organisation:
+    paths:
+      - Source/Public/Organisation/**
+  organisation_checklists:
+    paths:
+      - Source/Public/OrganisationChecklists/**
+  organisation_documents:
+    paths:
+      - Source/Public/OrganisationDocuments/**
+  psmodule:
+    paths:
+      - Source/Public/PSModule/**
+  queries:
+    paths:
+      - Source/Public/Queries/**
+  related_items:
+    paths:
+      - Source/Public/RelatedItems/**
+  system:
+    paths:
+      - Source/Public/System/**
+  tabs:
+    paths:
+      - Source/Public/Tabs/**
+  tags:
+    paths:
+      - Source/Public/Tags/**
+  ticketing:
+    paths:
+      - Source/Public/Ticketing/**
+  users:
+    paths:
+      - Source/Public/Users/**
+  vulnerability:
+    paths:
+      - Source/Public/Vulnerability/**
+  webhooks:
+    paths:
+      - Source/Public/Webhooks/**
+
+component_management:
+  default_rules:
+    statuses:
+      - type: project
+        target: auto
+  individual_components:
+    - component_id: classes
+      name: Classes
+      paths:
+        - Source/Classes/**
+    - component_id: private
+      name: Private
+      paths:
+        - Source/Private/**
+    - component_id: backup
+      name: Backup
+      paths:
+        - Source/Public/Backup/**
+    - component_id: checklist
+      name: Checklist
+      paths:
+        - Source/Public/Checklist/**
+    - component_id: checklist_templates
+      name: Checklist Templates
+      paths:
+        - 'Source/Public/Checklist Templates/**'
+    - component_id: custom_fields
+      name: Custom Fields
+      paths:
+        - Source/Public/CustomFields/**
+    - component_id: devices
+      name: Devices
+      paths:
+        - Source/Public/Devices/**
+    - component_id: document_templates
+      name: Document Templates
+      paths:
+        - 'Source/Public/Document Templates/**'
+    - component_id: groups
+      name: Groups
+      paths:
+        - Source/Public/Groups/**
+    - component_id: itam
+      name: ITAM
+      paths:
+        - Source/Public/ITAM/**
+    - component_id: knowledge_base_articles
+      name: Knowledge Base Articles
+      paths:
+        - Source/Public/KnowledgeBaseArticles/**
+    - component_id: location
+      name: Location
+      paths:
+        - Source/Public/Location/**
+    - component_id: management
+      name: Management
+      paths:
+        - Source/Public/Management/**
+    - component_id: object_helpers
+      name: Object Helpers
+      paths:
+        - 'Source/Public/Object Helpers/**'
+    - component_id: organisation
+      name: Organisation
+      paths:
+        - Source/Public/Organisation/**
+    - component_id: organisation_checklists
+      name: Organisation Checklists
+      paths:
+        - Source/Public/OrganisationChecklists/**
+    - component_id: organisation_documents
+      name: Organisation Documents
+      paths:
+        - Source/Public/OrganisationDocuments/**
+    - component_id: psmodule
+      name: PSModule
+      paths:
+        - Source/Public/PSModule/**
+    - component_id: queries
+      name: Queries
+      paths:
+        - Source/Public/Queries/**
+    - component_id: related_items
+      name: Related Items
+      paths:
+        - Source/Public/RelatedItems/**
+    - component_id: system
+      name: System
+      paths:
+        - Source/Public/System/**
+    - component_id: tabs
+      name: Tabs
+      paths:
+        - Source/Public/Tabs/**
+    - component_id: tags
+      name: Tags
+      paths:
+        - Source/Public/Tags/**
+    - component_id: ticketing
+      name: Ticketing
+      paths:
+        - Source/Public/Ticketing/**
+    - component_id: users
+      name: Users
+      paths:
+        - Source/Public/Users/**
+    - component_id: vulnerability
+      name: Vulnerability
+      paths:
+        - Source/Public/Vulnerability/**
+    - component_id: webhooks
+      name: Webhooks
+      paths:
+        - Source/Public/Webhooks/**
