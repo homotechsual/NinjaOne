@@ -132,7 +132,7 @@ jobs:
         uses: dorny/test-reporter@v1
         with:
           name: Pester Tests
-          path: .artifacts/TestResults.xml
+          path: .artifacts/TestResults.*.xml
           reporter: java-junit
 
       - name: List test artifacts
@@ -153,32 +153,53 @@ jobs:
         with:
           name: test-results
           path: |
-            .artifacts/TestResults.xml
+            .artifacts/TestResults.*.xml
 
       - name: Upload code coverage
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: code-coverage
-          path: .artifacts/CodeCoverage.xml
+          path: .artifacts/CodeCoverage.*.xml
 
-      - name: Upload coverage to Codecov
+      - name: Upload core coverage to Codecov
         if: always()
         uses: codecov/codecov-action@v5
         with:
-          files: .artifacts/CodeCoverage.xml
-          flags: classes,private,backup,checklist,checklist_templates,custom_fields,devices,document_templates,groups,itam,knowledge_base_articles,location,management,object_helpers,organisation,organisation_checklists,organisation_documents,psmodule,queries,related_items,system,tabs,tags,ticketing,users,vulnerability,webhooks
+          files: .artifacts/CodeCoverage.core.xml
+          flags: core
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Upload test results to Codecov
+      - name: Upload docs coverage to Codecov
         if: always()
         uses: codecov/codecov-action@v5
         with:
-          files: .artifacts/TestResults.xml
+          files: .artifacts/CodeCoverage.docs.xml
+          flags: docs
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload core test results to Codecov
+        if: always()
+        uses: codecov/codecov-action@v5
+        with:
+          files: .artifacts/TestResults.core.xml
           report_type: test_results
-          flags: tests
-          name: pester
+          flags: core
+          name: pester-core
+          verbose: true
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload docs test results to Codecov
+        if: always()
+        uses: codecov/codecov-action@v5
+        with:
+          files: .artifacts/TestResults.docs.xml
+          report_type: test_results
+          flags: docs
+          name: pester-docs
           verbose: true
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}

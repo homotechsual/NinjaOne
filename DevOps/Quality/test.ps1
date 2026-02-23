@@ -91,39 +91,54 @@ if ($UseBuiltModule) {
 Write-Verbose "Code coverage will measure $($coverageFiles.Count) files:"
 $coverageFiles | ForEach-Object { Write-Verbose "  - $_" }
 
-$PesterConfiguration.CodeCoverage.Enabled = $true
-$PesterConfiguration.CodeCoverage.OutputPath = Join-Path -Path $artifactsPath -ChildPath 'CodeCoverage.xml'
-$PesterConfiguration.CodeCoverage.Path = $coverageFiles
-$PesterConfiguration.Output.Verbosity = 'Detailed'
-$PesterConfiguration.Run.Path = '.\Tests'
-$PesterConfiguration.Run.PassThru = $true
-$PesterConfiguration.TestResult.Enabled = $true
-$PesterConfiguration.TestResult.OutputPath = Join-Path -Path $artifactsPath -ChildPath 'TestResults.xml'
-$PesterConfiguration.TestResult.OutputFormat = 'JUnitXml'
-if ($IncludeVSCodeMarker) {
-	$PesterConfiguration.VSCodeMarker = $true
-}
+$testSuites = @(
+	@{
+		Name  = 'core'
+		Paths = @('.\Tests\NinjaOne.Core.Tests.ps1', '.\Tests\NinjaOne.Schema.Tests.ps1')
+	},
+	@{
+		Name  = 'docs'
+		Paths = @('.\Tests\NinjaOne.Help.Tests.ps1')
+	}
+)
 
-Invoke-Pester -Configuration $PesterConfiguration
+foreach ($suite in $testSuites) {
+	$PesterConfiguration = New-PesterConfiguration
+	$PesterConfiguration.CodeCoverage.Enabled = $true
+	$PesterConfiguration.CodeCoverage.OutputPath = Join-Path -Path $artifactsPath -ChildPath ("CodeCoverage.{0}.xml" -f $suite.Name)
+	$PesterConfiguration.CodeCoverage.Path = $coverageFiles
+	$PesterConfiguration.Output.Verbosity = 'Detailed'
+	$PesterConfiguration.Run.Path = $suite.Paths
+	$PesterConfiguration.Run.PassThru = $true
+	$PesterConfiguration.TestResult.Enabled = $true
+	$PesterConfiguration.TestResult.OutputPath = Join-Path -Path $artifactsPath -ChildPath ("TestResults.{0}.xml" -f $suite.Name)
+	$PesterConfiguration.TestResult.OutputFormat = 'JUnitXml'
+	if ($IncludeVSCodeMarker) {
+		$PesterConfiguration.VSCodeMarker = $true
+	}
+
+	Write-Host ("`n=== Running {0} test suite ===" -f $suite.Name) -ForegroundColor Cyan
+	Invoke-Pester -Configuration $PesterConfiguration
+}
 
 Write-Host "`n=== Test Artifacts ===" -ForegroundColor Cyan
 if (Test-Path $artifactsPath) {
 	Get-ChildItem -Path $artifactsPath -Recurse | Format-Table FullName, Length, LastWriteTime
 	
 	# Show XML file sizes and first few lines
-	$coverageFile = Join-Path -Path $artifactsPath -ChildPath 'CodeCoverage.xml'
-	$testResultsFile = Join-Path -Path $artifactsPath -ChildPath 'TestResults.xml'
+	$coverageFiles = Get-ChildItem -Path $artifactsPath -Filter 'CodeCoverage.*.xml' -ErrorAction SilentlyContinue
+	$testResultsFiles = Get-ChildItem -Path $artifactsPath -Filter 'TestResults.*.xml' -ErrorAction SilentlyContinue
 	
-	if (Test-Path $coverageFile) {
-		Write-Host 'CodeCoverage.xml:' -ForegroundColor Green
-		$xmlContent = [xml](Get-Content -Path $coverageFile -Raw)
+	foreach ($coverageFile in $coverageFiles) {
+		Write-Host ("{0}:" -f $coverageFile.Name) -ForegroundColor Green
+		$xmlContent = [xml](Get-Content -Path $coverageFile.FullName -Raw)
 		Write-Host "  Root element: $($xmlContent.DocumentElement.Name)"
 		Write-Host "  File count: $(($xmlContent.DocumentElement.SelectNodes('//File')).Count)"
 	}
 	
-	if (Test-Path $testResultsFile) {
-		Write-Host 'TestResults.xml:' -ForegroundColor Green
-		$xmlContent = [xml](Get-Content -Path $testResultsFile -Raw)
+	foreach ($testResultsFile in $testResultsFiles) {
+		Write-Host ("{0}:" -f $testResultsFile.Name) -ForegroundColor Green
+		$xmlContent = [xml](Get-Content -Path $testResultsFile.FullName -Raw)
 		Write-Host "  Root element: $($xmlContent.DocumentElement.Name)"
 		Write-Host "  Test suites: $(($xmlContent.DocumentElement.SelectNodes('//testcase')).Count)"
 	}
