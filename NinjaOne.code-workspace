@@ -82,6 +82,10 @@
 			"Import-PowerShellDataFile": true,
 			"New-NinjaOneQuery": true,
 			"pwsh.exe": true,
+			"/^pwsh -NoProfile -ExecutionPolicy Bypass -Command \"& '\\.\\\\DevOps\\\\Build\\\\build\\.ps1' -TaskNames 'clean','build','updateManifest'\"$/": {
+				"approve": true,
+				"matchCommandLine": true,
+			},
 		},
 		"codeQL.githubDatabase.download": "never",
 		"cSpell.words": ["Analyzer"],
