@@ -110,7 +110,7 @@ function Test-NinjaOneEndpointSupport {
 	$pathsToInspect = if ($refreshed -and $refreshed.Paths) { $refreshed.Paths } else { $paths }
 	Write-Verbose "Entering fallback path-only match. PathsToInspect is null: $($null -eq $pathsToInspect). Count: $($pathsToInspect.Count). Keys count: $($pathsToInspect.Keys.Count). Type: $($pathsToInspect.GetType().Name)"
 	$specPathKeys = @($pathsToInspect.Keys)
-	Write-Verbose "Extracted $($specPathKeys.Count) keys from pathsToInspect. First 5: $($specPathKeys | Select-Object -First 5 | Join-String -Separator ', ')"
+	Write-Verbose "Extracted $($specPathKeys.Count) keys from pathsToInspect. First 5: $(($specPathKeys | Select-Object -First 5) -join ', ')"
 	foreach ($openPath in $specPathKeys) {
 		$normalizedOpenPath = if ($openPath.Length -gt 1) { $openPath.TrimEnd('/') } else { $openPath }
 		$pattern = '^' + ($normalizedOpenPath -replace '\{[^}]+\}', '[^/]+') + '$'
