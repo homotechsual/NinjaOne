@@ -136,7 +136,7 @@ jobs:
           }
           Write-Host "Checking if NinjaOne version $version already exists on PSGallery..."
           try {
-            $existingModule = Find-Module -Name 'NinjaOne' -RequiredVersion $version -ErrorAction SilentlyContinue
+            $existingModule = Find-Module -Name 'NinjaOne' -RequiredVersion $version -AllowPrerelease -ErrorAction SilentlyContinue
             if ($existingModule) {
               Write-Host "::warning::Module version $version already exists on PSGallery. Skipping publish."
               exit 0
@@ -150,7 +150,7 @@ jobs:
       - name: Publish to GitHub Packages
         shell: pwsh
         env:
-          GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference = 'Stop'
           $repoOwner = '${{ github.repository_owner }}'
@@ -162,8 +162,8 @@ jobs:
           if (-not $moduleManifest) {
             throw 'Module manifest not found under output/. Ensure build artifacts are present.'
           }
-          if (-not $env:GH_PACKAGES_TOKEN) {
-            throw 'GH_PACKAGES_TOKEN is not set. Add a classic PAT with packages:write scope.'
+          if (-not $env:GITHUB_TOKEN) {
+            throw 'GITHUB_TOKEN is not set. Ensure workflow permissions include packages: write.'
           }
           $manifest = Test-ModuleManifest -Path $moduleManifest.FullName
           $version = $manifest.Version.ToString()
@@ -172,7 +172,7 @@ jobs:
           }
           Write-Host "Checking if NinjaOne version $version already exists on GitHub Packages..."
           try {
-            $existingModule = Find-Module -Name 'NinjaOne' -Repository 'GitHub' -RequiredVersion $version -ErrorAction SilentlyContinue
+            $existingModule = Find-Module -Name 'NinjaOne' -Repository 'GitHub' -RequiredVersion $version -AllowPrerelease -ErrorAction SilentlyContinue
             if ($existingModule) {
               Write-Host "::warning::Module version $version already exists on GitHub Packages. Skipping publish."
               exit 0
@@ -182,8 +182,7 @@ jobs:
             Write-Host "Module version $version not found on GitHub Packages. Proceeding with publish."
           }
           # GitHub Packages requires username:token format for NuGet API key
-          $repoOwner = '${{ github.repository_owner }}'
-          $nugetApiKey = "${repoOwner}:${env:GH_PACKAGES_TOKEN}"
+          $nugetApiKey = "${env:GITHUB_ACTOR}:${env:GITHUB_TOKEN}"
           Publish-Module -Path $moduleManifest.Directory.FullName -Repository 'GitHub' -NuGetApiKey $nugetApiKey
 
       - name: Close matching milestone
