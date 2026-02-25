@@ -1,0 +1,21 @@
+  /v2/organization/{id}/custom-fields:
+    get:
+      tags:
+        - organization
+      summary: Organization custom fields
+      description: Returns list of organization custom fields
+      operationId: getNodeCustomFields_1
+      parameters:
+        - name: id
+          in: path
+          description: Organization identifier
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:

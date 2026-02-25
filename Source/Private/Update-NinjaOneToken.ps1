@@ -39,9 +39,9 @@ function Update-NinjaOneToken {
 				ClientSecret = $Script:NRAPIConnectionInformation.ClientSecret
 				UseClientAuth = $True
 				ShowTokens = $Script:NRAPIConnectionInformation.ShowTokens
-				UseKeyVault = $Script:NRAPIConnectionInformation.UseKeyVault
+				UseSecretManagement = $Script:NRAPIConnectionInformation.UseSecretManagement
 				VaultName = $Script:NRAPIConnectionInformation.VaultName
-				WriteToKeyVault = $Script:NRAPIConnectionInformation.WriteToKeyVault
+				WriteToSecretVault = $Script:NRAPIConnectionInformation.WriteToSecretVault
 			}
 		} elseif ($null -ne $Script:NRAPIAuthenticationInformation.Refresh) {
 			$ReauthParams = @{
@@ -51,9 +51,9 @@ function Update-NinjaOneToken {
 				RefreshToken = $Script:NRAPIAuthenticationInformation.Refresh
 				UseTokenAuth = $True
 				ShowTokens = $Script:NRAPIConnectionInformation.ShowTokens
-				UseKeyVault = $Script:NRAPIConnectionInformation.UseKeyVault
+				UseSecretManagement = $Script:NRAPIConnectionInformation.UseSecretManagement
 				VaultName = $Script:NRAPIConnectionInformation.VaultName
-				WriteToKeyVault = $Script:NRAPIConnectionInformation.WriteToKeyVault
+				WriteToSecretVault = $Script:NRAPIConnectionInformation.WriteToSecretVault
 			}
 		} else {
 			throw 'Unable to refresh authentication token information. Not using client credentials and/or refresh token is missing.'

@@ -96,7 +96,15 @@ $coverageFiles | ForEach-Object { Write-Verbose "  - $_" }
 $testSuites = @(
 	@{
 		Name  = 'core'
-		Paths = @('.\Tests\NinjaOne.Core.Tests.ps1', '.\Tests\NinjaOne.Schema.Tests.ps1')
+			Paths = @('.\Tests\NinjaOne.Core.Tests.ps1', '.\Tests\NinjaOne.Schema.Tests.ps1', '.\Tests\NinjaOne.InstanceCapabilities.Tests.ps1')
+	},
+	@{
+		Name  = 'private'
+		Paths = @('.\Tests\NinjaOne.Private.Tests.ps1')
+	},
+	@{
+		Name  = 'public'
+		Paths = @('.\Tests\NinjaOne.Public.Tests.ps1')
 	},
 	@{
 		Name  = 'docs'
@@ -116,41 +124,93 @@ foreach ($suite in $testSuites) {
 	$PesterConfiguration.TestResult.OutputPath = Join-Path -Path $artifactsPath -ChildPath ("TestResults.{0}.xml" -f $suite.Name)
 	$PesterConfiguration.TestResult.OutputFormat = 'JUnitXml'
 	if ($IncludeVSCodeMarker) {
-		$PesterConfiguration.VSCodeMarker = $true
+		if ($PesterConfiguration | Get-Member -Name 'VSCodeMarker' -ErrorAction SilentlyContinue) {
+			$PesterConfiguration.VSCodeMarker = $true
+		}
 	}
 
 	Write-Host ("`n=== Running {0} test suite ===" -f $suite.Name) -ForegroundColor Cyan
-	Invoke-Pester -Configuration $PesterConfiguration
+	$null = Invoke-Pester -Configuration $PesterConfiguration
 }
 
-Write-Host "`n=== Test Artifacts ===" -ForegroundColor Cyan
+Write-Host "`n=== Test Results Summary ===" -ForegroundColor Cyan
+
+$allResults = @()
+$totalPassed = 0
+$totalFailed = 0
+$totalSkipped = 0
+$allFailures = @()
+
 if (Test-Path $artifactsPath) {
-	Get-ChildItem -Path $artifactsPath -Recurse | Format-Table FullName, Length, LastWriteTime
-	
-	# Show XML file sizes and first few lines
-	$coverageFiles = Get-ChildItem -Path $artifactsPath -Filter 'CodeCoverage.*.xml' -ErrorAction SilentlyContinue
 	$testResultsFiles = Get-ChildItem -Path $artifactsPath -Filter 'TestResults.*.xml' -ErrorAction SilentlyContinue
 	
-	foreach ($coverageFile in $coverageFiles) {
-		Write-Host ("{0}:" -f $coverageFile.Name) -ForegroundColor Green
-		$xmlContent = [xml](Get-Content -Path $coverageFile.FullName -Raw)
-		Write-Host "  Root element: $($xmlContent.DocumentElement.Name)"
-		Write-Host "  File count: $(($xmlContent.DocumentElement.SelectNodes('//File')).Count)"
-	}
-	
 	foreach ($testResultsFile in $testResultsFiles) {
-		Write-Host ("{0}:" -f $testResultsFile.Name) -ForegroundColor Green
 		$xmlContent = [xml](Get-Content -Path $testResultsFile.FullName -Raw)
-		Write-Host "  Root element: $($xmlContent.DocumentElement.Name)"
-		Write-Host "  Test suites: $(($xmlContent.DocumentElement.SelectNodes('//testcase')).Count)"
+		$testsuites = $xmlContent.DocumentElement
+		
+		$suitePassed = [int]$testsuites.tests - [int]$testsuites.failures - [int]$testsuites.skipped
+		$suiteFailed = [int]$testsuites.failures
+		$suiteSkipped = [int]$testsuites.skipped
+		
+		$totalPassed += $suitePassed
+		$totalFailed += $suiteFailed
+		$totalSkipped += $suiteSkipped
+		
+		Write-Host ("{0}: {1} passed, {2} failed, {3} skipped" -f $testResultsFile.BaseName, $suitePassed, $suiteFailed, $suiteSkipped) -ForegroundColor $(if ($suiteFailed -gt 0) { 'Red' } else { 'Green' })
+		
+		# Extract all failures
+		$failures = $testsuites.SelectNodes('//testcase[@status="Failed"]')
+		foreach ($failure in $failures) {
+			$failureMsg = $failure.SelectSingleNode('failure')
+			$allFailures += [pscustomobject]@{
+				SuiteFile = $testResultsFile.BaseName
+				TestName = $failure.name
+				ClassName = $failure.classname
+				Message = $failureMsg.message
+				Time = $failure.time
+			}
+		}
+		
+		$allResults += [pscustomobject]@{
+			Suite = $testResultsFile.BaseName
+			Passed = $suitePassed
+			Failed = $suiteFailed
+			Skipped = $suiteSkipped
+			Total = [int]$testsuites.tests
+			FilePath = $testResultsFile.FullName
+		}
 	}
-} else {
-	Write-Host 'No artifacts directory found!' -ForegroundColor Red
 }
-Write-Host "====================`n" -ForegroundColor Cyan
+
+if ($totalFailed -gt 0) {
+	Write-Host "`nTotal: $totalPassed passed, $totalFailed failed, $totalSkipped skipped" -ForegroundColor Red -BackgroundColor DarkRed
+} else {
+	Write-Host "`nTotal: $totalPassed passed, $totalFailed failed, $totalSkipped skipped" -ForegroundColor Green
+}
+
+if ($allFailures.Count -gt 0) {
+	Write-Host "`n!!! Failed Tests !!!" -ForegroundColor Red
+	$allFailures | Format-Table -AutoSize
+}
+
+Write-Host "===========================`n" -ForegroundColor Cyan
+
+# Return combined results object
+$combinedResults = [pscustomobject]@{
+	TotalPassed = $totalPassed
+	TotalFailed = $totalFailed
+	TotalSkipped = $totalSkipped
+	Suites = $allResults
+	Failures = $allFailures
+	AllResults = $xmlContent
+	ExecutedAt = Get-Date
+}
+
+$combinedResults
 
 if (-not $SkipScriptAnalyzer) {
-	Invoke-ScriptAnalyzer $ModuleUnderTest.Path -Settings (Join-Path -Path $RepoRoot -ChildPath 'PSScriptAnalyzerSettings.psd1')
+	Write-Host "`n=== Running PSScriptAnalyzer ===" -ForegroundColor Cyan
+	$null = Invoke-ScriptAnalyzer $ModuleUnderTest.Path -Settings (Join-Path -Path $RepoRoot -ChildPath 'PSScriptAnalyzerSettings.psd1')
 }
 Pop-Location
 

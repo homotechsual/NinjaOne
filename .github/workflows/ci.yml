@@ -147,6 +147,14 @@ jobs:
           path: .artifacts/TestResults.core.xml
           reporter: java-junit
 
+      - name: Publish private test results
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Pester Tests (Private)
+          path: .artifacts/TestResults.private.xml
+          reporter: java-junit
+
       - name: Publish docs test results
         if: always()
         uses: dorny/test-reporter@v1
@@ -162,6 +170,7 @@ jobs:
           name: test-results
           path: |
             .artifacts/TestResults.core.xml
+            .artifacts/TestResults.private.xml
             .artifacts/TestResults.docs.xml
 
       - name: Upload code coverage
@@ -171,6 +180,7 @@ jobs:
           name: code-coverage
           path: |
             .artifacts/CodeCoverage.core.xml
+            .artifacts/CodeCoverage.private.xml
             .artifacts/CodeCoverage.docs.xml
 
       - name: Upload core coverage to Codecov
@@ -179,6 +189,15 @@ jobs:
         with:
           files: .artifacts/CodeCoverage.core.xml
           flags: core
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload private coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@v5
+        with:
+          files: .artifacts/CodeCoverage.private.xml
+          flags: private
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
@@ -199,6 +218,18 @@ jobs:
           report_type: test_results
           flags: core
           name: pester-core
+          verbose: true
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload private test results to Codecov
+        if: always()
+        uses: codecov/codecov-action@v5
+        with:
+          files: .artifacts/TestResults.private.xml
+          report_type: test_results
+          flags: private
+          name: pester-private
           verbose: true
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}

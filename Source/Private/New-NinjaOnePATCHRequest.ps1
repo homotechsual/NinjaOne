@@ -32,6 +32,7 @@ function New-NinjaOnePATCHRequest {
 	if ($null -eq $Script:NRAPIAuthenticationInformation) {
 		throw "Missing NinjaOne authentication tokens, please run 'Connect-NinjaOne' first."
 	}
+	Test-NinjaOneEndpointSupport -Method 'PATCH' -Resource $Resource -Verbose:$VerbosePreference
 	try {
 		if ($QSCollection) {
 			Write-Verbose "Query string in New-NinjaOnePATCHRequest contains: $($QSCollection | Out-String)"

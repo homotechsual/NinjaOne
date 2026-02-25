@@ -81,6 +81,9 @@ function ConvertFrom-NinjaOneDateTime {
 			}
 			return $Value
 		}
+		if ($Value -is [DateTime]) {
+			return $Value
+		}
 		if ($Value -is [psobject]) {
 			foreach ($Property in $Value.PSObject.Properties) {
 				$Value.$($Property.Name) = Convert-NinjaOneValue -Value $Property.Value

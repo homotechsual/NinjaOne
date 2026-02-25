@@ -24,16 +24,30 @@ jobs:
         with:
           fetch-depth: 0  # Full history for versioning
 
-      - name: Validate tag source (main)
+      - name: Validate tag source
         shell: pwsh
         if: startsWith(github.ref, 'refs/tags/v') && !startsWith(github.ref, 'refs/tags/test-v')
         run: |
           $ErrorActionPreference = 'Stop'
+          $tagName = $env:GITHUB_REF_NAME
           $tagCommit = $env:GITHUB_SHA
-          $mainCommit = (git rev-parse origin/main)
-          $mergeBase = (git merge-base $tagCommit $mainCommit)
-          if ($mergeBase -ne $tagCommit) {
-            throw 'Stable tag commit is not reachable from main.'
+          
+          if ($tagName -match '-(alpha|beta|rc)') {
+            Write-Host "Pre-release tag detected: $tagName"
+            $developCommit = (git rev-parse origin/develop)
+            $mergeBase = (git merge-base $tagCommit $developCommit)
+            if ($mergeBase -ne $tagCommit) {
+              throw 'Pre-release tag commit is not reachable from develop.'
+            }
+            Write-Host "Tag commit is reachable from develop."
+          } else {
+            Write-Host "Stable tag detected: $tagName"
+            $mainCommit = (git rev-parse origin/main)
+            $mergeBase = (git merge-base $tagCommit $mainCommit)
+            if ($mergeBase -ne $tagCommit) {
+              throw 'Stable tag commit is not reachable from main.'
+            }
+            Write-Host "Tag commit is reachable from main."
           }
 
       - name: Bootstrap environment

@@ -31,6 +31,7 @@ function New-NinjaOnePOSTRequest {
 	if ($null -eq $Script:NRAPIAuthenticationInformation) {
 		throw "Missing NinjaOne authentication tokens, please run 'Connect-NinjaOne' first."
 	}
+	Test-NinjaOneEndpointSupport -Method 'POST' -Resource $Resource -Verbose:$VerbosePreference
 	try {
 		if ($QSCollection) {
 			Write-Verbose "Query string in New-NinjaOnePOSTRequest contains: $($QSCollection | Out-String)"

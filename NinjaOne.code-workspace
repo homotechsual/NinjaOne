@@ -80,6 +80,8 @@
 			},
 			"Get-Item": true,
 			"Import-PowerShellDataFile": true,
+			"New-NinjaOneQuery": true,
+			"pwsh.exe": true,
 		},
 		"codeQL.githubDatabase.download": "never",
 		"cSpell.words": ["Analyzer"],

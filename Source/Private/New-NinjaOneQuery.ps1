@@ -187,6 +187,7 @@ function New-NinjaOneQuery {
 	}
 	Write-Verbose "Query collection contains $($QSCollection | Out-String)"
 	if ($AsString) {
+		$QSBuilder = [System.UriBuilder]::new()
 		$QSBuilder.Query = $QSCollection.ToString()
 		$Query = $QSBuilder.Query.ToString()
 		return $Query
