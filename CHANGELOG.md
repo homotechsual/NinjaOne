@@ -2,6 +2,13 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
+## 2026-02-25 - Version 2.3.0-beta3
+
+* Fixes:
+  * Fix PowerShell 5.1 compatibility by replacing Join-String with -join operator in Test-NinjaOneEndpointSupport.
+  * Fix prerelease version detection in publish workflow by adding -AllowPrerelease to Find-Module checks.
+  * Switch GitHub Packages authentication from PAT to GITHUB_TOKEN for better workflow security.
+
 ## 2026-02-25 - Version 2.3.0-beta2
 
 * Fixes:
