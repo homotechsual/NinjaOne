@@ -65,9 +65,15 @@ jobs:
             echo "- GitHub Packages: https://github.com/${GITHUB_REPOSITORY}/packages?package_type=nuget"
           } >> "$notes_file"
 
+          # Determine if this is a prerelease
+          prerelease_flag=""
+          if [[ "${tag_name}" =~ -(alpha|beta|rc) ]]; then
+            prerelease_flag="--prerelease"
+          fi
+
           if [ -s "$notes_file" ]; then
-            gh release create "$tag_name" --notes-file "$notes_file"
+            gh release create "$tag_name" $prerelease_flag --notes-file "$notes_file"
           else
-            gh release create "$tag_name" --generate-notes
+            gh release create "$tag_name" $prerelease_flag --generate-notes
           fi
 
