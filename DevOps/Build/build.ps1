@@ -464,7 +464,16 @@ function UpdateManifest {
 	$MarkdownObject = [Markdown.MAML.Parser.MarkdownParser]::new()
 	$ReleaseNotes = ((($MarkdownObject.ParseString($CHANGELOG).Children.Spans.Text) -match '\d\.\d\.\d') -split ' - ')[1]
 	# Update Module with new version
-	Update-ModuleManifest -ModuleVersion $ChangeLogVersion -Path $ManifestPath -ReleaseNotes $ReleaseNotes
+	$UpdateParams = @{
+		ModuleVersion = $ChangeLogVersion
+		Path = $ManifestPath
+		ReleaseNotes = $ReleaseNotes
+	}
+	# Preserve Prerelease field if it exists
+	if ($Manifest.PrivateData.PSData.Prerelease) {
+		$UpdateParams['Prerelease'] = $Manifest.PrivateData.PSData.Prerelease
+	}
+	Update-ModuleManifest @UpdateParams
 }
 # Task: Publish Module to PowerShell Gallery
 function Publish {
