@@ -368,6 +368,17 @@ function Build {
 			Write-Host "✓ Copied Binaries folder to: $binariesDir" -ForegroundColor Green
 		}
 	}
+	
+	# Restore Prerelease field to Output manifests if it exists in Source (ModuleBuilder strips it)
+	$sourceManifestPath = Join-Path -Path $RepoRoot -ChildPath (Join-Path -Path 'Source' -ChildPath "$Script:ModuleName.psd1")
+	$sourceManifest = Import-PowerShellDataFile -Path $sourceManifestPath
+	if ($sourceManifest.PrivateData.PSData.Prerelease) {
+		$prerelease = $sourceManifest.PrivateData.PSData.Prerelease
+		Write-Host "Restoring Prerelease = '$prerelease' to output manifests" -ForegroundColor Gray
+		foreach ($manifest in $moduleManifests) {
+			(Get-Content $manifest.FullName) -replace "Prerelease = ''", "Prerelease = '$prerelease'" | Set-Content $manifest.FullName
+		}
+	}
 }
 
 # Helper: ensure output binaries are not locked before rebuild.
@@ -463,17 +474,26 @@ function UpdateManifest {
 	$CHANGELOG = Get-Content -Path "$($RepoRoot)\CHANGELOG.md"
 	$MarkdownObject = [Markdown.MAML.Parser.MarkdownParser]::new()
 	$ReleaseNotes = ((($MarkdownObject.ParseString($CHANGELOG).Children.Spans.Text) -match '\d\.\d\.\d') -split ' - ')[1]
+	
+	# Save original Prerelease value before Update-ModuleManifest clears it
+	$OriginalPrerelease = $Manifest.PrivateData.PSData.Prerelease
+	
 	# Update Module with new version
-	$UpdateParams = @{
-		ModuleVersion = $ChangeLogVersion
-		Path = $ManifestPath
-		ReleaseNotes = $ReleaseNotes
+	Update-ModuleManifest -ModuleVersion $ChangeLogVersion -Path $ManifestPath -ReleaseNotes $ReleaseNotes
+	
+	# Restore Prerelease field if it existed in source manifest
+	if ($OriginalPrerelease) {
+		Write-Output "Restoring Prerelease field: $OriginalPrerelease"
+		# Restore in Source manifest
+		(Get-Content $ManifestPath) -replace "Prerelease = ''", "Prerelease = '$OriginalPrerelease'" | Set-Content $ManifestPath
+		
+		# Also restore in Output manifest if it exists (from previous build)
+		$OutputManifestPath = Get-ChildItem -Path (Join-Path -Path $RepoRoot -ChildPath "output\*\*\NinjaOne.psd1") -ErrorAction SilentlyContinue | Select-Object -First 1
+		if ($OutputManifestPath) {
+			Write-Output "Restoring Prerelease in output manifest: $($OutputManifestPath.FullName)"
+			(Get-Content $OutputManifestPath.FullName) -replace "Prerelease = ''", "Prerelease = '$OriginalPrerelease'" | Set-Content $OutputManifestPath.FullName
+		}
 	}
-	# Preserve Prerelease field if it exists
-	if ($Manifest.PrivateData.PSData.Prerelease) {
-		$UpdateParams['Prerelease'] = $Manifest.PrivateData.PSData.Prerelease
-	}
-	Update-ModuleManifest @UpdateParams
 }
 # Task: Publish Module to PowerShell Gallery
 function Publish {
