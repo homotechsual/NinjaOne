@@ -46,6 +46,13 @@ jobs:
         run: |
           tag_name="${GITHUB_REF_NAME}"
           version_name="${tag_name#v}"
+          
+          # Check if release already exists
+          if gh release view "$tag_name" >/dev/null 2>&1; then
+            echo "Release for tag $tag_name already exists. Skipping creation."
+            exit 0
+          fi
+          
           notes_file="$(mktemp)"
           awk -v ver="$version_name" '
             BEGIN { p = 0 }
