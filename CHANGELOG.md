@@ -2,6 +2,11 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
+## 2026-02-25 - Version 2.3.0-beta2
+
+* Fixes:
+  * Add "fed" instance region support to Connect-NinjaOne ValidateSet.
+
 ## 2026-02-24 - Version 2.3.0-beta1
 
 * Breaking Changes:
