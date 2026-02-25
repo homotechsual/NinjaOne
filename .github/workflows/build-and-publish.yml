@@ -181,7 +181,10 @@ jobs:
             # Module not found or error querying - proceed with publish
             Write-Host "Module version $version not found on GitHub Packages. Proceeding with publish."
           }
-          Publish-Module -Path $moduleManifest.Directory.FullName -Repository 'GitHub' -NuGetApiKey $env:GH_PACKAGES_TOKEN
+          # GitHub Packages requires username:token format for NuGet API key
+          $repoOwner = '${{ github.repository_owner }}'
+          $nugetApiKey = "${repoOwner}:${env:GH_PACKAGES_TOKEN}"
+          Publish-Module -Path $moduleManifest.Directory.FullName -Repository 'GitHub' -NuGetApiKey $nugetApiKey
 
       - name: Close matching milestone
         shell: pwsh
