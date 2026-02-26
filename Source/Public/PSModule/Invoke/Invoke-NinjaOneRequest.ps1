@@ -106,7 +106,7 @@ function Invoke-NinjaOneRequest {
 					$Results = $null
 				} else {
 					$Results = $Response.Content | ConvertFrom-Json
-					if ($ParseDateTime) {
+					if ($ParseDateTime -and $null -ne $Results) {
 						$Results = ConvertFrom-NinjaOneDateTime -InputObject $Results
 					}
 				}
