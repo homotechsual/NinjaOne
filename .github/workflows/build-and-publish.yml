@@ -24,16 +24,30 @@ jobs:
         with:
           fetch-depth: 0  # Full history for versioning
 
-      - name: Validate tag source (main)
+      - name: Validate tag source
         shell: pwsh
         if: startsWith(github.ref, 'refs/tags/v') && !startsWith(github.ref, 'refs/tags/test-v')
         run: |
           $ErrorActionPreference = 'Stop'
+          $tagName = $env:GITHUB_REF_NAME
           $tagCommit = $env:GITHUB_SHA
-          $mainCommit = (git rev-parse origin/main)
-          $mergeBase = (git merge-base $tagCommit $mainCommit)
-          if ($mergeBase -ne $tagCommit) {
-            throw 'Stable tag commit is not reachable from main.'
+          
+          if ($tagName -match '-(alpha|beta|rc)') {
+            Write-Host "Pre-release tag detected: $tagName"
+            $developCommit = (git rev-parse origin/develop)
+            $mergeBase = (git merge-base $tagCommit $developCommit)
+            if ($mergeBase -ne $tagCommit) {
+              throw 'Pre-release tag commit is not reachable from develop.'
+            }
+            Write-Host "Tag commit is reachable from develop."
+          } else {
+            Write-Host "Stable tag detected: $tagName"
+            $mainCommit = (git rev-parse origin/main)
+            $mergeBase = (git merge-base $tagCommit $mainCommit)
+            if ($mergeBase -ne $tagCommit) {
+              throw 'Stable tag commit is not reachable from main.'
+            }
+            Write-Host "Tag commit is reachable from main."
           }
 
       - name: Bootstrap environment
@@ -111,27 +125,66 @@ jobs:
           PSGalleryAPIKey: ${{ secrets.PSGALLERY_API_KEY }}
         run: |
           $ErrorActionPreference = 'Stop'
-          & "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'publish'
-
-      - name: Publish to GitHub Packages
-        shell: pwsh
-        env:
-          GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $repoOwner = '${{ github.repository_owner }}'
-          $repoSource = "https://nuget.pkg.github.com/$repoOwner/index.json"
-          if (-not (Get-PSRepository -Name 'GitHub' -ErrorAction SilentlyContinue)) {
-            Register-PSRepository -Name 'GitHub' -SourceLocation $repoSource -PublishLocation $repoSource -InstallationPolicy Trusted
-          }
           $moduleManifest = Get-ChildItem -Path "$env:GITHUB_WORKSPACE\output" -Recurse -Filter 'NinjaOne.psd1' | Select-Object -First 1
           if (-not $moduleManifest) {
             throw 'Module manifest not found under output/. Ensure build artifacts are present.'
           }
-          if (-not $env:GH_PACKAGES_TOKEN) {
-            throw 'GH_PACKAGES_TOKEN is not set. Add a classic PAT with packages:write scope.'
+          $manifest = Test-ModuleManifest -Path $moduleManifest.FullName
+          $version = $manifest.Version.ToString()
+          if ($manifest.PrivateData.PSData.Prerelease) {
+            $version = "$version-$($manifest.PrivateData.PSData.Prerelease)"
           }
-          Publish-Module -Path $moduleManifest.Directory.FullName -Repository 'GitHub' -NuGetApiKey $env:GH_PACKAGES_TOKEN
+          Write-Host "Checking if NinjaOne version $version already exists on PSGallery..."
+          try {
+            $existingModule = Find-Module -Name 'NinjaOne' -RequiredVersion $version -AllowPrerelease -ErrorAction SilentlyContinue
+            if ($existingModule) {
+              Write-Host "::warning::Module version $version already exists on PSGallery. Skipping publish."
+              exit 0
+            }
+          } catch {
+            # Module not found or error querying - proceed with publish
+            Write-Host "Module version $version not found on PSGallery. Proceeding with publish."
+          }
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'publish'
+
+      # Disabled: GitHub Packages NuGet authentication issues with GITHUB_TOKEN
+      # - name: Publish to GitHub Packages
+      #   shell: pwsh
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      #   run: |
+      #     $ErrorActionPreference = 'Stop'
+      #     $repoOwner = '${{ github.repository_owner }}'
+      #     $repoSource = "https://nuget.pkg.github.com/$repoOwner/index.json"
+      #     if (-not (Get-PSRepository -Name 'GitHub' -ErrorAction SilentlyContinue)) {
+      #       Register-PSRepository -Name 'GitHub' -SourceLocation $repoSource -PublishLocation $repoSource -InstallationPolicy Trusted
+      #     }
+      #     $moduleManifest = Get-ChildItem -Path "$env:GITHUB_WORKSPACE\output" -Recurse -Filter 'NinjaOne.psd1' | Select-Object -First 1
+      #     if (-not $moduleManifest) {
+      #       throw 'Module manifest not found under output/. Ensure build artifacts are present.'
+      #     }
+      #     if (-not $env:GITHUB_TOKEN) {
+      #       throw 'GITHUB_TOKEN is not set. Ensure workflow permissions include packages: write.'
+      #     }
+      #     $manifest = Test-ModuleManifest -Path $moduleManifest.FullName
+      #     $version = $manifest.Version.ToString()
+      #     if ($manifest.PrivateData.PSData.Prerelease) {
+      #       $version = "$version-$($manifest.PrivateData.PSData.Prerelease)"
+      #     }
+      #     Write-Host "Checking if NinjaOne version $version already exists on GitHub Packages..."
+      #     try {
+      #       $existingModule = Find-Module -Name 'NinjaOne' -Repository 'GitHub' -RequiredVersion $version -AllowPrerelease -ErrorAction SilentlyContinue
+      #       if ($existingModule) {
+      #         Write-Host "::warning::Module version $version already exists on GitHub Packages. Skipping publish."
+      #         exit 0
+      #       }
+      #     } catch {
+      #       # Module not found or error querying - proceed with publish
+      #       Write-Host "Module version $version not found on GitHub Packages. Proceeding with publish."
+      #     }
+      #     # GitHub Packages requires username:token format for NuGet API key
+      #     $nugetApiKey = "${env:GITHUB_ACTOR}:${env:GITHUB_TOKEN}"
+      #     Publish-Module -Path $moduleManifest.Directory.FullName -Repository 'GitHub' -NuGetApiKey $nugetApiKey
 
       - name: Close matching milestone
         shell: pwsh

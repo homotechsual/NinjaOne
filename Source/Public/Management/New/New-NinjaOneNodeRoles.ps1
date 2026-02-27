@@ -10,6 +10,23 @@ function New-NinjaOneNodeRoles {
 			PS> New-NinjaOneNodeRoles -nodeRoles @(@{ name = 'Role A' })
 
 			Creates node roles from the provided payload.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @(
+				@{
+					nodeClass = "WINDOWS_SERVER"
+					nodeRoleParentName = "string"
+					nodeRoleParentId = 0
+					name = "string"
+					description = "string"
+					chassisType = "UNKNOWN"
+					icon = "string"
+				}
+			)
+			PS> New-NinjaOneNodeRoles -nodeRoles $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
@@ -48,3 +65,12 @@ function New-NinjaOneNodeRoles {
 		}
 	}
 }
+
+
+
+
+
+
+
+
+

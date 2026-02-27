@@ -10,6 +10,31 @@ function Set-NinjaOneBackupBandwidthThrottle {
 			PS> Set-NinjaOneBackupBandwidthThrottle -ThrottleSetting @{ deviceId = 1; bandwidthLimit = 5242880 }
 
 			Sets the bandwidth throttle for a device.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				deviceId = 0
+				bandwidthThrottle = @{
+					enabled = $false
+					workHoursKbps = 0
+					nonWorkHoursKbps = 0
+					workHoursUserUnit = "string"
+					nonWorkHoursUserUnit = "string"
+					workSchedule = @{
+						endHour = 0
+						endMinute = 0
+						startHour = 0
+						startMinute = 0
+						weekDays = @(
+							"string"
+						)
+					}
+				}
+			}
+			PS> Set-NinjaOneBackupBandwidthThrottle -ThrottleSetting $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			The API response indicating success or failure.
 		.LINK
@@ -39,3 +64,12 @@ function Set-NinjaOneBackupBandwidthThrottle {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
+
+
+
+

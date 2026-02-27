@@ -10,6 +10,38 @@ function New-NinjaOneOrganisationChecklist {
 			PS> New-NinjaOneOrganisationChecklist -checklist @{ name = 'Onboarding'; items = @('Step1','Step2') }
 
 			Creates an organisation checklist.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @(
+				@{
+					name = "string"
+					description = @{
+						text = "string"
+						html = "string"
+					}
+					required = $false
+					dueDate = 0
+					assignedToUserId = 0
+					organizationId = 0
+					checklistTemplateId = 0
+					tasks = @(
+						@{
+							id = 0
+							position = 0
+							name = "string"
+							description = @{
+							}
+							assignedToUserId = 0
+							dueDate = 0
+							completed = $false
+						}
+					)
+				}
+			)
+			PS> New-NinjaOneOrganisationChecklist -checklist $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the created checklist.
 		.LINK
@@ -39,4 +71,13 @@ function New-NinjaOneOrganisationChecklist {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
+
+
+
+
 

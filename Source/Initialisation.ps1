@@ -3,6 +3,8 @@ using assembly '.\Binaries\ValidateNodeRoleId.dll'
 
 [int32]$Script:NRAPIDefaultPageSize = 2000
 [bool]$Script:ParseDateTimes = $false
+[bool]$Script:NRAPIInstanceCapabilityCheckEnabled = $true
+[Hashtable]$Script:NRAPIInstanceCapabilities = @{}
 [Hashtable]$Script:NRAPIInstances = @{
 	'eu' = 'https://eu.ninjarmm.com'
 	'oc' = 'https://oc.ninjarmm.com'
@@ -10,6 +12,7 @@ using assembly '.\Binaries\ValidateNodeRoleId.dll'
 	'app' = 'https://app.ninjarmm.com'
 	'ca' = 'https://ca.ninjarmm.com'
 	'us2' = 'https://us2.ninjarmm.com'
+	'fed' = 'https://fed.ninjarmm.com'
 }
 
 enum EntityType {

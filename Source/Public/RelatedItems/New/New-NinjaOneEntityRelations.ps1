@@ -6,17 +6,22 @@ function New-NinjaOneEntityRelations {
 			Create multiple new entity relations using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Entity Relations
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @(
+				@{
+					relEntityType = "ORGANIZATION"
+					relEntityId = 0
+				}
+			)
+			PS> New-NinjaOneEntityRelations -entityType ORGANIZATION -entityId 1 -entityType $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/entityrelations
-	
-	.EXAMPLE
-		PS> $newObject = @{ Name = 'Example' }
-		PS> New-NinjaOneEntityRelations @newObject
-
-		Creates a new resource with the specified properties.
-
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
@@ -62,3 +67,12 @@ function New-NinjaOneEntityRelations {
 		}
 	}
 }
+
+
+
+
+
+
+
+
+

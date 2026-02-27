@@ -2,6 +2,59 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
+Note: Version 2.3.0 was released in error and will be skipped.
+
+## 2026-02-27 - Version 2.3.1
+
+* Fixes:
+  * Add guard for null response handling when parsing date/time values in Invoke-NinjaOneRequest.
+  * Add "fed" instance region support to Connect-NinjaOne ValidateSet.
+  * Fix PowerShell 5.1 compatibility by replacing Join-String with -join operator in Test-NinjaOneEndpointSupport.
+  * Fix prerelease version detection in publish workflow by adding -AllowPrerelease to Find-Module checks.
+  * Fix multipart form-data request handling to avoid 415 errors on upload endpoints.
+  * Fix build updateManifest by using a temporary RootModule stub when required.
+
+* Updates:
+  * Limit PSSA compatibility checks to PowerShell 5.1.
+  * Disable GitHub Packages publish step due to NuGet authentication failures.
+  * Auto-generate full request examples for POST/PUT and PATCH endpoints.
+  * Normalize literal backtick sequences in generated help links.
+
+## 2026-02-25 - Version 2.3.0-beta3
+
+* Fixes:
+  * Fix PowerShell 5.1 compatibility by replacing Join-String with -join operator in Test-NinjaOneEndpointSupport.
+  * Fix prerelease version detection in publish workflow by adding -AllowPrerelease to Find-Module checks.
+  * Switch GitHub Packages authentication from PAT to GITHUB_TOKEN for better workflow security.
+
+## 2026-02-25 - Version 2.3.0-beta2
+
+* Fixes:
+  * Add "fed" instance region support to Connect-NinjaOne ValidateSet.
+
+## 2026-02-24 - Version 2.3.0-beta1
+
+* Breaking Changes:
+  * `{"BC"}` Renamed `New-NinjaOneTag` to `Set-NinjaOneTagBatch` to accurately reflect batch tag assignment functionality. Old short alias `nnotag` now points to the new tag creation function.
+  * `{"BC"}` Renamed `New-NinjaOneTagGlobal` to `New-NinjaOneTag` as the primary tag creation function. Backward compatibility maintained through aliases `nnotagg`.
+
+* Additions:
+  * Add instance capability checks using the OpenAPI spec per instance.
+  * Add `Get-NinjaOneInstanceCapabilities` to report supported/unsupported cmdlets and paths.
+  * Add `Set-NinjaOneTagBatch` for batch tag assignment to multiple assets.
+
+* Updates:
+  * Validate endpoint support before API calls and allow path-only fallback when methods are missing.
+  * Improve verbose output and empty response handling in request helpers.
+  * Expand instance capability tests, including YAML parsing edge cases and cache refresh behaviour.
+  * Summarize test results and return a combined results object in `DevOps/Quality/test.ps1`.
+  * Update tag function naming to align with actual API operations.
+  * Update test scaffold to dynamically load latest module version instead of hardcoded 2.1.0.
+
+* Fixes:
+  * Fix test scaffold module import to support multiple versions in Output directory.
+  * Fix workflow idempotency for PSGallery and GitHub Packages publishing (skip if version exists).
+
 ## 2026-02-22 - Version 2.2.0
 
 * Additions:

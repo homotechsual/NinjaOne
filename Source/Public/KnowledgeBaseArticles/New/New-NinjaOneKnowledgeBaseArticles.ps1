@@ -10,6 +10,24 @@ function New-NinjaOneKnowledgeBaseArticles {
 			PS> New-NinjaOneKnowledgeBaseArticles -articles @{ organizationId = 1; folderId = 10; articles = @(@{ name='A'; content='...'} ) }
 
 			Creates knowledge base articles in the specified folder.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @(
+				@{
+					name = "string"
+					organizationId = 0
+					destinationFolderId = 0
+					destinationFolderPath = "string"
+					content = @{
+						html = "string"
+						text = "string"
+					}
+				}
+			)
+			PS> New-NinjaOneKnowledgeBaseArticles -articles $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the created articles or job result.
 		.LINK
@@ -39,4 +57,13 @@ function New-NinjaOneKnowledgeBaseArticles {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
+
+
+
+
 

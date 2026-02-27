@@ -10,6 +10,18 @@ function Set-NinjaOneEndUser {
 			PS> Set-NinjaOneEndUser -Id 101 -endUser @{ phone = '+3100000000' }
 
 			Updates the end user 101.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				firstName = "string"
+				lastName = "string"
+				organizationId = 0
+				fullPortalAccess = $false
+			}
+			PS> Set-NinjaOneEndUser -id 1 -endUser $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			Status code or updated resource per API.
 		.LINK
@@ -40,4 +52,13 @@ function Set-NinjaOneEndUser {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
+
+
+
+
 

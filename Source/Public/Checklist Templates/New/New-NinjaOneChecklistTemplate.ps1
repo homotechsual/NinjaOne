@@ -7,9 +7,33 @@ function New-NinjaOneChecklistTemplate {
 		.FUNCTIONALITY
 			Checklist Templates
 		.EXAMPLE
-			PS> New-NinjaOneChecklistTemplate -template @{ name='Onboarding'; items=@('Step1') }
+			PS> New-NinjaOneChecklistTemplate -template @{ name='Onboarding'; tasks=@( @{ name = 'Step1' } ) }
 
 			Creates a checklist template.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @(
+				@{
+					name = "string"
+					description = @{
+						text = "string"
+						html = "string"
+					}
+					tasks = @(
+						@{
+							position = 0
+							name = "string"
+							description = @{
+							}
+						}
+					)
+					required = $false
+				}
+			)
+			PS> New-NinjaOneChecklistTemplate -template $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the created template.
 		.LINK
@@ -29,3 +53,13 @@ function New-NinjaOneChecklistTemplate {
 	)
 	process { try { if($PSCmdlet.ShouldProcess('Checklist Template','Create')){ return (New-NinjaOnePOSTRequest -Resource 'v2/checklist/templates' -Body $template) } } catch { New-NinjaOneError -ErrorRecord $_ } }
 }
+
+
+
+
+
+
+
+
+
+

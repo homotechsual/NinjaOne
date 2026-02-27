@@ -6,17 +6,24 @@ function New-NinjaOneLocation {
 			Create an location using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Location
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				name = "string"
+				address = "string"
+				description = "string"
+				userData = @{
+					additionalProp1 = "value"
+				}
+			}
+			PS> New-NinjaOneLocation -organisationId 1 -location $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/location
-	
-	.EXAMPLE
-		PS> $newObject = @{ Name = 'Example' }
-		PS> New-NinjaOneLocation @newObject
-
-		Creates a new resource with the specified properties.
-
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
@@ -58,3 +65,12 @@ function New-NinjaOneLocation {
 		}
 	}
 }
+
+
+
+
+
+
+
+
+

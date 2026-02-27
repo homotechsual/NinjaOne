@@ -6,6 +6,23 @@ function Set-NinjaOneOrganisationDocuments {
 			Sets one or more organisation documents using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Organisation Documents
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @(
+				@{
+					documentId = 0
+					documentName = "string"
+					documentDescription = "string"
+					fields = @{
+						additionalProp1 = @{
+						}
+					}
+				}
+			)
+			PS> Set-NinjaOneOrganisationDocuments -organisationDocuments $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
@@ -54,3 +71,12 @@ function Set-NinjaOneOrganisationDocuments {
 		}
 	}
 }
+
+
+
+
+
+
+
+
+

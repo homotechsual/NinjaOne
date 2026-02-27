@@ -6,6 +6,20 @@ function New-NinjaOneContact {
 			Creates a new system contact via the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Contacts
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				organizationId = 0
+				firstName = "string"
+				lastName = "string"
+				email = "string"
+				phone = "string"
+				jobTitle = "string"
+			}
+			PS> New-NinjaOneContact -contact $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the created contact.
 		.LINK
@@ -44,3 +58,12 @@ function New-NinjaOneContact {
 		}
 	}
 }
+
+
+
+
+
+
+
+
+

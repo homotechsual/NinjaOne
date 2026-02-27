@@ -10,6 +10,28 @@ function Set-NinjaOneUnmanagedDevice {
 			PS> Set-NinjaOneUnmanagedDevice -nodeId 5001 -unmanagedDevice @{ hostname = 'asset-5001' }
 
 			Updates unmanaged device 5001.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				name = "string"
+				orgId = 0
+				locationId = 0
+				assignedUserUid = "00000000-0000-0000-0000-000000000000"
+				warrantyStartDate = 0
+				warrantyEndDate = 0
+				assetFields = @{
+					serialNumber = "string"
+					assetId = "string"
+					assetStatus = "string"
+					assetPurchaseDate = 0
+					assetPurchaseAmount = 0
+					assetExpectedLifetime = "string"
+				}
+			}
+			PS> Set-NinjaOneUnmanagedDevice -nodeId 1 -unmanagedDevice $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			Status code or updated resource per API.
 		.LINK
@@ -42,4 +64,13 @@ function Set-NinjaOneUnmanagedDevice {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
+
+
+
+
 

@@ -10,6 +10,16 @@ function Set-NinjaOneTechnician {
 			PS> Set-NinjaOneTechnician -Id 77 -technician @{ phone = '+3100000000' }
 
 			Updates the technician 77.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				firstName = "string"
+				lastName = "string"
+			}
+			PS> Set-NinjaOneTechnician -id 1 -technician $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			Status code or updated resource per API.
 		.LINK
@@ -40,4 +50,13 @@ function Set-NinjaOneTechnician {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
+
+
+
+
 

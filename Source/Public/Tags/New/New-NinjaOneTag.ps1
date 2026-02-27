@@ -1,15 +1,21 @@
 function New-NinjaOneTag {
 	<#
 		.SYNOPSIS
-			Creates a new asset tag.
+			Creates a new tag.
 		.DESCRIPTION
-			Creates a new asset tag for the specified asset type via the NinjaOne v2 API.
+			Creates a new tag via the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Asset Tags
 		.EXAMPLE
-			PS> New-NinjaOneTag -assetType 'NODE' -tag @{ name = 'Critical'; color = '#FF0000' }
-
-			Creates a new tag named 'Critical' for asset type NODE.
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				name = "string"
+				description = "string"
+			}
+			PS> New-NinjaOneTag -tag $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the created tag.
 		.LINK
@@ -17,29 +23,40 @@ function New-NinjaOneTag {
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
-	[Alias('nnotag')]
+	[Alias('nnotag', 'nnotagg')]
 	[MetadataAttribute(
-		'/v2/tag/{assetType}',
+		'/v2/tag',
 		'post'
 	)]
 	param(
-		# The asset type the tag applies to (e.g. NODE, ORGANIZATION, LOCATION).
+		# Tag payload per API schema
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
-		[String]$assetType,
-		# The tag object payload per API schema.
-		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$tag
 	)
 	process {
 		try {
-			$Resource = ('v2/tag/{0}' -f $assetType)
+			$Resource = 'v2/tag'
 			$RequestParams = @{ Resource = $Resource; Body = $tag }
-			if ($PSCmdlet.ShouldProcess(('Tag for {0}' -f $assetType), 'Create')) {
+			if ($PSCmdlet.ShouldProcess('Tag', 'Create')) {
 				$Result = New-NinjaOnePOSTRequest @RequestParams
 				return $Result
 			}
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

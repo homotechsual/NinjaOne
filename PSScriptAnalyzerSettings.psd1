@@ -68,6 +68,7 @@
 		'PSUseCorrectCasing',
 		'Measure-AvoidDoubleQuoteInterpolation',
 		'Measure-AvoidOneLineIfElse',
+		'Measure-RequireProperTypeAcceleratorCasing',
 		'Measure-RequiredCommentBasedHelp'
 	)
 	Rules = @{
@@ -95,11 +96,7 @@
 		PSUseCompatibleCmdlets = @{
 			Enable = $true
 			Compatibility = @(
-				'desktop-5.1.14393.206-windows',
-				'core-6.1.0-windows',
-				'core-6.1.0-linux',
-				'core-6.1.0-linux-arm'
-				'core-6.1.0-macos'
+				'desktop-5.1.14393.206-windows'
 			)
 		}
 		PSUseCompatibleSyntax = @{

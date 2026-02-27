@@ -6,17 +6,24 @@ function New-NinjaOneSecureRelation {
 			Create a new secure value relation using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Secure Value Relation
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				name = "string"
+				url = "string"
+				notes = "string"
+				username = "string"
+				password = "string"
+				totpSecret = "string"
+			}
+			PS> New-NinjaOneSecureRelation -entityType ORGANIZATION -entityId 1 -entityType $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/securevaluerelation
-	
-	.EXAMPLE
-		PS> $newObject = @{ Name = 'Example' }
-		PS> New-NinjaOneSecureRelation @newObject
-
-		Creates a new resource with the specified properties.
-
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
@@ -95,3 +102,12 @@ function New-NinjaOneSecureRelation {
 		}
 	}
 }
+
+
+
+
+
+
+
+
+

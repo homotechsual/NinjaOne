@@ -10,6 +10,16 @@ function Set-NinjaOneEndUserCustomFields {
 			PS> Set-NinjaOneEndUserCustomFields -Id 101 -customFields @{ field1='value' }
 
 			Updates custom fields for end user 101.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				additionalProp1 = @{
+				}
+			}
+			PS> Set-NinjaOneEndUserCustomFields -id 1 -customFields $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the response.
 		.LINK
@@ -36,3 +46,12 @@ function Set-NinjaOneEndUserCustomFields {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
+
+
+
+

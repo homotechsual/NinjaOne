@@ -102,9 +102,13 @@ function Invoke-NinjaOneRequest {
 				$Results = $Response.Content
 			} else {
 				Write-Verbose 'Raw switch not present, converting response from JSON.'
-				$Results = $Response.Content | ConvertFrom-Json
-				if ($ParseDateTime) {
-					$Results = ConvertFrom-NinjaOneDateTime -InputObject $Results
+				if ([string]::IsNullOrWhiteSpace([string]$Response.Content)) {
+					$Results = $null
+				} else {
+					$Results = $Response.Content | ConvertFrom-Json
+					if ($ParseDateTime -and $null -ne $Results) {
+						$Results = ConvertFrom-NinjaOneDateTime -InputObject $Results
+					}
 				}
 			}
 			if ($null -eq $Results) {

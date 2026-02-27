@@ -23,6 +23,15 @@ function ConvertFrom-NinjaOneDateTime {
 	$invariantCulture = [System.Globalization.CultureInfo]::InvariantCulture
 	$dateStyles = [System.Globalization.DateTimeStyles]::RoundtripKind
 	function Convert-NinjaOneValue {
+		<#
+		.SYNOPSIS
+			Converts individual values to [DateTime] where possible.
+		.DESCRIPTION
+			Handles strings, numeric epoch values, and nested collections, returning converted values when they
+			match known date formats or epoch ranges.
+		.OUTPUTS
+			[Object]
+		#>
 		param (
 			[Object]$Value
 		)
@@ -70,6 +79,9 @@ function ConvertFrom-NinjaOneDateTime {
 			for ($Index = 0; $Index -lt $Value.Count; $Index++) {
 				$Value[$Index] = Convert-NinjaOneValue -Value $Value[$Index]
 			}
+			return $Value
+		}
+		if ($Value -is [DateTime]) {
 			return $Value
 		}
 		if ($Value -is [psobject]) {

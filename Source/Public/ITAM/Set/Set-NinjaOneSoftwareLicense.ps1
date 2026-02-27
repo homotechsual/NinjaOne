@@ -10,6 +10,57 @@ function Set-NinjaOneSoftwareLicense {
 			PS> Set-NinjaOneSoftwareLicense -LicenseId 1 -License @{ name = 'Microsoft Office 365' }
 
 			Updates the software license with ID 1.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				name = "string"
+				description = "string"
+				type = "PER_DEVICE"
+				purchaseDate = 0
+				publisherId = 0
+				vendorId = 0
+				scope = @{
+					global = $false
+					organizationIds = @(
+						0
+					)
+					locationIds = @(
+						0
+					)
+				}
+				quantity = 0
+				currentUsage = 0
+				term = @{
+					renewalUnit = "MONTH"
+					value = 0
+					expirationDate = 0
+					autoRenewal = $false
+					generateActivityAlert = $false
+					daysBeforeExpiration = 0
+					hasNotifiedExpirationDate = $false
+					hasNotifiedUpToRenewal = $false
+				}
+				notificationChannelInfo = @{
+					email = "string"
+					sms = "string"
+					pushNotification = "string"
+				}
+				assigmentAutomationSettings = @{
+					assignmentType = "NORMALIZED_SOFTWARE"
+					type = "string"
+				}
+				assignedLicenses = @(
+					0
+				)
+				unassignedLicenses = @(
+					0
+				)
+				note = "string"
+			}
+			PS> Set-NinjaOneSoftwareLicense -LicenseId 1 -License $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the updated software license.
 		.LINK
@@ -43,3 +94,12 @@ function Set-NinjaOneSoftwareLicense {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
+
+
+
+

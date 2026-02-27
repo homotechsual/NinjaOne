@@ -6,6 +6,20 @@ function Set-NinjaOneDeviceMaintenance {
 			Schedule a new maintenance window for the given device(s) using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Device Maintenance
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				disabledFeatures = @(
+					"ALERTS"
+				)
+				start = 0
+				end = 0
+				reasonMessage = "string"
+			}
+			PS> Set-NinjaOneDeviceMaintenance -deviceId 1 -deviceId $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
@@ -87,3 +101,12 @@ function Set-NinjaOneDeviceMaintenance {
 		}
 	}
 }
+
+
+
+
+
+
+
+
+

@@ -10,6 +10,22 @@ function Move-NinjaOneKnowledgeBaseItems {
 			PS> Move-NinjaOneKnowledgeBaseItems -moveRequest @{ sourceFolderIds=@(1); sourceDocumentIds=@(2,3); targetFolderId=10 }
 
 			Moves the specified KB items to folder 10.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				folderIds = @(
+					0
+				)
+				documentIds = @(
+					0
+				)
+				destinationFolderId = 0
+				destinationOrganizationId = 0
+			}
+			PS> Move-NinjaOneKnowledgeBaseItems -moveRequest $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			Status code (204) on success.
 		.LINK
@@ -39,4 +55,13 @@ function Move-NinjaOneKnowledgeBaseItems {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
+
+
+
+
 

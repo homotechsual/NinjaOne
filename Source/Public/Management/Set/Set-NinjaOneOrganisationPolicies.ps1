@@ -6,6 +6,18 @@ function Set-NinjaOneOrganisationPolicies {
 			Sets policy assignment for node role(s) for an organisation using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Organisation Policies
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @(
+				@{
+					nodeRoleId = 0
+					policyId = 0
+				}
+			)
+			PS> Set-NinjaOneOrganisationPolicies -organisationId 1 -organisationId $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
@@ -90,3 +102,12 @@ function Set-NinjaOneOrganisationPolicies {
 		}
 	}
 }
+
+
+
+
+
+
+
+
+

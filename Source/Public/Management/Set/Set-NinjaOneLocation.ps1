@@ -6,6 +6,20 @@ function Set-NinjaOneLocation {
 			Sets location information using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Location
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				name = "string"
+				address = "string"
+				description = "string"
+				userData = @{
+					additionalProp1 = "value"
+				}
+			}
+			PS> Set-NinjaOneLocation -organisationId 1 -locationId 1 -locationInformation $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
@@ -56,3 +70,12 @@ function Set-NinjaOneLocation {
 		}
 	}
 }
+
+
+
+
+
+
+
+
+

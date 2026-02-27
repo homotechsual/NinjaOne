@@ -176,4 +176,107 @@ function Measure-RequiredCommentBasedHelp {
 	}
 }
 
+function Measure-RequireProperTypeAcceleratorCasing {
+	<#
+		.SYNOPSIS
+			Ensures type accelerators use proper casing.
+		.DESCRIPTION
+			Flags any type accelerator that is not cased to match the underlying type name.
+		.EXAMPLE
+			Reports [pscustomobject] and suggests [PSCustomObject].
+		.INPUTS
+			[System.Management.Automation.Language.ScriptBlockAst]
+		.OUTPUTS
+			[Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]]
+		#>
+	[CmdletBinding()]
+	[OutputType([Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]])]
+	param(
+		[Parameter(Mandatory)]
+		[ValidateNotNullOrEmpty()]
+		[System.Management.Automation.Language.ScriptBlockAst]$ScriptBlockAst
+	)
+
+	process {
+		try {
+			$scriptPath = $ScriptBlockAst.Extent.File
+			if ($scriptPath -and $scriptPath -like '*\CustomRules\*') {
+				return
+			}
+
+			$acceleratorType = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators', $false)
+			if (-not $acceleratorType) {
+				return
+			}
+			$accelerators = $null
+			$method = $acceleratorType.GetMethod('Get', [System.Reflection.BindingFlags]'Public,NonPublic,Static')
+			if ($method) {
+				$accelerators = $method.Invoke($null, @())
+			}
+			if (-not $accelerators) {
+				$field = $acceleratorType.GetField('typeAccelerators', [System.Reflection.BindingFlags]'NonPublic,Static')
+				if ($field) {
+					$accelerators = $field.GetValue($null)
+				}
+			}
+			if (-not $accelerators) {
+				return
+			}
+			$acceleratorMap = @{}
+			foreach ($key in $accelerators.Keys) {
+				$acceleratorMap[$key.ToLowerInvariant()] = $accelerators[$key].Name
+			}
+
+			$typeAsts = $ScriptBlockAst.FindAll({
+					param([System.Management.Automation.Language.Ast]$Ast)
+					$Ast -is [System.Management.Automation.Language.TypeExpressionAst] -or
+					$Ast -is [System.Management.Automation.Language.TypeConstraintAst]
+				}, $true)
+
+			foreach ($typeAst in $typeAsts) {
+				$typeName = $typeAst.TypeName
+				if (-not $typeName) {
+					continue
+				}
+				$rawName = $typeName.Name
+				if (-not $rawName) {
+					continue
+				}
+
+				$baseName = $rawName
+				$suffix = ''
+				$match = [regex]::Match($rawName, '^(?<base>[^\[]+)(?<suffix>\[.*\])$')
+				if ($match.Success) {
+					$baseName = $match.Groups['base'].Value
+					$suffix = $match.Groups['suffix'].Value
+				}
+
+				$baseKey = $baseName.ToLowerInvariant()
+				if (-not $acceleratorMap.ContainsKey($baseKey)) {
+					continue
+				}
+
+				$preferredBase = $acceleratorMap[$baseKey]
+				$preferredName = $preferredBase + $suffix
+				if ($rawName -ceq $preferredName) {
+					continue
+				}
+
+				$result = [Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord]::new(
+					"Type accelerator '$rawName' should be cased as '$preferredName'.",
+					$typeAst.Extent,
+					'PSUseProperTypeAcceleratorCasing',
+					[Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticSeverity]::Warning,
+					$null,
+					$null,
+					$null
+				)
+				$result
+			}
+		} catch {
+			$PSCmdlet.ThrowTerminatingError($_)
+		}
+	}
+}
+
 Export-ModuleMember -Function Measure-*

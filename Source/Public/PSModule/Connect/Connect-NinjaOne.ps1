@@ -53,7 +53,7 @@ function Connect-NinjaOne {
 		[Parameter( Mandatory, ParameterSetName = 'Token Authentication' )]
 		[Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
 		[Parameter( Mandatory, ParameterSetName = 'Secret Vault Write' )]
-		[ValidateSet('eu', 'oc', 'us', 'ca', 'us2')]
+	[ValidateSet('eu', 'oc', 'us', 'ca', 'us2', 'fed')]
 		[string]$Instance,
 		# The Client Id for the application configured in NinjaOne.
 		[Parameter( Mandatory, ParameterSetName = 'Authorisation Code' )]

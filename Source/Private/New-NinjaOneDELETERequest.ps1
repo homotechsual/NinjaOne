@@ -27,6 +27,7 @@ function New-NinjaOneDELETERequest {
 	if ($null -eq $Script:NRAPIAuthenticationInformation) {
 		throw "Missing NinjaOne authentication tokens, please run 'Connect-NinjaOne' first."
 	}
+	Test-NinjaOneEndpointSupport -Method 'DELETE' -Resource $Resource -Verbose:$VerbosePreference
 	try {
 		if ($QSCollection) {
 			Write-Verbose "Query string in New-NinjaOneDELETERequest contains: $($QSCollection | Out-String)"

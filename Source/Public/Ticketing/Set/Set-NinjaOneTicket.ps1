@@ -6,6 +6,49 @@ function Set-NinjaOneTicket {
 			Sets a ticket using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Ticket
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				version = 0
+				clientId = 0
+				ticketFormId = 0
+				locationId = 0
+				nodeId = 0
+				subject = "string"
+				status = "string"
+				type = "PROBLEM"
+				cc = @{
+					uids = @(
+						"00000000-0000-0000-0000-000000000000"
+					)
+					emails = @(
+						"string"
+					)
+				}
+				assignedAppUserId = 0
+				requesterUid = "00000000-0000-0000-0000-000000000000"
+				severity = "NONE"
+				priority = "NONE"
+				parentTicketId = 0
+				tags = @(
+					"string"
+				)
+				attributes = @(
+					@{
+						id = 0
+						attributeId = 0
+						value = "string"
+					}
+				)
+				additionalAssignedTechnicianIds = @(
+					0
+				)
+				followupTime = 0
+			}
+			PS> Set-NinjaOneTicket -ticketId 1 -ticket $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
@@ -32,6 +75,7 @@ function Set-NinjaOneTicket {
 		[Int]$ticketId,
 		# The ticket object.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
+		[Alias('body')]
 		[Object]$ticket,
 		# Parse date/time values in the response.
 		[Switch]$ParseDateTime
@@ -59,3 +103,16 @@ function Set-NinjaOneTicket {
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

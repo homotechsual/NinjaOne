@@ -6,17 +6,52 @@ function New-NinjaOneCustomFieldsPolicyCondition {
 			Create a new custom fields policy condition using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Custom Fields Policy Condition
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				enabled = $false
+				displayName = "string"
+				severity = "NONE"
+				priority = "NONE"
+				channels = @(
+					0
+				)
+				scripts = @(
+					@{
+						scriptId = 0
+						runAs = "SYSTEM"
+						scriptParam = "string"
+						scriptVariables = @(
+							@{
+								id = "string"
+								value = "string"
+							}
+						)
+					}
+				)
+				notificationAction = "NONE"
+				notifyOnReset = $false
+				resetThreshold = 0
+				matchAll = @(
+					@{
+						fieldName = "string"
+						operator = "EQUALS"
+						value = "string"
+					}
+				)
+				matchAny = @(
+					@{
+					}
+				)
+			}
+			PS> New-NinjaOneCustomFieldsPolicyCondition -customFieldsPolicyCondition $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/customfieldspolicycondition
-	
-	.EXAMPLE
-		PS> $newObject = @{ Name = 'Example' }
-		PS> New-NinjaOneCustomFieldsPolicyCondition @newObject
-
-		Creates a new resource with the specified properties.
-
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
@@ -58,3 +93,12 @@ function New-NinjaOneCustomFieldsPolicyCondition {
 		}
 	}
 }
+
+
+
+
+
+
+
+
+

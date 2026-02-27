@@ -10,6 +10,28 @@ function Set-NinjaOneTab {
 			PS> Set-NinjaOneTab -tabId 5 -tab @{ name = 'New Name' }
 
 			Updates tab 5.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				roleId = 0
+				items = @(
+					@{
+						itemType = "ATTRIBUTE"
+						id = 0
+						name = "string"
+						uiElementUid = "00000000-0000-0000-0000-000000000000"
+						uiElementType = "TITLE"
+						uiElementValue = "string"
+						uiElementCreateTime = 0
+						uiElementUpdateTime = 0
+					}
+				)
+				position = 0
+			}
+			PS> Set-NinjaOneTab -tabId 1 -tab $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the response.
 		.LINK
@@ -36,3 +58,12 @@ function Set-NinjaOneTab {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
+
+
+
+

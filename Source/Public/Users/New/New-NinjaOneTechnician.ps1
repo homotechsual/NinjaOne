@@ -10,6 +10,18 @@ function New-NinjaOneTechnician {
 			PS> New-NinjaOneTechnician -technician @{ firstName = 'John'; lastName = 'Smith'; email = 'john@example.com' }
 
 			Creates a new technician.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				firstName = "string"
+				lastName = "string"
+				email = "string"
+				phone = "string"
+			}
+			PS> New-NinjaOneTechnician -technician $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the created technician.
 		.LINK
@@ -39,4 +51,13 @@ function New-NinjaOneTechnician {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
+
+
+
+
 

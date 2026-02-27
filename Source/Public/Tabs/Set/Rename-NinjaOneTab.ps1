@@ -10,6 +10,17 @@ function Rename-NinjaOneTab {
 			PS> Rename-NinjaOneTab -rename @{ tabId = 5; name = 'New Name' }
 
 			Renames tab 5.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				tabId = 0
+				name = "string"
+				description = "string"
+			}
+			PS> Rename-NinjaOneTab -rename $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the response.
 		.LINK
@@ -34,3 +45,12 @@ function Rename-NinjaOneTab {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
+
+
+
+
