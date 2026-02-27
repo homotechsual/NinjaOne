@@ -6,16 +6,14 @@ function Reset-NinjaOneAlert {
 			Resets the status of alerts using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Alert
+		.EXAMPLE
+			PS> Reset-NinjaOneAlert -alertId 1
+
+			Resets alert 1 to default state.
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Reset/alert
-	
-	.EXAMPLE
-		PS> Reset-NinjaOneAlert -Identity 123
-
-		Resets the specified resource to default state.
-
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]

@@ -5,7 +5,7 @@ function Get-NinjaOneTabSummaryOrganisation {
 		.DESCRIPTION
 			Retrieves a summary of the custom tabs available to organisation views via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Tabs
+			Tab Summary Organisation
 		.EXAMPLE
 			PS> Get-NinjaOneTabSummaryOrganisation
 

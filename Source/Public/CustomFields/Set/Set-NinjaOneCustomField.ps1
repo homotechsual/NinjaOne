@@ -5,7 +5,7 @@ function Set-NinjaOneCustomField {
 		.DESCRIPTION
 			Updates an existing custom field identified by its unique field name via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Custom Fields
+			Custom Field
 		.EXAMPLE
 			PS> Set-NinjaOneCustomField -FieldName 'department' -CustomField @{ description = 'Department of the user' }
 

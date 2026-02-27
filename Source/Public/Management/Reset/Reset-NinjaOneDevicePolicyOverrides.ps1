@@ -6,16 +6,14 @@ function Reset-NinjaOneDevicePolicyOverrides {
 			Resets (removes) all configured device policy overrides using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Device Policy Overrides
+		.EXAMPLE
+			PS> Reset-NinjaOneDevicePolicyOverrides -deviceId 1
+
+			Resets all policy overrides for device 1.
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Reset/devicepolicyoverrides
-	
-	.EXAMPLE
-		PS> Reset-NinjaOneDevicePolicyOverrides -Identity 123
-
-		Resets the specified resource to default state.
-
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]

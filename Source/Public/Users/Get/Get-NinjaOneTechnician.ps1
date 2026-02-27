@@ -5,7 +5,7 @@ function Get-NinjaOneTechnician {
 		.DESCRIPTION
 			Retrieves a specific technician via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			Technician
 		.EXAMPLE
 			PS> Get-NinjaOneTechnician -Id 77
 

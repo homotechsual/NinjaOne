@@ -5,7 +5,7 @@ function Get-NinjaOneEndUser {
 		.DESCRIPTION
 			Retrieves a specific end user via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			End User
 		.EXAMPLE
 			PS> Get-NinjaOneEndUser -Id 101
 

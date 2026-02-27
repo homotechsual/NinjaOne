@@ -5,7 +5,7 @@ function Set-NinjaOneSoftwareLicense {
 		.DESCRIPTION
 			Updates an existing software license via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Software Licenses
+			Software License
 		.EXAMPLE
 			PS> Set-NinjaOneSoftwareLicense -LicenseId 1 -License @{ name = 'Microsoft Office 365' }
 

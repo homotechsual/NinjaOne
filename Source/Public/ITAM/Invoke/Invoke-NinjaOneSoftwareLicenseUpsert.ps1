@@ -5,7 +5,7 @@ function Invoke-NinjaOneSoftwareLicenseUpsert {
 		.DESCRIPTION
 			Creates or updates a software license via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Software Licenses
+			Software License
 		.EXAMPLE
 			PS> Invoke-NinjaOneSoftwareLicenseUpsert -License @{ name = 'Microsoft Office'; description = 'Office 365' }
 

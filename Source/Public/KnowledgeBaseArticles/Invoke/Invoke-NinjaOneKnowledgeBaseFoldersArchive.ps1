@@ -5,7 +5,7 @@ function Invoke-NinjaOneKnowledgeBaseFoldersArchive {
 		.DESCRIPTION
 			Archives knowledge base folders via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Knowledge Base Articles
+			Knowledge Base Folder
 		.EXAMPLE
 			PS> Invoke-NinjaOneKnowledgeBaseFoldersArchive -folderIds @(10,11)
 

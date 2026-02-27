@@ -5,7 +5,7 @@ function Move-NinjaOneKnowledgeBaseItems {
 		.DESCRIPTION
 			Moves knowledge base items using the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Knowledge Base Articles
+			Knowledge Base Item
 		.EXAMPLE
 			PS> Move-NinjaOneKnowledgeBaseItems -moveRequest @{ sourceFolderIds=@(1); sourceDocumentIds=@(2,3); targetFolderId=10 }
 

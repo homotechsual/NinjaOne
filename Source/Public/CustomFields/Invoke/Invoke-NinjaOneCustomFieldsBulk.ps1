@@ -5,7 +5,7 @@ function Invoke-NinjaOneCustomFieldsBulk {
 		.DESCRIPTION
 			Performs bulk create, update, or delete operations on custom fields via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Custom Fields
+			Custom Fields Bulk
 		.EXAMPLE
 			PS> Invoke-NinjaOneCustomFieldsBulk -Operation 'create' -CustomFields @( @{ name = 'Field1' }, @{ name = 'Field2' } )
 

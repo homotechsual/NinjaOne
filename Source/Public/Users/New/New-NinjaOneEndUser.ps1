@@ -5,7 +5,7 @@ function New-NinjaOneEndUser {
 		.DESCRIPTION
 			Creates a new end user via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			End User
 		.EXAMPLE
 			PS> New-NinjaOneEndUser -endUser @{ firstName = 'Jane'; lastName = 'Doe'; email = 'jane@example.com' }
 

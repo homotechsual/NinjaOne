@@ -46,9 +46,6 @@ function EscapeClosingCurlyBrackets() {
 
         .LINK
             https://regex101.com/r/T14SYa/1
-
-        .LINK
-            https://regex101.com/r/bI0yGB/1
     #>
     param(
         [Parameter(Mandatory = $True)][System.IO.FileSystemInfo]$MarkdownFile
@@ -89,9 +86,6 @@ function EscapeOpeningCurlyBrackets() {
 
         .LINK
             https://regex101.com/r/T14SYa/1
-
-        .LINK
-            https://regex101.com/r/bI0yGB/1
     #>
     param(
         [Parameter(Mandatory = $True)][System.IO.FileSystemInfo]$MarkdownFile
@@ -1093,6 +1087,7 @@ function ReplaceFrontMatter() {
         [Parameter(Mandatory = $False)][string]$MetaDescription,
         [Parameter(Mandatory = $False)][array]$MetaKeywords,
         [Parameter(Mandatory = $False)][string]$CustomShortTitle,
+            [Parameter(Mandatory = $False)][string]$CustomId,
         [switch]$HideTitle,
         [switch]$HideTableOfContents
     )
@@ -1102,7 +1097,9 @@ function ReplaceFrontMatter() {
     # prepare front matter
     $newFrontMatter = [System.Collections.ArrayList]::new()
     $newFrontMatter.Add("---") | Out-Null
-    $newFrontMatter.Add("id: $($powershellCommandName)") | Out-Null
+    # Use custom ID if provided, otherwise use the command name
+    $idToUse = if ($CustomId) { $CustomId } else { $powershellCommandName }
+    $newFrontMatter.Add("id: $($idToUse)") | Out-Null
 
     # Use custom short title if provided, otherwise use the command name
     $titleToUse = if ($CustomShortTitle) { $CustomShortTitle } else { $powershellCommandName }
@@ -1139,7 +1136,7 @@ function ReplaceFrontMatter() {
     # replace file
     WriteFile -MarkdownFile $MarkdownFile -Content $content
 }
-#EndRegion '.\Private\ReplaceFrontMatter.ps1' 61
+#EndRegion '.\Private\ReplaceFrontMatter.ps1' 64
 #Region '.\Private\ReplaceHeader1.ps1' -1
 
 function ReplaceHeader1() {
@@ -1169,6 +1166,33 @@ function ReplaceHeader1() {
     WriteFile -MarkdownFile $MarkdownFile -Content $content
 }
 #EndRegion '.\Private\ReplaceHeader1.ps1' 27
+#Region '.\Private\SanitizeMarkdownLinks.ps1' -1
+
+function SanitizeMarkdownLinks() {
+    <#
+        .SYNOPSIS
+            Removes malformed markdown links produced by downstream help parsers.
+
+        .DESCRIPTION
+            Cleans known malformed link patterns, including:
+            - Empty URL markdown links: [text]()
+            - Literal backtick escape remnants in URLs: `n`t
+    #>
+    param(
+        [Parameter(Mandatory = $True)][System.IO.FileSystemInfo]$MarkdownFile
+    )
+
+    $content = ReadFile -MarkdownFile $MarkdownFile -Raw
+
+    # remove literal backtick escape remnants from URL text and targets
+    $content = [regex]::replace($content, '(https?://[^\s\)\]]+?)`n`t', '$1')
+
+    # remove empty-url markdown links like: [label]()
+    $content = [regex]::replace($content, '^\[(.*?)\]\(\s*\)\s*\n?', '', [System.Text.RegularExpressions.RegexOptions]::Multiline)
+
+    WriteFile -MarkdownFile $MarkdownFile -Content $content
+}
+#EndRegion '.\Private\SanitizeMarkdownLinks.ps1' 25
 #Region '.\Private\SeparateMarkdownHeadings.ps1' -1
 
 function SeparateMarkdownHeadings() {
@@ -1654,8 +1678,11 @@ function New-DocusaurusHelp() {
         # Extract command name from file and get custom short title if applicable
         $commandName = [System.IO.Path]::GetFileNameWithoutExtension($mdxFile.Name)
         $customShortTitle = $null
+        $customId = $null
         if ($UseCustomShortTitles -and $ShortTitles -and $ShortTitles.ContainsKey($commandName)) {
             $customShortTitle = $ShortTitles[$commandName]
+            # Generate URL-safe ID from short title: lowercase and replace special characters
+            $customId = $customShortTitle.ToLower() -replace '[^a-z0-9]+', '-' -replace '^-|-$', ''
         }
 
         $frontMatterArgs = @{
@@ -1667,9 +1694,12 @@ function New-DocusaurusHelp() {
             HideTableOfContents = $HideTableOfContents
         }
 
-        # Add custom short title if available
+        # Add custom short title and ID if available
         if ($customShortTitle) {
             $frontMatterArgs['CustomShortTitle'] = $customShortTitle
+        }
+        if ($customId) {
+            $frontMatterArgs['CustomId'] = $customId
         }
 
         # transform the markdown using these steps (overwriting the mdx file per step)
@@ -1704,6 +1734,7 @@ function New-DocusaurusHelp() {
         ## Continue with general enrichment
         InsertPowerShellMonikers -MarkdownFile $mdxFile
         UnescapeSpecialChars -MarkdownFile $mdxFile
+        SanitizeMarkdownLinks -MarkdownFile $mdxFile
         SeparateMarkdownHeadings -MarkdownFile $mdxFile
 
         # Line by line changes
@@ -1763,4 +1794,4 @@ function New-DocusaurusHelp() {
     # output Get-ChildItem so end-user can post-process generated files as they see fit
     Get-ChildItem -Path $sidebarFolder
 }
-#EndRegion '.\Public\New-DocusaurusHelp.ps1' 415
+#EndRegion '.\Public\New-DocusaurusHelp.ps1' 422

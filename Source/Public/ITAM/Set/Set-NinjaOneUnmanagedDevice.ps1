@@ -5,7 +5,7 @@ function Set-NinjaOneUnmanagedDevice {
 		.DESCRIPTION
 			Updates an unmanaged device via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Unmanaged Devices
+			Unmanaged Device
 		.EXAMPLE
 			PS> Set-NinjaOneUnmanagedDevice -nodeId 5001 -unmanagedDevice @{ hostname = 'asset-5001' }
 

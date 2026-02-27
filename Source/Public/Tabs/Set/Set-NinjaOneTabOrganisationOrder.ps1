@@ -5,7 +5,7 @@ function Set-NinjaOneTabOrganisationOrder {
 		.DESCRIPTION
 			Updates the order of custom tabs for organization/location tabs via the NinjaOne v2 API. NOTE: All org tabs must be specified.
 		.FUNCTIONALITY
-			Tabs
+			Tab Organisation Order
 		.EXAMPLE
 			PS> Set-NinjaOneTabOrganisationOrder -order @(
 				@{ tabId = 1; order = 1 },

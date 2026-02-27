@@ -5,11 +5,11 @@ function Set-NinjaOneAssetTag {
 		.DESCRIPTION
 			Updates tags for a specific asset type and asset Id via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Asset Tags
+			Asset Tag Assignment
 		.EXAMPLE
-			PS> Set-NinjaOneAssetTag -assetType 'NODE' -assetId 123 -tagAssignment @{ tagIds = @(1,2) }
+			PS> Set-NinjaOneAssetTag -assetType 'NODE' -assetId 123 -tagAssignment @{ tagIds = @(1, 2, 3) }
 
-			Assigns tags 1 and 2 to node 123.
+			Updates tag assignments for node 123 with tags 1, 2, and 3.
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{

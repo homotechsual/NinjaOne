@@ -5,7 +5,7 @@ function Invoke-NinjaOneChecklistArchive {
 		.DESCRIPTION
 			Archives one or more checklists via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Checklist Templates
+			Checklist Archive
 		.EXAMPLE
 			PS> Invoke-NinjaOneChecklistArchive -checklistsToArchive @{ checklistTemplateIds = @(1,2) }
 

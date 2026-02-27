@@ -5,7 +5,7 @@ function Set-NinjaOneEndUserCustomFields {
 		.DESCRIPTION
 			Updates end user custom fields via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			End User Custom Fields
 		.EXAMPLE
 			PS> Set-NinjaOneEndUserCustomFields -Id 101 -customFields @{ field1='value' }
 

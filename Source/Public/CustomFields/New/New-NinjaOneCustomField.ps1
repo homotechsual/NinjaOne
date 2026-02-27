@@ -5,7 +5,7 @@ function New-NinjaOneCustomField {
 		.DESCRIPTION
 			Creates a new custom field (node attribute) via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Custom Fields
+			Custom Field
 		.EXAMPLE
 			PS> New-NinjaOneCustomField -CustomField @{ name = 'Department'; type = 'TEXT' }
 

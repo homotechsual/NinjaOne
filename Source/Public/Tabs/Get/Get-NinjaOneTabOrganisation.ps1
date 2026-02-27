@@ -5,7 +5,7 @@ function Get-NinjaOneTabOrganisation {
 		.DESCRIPTION
 			Retrieves the organisation associated with a tab via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Tabs
+			Tab Organisation
 		.EXAMPLE
 			PS> Get-NinjaOneTabOrganisation -tabId 5
 

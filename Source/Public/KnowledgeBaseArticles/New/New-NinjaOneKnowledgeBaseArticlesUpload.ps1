@@ -5,14 +5,12 @@ function New-NinjaOneKnowledgeBaseArticlesUpload {
 		.DESCRIPTION
 			Uploads one or more knowledge base articles via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Knowledge Base Articles
-		.EXAMPLE
-			PS> New-NinjaOneKnowledgeBaseArticlesUpload -OrganizationId 1 -FilePath 'C:\articles.zip'
+		Knowledge Base Articles Upload
+	.EXAMPLE
+		PS> New-NinjaOneKnowledgeBaseArticlesUpload -OrganizationId 1 -FilePath 'C:\articles.zip'
 
-			Uploads knowledge base articles from a file to the specified organization.
-		.EXAMPLE
-			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
-			PS> $multipart = [System.Net.Http.MultipartFormDataContent]::new()
+		Uploads knowledge base articles from a file to the specified organization.
+	.EXAMPLE
 			PS> $organizationId = 0
 			PS> $json = $organizationId | ConvertTo-Json -Depth 10
 			PS> $stringContent = [System.Net.Http.StringContent]::new($json, [System.Text.Encoding]::UTF8, "application/json")

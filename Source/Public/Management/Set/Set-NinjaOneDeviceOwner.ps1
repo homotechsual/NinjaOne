@@ -5,7 +5,7 @@ function Set-NinjaOneDeviceOwner {
 		.DESCRIPTION
 			Sets device Owner using the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Device
+			Device Owner
 		.OUTPUTS
 			A powershell object containing the response.
 		.EXAMPLE

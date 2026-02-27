@@ -6,16 +6,14 @@ function Remove-NinjaOneDeviceMaintenance {
 			Cancels scheduled maintenance for the given device using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Maintenance
+		.EXAMPLE
+			PS> Remove-NinjaOneDeviceMaintenance -deviceId 1
+
+			Cancels scheduled maintenance for device 1.
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Remove/maintenance
-	
-	.EXAMPLE
-		PS> Remove-NinjaOneDeviceMaintenance -Identity 123
-
-		Removes the specified resource.
-
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]

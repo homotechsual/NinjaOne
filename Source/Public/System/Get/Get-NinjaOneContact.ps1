@@ -5,7 +5,7 @@ function Get-NinjaOneContact {
 		.DESCRIPTION
 			Retrieves a system contact by Id from the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Contacts
+			Contact
 		.EXAMPLE
 			PS> Get-NinjaOneContact -Id 123
 

@@ -5,7 +5,7 @@ function Get-NinjaOneTabRole {
 		.DESCRIPTION
 			Retrieves the requested tab along with any extensions based on the supplied role Id via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Tabs
+			Tab Role
 		.EXAMPLE
 			PS> Get-NinjaOneTabRole -tabId 5 -roleId 10
 

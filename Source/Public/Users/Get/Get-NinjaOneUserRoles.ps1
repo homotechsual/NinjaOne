@@ -5,7 +5,7 @@ function Get-NinjaOneUserRoles {
 		.DESCRIPTION
 			Retrieves all user roles via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			User Roles
 		.EXAMPLE
 			PS> Get-NinjaOneUserRoles
 

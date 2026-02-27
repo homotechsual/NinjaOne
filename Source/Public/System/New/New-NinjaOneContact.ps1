@@ -5,7 +5,7 @@ function New-NinjaOneContact {
 		.DESCRIPTION
 			Creates a new system contact via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Contacts
+			Contact
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{

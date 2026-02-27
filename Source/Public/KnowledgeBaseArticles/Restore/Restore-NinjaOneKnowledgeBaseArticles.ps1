@@ -5,7 +5,7 @@ function Restore-NinjaOneKnowledgeBaseArticles {
 		.DESCRIPTION
 			Restores archived knowledge base articles via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Knowledge Base Articles
+			Knowledge Base Article
 		.EXAMPLE
 			PS> Restore-NinjaOneKnowledgeBaseArticles -articleIds @(1,2,3)
 

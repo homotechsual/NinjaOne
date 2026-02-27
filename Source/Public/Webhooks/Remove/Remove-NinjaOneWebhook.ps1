@@ -6,16 +6,14 @@ function Remove-NinjaOneWebhook {
 			Removes webhook configuration for the current application/API client using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Webhook
+		.EXAMPLE
+			PS> Remove-NinjaOneWebhook
+
+			Removes the webhook configuration.
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Remove/webhook
-	
-	.EXAMPLE
-		PS> Remove-NinjaOneWebhook -Identity 123
-
-		Removes the specified resource.
-
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]

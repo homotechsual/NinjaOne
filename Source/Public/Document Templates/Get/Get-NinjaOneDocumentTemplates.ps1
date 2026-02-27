@@ -6,7 +6,7 @@ function Get-NinjaOneDocumentTemplates {
 		.DESCRIPTION
 			Retrieves one or more document templates from the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Document Template
+			Document Templates
 		.OUTPUTS
 			A powershell object containing the response.
 		.EXAMPLE

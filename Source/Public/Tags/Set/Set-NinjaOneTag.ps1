@@ -5,7 +5,7 @@ function Set-NinjaOneTag {
 		.DESCRIPTION
 			Updates an existing tag via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Asset Tags
+			Asset Tag
 		.EXAMPLE
 			PS> Set-NinjaOneTag -tagId 12 -tag @{ name = 'Priority-1' }
 

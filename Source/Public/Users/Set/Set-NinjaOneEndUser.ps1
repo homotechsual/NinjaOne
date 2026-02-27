@@ -5,7 +5,7 @@ function Set-NinjaOneEndUser {
 		.DESCRIPTION
 			Updates an end user via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			End User
 		.EXAMPLE
 			PS> Set-NinjaOneEndUser -Id 101 -endUser @{ phone = '+3100000000' }
 

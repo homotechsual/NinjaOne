@@ -5,7 +5,7 @@ function Rename-NinjaOneTab {
 		.DESCRIPTION
 			Renames a custom tab via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Tabs
+			Tab
 		.EXAMPLE
 			PS> Rename-NinjaOneTab -rename @{ tabId = 5; name = 'New Name' }
 

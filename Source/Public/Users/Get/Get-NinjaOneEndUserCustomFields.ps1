@@ -5,7 +5,7 @@ function Get-NinjaOneEndUserCustomFields {
 		.DESCRIPTION
 			Retrieves the list of custom fields for an end user via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			End User Custom Fields
 		.EXAMPLE
 			PS> Get-NinjaOneEndUserCustomFields -Id 101
 

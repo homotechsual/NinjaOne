@@ -7,6 +7,10 @@ function Set-NinjaOneDevice {
 		.FUNCTIONALITY
 			Device
 		.EXAMPLE
+			PS> Set-NinjaOneDevice -deviceId 123 -deviceInformation @{ displayName = 'NewName' }
+
+			Updates the friendly name for device 123.
+		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
 				displayName = "string"
@@ -31,12 +35,6 @@ function Set-NinjaOneDevice {
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/device
-	
-	.EXAMPLE
-		PS> Set-NinjaOneDevice -Identity 123 -Property 'Value'
-
-		Updates the specified resource.
-
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]

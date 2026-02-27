@@ -5,7 +5,7 @@ function Set-NinjaOneKnowledgeBaseArticles {
 		.DESCRIPTION
 			Updates one of more knowledge base articles via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Knowledge Base Articles
+			Knowledge Base Article
 		.EXAMPLE
 			PS> Set-NinjaOneKnowledgeBaseArticles -articles @{ articles = @(@{ id=1; name='New' }) }
 

@@ -5,7 +5,7 @@ function Get-NinjaOneEndUsers {
 		.DESCRIPTION
 			Retrieves all end users via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			End Users
 		.EXAMPLE
 			PS> Get-NinjaOneEndUsers
 

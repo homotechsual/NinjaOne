@@ -5,7 +5,7 @@ function Remove-NinjaOneTab {
 		.DESCRIPTION
 			Deletes a custom tab via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Tabs
+			Tab
 		.EXAMPLE
 			PS> Remove-NinjaOneTab -tabId 5 -Confirm:$false
 

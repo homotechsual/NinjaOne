@@ -5,7 +5,7 @@ function Set-NinjaOneTechnician {
 		.DESCRIPTION
 			Updates a technician via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			Technician
 		.EXAMPLE
 			PS> Set-NinjaOneTechnician -Id 77 -technician @{ phone = '+3100000000' }
 

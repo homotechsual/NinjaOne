@@ -5,7 +5,7 @@ function Set-NinjaOneTabRoleOrder {
 		.DESCRIPTION
 			Updates the order of custom tabs for a role via the NinjaOne v2 API. NOTE: Only tabs created on this role can be ordered. All tabs on the role must be specified.
 		.FUNCTIONALITY
-			Tabs
+			Tab Role Order
 		.EXAMPLE
 			PS> Set-NinjaOneTabRoleOrder -roleId 10 -order @(
 				@{ tabId = 1; order = 1 },

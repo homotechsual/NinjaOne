@@ -5,7 +5,7 @@ function Remove-NinjaOneContact {
 		.DESCRIPTION
 			Deletes a system contact via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Contacts
+			Contact
 		.OUTPUTS
 			Status code (204) on success.
 		.LINK

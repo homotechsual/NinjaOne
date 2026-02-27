@@ -6,16 +6,14 @@ function Remove-NinjaOneRelatedItem {
 			Removes the given item relationship link using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Related Item
+		.EXAMPLE
+			PS> Remove-NinjaOneRelatedItem -relatedItemId 123
+
+			Removes the relationship link 123.
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Remove/relateditem
-	
-	.EXAMPLE
-		PS> Remove-NinjaOneRelatedItem -Identity 123
-
-		Removes the specified resource.
-
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]

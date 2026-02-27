@@ -5,7 +5,7 @@ function Get-NinjaOneSoftwareLicense {
 		.DESCRIPTION
 			Retrieves a specific software license by its ID from the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Software Licenses
+			Software License
 		.EXAMPLE
 			PS> Get-NinjaOneSoftwareLicense -LicenseId 1
 

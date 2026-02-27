@@ -5,7 +5,7 @@ function New-NinjaOneUnmanagedDevice {
 		.DESCRIPTION
 			Creates an unmanaged device via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Unmanaged Devices
+			Unmanaged Device
 		.EXAMPLE
 			PS> New-NinjaOneUnmanagedDevice -unmanagedDevice @{ hostname='asset-5001' }
 

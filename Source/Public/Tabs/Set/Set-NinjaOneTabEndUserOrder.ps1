@@ -5,7 +5,7 @@ function Set-NinjaOneTabEndUserOrder {
 		.DESCRIPTION
 			Updates the order of custom tabs for end-user tabs via the NinjaOne v2 API. NOTE: All tabs defined for end-users must be specified in the payload.
 		.FUNCTIONALITY
-			Tabs
+			Tab End User Order
 		.EXAMPLE
 			PS> Set-NinjaOneTabEndUserOrder -order @(
 				@{ tabId = 1; order = 1 },

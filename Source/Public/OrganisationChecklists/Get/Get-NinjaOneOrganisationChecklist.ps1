@@ -5,7 +5,7 @@ function Get-NinjaOneOrganisationChecklist {
 		.DESCRIPTION
 			Retrieves an organisation checklist via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Organisation Checklists
+			Organisation Checklist
 		.EXAMPLE
 			PS> Get-NinjaOneOrganisationChecklist -checklistId 22
 

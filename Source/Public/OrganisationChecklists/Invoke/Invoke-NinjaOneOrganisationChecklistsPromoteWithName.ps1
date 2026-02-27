@@ -5,7 +5,7 @@ function Invoke-NinjaOneOrganisationChecklistsPromoteWithName {
 		.DESCRIPTION
 			Promotes organisation checklists assigning a new name via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Organisation Checklists
+		Organisation Checklist Promote Named
 		.EXAMPLE
 			PS> Invoke-NinjaOneOrganisationChecklistsPromoteWithName -request @{ checklistIds=@(1); name='New Name' }
 

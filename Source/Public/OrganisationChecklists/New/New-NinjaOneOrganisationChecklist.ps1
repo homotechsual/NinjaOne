@@ -5,7 +5,7 @@ function New-NinjaOneOrganisationChecklist {
 		.DESCRIPTION
 			Creates a new organisation checklist via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Organisation Checklists
+			Organisation Checklist
 		.EXAMPLE
 			PS> New-NinjaOneOrganisationChecklist -checklist @{ name = 'Onboarding'; items = @('Step1','Step2') }
 

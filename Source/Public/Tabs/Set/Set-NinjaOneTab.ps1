@@ -5,7 +5,7 @@ function Set-NinjaOneTab {
 		.DESCRIPTION
 			Updates a custom tab via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Tabs
+			Tab
 		.EXAMPLE
 			PS> Set-NinjaOneTab -tabId 5 -tab @{ name = 'New Name' }
 

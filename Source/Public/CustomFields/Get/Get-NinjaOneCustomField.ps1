@@ -5,7 +5,7 @@ function Get-NinjaOneCustomField {
 		.DESCRIPTION
 			Retrieves a specific custom field by its unique field name from the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Custom Fields
+			Custom Field
 		.EXAMPLE
 			PS> Get-NinjaOneCustomField -FieldName 'department'
 

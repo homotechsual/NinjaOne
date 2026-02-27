@@ -5,7 +5,7 @@ function Get-NinjaOneTechnicians {
 		.DESCRIPTION
 			Retrieves all technicians via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			Technicians
 		.EXAMPLE
 			PS> Get-NinjaOneTechnicians
 

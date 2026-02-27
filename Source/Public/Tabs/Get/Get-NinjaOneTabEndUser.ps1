@@ -5,7 +5,7 @@ function Get-NinjaOneTabEndUser {
 		.DESCRIPTION
 			Retrieves the end-user associated with a tab via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Tabs
+			Tab End User
 		.EXAMPLE
 			PS> Get-NinjaOneTabEndUser -tabId 5
 

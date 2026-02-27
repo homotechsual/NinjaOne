@@ -5,7 +5,7 @@ function Invoke-NinjaOneDocumentTemplateArchive {
 		.DESCRIPTION
 			Archives a document template via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Document Templates
+			Document Template Archive
 		.EXAMPLE
 			PS> Invoke-NinjaOneDocumentTemplateArchive -documentTemplateId 10
 

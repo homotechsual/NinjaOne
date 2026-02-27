@@ -66,14 +66,38 @@ foreach ($violation in $violations) {
                 }
             }
             
-            # Find the closing #> and insert the example before it
-            if ($content -match '(\s+)(#>)') {
-                $content = $content -replace '(\s+)(#>)', "`n`t`n`t$example`n`$1`$2"
+            # Find the proper insertion point: before .OUTPUTS or .LINK, or before closing #>
+            $lines = $content -split "`n"
+            $insertIndex = -1
+            
+            # First, try to find .OUTPUTS keyword
+            $outputsIndex = [array]::FindIndex($lines, [System.Predicate[string]]{ param($line) $line -match '^\s*\.OUTPUTS\b' })
+            if ($outputsIndex -ge 0) {
+                $insertIndex = $outputsIndex
             } else {
-                Write-Host "    ✗ Could not find help block closing" -ForegroundColor Red
-                $failed++
-                continue
+                # If no .OUTPUTS, try to find .LINK keyword
+                $linkIndex = [array]::FindIndex($lines, [System.Predicate[string]]{ param($line) $line -match '^\s*\.LINK\b' })
+                if ($linkIndex -ge 0) {
+                    $insertIndex = $linkIndex
+                }
             }
+            
+            # If neither found, find the closing #>
+            if ($insertIndex -lt 0) {
+                $insertIndex = [array]::FindIndex($lines, [System.Predicate[string]]{ param($line) $line -match '^\s*#>\s*$' })
+                if ($insertIndex -lt 0) {
+                    Write-Host "    ✗ Could not find insertion point in help block" -ForegroundColor Red
+                    $failed++
+                    continue
+                }
+            }
+            
+            # Insert the example at the determined position
+            $before = if ($insertIndex -gt 0) { $lines[0..($insertIndex - 1)] } else { @() }
+            $after = $lines[$insertIndex..($lines.Count - 1)]
+            
+            $newLines = @($before) + @("`t`t$example") + @($after)
+            $content = $newLines -join "`n"
             
             # Validate syntax
             $testTokens = $null

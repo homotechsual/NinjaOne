@@ -5,7 +5,7 @@ function New-NinjaOneSoftwareLicense {
 		.DESCRIPTION
 			Creates a new software license via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Software Licenses
+			Software License
 		.EXAMPLE
 			PS> New-NinjaOneSoftwareLicense -License @{ name = 'Microsoft Office'; description = 'Office 365 subscriptions' }
 

@@ -5,7 +5,7 @@ function New-NinjaOneTag {
 		.DESCRIPTION
 			Creates a new tag via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Asset Tags
+			Asset Tag
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{

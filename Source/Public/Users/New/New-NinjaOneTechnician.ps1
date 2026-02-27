@@ -5,7 +5,7 @@ function New-NinjaOneTechnician {
 		.DESCRIPTION
 			Creates a new technician via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			Technician
 		.EXAMPLE
 			PS> New-NinjaOneTechnician -technician @{ firstName = 'John'; lastName = 'Smith'; email = 'john@example.com' }
 

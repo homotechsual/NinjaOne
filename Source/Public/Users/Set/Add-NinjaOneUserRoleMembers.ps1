@@ -5,7 +5,7 @@ function Add-NinjaOneUserRoleMembers {
 		.DESCRIPTION
 			Adds one or more members to the specified user role via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			User Role Members
 		.EXAMPLE
 			PS> Add-NinjaOneUserRoleMembers -roleId 10 -members @{ userIds = @(1,2) }
 

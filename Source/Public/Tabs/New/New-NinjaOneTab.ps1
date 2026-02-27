@@ -5,7 +5,7 @@ function New-NinjaOneTab {
 		.DESCRIPTION
 			Creates a new custom tab via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Tabs
+			Tab
 		.EXAMPLE
 			PS> New-NinjaOneTab -tab @{ name='My Tab'; scope='ORGANIZATION' }
 

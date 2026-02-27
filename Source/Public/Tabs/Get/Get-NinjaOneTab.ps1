@@ -5,7 +5,7 @@ function Get-NinjaOneTab {
 		.DESCRIPTION
 			Retrieves a tab via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Tabs
+			Tab
 		.EXAMPLE
 			PS> Get-NinjaOneTab -tabId 5
 

@@ -5,7 +5,7 @@ function Set-NinjaOneTabRoleVisibility {
 		.DESCRIPTION
 			Configures tab visibility for a specific role via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Tabs
+			Tab Role Visibility
 		.EXAMPLE
 			PS> Set-NinjaOneTabRoleVisibility -roleId 10 -visibility @(
 				@{ tabId = 1; visible = $true },
