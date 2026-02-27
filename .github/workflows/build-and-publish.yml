@@ -187,6 +187,7 @@ jobs:
       #     Publish-Module -Path $moduleManifest.Directory.FullName -Repository 'GitHub' -NuGetApiKey $nugetApiKey
 
       - name: Close matching milestone
+        continue-on-error: true
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -194,10 +195,11 @@ jobs:
           $ErrorActionPreference = 'Stop'
           $milestoneTitle = $env:GITHUB_REF_NAME -replace '^v', ''
           Write-Host "Looking for milestone: $milestoneTitle"
-          $milestoneNumber = gh api repos/$env:GITHUB_REPOSITORY/milestones --jq ".[] | select(.title==\"$milestoneTitle\") | .number" | Select-Object -First 1
-          if ($milestoneNumber) {
-            Write-Host "Closing milestone #$milestoneNumber ($milestoneTitle)"
-            gh api -X PATCH repos/$env:GITHUB_REPOSITORY/milestones/$milestoneNumber -f state=closed
+          $milestones = gh api repos/$env:GITHUB_REPOSITORY/milestones | ConvertFrom-Json
+          $milestone = $milestones | Where-Object { $_.title -eq $milestoneTitle } | Select-Object -First 1
+          if ($milestone) {
+            Write-Host "Closing milestone #$($milestone.number) ($milestoneTitle)"
+            gh api -X PATCH repos/$env:GITHUB_REPOSITORY/milestones/$($milestone.number) -f state=closed
           } else {
             Write-Host "No open milestone found matching '$milestoneTitle'"
           }
