@@ -198,8 +198,8 @@ function UpdateHelp {
 		}
 	}
 	$ShortNamesFilePath = [System.IO.FileInfo]'.\.build\CommandletShortNames.yaml'
-	$ShortNamesYAML = Get-Content -Path $ShortNamesFilePath
-	$ShortNamesDictionary = ConvertFrom-Yaml -InputObject $ShortNamesYAML
+	$ShortNamesYAML = Get-Content -Path $ShortNamesFilePath -Raw
+	$ShortNamesDictionary = $ShortNamesYAML | ConvertFrom-Yaml
 	$MarkdownHeader = @'
 :::powershell[Generated Cmdlet Help]
 This page has been generated from the {0} PowerShell module source. To make changes please edit the appropriate PowerShell source file.
