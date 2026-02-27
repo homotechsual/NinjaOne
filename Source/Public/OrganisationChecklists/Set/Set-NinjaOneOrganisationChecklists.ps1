@@ -14,27 +14,27 @@ function Set-NinjaOneOrganisationChecklists {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @(
 				@{
-					checklistId = 0
-					name = "string"
-					description = @{
-						text = "string"
-						html = "string"
-					}
 					required = $false
-					dueDate = 0
-					assignedToUserId = 0
 					tasks = @(
 						@{
-							id = 0
-							position = 0
-							name = "string"
-							description = @{
-							}
-							assignedToUserId = 0
-							dueDate = 0
 							completed = $false
+							assignedToUserId = 0
+							position = 0
+							description = @{
+								text = "string"
+								html = "string"
+							}
+							id = 0
+							name = "string"
+							dueDate = 0
 						}
 					)
+					description = @{
+					}
+					checklistId = 0
+					assignedToUserId = 0
+					name = "string"
+					dueDate = 0
 				}
 			)
 			PS> Set-NinjaOneOrganisationChecklists -checklists $body
@@ -60,6 +60,7 @@ function Set-NinjaOneOrganisationChecklists {
 	)
 	process { try { if($PSCmdlet.ShouldProcess('Organisation Checklists','Update')){ return (New-NinjaOnePUTRequest -Resource 'v2/organization/checklists' -Body $checklists) } } catch { New-NinjaOneError -ErrorRecord $_ } }
 }
+
 
 
 

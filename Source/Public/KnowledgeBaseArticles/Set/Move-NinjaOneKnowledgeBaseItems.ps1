@@ -13,13 +13,13 @@ function Move-NinjaOneKnowledgeBaseItems {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				folderIds = @(
-					0
-				)
+				destinationFolderId = 0
 				documentIds = @(
 					0
 				)
-				destinationFolderId = 0
+				folderIds = @(
+					0
+				)
 				destinationOrganizationId = 0
 			}
 			PS> Move-NinjaOneKnowledgeBaseItems -moveRequest $body
@@ -55,6 +55,7 @@ function Move-NinjaOneKnowledgeBaseItems {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

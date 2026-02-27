@@ -46,6 +46,9 @@ function EscapeClosingCurlyBrackets() {
 
         .LINK
             https://regex101.com/r/T14SYa/1
+
+        .LINK
+            https://regex101.com/r/bI0yGB/1
     #>
     param(
         [Parameter(Mandatory = $True)][System.IO.FileSystemInfo]$MarkdownFile
@@ -86,6 +89,9 @@ function EscapeOpeningCurlyBrackets() {
 
         .LINK
             https://regex101.com/r/T14SYa/1
+
+        .LINK
+            https://regex101.com/r/bI0yGB/1
     #>
     param(
         [Parameter(Mandatory = $True)][System.IO.FileSystemInfo]$MarkdownFile
@@ -988,10 +994,16 @@ function ReplaceExamples() {
 
         if ($example -match $regexPowerShell6TripleCodeFence) {
             $header = $matches[1]
-            $code = $matches[5]
+            $code = ($matches[5] -split "`n" | ForEach-Object { $_.TrimStart() } ) -join "`n"
+            $code = $code.TrimStart("`n").TrimEnd("`n")
             $description = $matches[7]
 
             Write-Verbose "=> $($header): Triple Code Fence (PowerShell 6 and lower)"
+
+            if ([string]::IsNullOrWhiteSpace($code)) {
+                Write-Warning "Skipping $($header): Code is empty after trimming"
+                return
+            }
 
             $newExample = NewMarkdownExample -Header $header -Code $code -Description $description
             $newExamples += $newExample
@@ -1007,10 +1019,16 @@ function ReplaceExamples() {
 
         if ($example -match $regexPowerShell7PairedCodeFences) {
             $header = $matches[1]
-            $code = $matches[5]
+            $code = ($matches[5] -split "`n" | ForEach-Object { $_.TrimStart() } ) -join "`n"
+            $code = $code.TrimStart("`n").TrimEnd("`n")
             $description = $matches[7]
 
             Write-Verbose "=> $($header): Paired Code Fences (PowerShell 7)"
+
+            if ([string]::IsNullOrWhiteSpace($code)) {
+                Write-Warning "Skipping $($header): Code is empty after trimming"
+                return
+            }
 
             $newExample = NewMarkdownExample -Header $header -Code $code -Description $description
             $newExamples += $newExample
@@ -1027,9 +1045,16 @@ function ReplaceExamples() {
         if ($example -match $regexPowerShell7NonAdjacentCodeBlock) {
             $header = $matches[1]
             $code = $matches[5] -replace ('```' + "`n"), ''
+            $code = ($code -split "`n" | ForEach-Object { $_.TrimStart() } ) -join "`n"
+            $code = $code.TrimStart("`n").TrimEnd("`n")
             $description = $matches[7]
 
             Write-Verbose "=> $($header): Non-Adjacent Code Block (PowerShell 7)"
+
+            if ([string]::IsNullOrWhiteSpace($code)) {
+                Write-Warning "Skipping $($header): Code is empty after trimming"
+                return
+            }
 
             $newExample = NewMarkdownExample -Header $header -Code $code -Description $description
 
@@ -1042,16 +1067,23 @@ function ReplaceExamples() {
         # - https://regex101.com/r/rllmTj/1 => without a decription
         # - https://regex101.com/r/kTH75U/1 => with a description
         # ---------------------------------------------------------------------
-        $regexPlatyPsDefaults = [regex]::new('(### EXAMPLE ([0-9]|[0-9]+))\n```\n([\s\S]*)```\n([\s\S]*)')
+        $regexPlatyPsDefaults = [regex]::new('(### EXAMPLE ([0-9]|[0-9]+))\n```(?:powershell|posh|ps)?\n([\s\S]*?)```\n([\s\S]*)')
 
         if ($example -match $regexPlatyPsDefaults) {
             $header = $matches[1]
-            $code = $matches[5] -replace ('```' + "`n"), ''
-            $description = $matches[7]
+            $code = ($matches[3] -split "`n" | ForEach-Object { $_.TrimStart() } ) -join "`n"
+            $code = $code.TrimStart("`n").TrimEnd("`n")
+            $description = $matches[4]
 
             Write-Verbose "=> $($header): PlatyPS Default (all PowerShell versions)"
 
-            $newExamples += "$example`n"
+            if ([string]::IsNullOrWhiteSpace($code)) {
+                Write-Warning "Skipping $($header): Code is empty after trimming"
+                return
+            }
+
+            $newExample = NewMarkdownExample -Header $header -Code $code -Description $description
+            $newExamples += $newExample
             return
         }
 
@@ -1070,7 +1102,7 @@ function ReplaceExamples() {
     # replace file
     WriteFile -MarkdownFile $MarkdownFile -Content $content
 }
-#EndRegion '.\Private\ReplaceExamples.ps1' 149
+#EndRegion '.\Private\ReplaceExamples.ps1' 175
 #Region '.\Private\ReplaceFrontMatter.ps1' -1
 
 function ReplaceFrontMatter() {

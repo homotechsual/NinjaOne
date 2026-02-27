@@ -10,8 +10,8 @@ function New-NinjaOneEntityRelations {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @(
 				@{
-					relEntityType = "ORGANIZATION"
 					relEntityId = 0
+					relEntityType = "ORGANIZATION"
 				}
 			)
 			PS> New-NinjaOneEntityRelations -entityType ORGANIZATION -entityId 1 -entityType $body
@@ -67,6 +67,7 @@ function New-NinjaOneEntityRelations {
 		}
 	}
 }
+
 
 
 

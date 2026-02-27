@@ -9,85 +9,85 @@ function New-NinjaOneDocumentTemplate {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				name = "string"
-				description = "string"
 				allowMultiple = $false
-				mandatory = $false
 				fields = @(
 					@{
-						fieldLabel = "string"
-						fieldName = "string"
-						fieldDescription = "string"
-						fieldType = "DROPDOWN"
-						fieldTechnicianPermission = "NONE"
-						fieldScriptPermission = "NONE"
-						fieldApiPermission = "NONE"
 						fieldDefaultValue = "string"
+						fieldDescription = "string"
+						fieldName = "string"
+						fieldType = "DROPDOWN"
 						fieldContent = @{
 							values = @(
 								@{
 									name = "string"
 								}
 							)
-							required = $false
 							footerText = "string"
+							required = $false
 							tooltipText = "string"
 							advancedSettings = @{
+								complexityRules = @{
+									greaterOrEqualThanSixCharacters = $false
+									mustContainOneUppercaseLetter = $false
+									mustContainOneInteger = $false
+									mustContainOneLowercaseLetter = $false
+								}
+								monetary = @{
+									currency = "USD"
+								}
+								ipAddressType = "ALL"
 								fileMaxSize = 0
 								fileExtensions = @(
 									"string"
 								)
+								templates = @(
+									0
+								)
+								org = @(
+									0
+								)
 								dateFilters = @{
-									type = "NONE"
 									selected = @(
 										"string"
 									)
+									type = "NONE"
 								}
-								maxCharacters = 0
-								complexityRules = @{
-									mustContainOneInteger = $false
-									mustContainOneLowercaseLetter = $false
-									mustContainOneUppercaseLetter = $false
-									greaterOrEqualThanSixCharacters = $false
+								identifier = @{
+									nextSequenceNumber = 0
+									automaticGenerationEnabled = $false
+									prefix = "string"
+									suffix = "string"
+									scope = "NONE"
+									type = "CUSTOM"
+									assignTo = "NEW_ASSETS_ONLY"
 								}
 								numericRange = @{
 									min = 0
 									max = 0
 								}
-								org = @(
-									0
-								)
+								maxCharacters = 0
 								nodeClass = @(
 									"WINDOWS_SERVER"
 								)
-								ipAddressType = "ALL"
 								expandLargeValueOnRender = $false
-								identifier = @{
-									automaticGenerationEnabled = $false
-									scope = "NONE"
-									assignTo = "NEW_ASSETS_ONLY"
-									type = "CUSTOM"
-									nextSequenceNumber = 0
-									prefix = "string"
-									suffix = "string"
-								}
-								monetary = @{
-									currency = "USD"
-								}
-								templates = @(
-									0
-								)
 							}
 						}
+						fieldScriptPermission = "NONE"
+						fieldLabel = "string"
 						uiElementName = "string"
 						uiElementType = "TITLE"
 						uiElementValue = "string"
+						fieldTechnicianPermission = "NONE"
+						fieldApiPermission = "NONE"
 					}
 				)
-				availableToAllTechnicians = $false
+				description = "string"
+				mandatory = $false
 				allowedTechnicianRoles = @(
 					0
 				)
+				availableToAllTechnicians = $false
+				name = "string"
 			}
 			PS> New-NinjaOneDocumentTemplate -name $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -160,6 +160,7 @@ function New-NinjaOneDocumentTemplate {
 		}
 	}
 }
+
 
 
 

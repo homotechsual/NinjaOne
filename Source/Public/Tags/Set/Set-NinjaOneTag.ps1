@@ -13,8 +13,8 @@ function Set-NinjaOneTag {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				name = "string"
 				description = "string"
+				name = "string"
 			}
 			PS> Set-NinjaOneTag -tagId 1 -tag $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -53,6 +53,7 @@ function Set-NinjaOneTag {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

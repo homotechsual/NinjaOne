@@ -13,20 +13,20 @@ function New-NinjaOneStagedDevice {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				name = "string"
-				orgId = 0
-				locationId = 0
-				roleId = 0
-				assignedUserUid = "00000000-0000-0000-0000-000000000000"
-				warrantyStartDate = 0
 				warrantyEndDate = 0
-				itamAssetId = "string"
-				itamAssetStatus = "string"
-				itamAssetPurchaseDate = 0
-				itamAssetPurchaseAmount = 0
 				itamAssetExpectedLifetime = "string"
+				itamAssetStatus = "string"
+				orgId = 0
+				roleId = 0
+				locationId = 0
 				itamAssetEndOfLifeDate = 0
 				itamAssetSerialNumber = "string"
+				itamAssetId = "string"
+				warrantyStartDate = 0
+				itamAssetPurchaseDate = 0
+				assignedUserUid = "00000000-0000-0000-0000-000000000000"
+				itamAssetPurchaseAmount = 0
+				name = "string"
 			}
 			PS> New-NinjaOneStagedDevice -StagedDevice $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -61,6 +61,7 @@ function New-NinjaOneStagedDevice {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

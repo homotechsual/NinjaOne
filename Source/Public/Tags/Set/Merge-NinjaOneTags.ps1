@@ -16,10 +16,10 @@ function Merge-NinjaOneTags {
 				tagIds = @(
 					0
 				)
-				mergeMethod = "MERGE_INTO_EXISTING_TAG"
 				mergeIntoTagId = 0
-				name = "string"
 				description = "string"
+				name = "string"
+				mergeMethod = "MERGE_INTO_EXISTING_TAG"
 			}
 			PS> Merge-NinjaOneTags -mergeRequest $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -54,6 +54,7 @@ function Merge-NinjaOneTags {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

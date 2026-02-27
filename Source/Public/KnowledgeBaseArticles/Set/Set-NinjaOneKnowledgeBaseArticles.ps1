@@ -15,11 +15,11 @@ function Set-NinjaOneKnowledgeBaseArticles {
 			PS> $body = @(
 				@{
 					id = 0
-					name = "string"
 					content = @{
-						html = "string"
 						text = "string"
+						html = "string"
 					}
+					name = "string"
 				}
 			)
 			PS> Set-NinjaOneKnowledgeBaseArticles -articles $body
@@ -49,6 +49,7 @@ function Set-NinjaOneKnowledgeBaseArticles {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

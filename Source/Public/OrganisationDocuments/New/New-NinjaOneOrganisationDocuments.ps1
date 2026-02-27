@@ -11,13 +11,13 @@ function New-NinjaOneOrganisationDocuments {
 			PS> $body = @(
 				@{
 					documentName = "string"
-					documentDescription = "string"
+					documentTemplateId = 0
 					fields = @{
 						additionalProp1 = @{
 						}
 					}
-					documentTemplateId = 0
 					organizationId = 0
+					documentDescription = "string"
 				}
 			)
 			PS> New-NinjaOneOrganisationDocuments -organisationDocuments $body
@@ -79,6 +79,7 @@ function New-NinjaOneOrganisationDocuments {
 		}
 	}
 }
+
 
 
 

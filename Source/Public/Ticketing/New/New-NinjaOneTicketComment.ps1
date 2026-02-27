@@ -16,10 +16,10 @@ function New-NinjaOneTicketComment {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $multipart = [System.Net.Http.MultipartFormDataContent]::new()
 			PS> $comment = @{
-				public = $false
 				body = "string"
-				htmlBody = "string"
+				public = $false
 				timeTracked = 0
+				htmlBody = "string"
 				duplicateInIncidents = $false
 			}
 			PS> $json = $comment | ConvertTo-Json -Depth 10
@@ -81,5 +81,6 @@ function New-NinjaOneTicketComment {
 		}
 	}
 }
+
 
 

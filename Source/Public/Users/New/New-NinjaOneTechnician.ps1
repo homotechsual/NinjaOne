@@ -13,10 +13,10 @@ function New-NinjaOneTechnician {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				firstName = "string"
+				phone = "string"
 				lastName = "string"
 				email = "string"
-				phone = "string"
+				firstName = "string"
 			}
 			PS> New-NinjaOneTechnician -technician $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -51,6 +51,7 @@ function New-NinjaOneTechnician {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

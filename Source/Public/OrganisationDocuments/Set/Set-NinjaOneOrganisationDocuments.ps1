@@ -10,8 +10,8 @@ function Set-NinjaOneOrganisationDocuments {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @(
 				@{
-					documentId = 0
 					documentName = "string"
+					documentId = 0
 					documentDescription = "string"
 					fields = @{
 						additionalProp1 = @{
@@ -71,6 +71,7 @@ function Set-NinjaOneOrganisationDocuments {
 		}
 	}
 }
+
 
 
 

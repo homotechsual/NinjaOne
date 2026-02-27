@@ -9,17 +9,26 @@ function New-NinjaOneWindowsEventPolicyCondition {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				enabled = $false
-				displayName = "string"
-				severity = "NONE"
-				priority = "NONE"
+				resetThreshold = 0
 				channels = @(
 					0
 				)
+				source = "string"
+				severity = "NONE"
+				occurrence = @{
+					enabled = $false
+					duration = 0
+					threshold = 0
+				}
+				notificationAction = "NONE"
+				eventIds = @(
+					0
+				)
+				priority = "NONE"
 				scripts = @(
 					@{
-						scriptId = 0
 						runAs = "SYSTEM"
+						scriptId = 0
 						scriptParam = "string"
 						scriptVariables = @(
 							@{
@@ -29,13 +38,8 @@ function New-NinjaOneWindowsEventPolicyCondition {
 						)
 					}
 				)
-				notificationAction = "NONE"
 				notifyOnReset = $false
-				resetThreshold = 0
-				source = "string"
-				eventIds = @(
-					0
-				)
+				displayName = "string"
 				text = @{
 					values = @(
 						"string"
@@ -43,11 +47,7 @@ function New-NinjaOneWindowsEventPolicyCondition {
 					condition = "CONTAINS"
 					include = "ALL"
 				}
-				occurrence = @{
-					enabled = $false
-					threshold = 0
-					duration = 0
-				}
+				enabled = $false
 			}
 			PS> New-NinjaOneWindowsEventPolicyCondition -windowsEventPolicyCondition $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -98,6 +98,7 @@ function New-NinjaOneWindowsEventPolicyCondition {
 		}
 	}
 }
+
 
 
 

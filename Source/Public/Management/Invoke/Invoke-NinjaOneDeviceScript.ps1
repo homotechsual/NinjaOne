@@ -9,11 +9,11 @@ function Invoke-NinjaOneDeviceScript {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
+				runAs = "string"
 				type = "ACTION"
 				id = 0
 				uid = "00000000-0000-0000-0000-000000000000"
 				parameters = "string"
-				runAs = "string"
 			}
 			PS> Invoke-NinjaOneDeviceScript -deviceId 1 -deviceId $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -29,8 +29,6 @@ function Invoke-NinjaOneDeviceScript {
 			PS> Invoke-NinjaOneDeviceScript -deviceId 1 -type 'ACTION' -actionUId '00000000-0000-0000-0000-000000000000'
 
 			Runs the built-in action with uid 00000000-0000-0000-0000-000000000000 against the device with id 1.
-		.EXAMPLE
-
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Invoke/scriptoraction
 	#>
@@ -133,6 +131,7 @@ function Invoke-NinjaOneDeviceScript {
 		}
 	}
 }
+
 
 
 

@@ -279,4 +279,73 @@ function Measure-RequireProperTypeAcceleratorCasing {
 	}
 }
 
+function Measure-EmptyCommentBasedHelpSections {
+	<#
+		.SYNOPSIS
+			Ensure functions do not have empty CBH sections.
+		.DESCRIPTION
+			This rule verifies that functions do not contain empty comment-based help (CBH) sections.
+			Empty CBH sections (like .SYNOPSIS, .DESCRIPTION, .EXAMPLE, .OUTPUTS, .LINK, etc.) are
+			usually placeholders that were never filled in or mistakenly left without content.
+		.EXAMPLE
+			Detects functions with empty CBH sections containing only whitespace.
+		.INPUTS
+			[System.Management.Automation.Language.ScriptBlockAst]
+		.OUTPUTS
+			[Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]]
+	#>
+	[CmdletBinding()]
+	[OutputType([Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]])]
+	param(
+		[Parameter(Mandatory)]
+		[ValidateNotNullOrEmpty()]
+		[System.Management.Automation.Language.ScriptBlockAst]$ScriptBlockAst
+	)
+
+	process {
+		try {
+			# Only check functions
+			$functions = $ScriptBlockAst.FindAll({ $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $true)
+			
+			foreach ($function in $functions) {
+				$help = $function.GetHelpContent()
+				
+				if ($null -eq $help -or $help.Count -eq 0) {
+					continue
+				}
+
+				# Parse the comment-based help to find empty sections
+				$helpText = $help -join "`n"
+				
+				# Pattern: any CBH keyword followed by only whitespace, then another keyword or #>
+				# Matches: .SYNOPSIS, .DESCRIPTION, .PARAMETER, .EXAMPLE, .OUTPUTS, .LINK, .FUNCTIONALITY, .NOTES, .INPUTS, .COMPONENT
+				$emptyPattern = '\.(?:SYNOPSIS|DESCRIPTION|PARAMETER|EXAMPLE|OUTPUTS|LINK|FUNCTIONALITY|NOTES|INPUTS|COMPONENT)\s*\n\s*(?=\.(?:SYNOPSIS|DESCRIPTION|PARAMETER|EXAMPLE|OUTPUTS|LINK|FUNCTIONALITY|NOTES|INPUTS|COMPONENT)|\s*#>)'
+				
+				if ($helpText -match $emptyPattern) {
+					# Find which section is empty
+					$sectionMatches = [regex]::Matches($helpText, $emptyPattern)
+					foreach ($sectionMatch in $sectionMatches) {
+						# Extract the keyword name
+						$keywordMatch = [regex]::Match($sectionMatch.Value, '\.(\w+)')
+						$keyword = $keywordMatch.Groups[1].Value
+						
+						$result = [Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord]::new(
+							"Function '$($function.Name)' contains an empty .$keyword section. Either add content or remove the empty keyword.",
+							$function.Extent,
+							'PSCommentBasedHelpEmptySection',
+							[Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticSeverity]::Warning,
+							$null,
+							$null,
+							$null
+						)
+						$result
+					}
+				}
+			}
+		} catch {
+			$PSCmdlet.ThrowTerminatingError($_)
+		}
+	}
+}
+
 Export-ModuleMember -Function Measure-*

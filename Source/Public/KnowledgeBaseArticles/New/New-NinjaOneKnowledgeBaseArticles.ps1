@@ -14,14 +14,14 @@ function New-NinjaOneKnowledgeBaseArticles {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @(
 				@{
-					name = "string"
-					organizationId = 0
+					content = @{
+						text = "string"
+						html = "string"
+					}
 					destinationFolderId = 0
 					destinationFolderPath = "string"
-					content = @{
-						html = "string"
-						text = "string"
-					}
+					organizationId = 0
+					name = "string"
 				}
 			)
 			PS> New-NinjaOneKnowledgeBaseArticles -articles $body
@@ -57,6 +57,7 @@ function New-NinjaOneKnowledgeBaseArticles {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

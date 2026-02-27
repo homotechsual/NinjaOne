@@ -33,6 +33,29 @@ function New-NinjaOneKnowledgeBaseArticlesUpload {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $multipart = [System.Net.Http.MultipartFormDataContent]::new()
+			PS> $folderPath = "
+			PS> $json = $folderPath | ConvertTo-Json -Depth 10
+			PS> $stringContent = [System.Net.Http.StringContent]::new($json, [System.Text.Encoding]::UTF8, "application/json")
+			PS> $multipart.Add($stringContent, "folderPath")
+			PS> $filePath = "C:\Temp\example.txt"
+			PS> $fileStream = [System.IO.FileStream]::new($filePath, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read)
+			PS> $fileContent = [System.Net.Http.StreamContent]::new($fileStream)
+			PS> $fileContent.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::Parse("application/octet-stream")
+			PS> $multipart.Add($fileContent, "files", [System.IO.Path]::GetFileName($filePath))
+			PS> $json = $folderId | ConvertTo-Json -Depth 10
+			PS> $stringContent = [System.Net.Http.StringContent]::new($json, [System.Text.Encoding]::UTF8, "application/json")
+			PS> $multipart.Add($stringContent, "folderId")
+			PS> $json = $organizationId | ConvertTo-Json -Depth 10
+			PS> $stringContent = [System.Net.Http.StringContent]::new($json, [System.Text.Encoding]::UTF8, "application/json")
+			PS> $multipart.Add($stringContent, "organizationId")
+			PS> $body = $multipart
+			PS> New-NinjaOneKnowledgeBaseArticlesUpload -OrganizationId $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the created articles or job result.
 		.LINK
@@ -82,5 +105,6 @@ function New-NinjaOneKnowledgeBaseArticlesUpload {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 

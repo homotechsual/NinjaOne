@@ -12,9 +12,9 @@ function Set-NinjaOneDeviceMaintenance {
 				disabledFeatures = @(
 					"ALERTS"
 				)
-				start = 0
-				end = 0
 				reasonMessage = "string"
+				end = 0
+				start = 0
 			}
 			PS> Set-NinjaOneDeviceMaintenance -deviceId 1 -deviceId $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -101,6 +101,7 @@ function Set-NinjaOneDeviceMaintenance {
 		}
 	}
 }
+
 
 
 

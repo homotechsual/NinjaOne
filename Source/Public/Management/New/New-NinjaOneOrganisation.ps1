@@ -9,28 +9,28 @@ function New-NinjaOneOrganisation {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				name = "string"
-				description = "string"
-				userData = @{
-					additionalProp1 = "value"
-				}
-				nodeApprovalMode = "AUTOMATIC"
 				locations = @(
 					@{
-						name = "string"
 						address = "string"
 						description = "string"
 						userData = @{
 							additionalProp1 = "value"
 						}
+						name = "string"
 					}
 				)
+				nodeApprovalMode = "AUTOMATIC"
+				description = "string"
+				userData = @{
+					additionalProp1 = "value"
+				}
 				policies = @(
 					@{
 						nodeRoleId = 0
 						policyId = 0
 					}
 				)
+				name = "string"
 			}
 			PS> New-NinjaOneOrganisation -organisation $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -95,6 +95,7 @@ function New-NinjaOneOrganisation {
 		}
 	}
 }
+
 
 
 

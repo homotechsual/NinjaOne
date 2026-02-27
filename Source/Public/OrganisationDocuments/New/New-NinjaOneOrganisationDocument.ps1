@@ -10,11 +10,11 @@ function New-NinjaOneOrganisationDocument {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
 				documentName = "string"
-				documentDescription = "string"
 				fields = @{
 					additionalProp1 = @{
 					}
 				}
+				documentDescription = "string"
 			}
 			PS> New-NinjaOneOrganisationDocument -documentTemplateId 1 -organisationDocument $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -91,6 +91,7 @@ function New-NinjaOneOrganisationDocument {
 		}
 	}
 }
+
 
 
 

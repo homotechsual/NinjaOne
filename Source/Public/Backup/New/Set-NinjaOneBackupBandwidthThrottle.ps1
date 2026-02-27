@@ -13,23 +13,23 @@ function Set-NinjaOneBackupBandwidthThrottle {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				deviceId = 0
 				bandwidthThrottle = @{
-					enabled = $false
 					workHoursKbps = 0
-					nonWorkHoursKbps = 0
 					workHoursUserUnit = "string"
+					nonWorkHoursKbps = 0
 					nonWorkHoursUserUnit = "string"
 					workSchedule = @{
 						endHour = 0
-						endMinute = 0
-						startHour = 0
-						startMinute = 0
 						weekDays = @(
 							"string"
 						)
+						endMinute = 0
+						startHour = 0
+						startMinute = 0
 					}
+					enabled = $false
 				}
+				deviceId = 0
 			}
 			PS> Set-NinjaOneBackupBandwidthThrottle -ThrottleSetting $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -64,6 +64,7 @@ function Set-NinjaOneBackupBandwidthThrottle {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 
