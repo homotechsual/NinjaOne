@@ -165,7 +165,7 @@ Where-Object {
 	$_.FullName -notmatch '\\output\\' -and 
 	$_.FullName -notmatch '\\bin\\' -and 
 	$_.FullName -notmatch '\\obj\\' -and
-	$_.FullName -notmatch '\\Modules\\' -and
+	$_.FullName -notmatch '\\Modules\\' -and 
 	$_.FullName -notmatch '\\Classes\\' -and
 	$_.FullName -notmatch '\\DevOps\\' -and
 	$_.FullName -notmatch 'Generate-' -and
