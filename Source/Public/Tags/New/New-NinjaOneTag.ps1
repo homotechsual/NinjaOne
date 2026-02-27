@@ -7,9 +7,15 @@ function New-NinjaOneTag {
 		.FUNCTIONALITY
 			Asset Tags
 		.EXAMPLE
-			PS> New-NinjaOneTag -tag @{ name = 'Critical'; color = '#FF0000' }
-
-			Creates a new tag.
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				description = "string"
+				name = "string"
+			}
+			PS> New-NinjaOneTag -tag $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the created tag.
 		.LINK
@@ -39,4 +45,14 @@ function New-NinjaOneTag {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
+
+
+
+
+
 

@@ -77,13 +77,13 @@ Describe 'Test-NinjaOneEndpointSupport' -Tags 'Module' {
             $previousCapabilities = $Script:NRAPIInstanceCapabilities
 
             $Script:NRAPIInstanceCapabilityCheckEnabled = $true
-            $Script:NRAPIConnectionInformation = [pscustomobject]@{ URL = 'https://eu.ninjarmm.com' }
+            $Script:NRAPIConnectionInformation = [PSCustomObject]@{ URL = 'https://eu.ninjarmm.com' }
             $Script:NRAPIInstanceCapabilities = @{}
 
             $paths = @{
                 '/v2/organization/{orgId}/location/{locationId}/custom-fields' = [System.Collections.Generic.HashSet[string]]::new()
             }
-            $Script:NRAPIInstanceCapabilities['https://eu.ninjarmm.com'] = [pscustomobject]@{
+            $Script:NRAPIInstanceCapabilities['https://eu.ninjarmm.com'] = [PSCustomObject]@{
                 BaseUrl = 'https://eu.ninjarmm.com'
                 Version = '12.0.20'
                 SpecUrl = 'https://eu.ninjarmm.com/apidocs-beta/NinjaRMM-API-v2.yaml'

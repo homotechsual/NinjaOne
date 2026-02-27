@@ -10,6 +10,17 @@ function Set-NinjaOneAssetTag {
 			PS> Set-NinjaOneAssetTag -assetType 'NODE' -assetId 123 -tagAssignment @{ tagIds = @(1,2) }
 
 			Assigns tags 1 and 2 to node 123.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				tagIds = @(
+					0
+				)
+			}
+			PS> Set-NinjaOneAssetTag -tagAssignment $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			Status code or updated assignment per API.
 		.LINK
@@ -45,4 +56,9 @@ function Set-NinjaOneAssetTag {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
 

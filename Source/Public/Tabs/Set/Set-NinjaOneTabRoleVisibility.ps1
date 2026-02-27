@@ -13,6 +13,18 @@ function Set-NinjaOneTabRoleVisibility {
 			)
 
 			Sets visibility for tabs on role 10.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @(
+				@{
+					hidden = $false
+					tabId = 0
+				}
+			)
+			PS> Set-NinjaOneTabRoleVisibility -visibility $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			Updated visibility data per API.
 		.LINK
@@ -44,4 +56,9 @@ function Set-NinjaOneTabRoleVisibility {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
 

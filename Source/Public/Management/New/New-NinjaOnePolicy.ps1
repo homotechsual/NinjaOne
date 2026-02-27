@@ -6,18 +6,23 @@ function New-NinjaOnePolicy {
 			Create a new policy using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Policy
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				parentPolicyId = 0
+				nodeClass = "WINDOWS_SERVER"
+				name = "string"
+				enabled = $false
+				description = "string"
+			}
+			PS> New-NinjaOnePolicy -mode $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/policy
-	
-	.EXAMPLE
-		PS> $newObject = @{ Name = 'Example' }
-		PS> New-NinjaOnePolicy @newObject
-
-		Creates a new resource with the specified properties.
-
-	#>
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/policy`n`t#>
 	[CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
 	[OutputType([Object])]
 	[Alias('nnop')]
@@ -81,3 +86,8 @@ function New-NinjaOnePolicy {
 		}
 	}
 }
+
+
+
+
+

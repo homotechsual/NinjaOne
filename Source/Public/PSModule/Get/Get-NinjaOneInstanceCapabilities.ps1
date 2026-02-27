@@ -128,7 +128,7 @@ function Get-NinjaOneInstanceCapabilities {
 				if ([string]::IsNullOrWhiteSpace($path) -or [string]::IsNullOrWhiteSpace($method)) {
 					continue
 				}
-				$endpoints += [pscustomobject]@{ Path = $path; Method = $method }
+				$endpoints += [PSCustomObject]@{ Path = $path; Method = $method }
 			}
 
 			if ($endpoints.Count -eq 0) {
@@ -164,5 +164,5 @@ function Get-NinjaOneInstanceCapabilities {
 		$summary.Paths = $capabilities.Paths
 	}
 
-	return [pscustomobject]$summary
+	return [PSCustomObject]$summary
 }

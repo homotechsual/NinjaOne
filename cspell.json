@@ -2,7 +2,9 @@
   "version": "0.2",
   "language": "en-GB",
   "allowCompoundWords": true,
-  "ignorePaths": [".gitignore"],
+  "ignorePaths": [
+    ".gitignore"
+  ],
   "words": [
     "AVSCANS",
     "Color",
@@ -11,6 +13,9 @@
     "homotechsualdocs",
     "intelephense",
     "MAML",
+    "ninjarmm",
+    "nnotag",
+    "nnotagg",
     "NRAPI",
     "organization",
     "OTBS",
@@ -38,7 +43,9 @@
     {
       "languageId": "powershell",
       "allowCompoundWords": true,
-      "dictionaries": ["powershell"]
+      "dictionaries": [
+        "powershell"
+      ]
     }
   ]
 }

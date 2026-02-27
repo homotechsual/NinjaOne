@@ -34,7 +34,7 @@ function Get-NinjaOneInstanceCapabilitiesInternal {
 	}
 
 	$paths = Get-NinjaOneOpenApiPaths -OpenApiYaml $yaml
-	$capabilities = [pscustomobject]@{
+	$capabilities = [PSCustomObject]@{
 		BaseUrl = $cacheKey
 		Version = $version
 		SpecUrl = ("{0}/apidocs-beta/NinjaRMM-API-v2.yaml" -f $cacheKey)

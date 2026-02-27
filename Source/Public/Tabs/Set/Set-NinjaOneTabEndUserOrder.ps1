@@ -13,6 +13,18 @@ function Set-NinjaOneTabEndUserOrder {
 			)
 
 			Sets the order of the end-user tabs.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @(
+				@{
+					tabId = 0
+					position = 0
+				}
+			)
+			PS> Set-NinjaOneTabEndUserOrder -order $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			Status code or updated order data per API.
 		.LINK
@@ -42,4 +54,9 @@ function Set-NinjaOneTabEndUserOrder {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
 

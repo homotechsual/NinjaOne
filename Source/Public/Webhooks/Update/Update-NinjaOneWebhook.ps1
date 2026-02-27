@@ -6,6 +6,32 @@ function Update-NinjaOneWebhook {
 			Updates webhook configuration for the current application/API client using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Webhook
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				activities = @{
+					additionalProp1 = @(
+						"string"
+					)
+				}
+				expand = @(
+					"string"
+				)
+				organizationIds = @(
+					0
+				)
+				url = "string"
+				headers = @(
+					@{
+						value = "string"
+						name = "string"
+					}
+				)
+			}
+			PS> Update-NinjaOneWebhook -webhookConfiguration $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 	
@@ -26,6 +52,7 @@ function Update-NinjaOneWebhook {
 	param(
 		# The webhook configuration object.
 		[Parameter( Mandatory )]
+		[Alias('body')]
 		[Object]$webhookConfiguration
 	)
 	process {
@@ -46,3 +73,8 @@ function Update-NinjaOneWebhook {
 		}
 	}
 }
+
+
+
+
+

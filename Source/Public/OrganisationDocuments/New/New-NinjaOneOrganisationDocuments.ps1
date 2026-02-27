@@ -6,18 +6,28 @@ function New-NinjaOneOrganisationDocuments {
 			Create one or more organisation documents using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Organisation Documents
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @(
+				@{
+					organizationId = 0
+					documentTemplateId = 0
+					documentDescription = "string"
+					documentName = "string"
+					fields = @{
+						additionalProp1 = @{
+						}
+					}
+				}
+			)
+			PS> New-NinjaOneOrganisationDocuments -organisationDocuments $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/organisationdocument
-	
-	.EXAMPLE
-		PS> $newObject = @{ Name = 'Example' }
-		PS> New-NinjaOneOrganisationDocuments @newObject
-
-		Creates a new resource with the specified properties.
-
-	#>
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/organisationdocument`n`t#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('nnood', 'New-NinjaOneOrganizationDocument')]
@@ -68,3 +78,8 @@ function New-NinjaOneOrganisationDocuments {
 		}
 	}
 }
+
+
+
+
+

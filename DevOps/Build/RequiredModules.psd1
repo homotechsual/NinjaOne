@@ -2,6 +2,7 @@
 	Pester = '5.*'
 	PlatyPS = '0.14.2'
 	PSScriptAnalyzer = '1.*'
+	'PowerShell-Yaml' = '0.4.2'
 	YAYAML = '0.2.1'
 	Metadata = '1.*'
 	ModuleBuilder = '3.*'

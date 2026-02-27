@@ -10,6 +10,18 @@ function Invoke-NinjaOneOrganisationChecklistsPromoteWithName {
 			PS> Invoke-NinjaOneOrganisationChecklistsPromoteWithName -request @{ checklistIds=@(1); name='New Name' }
 
 			Promotes checklists with a new name.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @(
+				@{
+					id = 0
+					name = "string"
+				}
+			)
+			PS> Invoke-NinjaOneOrganisationChecklistsPromoteWithName -request $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the response.
 		.LINK
@@ -29,3 +41,8 @@ function Invoke-NinjaOneOrganisationChecklistsPromoteWithName {
 	)
 	process { try { if($PSCmdlet.ShouldProcess('Organisation Checklists','Promote With Name')){ return (New-NinjaOnePOSTRequest -Resource 'v2/organization/checklists/promote-with-name' -Body $request) } } catch { New-NinjaOneError -ErrorRecord $_ } }
 }
+
+
+
+
+

@@ -6,18 +6,97 @@ function New-NinjaOneDocumentTemplate {
 			Create a new document template using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Document Template
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				fields = @(
+					@{
+						fieldDefaultValue = "string"
+						uiElementName = "string"
+						fieldApiPermission = "NONE"
+						fieldScriptPermission = "NONE"
+						uiElementValue = "string"
+						fieldName = "string"
+						fieldLabel = "string"
+						fieldContent = @{
+							advancedSettings = @{
+								templates = @(
+									0
+								)
+								org = @(
+									0
+								)
+								expandLargeValueOnRender = $false
+								ipAddressType = "ALL"
+								monetary = @{
+									currency = "USD"
+								}
+								nodeClass = @(
+									"WINDOWS_SERVER"
+								)
+								fileMaxSize = 0
+								maxCharacters = 0
+								fileExtensions = @(
+									"string"
+								)
+								complexityRules = @{
+									mustContainOneInteger = $false
+									mustContainOneLowercaseLetter = $false
+									mustContainOneUppercaseLetter = $false
+									greaterOrEqualThanSixCharacters = $false
+								}
+								identifier = @{
+									automaticGenerationEnabled = $false
+									prefix = "string"
+									assignTo = "NEW_ASSETS_ONLY"
+									nextSequenceNumber = 0
+									type = "CUSTOM"
+									scope = "NONE"
+									suffix = "string"
+								}
+								numericRange = @{
+									max = 0
+									min = 0
+								}
+								dateFilters = @{
+									type = "NONE"
+									selected = @(
+										"string"
+									)
+								}
+							}
+							tooltipText = "string"
+							required = $false
+							footerText = "string"
+							values = @(
+								@{
+									name = "string"
+								}
+							)
+						}
+						fieldType = "DROPDOWN"
+						fieldDescription = "string"
+						uiElementType = "TITLE"
+						fieldTechnicianPermission = "NONE"
+					}
+				)
+				allowMultiple = $false
+				allowedTechnicianRoles = @(
+					0
+				)
+				mandatory = $false
+				name = "string"
+				availableToAllTechnicians = $false
+				description = "string"
+			}
+			PS> New-NinjaOneDocumentTemplate -name $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/documenttemplate
-	
-	.EXAMPLE
-		PS> $newObject = @{ Name = 'Example' }
-		PS> New-NinjaOneDocumentTemplate @newObject
-
-		Creates a new resource with the specified properties.
-
-	#>
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/documenttemplate`n`t#>
 	[CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
 	[OutputType([Object])]
 	[Alias('nnodt')]
@@ -80,3 +159,8 @@ function New-NinjaOneDocumentTemplate {
 		}
 	}
 }
+
+
+
+
+

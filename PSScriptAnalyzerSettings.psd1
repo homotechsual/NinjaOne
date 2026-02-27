@@ -68,6 +68,7 @@
 		'PSUseCorrectCasing',
 		'Measure-AvoidDoubleQuoteInterpolation',
 		'Measure-AvoidOneLineIfElse',
+		'Measure-RequireProperTypeAcceleratorCasing',
 		'Measure-RequiredCommentBasedHelp'
 	)
 	Rules = @{

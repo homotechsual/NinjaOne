@@ -6,17 +6,20 @@ function New-NinjaOneIntegrityCheckJob {
 			Create a new backup integrity check job using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Integrity Check Job
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				planUid = "00000000-0000-0000-0000-000000000000"
+				deviceId = 0
+			}
+			PS> New-NinjaOneIntegrityCheckJob -integrityCheckJob $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/integritycheckjob
-	
-	.EXAMPLE
-		PS> $newObject = @{ Name = 'Example' }
-		PS> New-NinjaOneIntegrityCheckJob @newObject
-
-		Creates a new resource with the specified properties.
-
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
@@ -28,21 +31,29 @@ function New-NinjaOneIntegrityCheckJob {
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
 	param(
 		# The deviceId to create the integrity check job for.
-		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'Individual')]
 		[Alias('id')]
 		[Int]$deviceId,
 		# The planUid to create the integrity check job for.
-		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
+		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName, ParameterSetName = 'Individual')]
 		[GUID]$planUid,
+		# The integrity check job body object (alternative to individual parameters).
+		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName, ParameterSetName = 'Body')]
+		[Alias('body')]
+		[Object]$integrityCheckJob,
 		# Show the integrity check job that was created.
 		[Switch]$show
 	)
 	process {
 		try {
 			$Resource = 'v2/backups/integrity-check-jobs'
-			$Body = @{
-				deviceId = $deviceId
-				planUid = $planUid
+			if ($PSCmdlet.ParameterSetName -eq 'Body') {
+				$Body = $integrityCheckJob
+			} else {
+				$Body = @{
+					deviceId = $deviceId
+					planUid = $planUid
+				}
 			}
 			$RequestParams = @{
 				Resource = $Resource
@@ -61,3 +72,7 @@ function New-NinjaOneIntegrityCheckJob {
 		}
 	}
 }
+
+
+
+

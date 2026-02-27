@@ -13,6 +13,18 @@ function Set-NinjaOneTabOrganisationOrder {
 			)
 
 			Sets the organization tabs order.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @(
+				@{
+					tabId = 0
+					position = 0
+				}
+			)
+			PS> Set-NinjaOneTabOrganisationOrder -order $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			Updated order data per API.
 		.LINK
@@ -42,4 +54,9 @@ function Set-NinjaOneTabOrganisationOrder {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
 

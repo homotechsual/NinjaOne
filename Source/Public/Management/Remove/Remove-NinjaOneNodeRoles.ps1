@@ -10,6 +10,17 @@ function Remove-NinjaOneNodeRoles {
 			PS> Remove-NinjaOneNodeRoles -nodeRoles @(@{ id = 1 })
 
 			Deletes node roles from the provided payload.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				ids = @(
+					0
+				)
+			}
+			PS> Remove-NinjaOneNodeRoles -nodeRoles $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
@@ -48,3 +59,8 @@ function Remove-NinjaOneNodeRoles {
 		}
 	}
 }
+
+
+
+
+

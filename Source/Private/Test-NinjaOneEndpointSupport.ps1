@@ -63,7 +63,7 @@ function Test-NinjaOneEndpointSupport {
 				$methods = $pathsToCheck[$openPath]
 				$methodUnknown = ($methods.Count -eq 0)
 				$ok = ($methodUnknown -or $methods.Contains($methodToCheck))
-				return [pscustomobject]@{
+				return [PSCustomObject]@{
 					Supported = $ok
 					MatchedPath = $openPath
 					Methods = $methods
@@ -72,7 +72,7 @@ function Test-NinjaOneEndpointSupport {
 			}
 		}
 
-		return [pscustomobject]@{
+		return [PSCustomObject]@{
 			Supported = $false
 			MatchedPath = $null
 			Methods = $null

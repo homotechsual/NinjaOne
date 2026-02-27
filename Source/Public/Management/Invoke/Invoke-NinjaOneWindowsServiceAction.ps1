@@ -6,6 +6,15 @@ function Invoke-NinjaOneWindowsServiceAction {
 			Runs an action against a windows service on a single device using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Windows Service Action
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				action = "START"
+			}
+			PS> Invoke-NinjaOneWindowsServiceAction -deviceId 1 -deviceId <value> -deviceId $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			System.Void
 
@@ -69,3 +78,8 @@ function Invoke-NinjaOneWindowsServiceAction {
 		}
 	}
 }
+
+
+
+
+

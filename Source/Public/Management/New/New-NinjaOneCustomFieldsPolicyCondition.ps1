@@ -6,18 +6,55 @@ function New-NinjaOneCustomFieldsPolicyCondition {
 			Create a new custom fields policy condition using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Custom Fields Policy Condition
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				enabled = $false
+				displayName = "string"
+				notifyOnReset = $false
+				resetThreshold = 0
+				matchAny = @(
+					@{
+						fieldName = "string"
+						operator = "EQUALS"
+						value = "string"
+					}
+				)
+				priority = "NONE"
+				notificationAction = "NONE"
+				channels = @(
+					0
+				)
+				severity = "NONE"
+				scripts = @(
+					@{
+						scriptId = 0
+						scriptParam = "string"
+						scriptVariables = @(
+							@{
+								value = "string"
+								id = "string"
+							}
+						)
+						runAs = "SYSTEM"
+					}
+				)
+				matchAll = @(
+					@{
+						fieldName = "string"
+						operator = "EQUALS"
+						value = "string"
+					}
+				)
+			}
+			PS> New-NinjaOneCustomFieldsPolicyCondition -policyId <value> -customFieldsPolicyCondition $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/customfieldspolicycondition
-	
-	.EXAMPLE
-		PS> $newObject = @{ Name = 'Example' }
-		PS> New-NinjaOneCustomFieldsPolicyCondition @newObject
-
-		Creates a new resource with the specified properties.
-
-	#>
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/customfieldspolicycondition`n`t#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('nnocfpc')]
@@ -58,3 +95,8 @@ function New-NinjaOneCustomFieldsPolicyCondition {
 		}
 	}
 }
+
+
+
+
+

@@ -6,16 +6,24 @@ function Set-NinjaOneOrganisation {
 			Sets organisation information using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Organisation
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				nodeApprovalMode = "AUTOMATIC"
+				userData = @{
+					additionalProp1 = "value"
+				}
+				name = "string"
+				description = "string"
+			}
+			PS> Set-NinjaOneOrganisation -organisationId 1 -organisationInformation $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/organisation
-	
-	.EXAMPLE
-		PS> Set-NinjaOneOrganisation -Identity 123 -Property 'Value'
-
-		Updates the specified resource.
-
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
@@ -54,3 +62,8 @@ function Set-NinjaOneOrganisation {
 		}
 	}
 }
+
+
+
+
+

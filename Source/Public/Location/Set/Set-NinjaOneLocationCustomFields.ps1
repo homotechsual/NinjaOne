@@ -14,6 +14,16 @@ function Set-NinjaOneLocationCustomFields {
 			PS> Update-NinjaOneLocationCustomFields -organisationId 1 -locationId 2 -locationCustomFields $LocationCustomFields
 
 			Updates the custom fields for the location with id 2 belonging to the organisation with id 1.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				additionalProp1 = @{
+				}
+			}
+			PS> Set-NinjaOneLocationCustomFields -organisationId 1 -organisationId <value> -locationCustomFields $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
@@ -59,3 +69,8 @@ function Set-NinjaOneLocationCustomFields {
 		}
 	}
 }
+
+
+
+
+

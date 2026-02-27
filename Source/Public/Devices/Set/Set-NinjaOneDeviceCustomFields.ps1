@@ -6,6 +6,16 @@ function Set-NinjaOneDeviceCustomFields {
 			Sets the value of the specified device custom fields using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Device Custom Fields
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				additionalProp1 = @{
+				}
+			}
+			PS> Set-NinjaOneDeviceCustomFields -deviceId 1 -deviceCustomFields $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.EXAMPLE
@@ -52,3 +62,12 @@ function Set-NinjaOneDeviceCustomFields {
 		}
 	}
 }
+
+
+
+
+
+
+
+
+

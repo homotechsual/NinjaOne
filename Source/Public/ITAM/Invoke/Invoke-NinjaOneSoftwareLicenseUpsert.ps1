@@ -10,6 +10,41 @@ function Invoke-NinjaOneSoftwareLicenseUpsert {
 			PS> Invoke-NinjaOneSoftwareLicenseUpsert -License @{ name = 'Microsoft Office'; description = 'Office 365' }
 
 			Creates or updates a software license.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				scope = @{
+					organizationNames = @(
+						"string"
+					)
+					locationNames = @(
+						"string"
+					)
+					global = $false
+				}
+				date = 0
+				publisherName = "string"
+				description = "string"
+				type = "PER_DEVICE"
+				licenseesToRemove = @(
+					"string"
+				)
+				licenseesToAssign = @(
+					"string"
+				)
+				name = "string"
+				note = "string"
+				currentLicensees = @(
+					"string"
+				)
+				vendorName = "string"
+				quantity = 0
+				currentUsage = 0
+			}
+			PS> Invoke-NinjaOneSoftwareLicenseUpsert -License $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the created or updated software license.
 		.LINK
@@ -39,3 +74,8 @@ function Invoke-NinjaOneSoftwareLicenseUpsert {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+

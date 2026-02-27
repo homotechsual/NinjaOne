@@ -10,6 +10,31 @@ function New-NinjaOneTab {
 			PS> New-NinjaOneTab -tab @{ name='My Tab'; scope='ORGANIZATION' }
 
 			Creates a new tab.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				position = 0
+				entityType = "NODE_ROLE"
+				entityId = 0
+				items = @(
+					@{
+						uiElementUid = "00000000-0000-0000-0000-000000000000"
+						itemType = "ATTRIBUTE"
+						uiElementValue = "string"
+						uiElementCreateTime = 0
+						id = 0
+						name = "string"
+						uiElementUpdateTime = 0
+						uiElementType = "TITLE"
+					}
+				)
+				name = "string"
+				description = "string"
+			}
+			PS> New-NinjaOneTab -tab $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the created tab.
 		.LINK
@@ -34,3 +59,8 @@ function New-NinjaOneTab {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+

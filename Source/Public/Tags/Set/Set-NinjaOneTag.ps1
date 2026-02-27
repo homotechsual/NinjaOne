@@ -10,6 +10,16 @@ function Set-NinjaOneTag {
 			PS> Set-NinjaOneTag -tagId 12 -tag @{ name = 'Priority-1' }
 
 			Updates the tag with Id 12.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				description = "string"
+				name = "string"
+			}
+			PS> Set-NinjaOneTag -tagId <value> -tag $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			Status code or updated resource per API.
 		.LINK
@@ -43,4 +53,9 @@ function Set-NinjaOneTag {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
 

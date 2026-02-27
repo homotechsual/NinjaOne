@@ -10,6 +10,17 @@ function Invoke-NinjaOneUnmanagedDeviceDecommissionList {
 			PS> Invoke-NinjaOneUnmanagedDeviceDecommissionList -DecommissionRequest @{ nodeIds = @(1, 2, 3) }
 
 			Decommissions multiple unmanaged devices in a single request.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				nodeIds = @(
+					0
+				)
+			}
+			PS> Invoke-NinjaOneUnmanagedDeviceDecommissionList -DecommissionRequest $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			The API response indicating success or failure.
 		.LINK
@@ -39,3 +50,8 @@ function Invoke-NinjaOneUnmanagedDeviceDecommissionList {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+

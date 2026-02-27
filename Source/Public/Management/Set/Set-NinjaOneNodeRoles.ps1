@@ -10,6 +10,20 @@ function Set-NinjaOneNodeRoles {
 			PS> Set-NinjaOneNodeRoles -nodeRoles @(@{ id = 1; name = 'Role A' })
 
 			Updates node roles from the provided payload.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @(
+				@{
+					icon = "string"
+					id = 0
+					name = "string"
+					description = "string"
+				}
+			)
+			PS> Set-NinjaOneNodeRoles -nodeRoles $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
@@ -48,3 +62,8 @@ function Set-NinjaOneNodeRoles {
 		}
 	}
 }
+
+
+
+
+

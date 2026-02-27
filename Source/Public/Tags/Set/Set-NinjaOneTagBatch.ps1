@@ -15,6 +15,23 @@ function Set-NinjaOneTagBatch {
 			PS> Set-NinjaOneTagBatch -assetType 'device' -tagUpdate $tagPayload
 
 			Adds tags 1 and 2 to devices 123 and 456, and removes tags 3 and 4 from them.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				tagIdsToRemove = @(
+					0
+				)
+				assetIds = @(
+					0
+				)
+				tagIdsToAdd = @(
+					0
+				)
+			}
+			PS> Set-NinjaOneTagBatch -tagUpdate $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the batch update result.
 		.LINK
@@ -47,4 +64,9 @@ function Set-NinjaOneTagBatch {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
 

@@ -6,6 +6,19 @@ function Invoke-NinjaOneDeviceScript {
 			Runs a script or built-in action against a single device using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Script or Action
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				uid = "00000000-0000-0000-0000-000000000000"
+				type = "ACTION"
+				id = 0
+				parameters = "string"
+				runAs = "string"
+			}
+			PS> Invoke-NinjaOneDeviceScript -deviceId 1 -deviceId $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.EXAMPLE
@@ -120,3 +133,8 @@ function Invoke-NinjaOneDeviceScript {
 		}
 	}
 }
+
+
+
+
+

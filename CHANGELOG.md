@@ -2,6 +2,20 @@
 
 Please note that backwards compatibility breaks are prefixed with `{"BC"}` (short for Breaking Change).
 
+Note: Version 2.3.0 was released in error and will be skipped.
+
+## 2026-02-27 - Version 2.3.1
+
+* Fixes:
+  * Add guard for null response handling when parsing date/time values in Invoke-NinjaOneRequest.
+  * Add "fed" instance region support to Connect-NinjaOne ValidateSet.
+  * Fix PowerShell 5.1 compatibility by replacing Join-String with -join operator in Test-NinjaOneEndpointSupport.
+  * Fix prerelease version detection in publish workflow by adding -AllowPrerelease to Find-Module checks.
+
+* Updates:
+  * Limit PSSA compatibility checks to PowerShell 5.1.
+  * Disable GitHub Packages publish step due to NuGet authentication failures.
+
 ## 2026-02-25 - Version 2.3.0-beta3
 
 * Fixes:
@@ -28,7 +42,7 @@ Please note that backwards compatibility breaks are prefixed with `{"BC"}` (shor
 * Updates:
   * Validate endpoint support before API calls and allow path-only fallback when methods are missing.
   * Improve verbose output and empty response handling in request helpers.
-  * Expand instance capability tests, including YAML parsing edge cases and cache refresh behavior.
+  * Expand instance capability tests, including YAML parsing edge cases and cache refresh behaviour.
   * Summarize test results and return a combined results object in `DevOps/Quality/test.ps1`.
   * Update tag function naming to align with actual API operations.
   * Update test scaffold to dynamically load latest module version instead of hardcoded 2.1.0.

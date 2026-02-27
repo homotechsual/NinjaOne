@@ -10,6 +10,87 @@ function Set-NinjaOneCustomField {
 			PS> Set-NinjaOneCustomField -FieldName 'department' -CustomField @{ description = 'Department of the user' }
 
 			Updates the custom field named 'department' with new description.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				apiPermission = "NONE"
+				content = @{
+					advancedSettings = @{
+						templates = @(
+							0
+						)
+						org = @(
+							0
+						)
+						expandLargeValueOnRender = $false
+						ipAddressType = "ALL"
+						monetary = @{
+							currency = "USD"
+						}
+						nodeClass = @(
+							"WINDOWS_SERVER"
+						)
+						fileMaxSize = 0
+						maxCharacters = 0
+						fileExtensions = @(
+							"string"
+						)
+						complexityRules = @{
+							mustContainOneInteger = $false
+							mustContainOneLowercaseLetter = $false
+							mustContainOneUppercaseLetter = $false
+							greaterOrEqualThanSixCharacters = $false
+						}
+						identifier = @{
+							automaticGenerationEnabled = $false
+							prefix = "string"
+							assignTo = "NEW_ASSETS_ONLY"
+							nextSequenceNumber = 0
+							type = "CUSTOM"
+							scope = "NONE"
+							suffix = "string"
+						}
+						numericRange = @{
+							max = 0
+							min = 0
+						}
+						dateFilters = @{
+							type = "NONE"
+							selected = @(
+								"string"
+							)
+						}
+					}
+					tooltipText = "string"
+					required = $false
+					footerText = "string"
+					values = @(
+						@{
+							id = "00000000-0000-0000-0000-000000000000"
+							name = "string"
+							active = $false
+							system = $false
+						}
+					)
+				}
+				description = "string"
+				type = "DROPDOWN"
+				active = $false
+				groupId = 0
+				scriptPermission = "NONE"
+				technicianPermission = "NONE"
+				defaultValue = "string"
+				definitionScope = @(
+					"NODE"
+				)
+				label = "string"
+				scope = "NODE_GLOBAL"
+				fieldName = "string"
+			}
+			PS> Set-NinjaOneCustomField -FieldName <value> -CustomField $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the updated custom field.
 		.LINK
@@ -43,3 +124,8 @@ function Set-NinjaOneCustomField {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+

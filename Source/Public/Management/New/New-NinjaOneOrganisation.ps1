@@ -6,18 +6,40 @@ function New-NinjaOneOrganisation {
 			Create an organisation using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Organisation
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				nodeApprovalMode = "AUTOMATIC"
+				name = "string"
+				description = "string"
+				userData = @{
+					additionalProp1 = "value"
+				}
+				policies = @(
+					@{
+						nodeRoleId = 0
+						policyId = 0
+					}
+				)
+				locations = @(
+					@{
+						address = "string"
+						userData = @{
+							additionalProp1 = "value"
+						}
+						name = "string"
+						description = "string"
+					}
+				)
+			}
+			PS> New-NinjaOneOrganisation -organisation $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/organisation
-	
-	.EXAMPLE
-		PS> $newObject = @{ Name = 'Example' }
-		PS> New-NinjaOneOrganisation @newObject
-
-		Creates a new resource with the specified properties.
-
-	#>
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/organisation`n`t#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('nnoo', 'New-NinjaOneOrganization')]
@@ -72,3 +94,8 @@ function New-NinjaOneOrganisation {
 		}
 	}
 }
+
+
+
+
+

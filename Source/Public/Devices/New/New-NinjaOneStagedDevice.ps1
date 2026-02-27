@@ -10,6 +10,28 @@ function New-NinjaOneStagedDevice {
 			PS> New-NinjaOneStagedDevice -StagedDevice @{ deviceIdentifier = 'DEVICE-001'; organizationId = 1 }
 
 			Creates a staged device.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				itamAssetStatus = "string"
+				itamAssetId = "string"
+				itamAssetEndOfLifeDate = 0
+				locationId = 0
+				itamAssetExpectedLifetime = "string"
+				itamAssetPurchaseAmount = 0
+				orgId = 0
+				name = "string"
+				warrantyStartDate = 0
+				itamAssetSerialNumber = "string"
+				roleId = 0
+				warrantyEndDate = 0
+				assignedUserUid = "00000000-0000-0000-0000-000000000000"
+				itamAssetPurchaseDate = 0
+			}
+			PS> New-NinjaOneStagedDevice -StagedDevice $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the created staged device information.
 		.LINK
@@ -39,3 +61,8 @@ function New-NinjaOneStagedDevice {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+

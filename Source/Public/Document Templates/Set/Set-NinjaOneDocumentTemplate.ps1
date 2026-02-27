@@ -6,6 +6,96 @@ function Set-NinjaOneDocumentTemplate {
 			Updates a document template using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Document Template
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				fields = @(
+					@{
+						fieldContent = @{
+							advancedSettings = @{
+								templates = @(
+									0
+								)
+								org = @(
+									0
+								)
+								expandLargeValueOnRender = $false
+								ipAddressType = "ALL"
+								monetary = @{
+									currency = "USD"
+								}
+								nodeClass = @(
+									"WINDOWS_SERVER"
+								)
+								fileMaxSize = 0
+								maxCharacters = 0
+								fileExtensions = @(
+									"string"
+								)
+								complexityRules = @{
+									mustContainOneInteger = $false
+									mustContainOneLowercaseLetter = $false
+									mustContainOneUppercaseLetter = $false
+									greaterOrEqualThanSixCharacters = $false
+								}
+								identifier = @{
+									automaticGenerationEnabled = $false
+									prefix = "string"
+									assignTo = "NEW_ASSETS_ONLY"
+									nextSequenceNumber = 0
+									type = "CUSTOM"
+									scope = "NONE"
+									suffix = "string"
+								}
+								numericRange = @{
+									max = 0
+									min = 0
+								}
+								dateFilters = @{
+									type = "NONE"
+									selected = @(
+										"string"
+									)
+								}
+							}
+							tooltipText = "string"
+							required = $false
+							footerText = "string"
+							values = @(
+								@{
+									id = "00000000-0000-0000-0000-000000000000"
+									name = "string"
+									active = $false
+								}
+							)
+						}
+						fieldId = 0
+						fieldType = "DROPDOWN"
+						fieldDescription = "string"
+						fieldLabel = "string"
+						fieldApiPermission = "NONE"
+						uiElementValue = "string"
+						uiElementName = "string"
+						fieldScriptPermission = "NONE"
+						uiElementUid = "00000000-0000-0000-0000-000000000000"
+						uiElementType = "TITLE"
+						fieldDefaultValue = "string"
+						fieldTechnicianPermission = "NONE"
+						fieldName = "string"
+					}
+				)
+				allowedTechnicianRoles = @(
+					0
+				)
+				mandatory = $false
+				name = "string"
+				availableToAllTechnicians = $false
+				description = "string"
+			}
+			PS> Set-NinjaOneDocumentTemplate -documentTemplateId <value> -documentTemplateId $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
@@ -109,3 +199,8 @@ function Set-NinjaOneDocumentTemplate {
 		}
 	}
 }
+
+
+
+
+

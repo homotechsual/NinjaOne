@@ -6,6 +6,15 @@ function Restart-NinjaOneDevice {
 			Triggers a device reboot using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Device
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				reason = "string"
+			}
+			PS> Restart-NinjaOneDevice -deviceId 1 -deviceId <value> -deviceId $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
@@ -62,3 +71,8 @@ function Restart-NinjaOneDevice {
 		}
 	}
 }
+
+
+
+
+

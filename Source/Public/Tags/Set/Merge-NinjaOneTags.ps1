@@ -10,6 +10,21 @@ function Merge-NinjaOneTags {
 			PS> Merge-NinjaOneTags -mergeRequest @{ sourceTagIds = @(5,6); targetTagId = 1 }
 
 			Merges tags 5 and 6 into tag 1.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				tagIds = @(
+					0
+				)
+				mergeIntoTagId = 0
+				name = "string"
+				mergeMethod = "MERGE_INTO_EXISTING_TAG"
+				description = "string"
+			}
+			PS> Merge-NinjaOneTags -mergeRequest $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			Status code or merged tag per API.
 		.LINK
@@ -39,4 +54,9 @@ function Merge-NinjaOneTags {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
 

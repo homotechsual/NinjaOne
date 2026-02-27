@@ -10,6 +10,29 @@ function New-NinjaOneUnmanagedDevice {
 			PS> New-NinjaOneUnmanagedDevice -unmanagedDevice @{ hostname='asset-5001' }
 
 			Creates an unmanaged device.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				warrantyEndDate = 0
+				orgId = 0
+				locationId = 0
+				warrantyStartDate = 0
+				assetFields = @{
+					assetExpectedLifetime = "string"
+					serialNumber = "string"
+					assetPurchaseAmount = 0
+					assetPurchaseDate = 0
+					assetId = "string"
+					assetStatus = "string"
+				}
+				name = "string"
+				roleId = 0
+				assignedUserUid = "00000000-0000-0000-0000-000000000000"
+			}
+			PS> New-NinjaOneUnmanagedDevice -unmanagedDevice $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A PowerShell object containing the created unmanaged device Id.
 		.LINK
@@ -34,3 +57,8 @@ function New-NinjaOneUnmanagedDevice {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+

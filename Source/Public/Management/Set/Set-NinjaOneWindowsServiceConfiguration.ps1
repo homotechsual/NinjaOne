@@ -6,6 +6,16 @@ function Set-NinjaOneWindowsServiceConfiguration {
 			Sets the configuration of the Windows Service for a single device using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Windows Service Configuration
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				userName = "string"
+				startType = "AUTO_START"
+			}
+			PS> Set-NinjaOneWindowsServiceConfiguration -deviceId 1 -deviceId <value> -deviceId $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.EXAMPLE
@@ -51,3 +61,8 @@ function Set-NinjaOneWindowsServiceConfiguration {
 		}
 	}
 }
+
+
+
+
+

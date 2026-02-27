@@ -11,15 +11,7 @@ function New-NinjaOneTicketComment {
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/ticketcomment
-	
-	.EXAMPLE
-		PS> $newObject = @{ Name = 'Example' }
-		PS> New-NinjaOneTicketComment @newObject
-
-		Creates a new resource with the specified properties.
-
-	#>
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/ticketcomment`n`t#>
 	[CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
 	[OutputType([Object])]
 	[Alias('nnotc')]
@@ -35,6 +27,7 @@ function New-NinjaOneTicketComment {
 		[Int]$ticketId,
 		# An object containing the ticket comment to create.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
+		[Alias('body')]
 		[Object]$comment,
 		# Show the ticket comment that was created.
 		[Switch]$show
@@ -45,7 +38,7 @@ function New-NinjaOneTicketComment {
 			$Resource = ('v2/ticketing/ticket/{0}/comment' -f $ticketId)
 			$RequestParams = @{
 				Resource = $Resource
-				Body = $ticket
+				Body = $comment
 			}
 			if ($PSCmdlet.ShouldProcess(('Ticket comment on ticket {0}' -f $ticketId), 'Create')) {
 				$TicketCreate = New-NinjaOnePOSTRequest @RequestParams

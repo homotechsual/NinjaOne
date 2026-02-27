@@ -10,6 +10,17 @@ function Invoke-NinjaOneOrganisationArchive {
 			PS> Invoke-NinjaOneOrganisationArchive -archiveRequest @{ organizationIds = @(1,2,3) }
 
 			Archives organisations 1, 2 and 3.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $body = @{
+				clientChecklistIds = @(
+					0
+				)
+			}
+			PS> Invoke-NinjaOneOrganisationArchive -archiveRequest $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			Status code or archive result per API.
 		.LINK
@@ -39,4 +50,9 @@ function Invoke-NinjaOneOrganisationArchive {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
+
 
