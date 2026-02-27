@@ -11,10 +11,14 @@ Note: Version 2.3.0 was released in error and will be skipped.
   * Add "fed" instance region support to Connect-NinjaOne ValidateSet.
   * Fix PowerShell 5.1 compatibility by replacing Join-String with -join operator in Test-NinjaOneEndpointSupport.
   * Fix prerelease version detection in publish workflow by adding -AllowPrerelease to Find-Module checks.
+  * Fix multipart form-data request handling to avoid 415 errors on upload endpoints.
+  * Fix build updateManifest by using a temporary RootModule stub when required.
 
 * Updates:
   * Limit PSSA compatibility checks to PowerShell 5.1.
   * Disable GitHub Packages publish step due to NuGet authentication failures.
+  * Auto-generate full request examples for POST/PUT and PATCH endpoints.
+  * Normalize literal backtick sequences in generated help links.
 
 ## 2026-02-25 - Version 2.3.0-beta3
 

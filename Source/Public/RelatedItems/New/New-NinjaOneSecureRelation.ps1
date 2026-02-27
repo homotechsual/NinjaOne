@@ -9,21 +9,22 @@ function New-NinjaOneSecureRelation {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				totpSecret = "string"
-				username = "string"
-				url = "string"
 				name = "string"
+				url = "string"
 				notes = "string"
+				username = "string"
 				password = "string"
+				totpSecret = "string"
 			}
-			PS> New-NinjaOneSecureRelation -entityId <value> -entityId <value> -entityType $body
+			PS> New-NinjaOneSecureRelation -entityType ORGANIZATION -entityId 1 -entityType $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/securevaluerelation`n`t#>
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/securevaluerelation
+	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('nnosr')]
@@ -101,6 +102,10 @@ function New-NinjaOneSecureRelation {
 		}
 	}
 }
+
+
+
+
 
 
 

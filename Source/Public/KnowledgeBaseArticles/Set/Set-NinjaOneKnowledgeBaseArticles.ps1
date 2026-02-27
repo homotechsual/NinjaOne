@@ -17,8 +17,8 @@ function Set-NinjaOneKnowledgeBaseArticles {
 					id = 0
 					name = "string"
 					content = @{
-						text = "string"
 						html = "string"
+						text = "string"
 					}
 				}
 			)
@@ -49,6 +49,10 @@ function Set-NinjaOneKnowledgeBaseArticles {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
 
 
 

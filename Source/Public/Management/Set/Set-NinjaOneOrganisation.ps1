@@ -9,12 +9,12 @@ function Set-NinjaOneOrganisation {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				nodeApprovalMode = "AUTOMATIC"
+				name = "string"
+				description = "string"
 				userData = @{
 					additionalProp1 = "value"
 				}
-				name = "string"
-				description = "string"
+				nodeApprovalMode = "AUTOMATIC"
 			}
 			PS> Set-NinjaOneOrganisation -organisationId 1 -organisationInformation $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -62,6 +62,10 @@ function Set-NinjaOneOrganisation {
 		}
 	}
 }
+
+
+
+
 
 
 

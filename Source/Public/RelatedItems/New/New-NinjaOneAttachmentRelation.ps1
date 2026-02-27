@@ -6,10 +6,24 @@ function New-NinjaOneAttachmentRelation {
 			Create a new attachment relation using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Attachment Relation
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $multipart = [System.Net.Http.MultipartFormDataContent]::new()
+			PS> $filePath = "C:\Temp\example.txt"
+			PS> $fileStream = [System.IO.FileStream]::new($filePath, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read)
+			PS> $fileContent = [System.Net.Http.StreamContent]::new($fileStream)
+			PS> $fileContent.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::Parse("application/octet-stream")
+			PS> $multipart.Add($fileContent, "file", [System.IO.Path]::GetFileName($filePath))
+			PS> $body = $multipart
+			PS> New-NinjaOneAttachmentRelation -entityType ORGANIZATION -entityId 1 -attachmentRelation $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/attachmentrelation`n`t#>
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/attachmentrelation
+	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('nnoar')]
@@ -54,3 +68,5 @@ function New-NinjaOneAttachmentRelation {
 		}
 	}
 }
+
+

@@ -10,53 +10,54 @@ function New-NinjaOneWindowsEventPolicyCondition {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
 				enabled = $false
-				text = @{
-					condition = "CONTAINS"
-					include = "ALL"
-					values = @(
-						"string"
-					)
-				}
 				displayName = "string"
 				severity = "NONE"
-				source = "string"
-				notifyOnReset = $false
-				scripts = @(
-					@{
-						scriptId = 0
-						scriptParam = "string"
-						scriptVariables = @(
-							@{
-								value = "string"
-								id = "string"
-							}
-						)
-						runAs = "SYSTEM"
-					}
-				)
-				notificationAction = "NONE"
 				priority = "NONE"
-				resetThreshold = 0
 				channels = @(
 					0
 				)
+				scripts = @(
+					@{
+						scriptId = 0
+						runAs = "SYSTEM"
+						scriptParam = "string"
+						scriptVariables = @(
+							@{
+								id = "string"
+								value = "string"
+							}
+						)
+					}
+				)
+				notificationAction = "NONE"
+				notifyOnReset = $false
+				resetThreshold = 0
+				source = "string"
 				eventIds = @(
 					0
 				)
+				text = @{
+					values = @(
+						"string"
+					)
+					condition = "CONTAINS"
+					include = "ALL"
+				}
 				occurrence = @{
+					enabled = $false
 					threshold = 0
 					duration = 0
-					enabled = $false
 				}
 			}
-			PS> New-NinjaOneWindowsEventPolicyCondition -policyId <value> -windowsEventPolicyCondition $body
+			PS> New-NinjaOneWindowsEventPolicyCondition -windowsEventPolicyCondition $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/customfieldspolicycondition`n`t#>
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/customfieldspolicycondition
+	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('nnocfpc')]
@@ -97,6 +98,10 @@ function New-NinjaOneWindowsEventPolicyCondition {
 		}
 	}
 }
+
+
+
+
 
 
 

@@ -21,7 +21,7 @@ function Set-NinjaOneTabRoleOrder {
 					position = 0
 				}
 			)
-			PS> Set-NinjaOneTabRoleOrder -order $body
+			PS> Set-NinjaOneTabRoleOrder -roleId 1 -order $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -56,6 +56,10 @@ function Set-NinjaOneTabRoleOrder {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
 
 
 

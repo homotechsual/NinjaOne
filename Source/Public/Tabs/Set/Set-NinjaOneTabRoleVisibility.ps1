@@ -17,11 +17,11 @@ function Set-NinjaOneTabRoleVisibility {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @(
 				@{
-					hidden = $false
 					tabId = 0
+					hidden = $false
 				}
 			)
-			PS> Set-NinjaOneTabRoleVisibility -visibility $body
+			PS> Set-NinjaOneTabRoleVisibility -roleId 1 -visibility $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -56,6 +56,10 @@ function Set-NinjaOneTabRoleVisibility {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
 
 
 

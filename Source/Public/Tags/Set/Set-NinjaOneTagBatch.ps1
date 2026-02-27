@@ -18,17 +18,17 @@ function Set-NinjaOneTagBatch {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				tagIdsToRemove = @(
-					0
-				)
 				assetIds = @(
 					0
 				)
 				tagIdsToAdd = @(
 					0
 				)
+				tagIdsToRemove = @(
+					0
+				)
 			}
-			PS> Set-NinjaOneTagBatch -tagUpdate $body
+			PS> Set-NinjaOneTagBatch -assetType string -tagUpdate $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -64,6 +64,10 @@ function Set-NinjaOneTagBatch {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
 
 
 

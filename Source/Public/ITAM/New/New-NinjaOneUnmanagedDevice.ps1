@@ -13,21 +13,21 @@ function New-NinjaOneUnmanagedDevice {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				warrantyEndDate = 0
+				name = "string"
 				orgId = 0
 				locationId = 0
-				warrantyStartDate = 0
-				assetFields = @{
-					assetExpectedLifetime = "string"
-					serialNumber = "string"
-					assetPurchaseAmount = 0
-					assetPurchaseDate = 0
-					assetId = "string"
-					assetStatus = "string"
-				}
-				name = "string"
 				roleId = 0
 				assignedUserUid = "00000000-0000-0000-0000-000000000000"
+				warrantyStartDate = 0
+				warrantyEndDate = 0
+				assetFields = @{
+					serialNumber = "string"
+					assetId = "string"
+					assetStatus = "string"
+					assetPurchaseDate = 0
+					assetPurchaseAmount = 0
+					assetExpectedLifetime = "string"
+				}
 			}
 			PS> New-NinjaOneUnmanagedDevice -unmanagedDevice $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -57,6 +57,10 @@ function New-NinjaOneUnmanagedDevice {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
 
 
 

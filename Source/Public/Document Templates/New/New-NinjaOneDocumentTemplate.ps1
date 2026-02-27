@@ -9,85 +9,85 @@ function New-NinjaOneDocumentTemplate {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
+				name = "string"
+				description = "string"
+				allowMultiple = $false
+				mandatory = $false
 				fields = @(
 					@{
-						fieldDefaultValue = "string"
-						uiElementName = "string"
-						fieldApiPermission = "NONE"
-						fieldScriptPermission = "NONE"
-						uiElementValue = "string"
-						fieldName = "string"
 						fieldLabel = "string"
+						fieldName = "string"
+						fieldDescription = "string"
+						fieldType = "DROPDOWN"
+						fieldTechnicianPermission = "NONE"
+						fieldScriptPermission = "NONE"
+						fieldApiPermission = "NONE"
+						fieldDefaultValue = "string"
 						fieldContent = @{
-							advancedSettings = @{
-								templates = @(
-									0
-								)
-								org = @(
-									0
-								)
-								expandLargeValueOnRender = $false
-								ipAddressType = "ALL"
-								monetary = @{
-									currency = "USD"
+							values = @(
+								@{
+									name = "string"
 								}
-								nodeClass = @(
-									"WINDOWS_SERVER"
-								)
+							)
+							required = $false
+							footerText = "string"
+							tooltipText = "string"
+							advancedSettings = @{
 								fileMaxSize = 0
-								maxCharacters = 0
 								fileExtensions = @(
 									"string"
 								)
-								complexityRules = @{
-									mustContainOneInteger = $false
-									mustContainOneLowercaseLetter = $false
-									mustContainOneUppercaseLetter = $false
-									greaterOrEqualThanSixCharacters = $false
-								}
-								identifier = @{
-									automaticGenerationEnabled = $false
-									prefix = "string"
-									assignTo = "NEW_ASSETS_ONLY"
-									nextSequenceNumber = 0
-									type = "CUSTOM"
-									scope = "NONE"
-									suffix = "string"
-								}
-								numericRange = @{
-									max = 0
-									min = 0
-								}
 								dateFilters = @{
 									type = "NONE"
 									selected = @(
 										"string"
 									)
 								}
-							}
-							tooltipText = "string"
-							required = $false
-							footerText = "string"
-							values = @(
-								@{
-									name = "string"
+								maxCharacters = 0
+								complexityRules = @{
+									mustContainOneInteger = $false
+									mustContainOneLowercaseLetter = $false
+									mustContainOneUppercaseLetter = $false
+									greaterOrEqualThanSixCharacters = $false
 								}
-							)
+								numericRange = @{
+									min = 0
+									max = 0
+								}
+								org = @(
+									0
+								)
+								nodeClass = @(
+									"WINDOWS_SERVER"
+								)
+								ipAddressType = "ALL"
+								expandLargeValueOnRender = $false
+								identifier = @{
+									automaticGenerationEnabled = $false
+									scope = "NONE"
+									assignTo = "NEW_ASSETS_ONLY"
+									type = "CUSTOM"
+									nextSequenceNumber = 0
+									prefix = "string"
+									suffix = "string"
+								}
+								monetary = @{
+									currency = "USD"
+								}
+								templates = @(
+									0
+								)
+							}
 						}
-						fieldType = "DROPDOWN"
-						fieldDescription = "string"
+						uiElementName = "string"
 						uiElementType = "TITLE"
-						fieldTechnicianPermission = "NONE"
+						uiElementValue = "string"
 					}
 				)
-				allowMultiple = $false
+				availableToAllTechnicians = $false
 				allowedTechnicianRoles = @(
 					0
 				)
-				mandatory = $false
-				name = "string"
-				availableToAllTechnicians = $false
-				description = "string"
 			}
 			PS> New-NinjaOneDocumentTemplate -name $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -96,7 +96,8 @@ function New-NinjaOneDocumentTemplate {
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/documenttemplate`n`t#>
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/documenttemplate
+	#>
 	[CmdletBinding( SupportsShouldProcess, ConfirmImpact = 'Medium' )]
 	[OutputType([Object])]
 	[Alias('nnodt')]
@@ -159,6 +160,10 @@ function New-NinjaOneDocumentTemplate {
 		}
 	}
 }
+
+
+
+
 
 
 

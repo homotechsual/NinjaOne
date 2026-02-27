@@ -14,13 +14,13 @@ function New-NinjaOneNodeRoles {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @(
 				@{
-					nodeRoleParentId = 0
-					icon = "string"
 					nodeClass = "WINDOWS_SERVER"
+					nodeRoleParentName = "string"
+					nodeRoleParentId = 0
 					name = "string"
 					description = "string"
-					nodeRoleParentName = "string"
 					chassisType = "UNKNOWN"
+					icon = "string"
 				}
 			)
 			PS> New-NinjaOneNodeRoles -nodeRoles $body
@@ -65,6 +65,10 @@ function New-NinjaOneNodeRoles {
 		}
 	}
 }
+
+
+
+
 
 
 

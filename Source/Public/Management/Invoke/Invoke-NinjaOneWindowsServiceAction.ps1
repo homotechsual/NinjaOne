@@ -11,7 +11,7 @@ function Invoke-NinjaOneWindowsServiceAction {
 			PS> $body = @{
 				action = "START"
 			}
-			PS> Invoke-NinjaOneWindowsServiceAction -deviceId 1 -deviceId <value> -deviceId $body
+			PS> Invoke-NinjaOneWindowsServiceAction -deviceId 1 -serviceId 1 -deviceId $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -78,6 +78,10 @@ function Invoke-NinjaOneWindowsServiceAction {
 		}
 	}
 }
+
+
+
+
 
 
 

@@ -9,6 +9,7 @@ function Update-NinjaOneWebhook {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
+				url = "string"
 				activities = @{
 					additionalProp1 = @(
 						"string"
@@ -17,15 +18,14 @@ function Update-NinjaOneWebhook {
 				expand = @(
 					"string"
 				)
-				organizationIds = @(
-					0
-				)
-				url = "string"
 				headers = @(
 					@{
-						value = "string"
 						name = "string"
+						value = "string"
 					}
+				)
+				organizationIds = @(
+					0
 				)
 			}
 			PS> Update-NinjaOneWebhook -webhookConfiguration $body
@@ -73,6 +73,10 @@ function Update-NinjaOneWebhook {
 		}
 	}
 }
+
+
+
+
 
 
 

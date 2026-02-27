@@ -9,10 +9,10 @@ function Set-NinjaOneWindowsServiceConfiguration {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				userName = "string"
 				startType = "AUTO_START"
+				userName = "string"
 			}
-			PS> Set-NinjaOneWindowsServiceConfiguration -deviceId 1 -deviceId <value> -deviceId $body
+			PS> Set-NinjaOneWindowsServiceConfiguration -deviceId 1 -serviceId 1 -configuration $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -61,6 +61,10 @@ function Set-NinjaOneWindowsServiceConfiguration {
 		}
 	}
 }
+
+
+
+
 
 
 

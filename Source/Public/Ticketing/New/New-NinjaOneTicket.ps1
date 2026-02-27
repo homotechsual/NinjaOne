@@ -9,8 +9,36 @@ function New-NinjaOneTicket {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				parentTicketId = 0
 				clientId = 0
+				ticketFormId = 0
+				locationId = 0
+				nodeId = 0
+				subject = "string"
+				description = @{
+					public = $false
+					body = "string"
+					htmlBody = "string"
+					timeTracked = 0
+					duplicateInIncidents = $false
+				}
+				status = "string"
+				type = "PROBLEM"
+				cc = @{
+					uids = @(
+						"00000000-0000-0000-0000-000000000000"
+					)
+					emails = @(
+						"string"
+					)
+				}
+				assignedAppUserId = 0
+				requesterUid = "00000000-0000-0000-0000-000000000000"
+				severity = "NONE"
+				priority = "NONE"
+				parentTicketId = 0
+				tags = @(
+					"string"
+				)
 				attributes = @(
 					@{
 						id = 0
@@ -18,38 +46,10 @@ function New-NinjaOneTicket {
 						value = "string"
 					}
 				)
-				followupTime = 0
-				requesterUid = "00000000-0000-0000-0000-000000000000"
-				locationId = 0
-				severity = "NONE"
-				description = @{
-					body = "string"
-					htmlBody = "string"
-					public = $false
-					duplicateInIncidents = $false
-					timeTracked = 0
-				}
-				type = "PROBLEM"
-				assignedAppUserId = 0
-				nodeId = 0
-				cc = @{
-					emails = @(
-						"string"
-					)
-					uids = @(
-						"00000000-0000-0000-0000-000000000000"
-					)
-				}
 				additionalAssignedTechnicianIds = @(
 					0
 				)
-				status = "string"
-				priority = "NONE"
-				subject = "string"
-				ticketFormId = 0
-				tags = @(
-					"string"
-				)
+				followupTime = 0
 			}
 			PS> New-NinjaOneTicket -ticket $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -102,6 +102,10 @@ function New-NinjaOneTicket {
 		}
 	}
 }
+
+
+
+
 
 
 

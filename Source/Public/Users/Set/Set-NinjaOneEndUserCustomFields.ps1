@@ -16,7 +16,7 @@ function Set-NinjaOneEndUserCustomFields {
 				additionalProp1 = @{
 				}
 			}
-			PS> Set-NinjaOneEndUserCustomFields -customFields $body
+			PS> Set-NinjaOneEndUserCustomFields -id 1 -customFields $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -46,6 +46,10 @@ function Set-NinjaOneEndUserCustomFields {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
 
 
 

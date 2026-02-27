@@ -14,28 +14,26 @@ function New-NinjaOneOrganisationChecklist {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @(
 				@{
-					checklistTemplateId = 0
-					assignedToUserId = 0
-					required = $false
-					dueDate = 0
 					name = "string"
-					organizationId = 0
 					description = @{
 						text = "string"
 						html = "string"
 					}
+					required = $false
+					dueDate = 0
+					assignedToUserId = 0
+					organizationId = 0
+					checklistTemplateId = 0
 					tasks = @(
 						@{
-							completed = $false
-							assignedToUserId = 0
-							position = 0
 							id = 0
-							dueDate = 0
+							position = 0
 							name = "string"
 							description = @{
-								text = "string"
-								html = "string"
 							}
+							assignedToUserId = 0
+							dueDate = 0
+							completed = $false
 						}
 					)
 				}
@@ -73,6 +71,10 @@ function New-NinjaOneOrganisationChecklist {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
 
 
 

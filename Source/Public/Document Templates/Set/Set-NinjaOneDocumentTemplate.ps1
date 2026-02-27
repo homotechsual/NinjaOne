@@ -9,58 +9,21 @@ function Set-NinjaOneDocumentTemplate {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
+				name = "string"
+				description = "string"
+				mandatory = $false
 				fields = @(
 					@{
+						fieldId = 0
+						fieldLabel = "string"
+						fieldName = "string"
+						fieldDescription = "string"
+						fieldType = "DROPDOWN"
+						fieldTechnicianPermission = "NONE"
+						fieldScriptPermission = "NONE"
+						fieldApiPermission = "NONE"
+						fieldDefaultValue = "string"
 						fieldContent = @{
-							advancedSettings = @{
-								templates = @(
-									0
-								)
-								org = @(
-									0
-								)
-								expandLargeValueOnRender = $false
-								ipAddressType = "ALL"
-								monetary = @{
-									currency = "USD"
-								}
-								nodeClass = @(
-									"WINDOWS_SERVER"
-								)
-								fileMaxSize = 0
-								maxCharacters = 0
-								fileExtensions = @(
-									"string"
-								)
-								complexityRules = @{
-									mustContainOneInteger = $false
-									mustContainOneLowercaseLetter = $false
-									mustContainOneUppercaseLetter = $false
-									greaterOrEqualThanSixCharacters = $false
-								}
-								identifier = @{
-									automaticGenerationEnabled = $false
-									prefix = "string"
-									assignTo = "NEW_ASSETS_ONLY"
-									nextSequenceNumber = 0
-									type = "CUSTOM"
-									scope = "NONE"
-									suffix = "string"
-								}
-								numericRange = @{
-									max = 0
-									min = 0
-								}
-								dateFilters = @{
-									type = "NONE"
-									selected = @(
-										"string"
-									)
-								}
-							}
-							tooltipText = "string"
-							required = $false
-							footerText = "string"
 							values = @(
 								@{
 									id = "00000000-0000-0000-0000-000000000000"
@@ -68,31 +31,68 @@ function Set-NinjaOneDocumentTemplate {
 									active = $false
 								}
 							)
+							required = $false
+							footerText = "string"
+							tooltipText = "string"
+							advancedSettings = @{
+								fileMaxSize = 0
+								fileExtensions = @(
+									"string"
+								)
+								dateFilters = @{
+									type = "NONE"
+									selected = @(
+										"string"
+									)
+								}
+								maxCharacters = 0
+								complexityRules = @{
+									mustContainOneInteger = $false
+									mustContainOneLowercaseLetter = $false
+									mustContainOneUppercaseLetter = $false
+									greaterOrEqualThanSixCharacters = $false
+								}
+								numericRange = @{
+									min = 0
+									max = 0
+								}
+								org = @(
+									0
+								)
+								nodeClass = @(
+									"WINDOWS_SERVER"
+								)
+								ipAddressType = "ALL"
+								expandLargeValueOnRender = $false
+								identifier = @{
+									automaticGenerationEnabled = $false
+									scope = "NONE"
+									assignTo = "NEW_ASSETS_ONLY"
+									type = "CUSTOM"
+									nextSequenceNumber = 0
+									prefix = "string"
+									suffix = "string"
+								}
+								monetary = @{
+									currency = "USD"
+								}
+								templates = @(
+									0
+								)
+							}
 						}
-						fieldId = 0
-						fieldType = "DROPDOWN"
-						fieldDescription = "string"
-						fieldLabel = "string"
-						fieldApiPermission = "NONE"
-						uiElementValue = "string"
-						uiElementName = "string"
-						fieldScriptPermission = "NONE"
 						uiElementUid = "00000000-0000-0000-0000-000000000000"
+						uiElementName = "string"
 						uiElementType = "TITLE"
-						fieldDefaultValue = "string"
-						fieldTechnicianPermission = "NONE"
-						fieldName = "string"
+						uiElementValue = "string"
 					}
 				)
+				availableToAllTechnicians = $false
 				allowedTechnicianRoles = @(
 					0
 				)
-				mandatory = $false
-				name = "string"
-				availableToAllTechnicians = $false
-				description = "string"
 			}
-			PS> Set-NinjaOneDocumentTemplate -documentTemplateId <value> -documentTemplateId $body
+			PS> Set-NinjaOneDocumentTemplate -documentTemplateId 1 -documentTemplateId $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -199,6 +199,10 @@ function Set-NinjaOneDocumentTemplate {
 		}
 	}
 }
+
+
+
+
 
 
 

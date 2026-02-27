@@ -10,20 +10,20 @@ function Set-NinjaOneDevice {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
 				displayName = "string"
-				nodeRoleId = 0
-				organizationId = 0
-				locationId = 0
 				userData = @{
 					additionalProp1 = "value"
 				}
+				nodeRoleId = 0
+				policyId = 0
+				organizationId = 0
+				locationId = 0
 				warranty = @{
 					startDate = 0
 					endDate = 0
 					manufacturerFulfillmentDate = 0
 				}
-				policyId = 0
 			}
-			PS> Set-NinjaOneDevice -deviceId 1 -deviceId $body
+			PS> Set-NinjaOneDevice -deviceId 1 -deviceInformation $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -74,6 +74,10 @@ function Set-NinjaOneDevice {
 		}
 	}
 }
+
+
+
+
 
 
 

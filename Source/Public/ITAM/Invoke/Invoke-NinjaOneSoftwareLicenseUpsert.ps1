@@ -13,33 +13,33 @@ function Invoke-NinjaOneSoftwareLicenseUpsert {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
+				name = "string"
+				description = "string"
+				type = "PER_DEVICE"
+				date = 0
+				publisherName = "string"
+				vendorName = "string"
 				scope = @{
+					global = $false
 					organizationNames = @(
 						"string"
 					)
 					locationNames = @(
 						"string"
 					)
-					global = $false
 				}
-				date = 0
-				publisherName = "string"
-				description = "string"
-				type = "PER_DEVICE"
-				licenseesToRemove = @(
+				quantity = 0
+				currentUsage = 0
+				currentLicensees = @(
 					"string"
 				)
 				licenseesToAssign = @(
 					"string"
 				)
-				name = "string"
-				note = "string"
-				currentLicensees = @(
+				licenseesToRemove = @(
 					"string"
 				)
-				vendorName = "string"
-				quantity = 0
-				currentUsage = 0
+				note = "string"
 			}
 			PS> Invoke-NinjaOneSoftwareLicenseUpsert -License $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -74,6 +74,10 @@ function Invoke-NinjaOneSoftwareLicenseUpsert {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
 
 
 

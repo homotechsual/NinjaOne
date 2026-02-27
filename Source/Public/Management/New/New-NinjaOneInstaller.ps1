@@ -9,13 +9,13 @@ function New-NinjaOneInstaller {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
+				organizationId = 0
+				locationId = 0
+				installerType = "WINDOWS_MSI"
+				usageLimit = 0
 				content = @{
 					nodeRoleId = "string"
 				}
-				installerType = "WINDOWS_MSI"
-				organizationId = 0
-				locationId = 0
-				usageLimit = 0
 			}
 			PS> New-NinjaOneInstaller -installer $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -109,6 +109,10 @@ function New-NinjaOneInstaller {
 		}
 	}
 }
+
+
+
+
 
 
 

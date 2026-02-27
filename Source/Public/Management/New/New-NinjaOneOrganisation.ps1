@@ -9,26 +9,26 @@ function New-NinjaOneOrganisation {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				nodeApprovalMode = "AUTOMATIC"
 				name = "string"
 				description = "string"
 				userData = @{
 					additionalProp1 = "value"
 				}
+				nodeApprovalMode = "AUTOMATIC"
+				locations = @(
+					@{
+						name = "string"
+						address = "string"
+						description = "string"
+						userData = @{
+							additionalProp1 = "value"
+						}
+					}
+				)
 				policies = @(
 					@{
 						nodeRoleId = 0
 						policyId = 0
-					}
-				)
-				locations = @(
-					@{
-						address = "string"
-						userData = @{
-							additionalProp1 = "value"
-						}
-						name = "string"
-						description = "string"
 					}
 				)
 			}
@@ -39,7 +39,8 @@ function New-NinjaOneOrganisation {
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/organisation`n`t#>
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/organisation
+	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('nnoo', 'New-NinjaOneOrganization')]
@@ -94,6 +95,10 @@ function New-NinjaOneOrganisation {
 		}
 	}
 }
+
+
+
+
 
 
 

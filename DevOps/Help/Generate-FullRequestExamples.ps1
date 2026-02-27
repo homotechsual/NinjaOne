@@ -63,6 +63,10 @@ function Get-OpenApiDocument {
 }
 
 function ConvertFrom-OpenApiYaml {
+	<#
+	.SYNOPSIS
+		Converts OpenAPI YAML text into a PowerShell object.
+	#>
 	param([String]$Yaml)
 
 	if (-not (Get-Command -Name ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
@@ -89,6 +93,10 @@ function ConvertFrom-OpenApiYaml {
 }
 
 function Resolve-SchemaRef {
+	<#
+	.SYNOPSIS
+		Resolves a schema $ref to a concrete schema object.
+	#>
 	param(
 		[Object]$Schema,
 		[Hashtable]$Schemas
@@ -116,45 +124,76 @@ function Resolve-SchemaRef {
 	return $Schema
 }
 
+function Test-SchemaProperty {
+	<#
+	.SYNOPSIS
+		Checks whether a schema object has a given property name.
+	#>
+	param([Object]$Obj, [string]$PropName)
+	if (($Obj -is [hashtable]) -or ($Obj -is [System.Collections.Specialized.OrderedDictionary])) {
+		return $Obj.Contains($PropName)
+	}
+	return ($Obj.PSObject.Properties.Name -contains $PropName)
+}
+
+function Get-SchemaValue {
+	<#
+	.SYNOPSIS
+		Gets a schema property value by name.
+	#>
+	param([Object]$Obj, [string]$PropName)
+	if (($Obj -is [hashtable]) -or ($Obj -is [System.Collections.Specialized.OrderedDictionary])) {
+		return $Obj[$PropName]
+	}
+	return $Obj.$PropName
+}
+
+function Get-SchemaProperties {
+	<#
+	.SYNOPSIS
+		Enumerates schema properties as name/value pairs.
+	#>
+	param([Object]$Obj)
+	if (($Obj -is [hashtable]) -or ($Obj -is [System.Collections.Specialized.OrderedDictionary])) {
+		return $Obj.Keys | ForEach-Object {
+			[PSCustomObject]@{ Name = $_; Value = $Obj[$_] }
+		}
+	}
+	return $Obj.PSObject.Properties
+}
+
 function New-ExampleFromSchema {
+	<#
+	.SYNOPSIS
+		Builds a sample value from an OpenAPI schema definition.
+	#>
 	param(
 		[Object]$Schema,
 		[Hashtable]$Schemas,
 		[Hashtable]$Visited
 	)
+	if (-not $Visited) {
+		$Visited = @{}
+	}
+
+	# Guard against recursive schema references.
+	if (Test-SchemaProperty -Obj $Schema -PropName '$ref') {
+		$refValue = Get-SchemaValue -Obj $Schema -PropName '$ref'
+		if ($refValue -match '#/components/schemas/(?<name>[^/]+)$') {
+			$refName = $Matches['name']
+			if ($refName -eq 'FormDataBodyPart') {
+				return '__RAW__Get-Item "C:\Temp\example.txt"'
+			}
+			if ($Visited.ContainsKey($refName)) {
+				return [ordered]@{}
+			}
+			$Visited[$refName] = $true
+		}
+	}
 
 	$Schema = Resolve-SchemaRef -Schema $Schema -Schemas $Schemas
 	if (-not $Schema) {
 		return $null
-	}
-
-	# Helper function to check if a property exists (works for hashtables, OrderedDictionaries, and PSCustomObjects)
-	function Test-SchemaProperty {
-		param([Object]$Obj, [string]$PropName)
-		if (($Obj -is [hashtable]) -or ($Obj -is [System.Collections.Specialized.OrderedDictionary])) {
-			return $Obj.Contains($PropName)
-		}
-		return ($Obj.PSObject.Properties.Name -contains $PropName)
-	}
-
-	# Helper function to get a property value (works for hashtables, OrderedDictionaries, and PSCustomObjects)
-	function Get-SchemaValue {
-		param([Object]$Obj, [string]$PropName)
-		if (($Obj -is [hashtable]) -or ($Obj -is [System.Collections.Specialized.OrderedDictionary])) {
-			return $Obj[$PropName]
-		}
-		return $Obj.$PropName
-	}
-
-	# Helper function to get properties (works for hashtables, OrderedDictionaries, and PSCustomObjects)
-	function Get-SchemaProperties {
-		param([Object]$Obj)
-		if (($Obj -is [hashtable]) -or ($Obj -is [System.Collections.Specialized.OrderedDictionary])) {
-			return $Obj.Keys | ForEach-Object {
-				[PSCustomObject]@{ Name = $_; Value = $Obj[$_] }
-			}
-		}
-		return $Obj.PSObject.Properties
 	}
 
 	if (Test-SchemaProperty -Obj $Schema -PropName 'oneOf') {
@@ -225,6 +264,7 @@ function New-ExampleFromSchema {
 			if ($format -eq 'date-time') { return '2024-01-01T00:00:00Z' }
 			if ($format -eq 'date') { return '2024-01-01' }
 			if ($format -eq 'uuid') { return '00000000-0000-0000-0000-000000000000' }
+				if ($format -eq 'binary') { return '__RAW__Get-Item "C:\Temp\example.txt"' }
 			return 'string'
 		}
 		default { return $null }
@@ -232,6 +272,10 @@ function New-ExampleFromSchema {
 }
 
 function ConvertTo-HashtableLines {
+	<#
+	.SYNOPSIS
+		Formats an object into PowerShell hashtable/array literal lines.
+	#>
 	param(
 		[Object]$Value,
 		[String]$Indent
@@ -282,6 +326,10 @@ function ConvertTo-HashtableLines {
 		return $lines
 	}
 	if ($Value -is [string]) {
+		if ($Value.StartsWith('__RAW__')) {
+			$raw = $Value.Substring(7)
+			return , @($raw)  # Comma forces array to not unravel
+		}
 		$quoted = '"{0}"' -f $Value
 		return , @($quoted)  # Comma forces array to not unravel
 	}
@@ -295,11 +343,18 @@ function ConvertTo-HashtableLines {
 }
 
 function Get-BodyParameterName {
+	<#
+	.SYNOPSIS
+		Determines the cmdlet body parameter name from a function file.
+	#>
 	param([String]$Content)
 
 	# Look for parameter with 'body' in its Alias attribute (can be first or not)
 	$bodyMatch = [regex]::Match($Content, '\[Alias\([^\)]*''body''[^\)]*\)\][\s\S]*?\$(?<name>[A-Za-z0-9_]+)')
 	if ($bodyMatch.Success) { return $bodyMatch.Groups['name'].Value }
+
+	$objectMatch = [regex]::Match($Content, '\[Parameter\([^\)]*\)\][\s\S]*?\[Object\]\$(?<name>[A-Za-z0-9_]+)')
+	if ($objectMatch.Success) { return $objectMatch.Groups['name'].Value }
 
 	$paramMatch = [regex]::Match($Content, '\[Parameter\([^\)]*Mandatory[^\)]*\)\][\s\S]*?\$(?<name>[A-Za-z0-9_]+)')
 	if ($paramMatch.Success) { return $paramMatch.Groups['name'].Value }
@@ -308,6 +363,10 @@ function Get-BodyParameterName {
 }
 
 function Get-PathParameters {
+	<#
+	.SYNOPSIS
+		Maps OpenAPI path parameters to cmdlet parameter names.
+	#>
 	param(
 		[String]$Content,
 		[String]$Path
@@ -322,7 +381,7 @@ function Get-PathParameters {
 	foreach ($match in $matches) {
 		$pathParam = $match.Groups['param'].Value
 		# Look for parameter defined before the body parameter
-		$pattern = '\[Parameter\([^\)]*\)\][\s\S]*?\[Alias\([^\)]*\)\]?[\s\S]*?\$(?<name>[A-Za-z0-9_]+)'
+		$pattern = '\[Parameter\([^\)]*\)\][\s\S]*?\$(?<name>[A-Za-z0-9_]+)'
 		$paramMatches = [regex]::Matches($Content, $pattern)
 		
 		foreach ($pm in $paramMatches) {
@@ -332,10 +391,21 @@ function Get-PathParameters {
 			if ($fullBlock -match "Alias\('body'\)") { continue }
 			# Match if parameter name contains the path param name or vice versa
 			# e.g., organizationId matches {id}, deviceId matches {id}, etc.
-			if ($paramName -match "$pathParam|Id$") {
+			if (($pathParam -eq 'id' -and $paramName -match 'Id$') -or ($paramName -match $pathParam)) {
+				$placeholder = 'string'
+				if ($paramName -match 'Id$' -or $pathParam -match 'id') {
+					$placeholder = '1'
+				}
+				$validateMatch = [regex]::Match($fullBlock, 'ValidateSet\((?<values>[^\)]*)\)')
+				if ($validateMatch.Success) {
+					$firstValue = [regex]::Match($validateMatch.Groups['values'].Value, '["\''](?<val>[^"\'']+)["\'']')
+					if ($firstValue.Success) {
+						$placeholder = $firstValue.Groups['val'].Value
+					}
+				}
 				$pathParams += @{
 					Name = $paramName
-					Placeholder = if ($pathParam -eq 'id') { '1' } else { '<value>' }
+					Placeholder = $placeholder
 				}
 				break
 			}
@@ -346,6 +416,10 @@ function Get-PathParameters {
 }
 
 function Build-FullRequestExampleBlock {
+	<#
+	.SYNOPSIS
+		Builds the full request example help block text.
+	#>
 	param(
 		[String]$CommandName,
 		[String]$BodyParam,
@@ -382,7 +456,94 @@ function Build-FullRequestExampleBlock {
 	return ($lines -join "`n")
 }
 
+function Build-MultipartExampleBlock {
+	<#
+	.SYNOPSIS
+		Builds a multipart/form-data example help block.
+	#>
+	param(
+		[String]$CommandName,
+		[String]$BodyParam,
+		[Object]$Schema,
+		[Array]$PathParameters = @()
+	)
+
+	$indent = "`t`t"
+	$lines = @()
+	$lines += "$indent.EXAMPLE"
+	$lines += "$indent`t$beginMarker"
+	$lines += "$indent`tPS> `$multipart = [System.Net.Http.MultipartFormDataContent]::new()"
+
+	$properties = if (Test-SchemaProperty -Obj $Schema -PropName 'properties') {
+		Get-SchemaValue -Obj $Schema -PropName 'properties'
+	}
+	foreach ($prop in (Get-SchemaProperties -Obj $properties)) {
+		$propName = $prop.Name
+		$propSchema = $prop.Value
+		$propType = Get-SchemaValue -Obj $propSchema -PropName 'type'
+		$propItems = if ($propType -eq 'array' -and (Test-SchemaProperty -Obj $propSchema -PropName 'items')) {
+			Get-SchemaValue -Obj $propSchema -PropName 'items'
+		}
+		$propRef = if (Test-SchemaProperty -Obj $propSchema -PropName '$ref') {
+			Get-SchemaValue -Obj $propSchema -PropName '$ref'
+		}
+		$itemRef = if ($propItems -and (Test-SchemaProperty -Obj $propItems -PropName '$ref')) {
+			Get-SchemaValue -Obj $propItems -PropName '$ref'
+		}
+		$propFormat = Get-SchemaValue -Obj $propSchema -PropName 'format'
+		$itemFormat = if ($propItems) { Get-SchemaValue -Obj $propItems -PropName 'format' }
+
+		$isFile = $false
+		if ($propRef -match 'FormDataBodyPart$') { $isFile = $true }
+		if ($itemRef -match 'FormDataBodyPart$') { $isFile = $true }
+		if ($propFormat -eq 'binary') { $isFile = $true }
+		if ($itemFormat -eq 'binary') { $isFile = $true }
+
+		if ($isFile) {
+			$lines += "$indent`tPS> `$filePath = `"C:\Temp\example.txt`""
+			$lines += "$indent`tPS> `$fileStream = [System.IO.FileStream]::new(`$filePath, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read)"
+			$lines += "$indent`tPS> `$fileContent = [System.Net.Http.StreamContent]::new(`$fileStream)"
+			$lines += "$indent`tPS> `$fileContent.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::Parse(`"application/octet-stream`")"
+			$lines += "$indent`tPS> `$multipart.Add(`$fileContent, `"$propName`", [System.IO.Path]::GetFileName(`$filePath))"
+			continue
+		}
+
+		$propExample = New-ExampleFromSchema -Schema $propSchema -Schemas $schemas -Visited @{}
+		$varName = ($propName -replace '[^A-Za-z0-9_]', '')
+		if (-not $varName) { $varName = 'field' }
+		$varName = "`$$varName"
+		$bodyLines = ConvertTo-HashtableLines -Value $propExample -Indent ''
+		$lines += "$indent`tPS> $varName = " + $bodyLines[0]
+		if ($bodyLines.Count -gt 1) {
+			foreach ($line in $bodyLines[1..($bodyLines.Count - 1)]) {
+				$lines += "$indent`t" + $line
+			}
+		}
+		$lines += "$indent`tPS> `$json = $varName | ConvertTo-Json -Depth 10"
+		$lines += "$indent`tPS> `$stringContent = [System.Net.Http.StringContent]::new(`$json, [System.Text.Encoding]::UTF8, `"application/json`")"
+		$lines += "$indent`tPS> `$multipart.Add(`$stringContent, `"$propName`")"
+	}
+
+	$lines += "$indent`tPS> `$body = `$multipart"
+	$cmdLine = "$indent`tPS> $CommandName"
+	if ($PathParameters.Count -gt 0) {
+		foreach ($pathParam in $PathParameters) {
+			$cmdLine += " -$($pathParam.Name) $($pathParam.Placeholder)"
+		}
+	}
+	$cmdLine += " -$BodyParam `$body"
+	$lines += $cmdLine
+	$lines += "$indent`t$endMarker"
+	$lines += "$indent`t"
+	$lines += "$indent`tFull request example (auto-generated)."
+	return ($lines -join "`n")
+}
+
 function Update-HelpBlock {
+	<#
+	.SYNOPSIS
+		Inserts or replaces the auto-generated example block in a help comment.
+	#>
 	param(
 		[String]$Content,
 		[String]$ExampleBlock
@@ -432,6 +593,19 @@ function Update-HelpBlock {
 	$updated += ($ExampleBlock -split "`n")
 	$updated += $after
 	return ($updated -join "`n")
+}
+
+function Normalize-HelpContent {
+	<#
+	.SYNOPSIS
+		Normalizes help content formatting artifacts.
+	.DESCRIPTION
+		Replaces literal backtick sequences that should be actual newlines in comment-based help.
+	#>
+	param([String]$Content)
+	# Fix literal backtick sequences that should be real newlines in comment-based help
+	$normalized = $Content -replace '`n`t#>', "`n`t#>"
+	return $normalized
 }
 
 $yamlText = Get-OpenApiDocument -BaseUrl $BaseUrl -YamlPath $YamlPath
@@ -518,29 +692,52 @@ foreach ($file in $publicFiles) {
 		continue
 	}
 	$schema = $null
-	if ($contentMap.'application/json' -and $contentMap.'application/json'.schema) {
-		$schema = $contentMap.'application/json'.schema
-		Write-Host "  Found application/json schema" -ForegroundColor Green
-	} elseif ($contentMap.PSObject.Properties.Count -gt 0) {
-		$schema = $contentMap.PSObject.Properties[0].Value.schema
-		Write-Host "  Found schema from first content type" -ForegroundColor Green
+	$isMultipart = $false
+	if (Test-SchemaProperty -Obj $contentMap -PropName 'application/json') {
+		$jsonContent = Get-SchemaValue -Obj $contentMap -PropName 'application/json'
+		$schema = Get-SchemaValue -Obj $jsonContent -PropName 'schema'
+		if ($schema) {
+			Write-Host "  Found application/json schema" -ForegroundColor Green
+		}
+	}
+	if (-not $schema -and (Test-SchemaProperty -Obj $contentMap -PropName 'multipart/form-data')) {
+		$formContent = Get-SchemaValue -Obj $contentMap -PropName 'multipart/form-data'
+		$schema = Get-SchemaValue -Obj $formContent -PropName 'schema'
+		if ($schema) {
+			Write-Host "  Found multipart/form-data schema" -ForegroundColor Green
+			$isMultipart = $true
+		}
+	}
+	if (-not $schema) {
+		$firstContent = (Get-SchemaProperties -Obj $contentMap | Select-Object -First 1).Value
+		$schema = Get-SchemaValue -Obj $firstContent -PropName 'schema'
+		if ($schema) {
+			Write-Host "  Found schema from first content type" -ForegroundColor Green
+			$firstName = (Get-SchemaProperties -Obj $contentMap | Select-Object -First 1).Name
+			if ($firstName -eq 'multipart/form-data') { $isMultipart = $true }
+		}
 	}
 	if (-not $schema) {
 		Write-Host "  Skipping: no schema found" -ForegroundColor Red
 		continue
 	}
 
-	$exampleObject = New-ExampleFromSchema -Schema $schema -Schemas $schemas -Visited @{}
-	if (-not $exampleObject) {
-		Write-Host "  Skipping: could not generate example from schema" -ForegroundColor Red
-		continue
-	}
-	Write-Host "  Generated example object" -ForegroundColor Green
 	$bodyParam = Get-BodyParameterName -Content $content
 	$pathParams = Get-PathParameters -Content $content -Path $path
-	
-	$exampleBlock = Build-FullRequestExampleBlock -CommandName $commandName -BodyParam $bodyParam -ExampleObject $exampleObject -PathParameters $pathParams
+	$exampleBlock = $null
+	if ($isMultipart) {
+		$exampleBlock = Build-MultipartExampleBlock -CommandName $commandName -BodyParam $bodyParam -Schema $schema -PathParameters $pathParams
+	} else {
+		$exampleObject = New-ExampleFromSchema -Schema $schema -Schemas $schemas -Visited @{}
+		if (-not $exampleObject) {
+			Write-Host "  Skipping: could not generate example from schema" -ForegroundColor Red
+			continue
+		}
+		Write-Host "  Generated example object" -ForegroundColor Green
+		$exampleBlock = Build-FullRequestExampleBlock -CommandName $commandName -BodyParam $bodyParam -ExampleObject $exampleObject -PathParameters $pathParams
+	}
 	$updatedContent = Update-HelpBlock -Content $content -ExampleBlock $exampleBlock
+	$updatedContent = Normalize-HelpContent -Content $updatedContent
 
 	Write-Host "Processing: $commandName at $path ($method)" -ForegroundColor Cyan
 	Write-Host "Content length: $($content.Length), Updated length: $($updatedContent.Length)" -ForegroundColor Yellow

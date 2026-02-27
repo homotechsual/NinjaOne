@@ -9,25 +9,30 @@ function Set-NinjaOneTicket {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				parentTicketId = 0
-				clientId = 0
 				version = 0
+				clientId = 0
+				ticketFormId = 0
+				locationId = 0
+				nodeId = 0
+				subject = "string"
+				status = "string"
+				type = "PROBLEM"
 				cc = @{
-					emails = @(
-						"string"
-					)
 					uids = @(
 						"00000000-0000-0000-0000-000000000000"
 					)
+					emails = @(
+						"string"
+					)
 				}
-				requesterUid = "00000000-0000-0000-0000-000000000000"
-				locationId = 0
-				severity = "NONE"
-				type = "PROBLEM"
 				assignedAppUserId = 0
-				nodeId = 0
-				subject = "string"
-				followupTime = 0
+				requesterUid = "00000000-0000-0000-0000-000000000000"
+				severity = "NONE"
+				priority = "NONE"
+				parentTicketId = 0
+				tags = @(
+					"string"
+				)
 				attributes = @(
 					@{
 						id = 0
@@ -35,17 +40,12 @@ function Set-NinjaOneTicket {
 						value = "string"
 					}
 				)
-				status = "string"
-				priority = "NONE"
 				additionalAssignedTechnicianIds = @(
 					0
 				)
-				ticketFormId = 0
-				tags = @(
-					"string"
-				)
+				followupTime = 0
 			}
-			PS> Set-NinjaOneTicket -ticketId <value> -ticket $body
+			PS> Set-NinjaOneTicket -ticketId 1 -ticket $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -103,6 +103,11 @@ function Set-NinjaOneTicket {
 		}
 	}
 }
+
+
+
+
+
 
 
 

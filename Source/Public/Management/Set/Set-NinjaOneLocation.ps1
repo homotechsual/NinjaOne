@@ -9,14 +9,14 @@ function Set-NinjaOneLocation {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
+				name = "string"
 				address = "string"
+				description = "string"
 				userData = @{
 					additionalProp1 = "value"
 				}
-				name = "string"
-				description = "string"
 			}
-			PS> Set-NinjaOneLocation -organisationId 1 -organisationId <value> -organisationId $body
+			PS> Set-NinjaOneLocation -organisationId 1 -locationId 1 -locationInformation $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -70,6 +70,10 @@ function Set-NinjaOneLocation {
 		}
 	}
 }
+
+
+
+
 
 
 

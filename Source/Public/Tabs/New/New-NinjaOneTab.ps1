@@ -13,23 +13,23 @@ function New-NinjaOneTab {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				position = 0
+				name = "string"
+				description = "string"
 				entityType = "NODE_ROLE"
 				entityId = 0
 				items = @(
 					@{
-						uiElementUid = "00000000-0000-0000-0000-000000000000"
 						itemType = "ATTRIBUTE"
-						uiElementValue = "string"
-						uiElementCreateTime = 0
 						id = 0
 						name = "string"
-						uiElementUpdateTime = 0
+						uiElementUid = "00000000-0000-0000-0000-000000000000"
 						uiElementType = "TITLE"
+						uiElementValue = "string"
+						uiElementCreateTime = 0
+						uiElementUpdateTime = 0
 					}
 				)
-				name = "string"
-				description = "string"
+				position = 0
 			}
 			PS> New-NinjaOneTab -tab $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -59,6 +59,10 @@ function New-NinjaOneTab {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
 
 
 

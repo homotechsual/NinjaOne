@@ -16,19 +16,19 @@ function Set-NinjaOneTab {
 				roleId = 0
 				items = @(
 					@{
-						uiElementUid = "00000000-0000-0000-0000-000000000000"
 						itemType = "ATTRIBUTE"
-						uiElementValue = "string"
-						uiElementCreateTime = 0
 						id = 0
 						name = "string"
-						uiElementUpdateTime = 0
+						uiElementUid = "00000000-0000-0000-0000-000000000000"
 						uiElementType = "TITLE"
+						uiElementValue = "string"
+						uiElementCreateTime = 0
+						uiElementUpdateTime = 0
 					}
 				)
 				position = 0
 			}
-			PS> Set-NinjaOneTab -tab $body
+			PS> Set-NinjaOneTab -tabId 1 -tab $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -58,6 +58,10 @@ function Set-NinjaOneTab {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
 
 
 

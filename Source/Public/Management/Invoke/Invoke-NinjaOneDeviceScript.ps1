@@ -9,9 +9,9 @@ function Invoke-NinjaOneDeviceScript {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				uid = "00000000-0000-0000-0000-000000000000"
 				type = "ACTION"
 				id = 0
+				uid = "00000000-0000-0000-0000-000000000000"
 				parameters = "string"
 				runAs = "string"
 			}
@@ -133,6 +133,10 @@ function Invoke-NinjaOneDeviceScript {
 		}
 	}
 }
+
+
+
+
 
 
 

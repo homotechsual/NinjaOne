@@ -9,8 +9,8 @@ function New-NinjaOneTag {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				description = "string"
 				name = "string"
+				description = "string"
 			}
 			PS> New-NinjaOneTag -tag $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -45,6 +45,10 @@ function New-NinjaOneTag {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
 
 
 

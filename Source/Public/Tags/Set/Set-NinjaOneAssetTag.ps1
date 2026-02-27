@@ -17,7 +17,7 @@ function Set-NinjaOneAssetTag {
 					0
 				)
 			}
-			PS> Set-NinjaOneAssetTag -tagAssignment $body
+			PS> Set-NinjaOneAssetTag -assetType string -assetId 1 -tagAssignment $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -56,6 +56,10 @@ function Set-NinjaOneAssetTag {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
 
 
 

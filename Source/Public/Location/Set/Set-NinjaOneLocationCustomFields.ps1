@@ -20,7 +20,7 @@ function Set-NinjaOneLocationCustomFields {
 				additionalProp1 = @{
 				}
 			}
-			PS> Set-NinjaOneLocationCustomFields -organisationId 1 -organisationId <value> -locationCustomFields $body
+			PS> Set-NinjaOneLocationCustomFields -organisationId 1 -locationId 1 -locationCustomFields $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -69,6 +69,10 @@ function Set-NinjaOneLocationCustomFields {
 		}
 	}
 }
+
+
+
+
 
 
 

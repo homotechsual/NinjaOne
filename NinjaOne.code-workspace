@@ -94,6 +94,8 @@
 			".\\schema_debug.ps1": true,
 			".\\schema_example_test.ps1": true,
 			".\\DevOps\\Quality\\run-pssa.ps1": true,
+			".\\DevOps\\Build\\build.ps1": true,
+			"Get-Help": true,
 		},
 		"codeQL.githubDatabase.download": "never",
 		"cSpell.words": ["Analyzer"],

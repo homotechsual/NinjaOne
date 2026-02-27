@@ -9,14 +9,14 @@ function Set-NinjaOneContact {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				lastName = "string"
 				firstName = "string"
+				lastName = "string"
 				email = "string"
 				jobTitle = "string"
 				organizationId = 0
 				phone = "string"
 			}
-			PS> Set-NinjaOneContact -contact $body
+			PS> Set-NinjaOneContact -id 1 -contact $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -61,6 +61,10 @@ function Set-NinjaOneContact {
 		}
 	}
 }
+
+
+
+
 
 
 

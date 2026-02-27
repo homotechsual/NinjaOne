@@ -13,7 +13,7 @@ function Set-NinjaOneDeviceApproval {
 					0
 				)
 			}
-			PS> Set-NinjaOneDeviceApproval -mode $body
+			PS> Set-NinjaOneDeviceApproval -mode APPROVE -mode $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -79,6 +79,10 @@ function Set-NinjaOneDeviceApproval {
 		}
 	}
 }
+
+
+
+
 
 
 

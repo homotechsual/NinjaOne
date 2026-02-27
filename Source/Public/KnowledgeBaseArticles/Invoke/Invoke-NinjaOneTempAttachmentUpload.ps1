@@ -10,6 +10,19 @@ function Invoke-NinjaOneTempAttachmentUpload {
 			PS> Invoke-NinjaOneTempAttachmentUpload -entityType TICKET -upload @{ files = @() }
 
 			Uploads temporary attachments for the given entity type.
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $multipart = [System.Net.Http.MultipartFormDataContent]::new()
+			PS> $filePath = "C:\Temp\example.txt"
+			PS> $fileStream = [System.IO.FileStream]::new($filePath, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read)
+			PS> $fileContent = [System.Net.Http.StreamContent]::new($fileStream)
+			PS> $fileContent.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::Parse("application/octet-stream")
+			PS> $multipart.Add($fileContent, "files", [System.IO.Path]::GetFileName($filePath))
+			PS> $body = $multipart
+			PS> Invoke-NinjaOneTempAttachmentUpload -upload $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
@@ -54,3 +67,5 @@ function Invoke-NinjaOneTempAttachmentUpload {
 		}
 	}
 }
+
+

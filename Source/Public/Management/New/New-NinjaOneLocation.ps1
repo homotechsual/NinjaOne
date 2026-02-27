@@ -9,12 +9,12 @@ function New-NinjaOneLocation {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
+				name = "string"
 				address = "string"
+				description = "string"
 				userData = @{
 					additionalProp1 = "value"
 				}
-				name = "string"
-				description = "string"
 			}
 			PS> New-NinjaOneLocation -organisationId 1 -location $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -23,7 +23,8 @@ function New-NinjaOneLocation {
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/location`n`t#>
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/location
+	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('nnol')]
@@ -64,6 +65,10 @@ function New-NinjaOneLocation {
 		}
 	}
 }
+
+
+
+
 
 
 

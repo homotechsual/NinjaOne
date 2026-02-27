@@ -13,57 +13,15 @@ function Set-NinjaOneCustomField {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
+				label = "string"
+				fieldName = "string"
+				description = "string"
+				type = "DROPDOWN"
+				technicianPermission = "NONE"
+				scriptPermission = "NONE"
 				apiPermission = "NONE"
+				defaultValue = "string"
 				content = @{
-					advancedSettings = @{
-						templates = @(
-							0
-						)
-						org = @(
-							0
-						)
-						expandLargeValueOnRender = $false
-						ipAddressType = "ALL"
-						monetary = @{
-							currency = "USD"
-						}
-						nodeClass = @(
-							"WINDOWS_SERVER"
-						)
-						fileMaxSize = 0
-						maxCharacters = 0
-						fileExtensions = @(
-							"string"
-						)
-						complexityRules = @{
-							mustContainOneInteger = $false
-							mustContainOneLowercaseLetter = $false
-							mustContainOneUppercaseLetter = $false
-							greaterOrEqualThanSixCharacters = $false
-						}
-						identifier = @{
-							automaticGenerationEnabled = $false
-							prefix = "string"
-							assignTo = "NEW_ASSETS_ONLY"
-							nextSequenceNumber = 0
-							type = "CUSTOM"
-							scope = "NONE"
-							suffix = "string"
-						}
-						numericRange = @{
-							max = 0
-							min = 0
-						}
-						dateFilters = @{
-							type = "NONE"
-							selected = @(
-								"string"
-							)
-						}
-					}
-					tooltipText = "string"
-					required = $false
-					footerText = "string"
 					values = @(
 						@{
 							id = "00000000-0000-0000-0000-000000000000"
@@ -72,22 +30,64 @@ function Set-NinjaOneCustomField {
 							system = $false
 						}
 					)
+					required = $false
+					footerText = "string"
+					tooltipText = "string"
+					advancedSettings = @{
+						fileMaxSize = 0
+						fileExtensions = @(
+							"string"
+						)
+						dateFilters = @{
+							type = "NONE"
+							selected = @(
+								"string"
+							)
+						}
+						maxCharacters = 0
+						complexityRules = @{
+							mustContainOneInteger = $false
+							mustContainOneLowercaseLetter = $false
+							mustContainOneUppercaseLetter = $false
+							greaterOrEqualThanSixCharacters = $false
+						}
+						numericRange = @{
+							min = 0
+							max = 0
+						}
+						org = @(
+							0
+						)
+						nodeClass = @(
+							"WINDOWS_SERVER"
+						)
+						ipAddressType = "ALL"
+						expandLargeValueOnRender = $false
+						identifier = @{
+							automaticGenerationEnabled = $false
+							scope = "NONE"
+							assignTo = "NEW_ASSETS_ONLY"
+							type = "CUSTOM"
+							nextSequenceNumber = 0
+							prefix = "string"
+							suffix = "string"
+						}
+						monetary = @{
+							currency = "USD"
+						}
+						templates = @(
+							0
+						)
+					}
 				}
-				description = "string"
-				type = "DROPDOWN"
 				active = $false
-				groupId = 0
-				scriptPermission = "NONE"
-				technicianPermission = "NONE"
-				defaultValue = "string"
+				scope = "NODE_GLOBAL"
 				definitionScope = @(
 					"NODE"
 				)
-				label = "string"
-				scope = "NODE_GLOBAL"
-				fieldName = "string"
+				groupId = 0
 			}
-			PS> Set-NinjaOneCustomField -FieldName <value> -CustomField $body
+			PS> Set-NinjaOneCustomField -FieldName string -CustomField $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -124,6 +124,10 @@ function Set-NinjaOneCustomField {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
 
 
 

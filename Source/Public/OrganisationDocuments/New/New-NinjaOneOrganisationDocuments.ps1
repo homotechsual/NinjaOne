@@ -10,14 +10,14 @@ function New-NinjaOneOrganisationDocuments {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @(
 				@{
-					organizationId = 0
-					documentTemplateId = 0
-					documentDescription = "string"
 					documentName = "string"
+					documentDescription = "string"
 					fields = @{
 						additionalProp1 = @{
 						}
 					}
+					documentTemplateId = 0
+					organizationId = 0
 				}
 			)
 			PS> New-NinjaOneOrganisationDocuments -organisationDocuments $body
@@ -27,7 +27,8 @@ function New-NinjaOneOrganisationDocuments {
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/organisationdocument`n`t#>
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/organisationdocument
+	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('nnood', 'New-NinjaOneOrganizationDocument')]
@@ -78,6 +79,10 @@ function New-NinjaOneOrganisationDocuments {
 		}
 	}
 }
+
+
+
+
 
 
 

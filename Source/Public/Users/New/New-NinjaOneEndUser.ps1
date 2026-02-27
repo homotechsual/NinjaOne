@@ -13,12 +13,12 @@ function New-NinjaOneEndUser {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				lastName = "string"
 				firstName = "string"
+				lastName = "string"
 				email = "string"
-				fullPortalAccess = $false
-				organizationId = 0
 				phone = "string"
+				organizationId = 0
+				fullPortalAccess = $false
 			}
 			PS> New-NinjaOneEndUser -endUser $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -64,6 +64,10 @@ function New-NinjaOneEndUser {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
 
 
 

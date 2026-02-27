@@ -14,22 +14,20 @@ function New-NinjaOneChecklistTemplate {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @(
 				@{
-					tasks = @(
-						@{
-							name = "string"
-							position = 0
-							description = @{
-								text = "string"
-								html = "string"
-							}
-						}
-					)
-					required = $false
 					name = "string"
 					description = @{
 						text = "string"
 						html = "string"
 					}
+					tasks = @(
+						@{
+							position = 0
+							name = "string"
+							description = @{
+							}
+						}
+					)
+					required = $false
 				}
 			)
 			PS> New-NinjaOneChecklistTemplate -template $body
@@ -55,6 +53,10 @@ function New-NinjaOneChecklistTemplate {
 	)
 	process { try { if($PSCmdlet.ShouldProcess('Checklist Template','Create')){ return (New-NinjaOnePOSTRequest -Resource 'v2/checklist/templates' -Body $template) } } catch { New-NinjaOneError -ErrorRecord $_ } }
 }
+
+
+
+
 
 
 

@@ -11,7 +11,7 @@ function Restart-NinjaOneDevice {
 			PS> $body = @{
 				reason = "string"
 			}
-			PS> Restart-NinjaOneDevice -deviceId 1 -deviceId <value> -deviceId $body
+			PS> Restart-NinjaOneDevice -deviceId 1 -mode NORMAL -deviceId $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -71,6 +71,10 @@ function Restart-NinjaOneDevice {
 		}
 	}
 }
+
+
+
+
 
 
 

@@ -11,34 +11,27 @@ function New-NinjaOneCustomFieldsPolicyCondition {
 			PS> $body = @{
 				enabled = $false
 				displayName = "string"
-				notifyOnReset = $false
-				resetThreshold = 0
-				matchAny = @(
-					@{
-						fieldName = "string"
-						operator = "EQUALS"
-						value = "string"
-					}
-				)
+				severity = "NONE"
 				priority = "NONE"
-				notificationAction = "NONE"
 				channels = @(
 					0
 				)
-				severity = "NONE"
 				scripts = @(
 					@{
 						scriptId = 0
+						runAs = "SYSTEM"
 						scriptParam = "string"
 						scriptVariables = @(
 							@{
-								value = "string"
 								id = "string"
+								value = "string"
 							}
 						)
-						runAs = "SYSTEM"
 					}
 				)
+				notificationAction = "NONE"
+				notifyOnReset = $false
+				resetThreshold = 0
 				matchAll = @(
 					@{
 						fieldName = "string"
@@ -46,15 +39,20 @@ function New-NinjaOneCustomFieldsPolicyCondition {
 						value = "string"
 					}
 				)
+				matchAny = @(
+					@{
+					}
+				)
 			}
-			PS> New-NinjaOneCustomFieldsPolicyCondition -policyId <value> -customFieldsPolicyCondition $body
+			PS> New-NinjaOneCustomFieldsPolicyCondition -customFieldsPolicyCondition $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/customfieldspolicycondition`n`t#>
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/customfieldspolicycondition
+	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('nnocfpc')]
@@ -95,6 +93,10 @@ function New-NinjaOneCustomFieldsPolicyCondition {
 		}
 	}
 }
+
+
+
+
 
 
 

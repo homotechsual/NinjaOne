@@ -13,49 +13,49 @@ function New-NinjaOneSoftwareLicense {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
+				name = "string"
+				description = "string"
+				type = "PER_DEVICE"
+				purchaseDate = 0
+				publisherId = 0
+				vendorId = 0
 				scope = @{
-					locationIds = @(
-						0
-					)
 					global = $false
 					organizationIds = @(
 						0
 					)
+					locationIds = @(
+						0
+					)
 				}
-				purchaseDate = 0
+				quantity = 0
+				currentUsage = 0
 				term = @{
 					renewalUnit = "MONTH"
+					value = 0
 					expirationDate = 0
-					daysBeforeExpiration = 0
+					autoRenewal = $false
 					generateActivityAlert = $false
+					daysBeforeExpiration = 0
 					hasNotifiedExpirationDate = $false
 					hasNotifiedUpToRenewal = $false
-					value = 0
-					autoRenewal = $false
 				}
-				vendorId = 0
-				description = "string"
-				type = "PER_DEVICE"
-				publisherId = 0
 				notificationChannelInfo = @{
+					email = "string"
 					sms = "string"
 					pushNotification = "string"
-					email = "string"
 				}
-				name = "string"
-				note = "string"
 				assigmentAutomationSettings = @{
-					type = "string"
 					assignmentType = "NORMALIZED_SOFTWARE"
+					type = "string"
 				}
-				unassignedLicenses = @(
-					0
-				)
 				assignedLicenses = @(
 					0
 				)
-				quantity = 0
-				currentUsage = 0
+				unassignedLicenses = @(
+					0
+				)
+				note = "string"
 			}
 			PS> New-NinjaOneSoftwareLicense -License $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -90,6 +90,10 @@ function New-NinjaOneSoftwareLicense {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
 
 
 

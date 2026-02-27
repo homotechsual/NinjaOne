@@ -9,17 +9,18 @@ function New-NinjaOneEntityRelation {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				relEntityId = 0
 				relEntityType = "ORGANIZATION"
+				relEntityId = 0
 			}
-			PS> New-NinjaOneEntityRelation -entityId <value> -entityId <value> -entityType $body
+			PS> New-NinjaOneEntityRelation -entityType ORGANIZATION -entityId 1 -entityType $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/entityrelation`n`t#>
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/New/entityrelation
+	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]
 	[Alias('nnoer')]
@@ -73,6 +74,10 @@ function New-NinjaOneEntityRelation {
 		}
 	}
 }
+
+
+
+
 
 
 

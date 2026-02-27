@@ -9,12 +9,12 @@ function New-NinjaOneContact {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				lastName = "string"
-				firstName = "string"
-				email = "string"
-				jobTitle = "string"
 				organizationId = 0
+				firstName = "string"
+				lastName = "string"
+				email = "string"
 				phone = "string"
+				jobTitle = "string"
 			}
 			PS> New-NinjaOneContact -contact $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -58,6 +58,10 @@ function New-NinjaOneContact {
 		}
 	}
 }
+
+
+
+
 
 
 

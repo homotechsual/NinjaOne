@@ -16,7 +16,7 @@ function Set-NinjaOneTechnician {
 				firstName = "string"
 				lastName = "string"
 			}
-			PS> Set-NinjaOneTechnician -technician $body
+			PS> Set-NinjaOneTechnician -id 1 -technician $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -50,6 +50,10 @@ function Set-NinjaOneTechnician {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
+
+
 
 
 
