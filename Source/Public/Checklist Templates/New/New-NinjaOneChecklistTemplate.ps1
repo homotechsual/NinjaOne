@@ -46,8 +46,7 @@ function New-NinjaOneChecklistTemplate {
 		'/v2/checklist/templates',
 		'post'
 	)]
-	param(
-		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
+	param(		# The checklist template object to create.		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$template
 	)

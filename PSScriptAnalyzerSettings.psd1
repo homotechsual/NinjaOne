@@ -70,7 +70,8 @@
 		'Measure-AvoidOneLineIfElse',
 		'Measure-RequireProperTypeAcceleratorCasing',
 		'Measure-RequiredCommentBasedHelp',
-		'Measure-EmptyCommentBasedHelpSections'
+		'Measure-EmptyCommentBasedHelpSections',
+		'Measure-MissingParameterDescription'
 	)
 	Rules = @{
 		PSAlignAssignmentStatement = @{

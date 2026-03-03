@@ -23,6 +23,7 @@ function Invoke-NinjaOneKnowledgeBaseArticlesArchive {
 		'post'
 	)]
 	param(
+		# The knowledge base article IDs to archive.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int[]]$articleIds
 	)

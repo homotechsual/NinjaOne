@@ -23,8 +23,10 @@ function Add-NinjaOneUserRoleMembers {
 		'patch'
 	)]
 	param(
+		# The user role Id to add members to.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$roleId,
+		# The members object containing user IDs to add to the role.
 		[Parameter(Mandatory, Position=1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$members

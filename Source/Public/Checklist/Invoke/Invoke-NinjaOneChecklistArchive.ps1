@@ -34,6 +34,7 @@ function Invoke-NinjaOneChecklistArchive {
 		'post'
 	)]
 	param(
+		# The checklist IDs to archive.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$checklistsToArchive

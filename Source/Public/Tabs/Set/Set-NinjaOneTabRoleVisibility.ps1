@@ -38,6 +38,7 @@ function Set-NinjaOneTabRoleVisibility {
 		'patch'
 	)]
 	param(
+		# The role Id to set tab visibility for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$roleId,
 		# Array payload (CustomTabsVisibilityPublicApiDTO[])

@@ -23,6 +23,7 @@ function Remove-NinjaOneChecklistTemplates {
 		'post'
 	)]
 	param(
+		# The checklist template IDs to remove.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int[]]$templateIds
 	)

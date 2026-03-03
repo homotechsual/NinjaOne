@@ -24,6 +24,7 @@ function Get-NinjaOneEndUser {
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
 	param(
+		# The end user Id to retrieve.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Int]$id
 	)
@@ -42,4 +43,6 @@ function Get-NinjaOneEndUser {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
+
 

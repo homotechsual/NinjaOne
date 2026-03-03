@@ -23,6 +23,7 @@ function Invoke-NinjaOneDocumentTemplateRestore {
 		'post'
 	)]
 	param(
+		# The document template Id to restore.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$documentTemplateId
 	)

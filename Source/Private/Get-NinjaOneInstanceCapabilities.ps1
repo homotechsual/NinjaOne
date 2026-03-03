@@ -7,6 +7,7 @@ function Get-NinjaOneInstanceCapabilitiesInternal {
 		.OUTPUTS
 			[PSCustomObject]
 	#>
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal private function does not require parameter descriptions.')]
 	[CmdletBinding()]
 	param(
 		[Parameter(Mandatory)]

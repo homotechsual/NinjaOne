@@ -33,8 +33,10 @@ function Set-NinjaOneEndUserCustomFields {
 		'patch'
 	)]
 	param(
+		# The end user Id to update custom fields for.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$id,
+		# The custom fields update object.
 		[Parameter(Mandatory, Position=1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$customFields

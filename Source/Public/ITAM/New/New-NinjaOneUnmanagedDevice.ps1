@@ -46,6 +46,7 @@ function New-NinjaOneUnmanagedDevice {
 		'post'
 	)]
 	param(
+		# The unmanaged device object to create.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$unmanagedDevice

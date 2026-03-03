@@ -23,6 +23,7 @@ function Remove-NinjaOneKnowledgeBaseFolders {
 		'post'
 	)]
 	param(
+		# The knowledge base folder IDs to remove.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int[]]$folderIds
 	)

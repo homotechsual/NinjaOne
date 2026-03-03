@@ -23,6 +23,7 @@ function New-NinjaOneOrganisationChecklistsFromTemplates {
 		'post'
 	)]
 	param(
+		# The organisation Id to create checklists for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
 		[Int]$organisationId,

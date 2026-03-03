@@ -24,6 +24,7 @@ function Get-NinjaOneEndUserCustomFields {
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
 	param(
+		# The end user Id to retrieve custom fields for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Int]$id
 	)

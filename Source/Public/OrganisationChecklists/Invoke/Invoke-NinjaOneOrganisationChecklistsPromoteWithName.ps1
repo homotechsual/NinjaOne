@@ -35,6 +35,7 @@ function Invoke-NinjaOneOrganisationChecklistsPromoteWithName {
 		'post'
 	)]
 	param(
+		# The request object containing checklist promotion details with names.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$request

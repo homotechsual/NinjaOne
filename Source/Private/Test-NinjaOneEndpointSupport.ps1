@@ -5,6 +5,7 @@ function Test-NinjaOneEndpointSupport {
 		.DESCRIPTION
 			Uses the OpenAPI spec for the connected instance to confirm the endpoint exists and the method is supported.
 	#>
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal private function does not require parameter descriptions.')]
 	[CmdletBinding()]
 	param(
 		[Parameter(Mandatory)]

@@ -23,6 +23,7 @@ function Remove-NinjaOneKnowledgeBaseArticles {
 		'post'
 	)]
 	param(
+		# The knowledge base article IDs to remove.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int[]]$articleIds
 	)

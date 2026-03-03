@@ -23,6 +23,7 @@ function Remove-NinjaOneTag {
 		'delete'
 	)]
 	param(
+		# The tag Id to remove.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$tagId
 	)

@@ -24,8 +24,10 @@ function Get-NinjaOneTabRole {
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
 	param(
+		# The tab Id to retrieve.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$tabId,
+		# The role Id to get the tab view for.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Int]$roleId
 	)

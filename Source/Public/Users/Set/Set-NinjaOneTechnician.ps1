@@ -33,8 +33,10 @@ function Set-NinjaOneTechnician {
 		'patch'
 	)]
 	param(
+		# The technician Id to update.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$id,
+		# The technician update object.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$technician

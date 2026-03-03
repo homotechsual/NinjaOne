@@ -10,6 +10,7 @@ function Start-OAuthHTTPListener {
 		.OUTPUTS
 			Outputs an object containing the response from the web request.
 	#>
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal private function does not require parameter descriptions.')]
 	[CmdletBinding()]
 	[OutputType([System.Collections.Hashtable])]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Private function - no need to support.')]

@@ -7,6 +7,7 @@ function ConvertFrom-NinjaOneDateTime {
 	.OUTPUTS
 		[Object]
 	#>
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal private function does not require parameter descriptions.')]
 	[CmdletBinding()]
 	[OutputType([Object])]
 	param (

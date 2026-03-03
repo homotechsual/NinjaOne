@@ -13,6 +13,7 @@ function New-NinjaOnePOSTRequest {
 	#>
 	[CmdletBinding()]
 	[OutputType([Object])]
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal private function does not require parameter descriptions.')]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Private function - no need to support.')]
 	param (
 		# The resource to send the request to.

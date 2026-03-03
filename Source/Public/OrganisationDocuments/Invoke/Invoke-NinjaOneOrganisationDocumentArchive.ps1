@@ -21,6 +21,7 @@ function Invoke-NinjaOneOrganisationDocumentArchive {
 		'post'
 	)]
 	param(
+		# The client document Id to archive.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$clientDocumentId
 	)

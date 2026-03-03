@@ -23,6 +23,7 @@ function Get-NinjaOneOrganisationChecklist {
 		'get'
 	)]
 	param(
+		# The organisation checklist Id to retrieve.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
 		[Int]$checklistId

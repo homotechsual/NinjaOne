@@ -7,6 +7,7 @@ function Get-NinjaOneExpandCompleter {
 	.OUTPUTS
 		[System.Management.Automation.CompletionResult[]]
 	#>
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal private function does not require parameter descriptions.')]
 	[CmdletBinding()]
 	param(
 		[String]$WordToComplete,

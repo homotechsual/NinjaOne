@@ -23,6 +23,7 @@ function Get-NinjaOneOrganisationEndUsers {
 		'get'
 	)]
 	param(
+		# The organisation Id to retrieve end users for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('organizationId')]
 		[Int]$organisationId,

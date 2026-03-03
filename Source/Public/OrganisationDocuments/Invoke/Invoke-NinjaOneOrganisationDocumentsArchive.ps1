@@ -23,6 +23,7 @@ function Invoke-NinjaOneOrganisationDocumentsArchive {
 		'post'
 	)]
 	param(
+		# The request object containing organization document IDs to archive.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$request

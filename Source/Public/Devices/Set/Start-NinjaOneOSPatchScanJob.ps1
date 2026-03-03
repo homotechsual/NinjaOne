@@ -23,6 +23,7 @@ function Start-NinjaOneOSPatchScanJob {
 		'post'
 	)]
 	param(
+		# The device Id to start the OS patch scan job for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
 		[Int]$deviceId

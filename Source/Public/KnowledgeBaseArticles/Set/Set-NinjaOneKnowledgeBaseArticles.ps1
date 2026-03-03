@@ -39,6 +39,7 @@ function Set-NinjaOneKnowledgeBaseArticles {
 		'patch'
 	)]
 	param(
+		# The knowledge base articles object containing updates.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$articles

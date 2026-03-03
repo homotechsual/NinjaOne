@@ -34,6 +34,7 @@ function Invoke-NinjaOneChecklistRestore {
 		'post'
 	)]
 	param(
+		# The checklist IDs to restore.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$checklistsToRestore

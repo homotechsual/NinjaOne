@@ -23,6 +23,7 @@ function Restore-NinjaOneKnowledgeBaseFolders {
 		'post'
 	)]
 	param(
+		# The knowledge base folder IDs to restore.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int[]]$folderIds
 	)

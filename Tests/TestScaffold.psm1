@@ -25,6 +25,7 @@ Returns information about the AllMetadata resource.
 This cmdlet is part of the NinjaOne PowerShell module.
 Generated reference help - customize descriptions as needed.
 #>
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal test module does not require parameter descriptions.')]
 function Get-AllMetadata {
     $FunctionList = Get-FunctionList
     $AllMetadata = foreach ($Function in $FunctionList) {
@@ -164,6 +165,7 @@ Extract string value from AST expression.
 Recursively extracts string values from AST expression objects.
 #>
 function Get-AstStringValue {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal test module does not require parameter descriptions.')]
     param(
         [Parameter(Mandatory)]
         $Expression
@@ -224,6 +226,7 @@ Get metadata attribute elements from function AST.
 Extracts all MetadataAttribute declarations from a function's Abstract Syntax Tree.
 #>
 function Get-MetadataElement {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal test module does not require parameter descriptions.')]
     param(
         [Parameter(Mandatory)]
         $AST
@@ -254,6 +257,7 @@ Extract positional arguments from a metadata attribute.
 Gets the positional arguments passed to a MetadataAttribute.
 #>
 function Get-PositionalArguments {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal test module does not require parameter descriptions.')]
     param(
         [Parameter(Mandatory)]
         $MetadataElement
@@ -284,6 +288,7 @@ Converts positional arguments from MetadataAttribute into structured metadata ob
 with Endpoint and Method properties.
 #>
 function Get-Metadata {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal test module does not require parameter descriptions.')]
     param(
         [Parameter(Mandatory)]
         $PositionalArguments

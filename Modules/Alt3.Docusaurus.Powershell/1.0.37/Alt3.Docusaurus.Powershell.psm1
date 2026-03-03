@@ -655,7 +655,7 @@ function NewMarkdownExample() {
 
     $example = "$Header`n"
     $example += '```' + "`n"
-    $example += $Code
+    $example += $Code + "`n"
     $example += '```' + "`n"
 
     if ([string]::IsNullOrEmpty($Description)) {
@@ -994,7 +994,8 @@ function ReplaceExamples() {
 
         if ($example -match $regexPowerShell6TripleCodeFence) {
             $header = $matches[1]
-            $code = ($matches[5] -split "`n" | ForEach-Object { $_.TrimStart() } ) -join "`n"
+            $code = $matches[5] -replace "`t", "    "
+            $code = [regex]::replace($code, '(?m)^\s*PS>', 'PS>')
             $code = $code.TrimStart("`n").TrimEnd("`n")
             $description = $matches[7]
 
@@ -1019,7 +1020,8 @@ function ReplaceExamples() {
 
         if ($example -match $regexPowerShell7PairedCodeFences) {
             $header = $matches[1]
-            $code = ($matches[5] -split "`n" | ForEach-Object { $_.TrimStart() } ) -join "`n"
+            $code = $matches[5] -replace "`t", "    "
+            $code = [regex]::replace($code, '(?m)^\s*PS>', 'PS>')
             $code = $code.TrimStart("`n").TrimEnd("`n")
             $description = $matches[7]
 
@@ -1045,7 +1047,8 @@ function ReplaceExamples() {
         if ($example -match $regexPowerShell7NonAdjacentCodeBlock) {
             $header = $matches[1]
             $code = $matches[5] -replace ('```' + "`n"), ''
-            $code = ($code -split "`n" | ForEach-Object { $_.TrimStart() } ) -join "`n"
+            $code = $code -replace "`t", "    "
+            $code = [regex]::replace($code, '(?m)^\s*PS>', 'PS>')
             $code = $code.TrimStart("`n").TrimEnd("`n")
             $description = $matches[7]
 
@@ -1071,7 +1074,8 @@ function ReplaceExamples() {
 
         if ($example -match $regexPlatyPsDefaults) {
             $header = $matches[1]
-            $code = ($matches[3] -split "`n" | ForEach-Object { $_.TrimStart() } ) -join "`n"
+            $code = $matches[3] -replace "`t", "    "
+            $code = [regex]::replace($code, '(?m)^\s*PS>', 'PS>')
             $code = $code.TrimStart("`n").TrimEnd("`n")
             $description = $matches[4]
 
@@ -1102,7 +1106,7 @@ function ReplaceExamples() {
     # replace file
     WriteFile -MarkdownFile $MarkdownFile -Content $content
 }
-#EndRegion '.\Private\ReplaceExamples.ps1' 175
+#EndRegion '.\Private\ReplaceExamples.ps1' 179
 #Region '.\Private\ReplaceFrontMatter.ps1' -1
 
 function ReplaceFrontMatter() {

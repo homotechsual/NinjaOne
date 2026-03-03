@@ -1,4 +1,5 @@
 #requires -Module PowerShellGet, @{ ModuleName = 'Pester'; ModuleVersion = '5.5.0'; MaximumVersion = '5.999' }
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal test script does not require parameter descriptions.')]
 using namespace Microsoft.PackageManagement.Provider.Utility
 using namespace System.Management.Automation
 param(
@@ -25,6 +26,7 @@ function New-SourceModuleForTesting {
 	.OUTPUTS
 		[System.IO.FileInfo]
 	#>
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal test script does not require parameter descriptions.')]
 	param(
 		[Parameter(Mandatory = $true)]
 		[string]$RepoRoot,

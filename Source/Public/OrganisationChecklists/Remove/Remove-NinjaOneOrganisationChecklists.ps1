@@ -23,6 +23,7 @@ function Remove-NinjaOneOrganisationChecklists {
 		'post'
 	)]
 	param(
+		# The request object containing checklist IDs to remove.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$request

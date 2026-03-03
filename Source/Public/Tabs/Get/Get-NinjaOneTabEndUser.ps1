@@ -23,6 +23,7 @@ function Get-NinjaOneTabEndUser {
 		'get'
 	)]
 	param(
+		# The tab Id to retrieve end user view for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
 		[Int]$tabId

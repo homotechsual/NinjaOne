@@ -35,8 +35,10 @@ function Set-NinjaOneEndUser {
 		'patch'
 	)]
 	param(
+		# The end user Id to update.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$id,
+		# The end user update object.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$endUser

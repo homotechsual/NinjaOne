@@ -23,6 +23,7 @@ function Get-NinjaOneOrganisationChecklistSignedURLs {
 		'get'
 	)]
 	param(
+		# The organisation checklist Id to retrieve signed URLs for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
 		[Int]$checklistId

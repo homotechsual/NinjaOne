@@ -23,6 +23,7 @@ function Restore-NinjaOneKnowledgeBaseArticles {
 		'post'
 	)]
 	param(
+		# The knowledge base article IDs to restore.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int[]]$articleIds
 	)

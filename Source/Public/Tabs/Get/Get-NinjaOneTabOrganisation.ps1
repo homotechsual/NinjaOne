@@ -23,6 +23,7 @@ function Get-NinjaOneTabOrganisation {
 		'get'
 	)]
 	param(
+		# The tab Id to retrieve organisation view for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
 		[Int]$tabId

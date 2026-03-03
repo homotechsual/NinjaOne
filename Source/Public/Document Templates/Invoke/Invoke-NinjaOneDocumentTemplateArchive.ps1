@@ -23,6 +23,7 @@ function Invoke-NinjaOneDocumentTemplateArchive {
 		'post'
 	)]
 	param(
+		# The document template Id to archive.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$documentTemplateId
 	)

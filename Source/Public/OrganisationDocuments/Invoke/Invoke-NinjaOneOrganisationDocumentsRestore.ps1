@@ -23,6 +23,7 @@ function Invoke-NinjaOneOrganisationDocumentsRestore {
 		'post'
 	)]
 	param(
+		# The request object containing organization document IDs to restore.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$request

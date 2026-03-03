@@ -23,6 +23,7 @@ function Invoke-NinjaOneKnowledgeBaseFoldersArchive {
 		'post'
 	)]
 	param(
+		# The knowledge base folder IDs to archive.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int[]]$folderIds
 	)

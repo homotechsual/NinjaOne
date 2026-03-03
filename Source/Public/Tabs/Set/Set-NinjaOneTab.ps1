@@ -45,8 +45,10 @@ function Set-NinjaOneTab {
 		'patch'
 	)]
 	param(
+		# The tab Id to update.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$tabId,
+		# The tab update object.
 		[Parameter(Mandatory, Position=1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$tab

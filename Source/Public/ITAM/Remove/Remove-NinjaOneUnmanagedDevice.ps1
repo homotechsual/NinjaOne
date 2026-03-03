@@ -23,6 +23,7 @@ function Remove-NinjaOneUnmanagedDevice {
 		'delete'
 	)]
 	param(
+		# The unmanaged device node Id to remove.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$nodeId
 	)

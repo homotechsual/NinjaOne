@@ -54,6 +54,7 @@ function Set-NinjaOneOrganisationChecklists {
 		'put'
 	)]
 	param(
+		# The checklists object containing updates.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$checklists

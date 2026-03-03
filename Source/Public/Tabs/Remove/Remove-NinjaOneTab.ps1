@@ -23,6 +23,7 @@ function Remove-NinjaOneTab {
 		'delete'
 	)]
 	param(
+		# The tab Id to remove.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Int]$tabId
 	)
