@@ -5,7 +5,7 @@ function Remove-NinjaOneCustomField {
 		.DESCRIPTION
 			Deletes an existing custom field identified by its unique field name via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Custom Fields
+			Custom Field
 		.EXAMPLE
 			PS> Remove-NinjaOneCustomField -FieldName 'department'
 

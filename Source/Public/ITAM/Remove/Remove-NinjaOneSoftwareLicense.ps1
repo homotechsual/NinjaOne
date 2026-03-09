@@ -5,7 +5,7 @@ function Remove-NinjaOneSoftwareLicense {
 		.DESCRIPTION
 			Deletes a software license via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Software Licenses
+			Software License
 		.EXAMPLE
 			PS> Remove-NinjaOneSoftwareLicense -LicenseId 1
 

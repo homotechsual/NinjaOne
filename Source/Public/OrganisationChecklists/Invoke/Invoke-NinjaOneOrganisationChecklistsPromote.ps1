@@ -5,7 +5,7 @@ function Invoke-NinjaOneOrganisationChecklistsPromote {
 		.DESCRIPTION
 			Promotes organisation checklists via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Organisation Checklists
+			Organisation Checklist Promote
 		.EXAMPLE
 			PS> Invoke-NinjaOneOrganisationChecklistsPromote -request @{ checklistIds=@(1,2) }
 
@@ -23,6 +23,7 @@ function Invoke-NinjaOneOrganisationChecklistsPromote {
 		'post'
 	)]
 	param(
+		# The request object containing checklist IDs to promote.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$request

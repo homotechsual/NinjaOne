@@ -5,7 +5,7 @@ function New-NinjaOneTab {
 		.DESCRIPTION
 			Creates a new custom tab via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Tabs
+			Tab
 		.EXAMPLE
 			PS> New-NinjaOneTab -tab @{ name='My Tab'; scope='ORGANIZATION' }
 
@@ -13,23 +13,23 @@ function New-NinjaOneTab {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				name = "string"
-				description = "string"
-				entityType = "NODE_ROLE"
 				entityId = 0
 				items = @(
 					@{
-						itemType = "ATTRIBUTE"
-						id = 0
-						name = "string"
 						uiElementUid = "00000000-0000-0000-0000-000000000000"
-						uiElementType = "TITLE"
 						uiElementValue = "string"
 						uiElementCreateTime = 0
+						itemType = "ATTRIBUTE"
+						uiElementType = "TITLE"
+						id = 0
+						name = "string"
 						uiElementUpdateTime = 0
 					}
 				)
+				description = "string"
 				position = 0
+				name = "string"
+				entityType = "NODE_ROLE"
 			}
 			PS> New-NinjaOneTab -tab $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -59,6 +59,7 @@ function New-NinjaOneTab {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

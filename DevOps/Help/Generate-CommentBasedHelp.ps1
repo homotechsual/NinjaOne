@@ -1,4 +1,5 @@
 #!/usr/bin/env pwsh
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal DevOps script does not require parameter descriptions.')]
 <#
 .SYNOPSIS
 Automatically generates and inserts comment-based help for functions missing it.

@@ -27,6 +27,7 @@ Generated reference help - customize descriptions as needed.
 #>
 function New-NinjaOneError {
 	[CmdletBinding()]
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal private function does not require parameter descriptions.')]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Private function - no need to support.')]
 	param (
 		[Parameter(Mandatory = $true)]

@@ -5,7 +5,7 @@ function Invoke-NinjaOneKnowledgeBaseFoldersArchive {
 		.DESCRIPTION
 			Archives knowledge base folders via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Knowledge Base Articles
+			Knowledge Base Folder
 		.EXAMPLE
 			PS> Invoke-NinjaOneKnowledgeBaseFoldersArchive -folderIds @(10,11)
 
@@ -23,6 +23,7 @@ function Invoke-NinjaOneKnowledgeBaseFoldersArchive {
 		'post'
 	)]
 	param(
+		# The knowledge base folder IDs to archive.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int[]]$folderIds
 	)

@@ -5,7 +5,7 @@ function Rename-NinjaOneTab {
 		.DESCRIPTION
 			Renames a custom tab via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Tabs
+			Tab
 		.EXAMPLE
 			PS> Rename-NinjaOneTab -rename @{ tabId = 5; name = 'New Name' }
 
@@ -13,9 +13,9 @@ function Rename-NinjaOneTab {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
+				description = "string"
 				tabId = 0
 				name = "string"
-				description = "string"
 			}
 			PS> Rename-NinjaOneTab -rename $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -48,6 +48,7 @@ function Rename-NinjaOneTab {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

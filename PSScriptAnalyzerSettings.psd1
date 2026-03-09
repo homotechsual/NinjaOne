@@ -69,7 +69,9 @@
 		'Measure-AvoidDoubleQuoteInterpolation',
 		'Measure-AvoidOneLineIfElse',
 		'Measure-RequireProperTypeAcceleratorCasing',
-		'Measure-RequiredCommentBasedHelp'
+		'Measure-RequiredCommentBasedHelp',
+		'Measure-EmptyCommentBasedHelpSections',
+		'Measure-MissingParameterDescription'
 	)
 	Rules = @{
 		PSAlignAssignmentStatement = @{

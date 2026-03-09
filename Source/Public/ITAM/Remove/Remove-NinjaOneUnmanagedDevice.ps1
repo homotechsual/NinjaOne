@@ -5,7 +5,7 @@ function Remove-NinjaOneUnmanagedDevice {
 		.DESCRIPTION
 			Deletes an unmanaged device via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Unmanaged Devices
+			Unmanaged Device
 		.EXAMPLE
 			PS> Remove-NinjaOneUnmanagedDevice -nodeId 5001 -Confirm:$false
 
@@ -23,6 +23,7 @@ function Remove-NinjaOneUnmanagedDevice {
 		'delete'
 	)]
 	param(
+		# The unmanaged device node Id to remove.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$nodeId
 	)

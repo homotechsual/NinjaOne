@@ -279,4 +279,173 @@ function Measure-RequireProperTypeAcceleratorCasing {
 	}
 }
 
+function Measure-EmptyCommentBasedHelpSections {
+	<#
+		.SYNOPSIS
+			Ensure functions do not have empty CBH sections.
+		.DESCRIPTION
+			This rule verifies that functions do not contain empty comment-based help (CBH) sections.
+			Empty CBH sections (like .SYNOPSIS, .DESCRIPTION, .EXAMPLE, .OUTPUTS, .LINK, etc.) are
+			usually placeholders that were never filled in or mistakenly left without content.
+		.EXAMPLE
+			Detects functions with empty CBH sections containing only whitespace.
+		.INPUTS
+			[System.Management.Automation.Language.ScriptBlockAst]
+		.OUTPUTS
+			[Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]]
+	#>
+	[CmdletBinding()]
+	[OutputType([Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]])]
+	param(
+		[Parameter(Mandatory)]
+		[ValidateNotNullOrEmpty()]
+		[System.Management.Automation.Language.ScriptBlockAst]$ScriptBlockAst
+	)
+
+	process {
+		try {
+			# Only check functions
+			$functions = $ScriptBlockAst.FindAll({ $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $true)
+			
+			foreach ($function in $functions) {
+				$help = $function.GetHelpContent()
+				
+				if ($null -eq $help -or $help.Count -eq 0) {
+					continue
+				}
+
+				# Parse the comment-based help to find empty sections
+				$helpText = $help -join "`n"
+				
+				# Pattern: any CBH keyword followed by only whitespace, then another keyword or #>
+				# Matches: .SYNOPSIS, .DESCRIPTION, .PARAMETER, .EXAMPLE, .OUTPUTS, .LINK, .FUNCTIONALITY, .NOTES, .INPUTS, .COMPONENT
+				$emptyPattern = '\.(?:SYNOPSIS|DESCRIPTION|PARAMETER|EXAMPLE|OUTPUTS|LINK|FUNCTIONALITY|NOTES|INPUTS|COMPONENT)\s*\n\s*(?=\.(?:SYNOPSIS|DESCRIPTION|PARAMETER|EXAMPLE|OUTPUTS|LINK|FUNCTIONALITY|NOTES|INPUTS|COMPONENT)|\s*#>)'
+				
+				if ($helpText -match $emptyPattern) {
+					# Find which section is empty
+					$sectionMatches = [regex]::Matches($helpText, $emptyPattern)
+					foreach ($sectionMatch in $sectionMatches) {
+						# Extract the keyword name
+						$keywordMatch = [regex]::Match($sectionMatch.Value, '\.(\w+)')
+						$keyword = $keywordMatch.Groups[1].Value
+						
+						$result = [Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord]::new(
+							"Function '$($function.Name)' contains an empty .$keyword section. Either add content or remove the empty keyword.",
+							$function.Extent,
+							'PSCommentBasedHelpEmptySection',
+							[Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticSeverity]::Warning,
+							$null,
+							$null,
+							$null
+						)
+						$result
+					}
+				}
+			}
+		} catch {
+			$PSCmdlet.ThrowTerminatingError($_)
+		}
+	}
+}
+
+function Measure-MissingParameterDescription {
+	<#
+		.SYNOPSIS
+			Ensure functions have inline comment descriptions for all parameters.
+		.DESCRIPTION
+			This rule verifies that all parameters in the param() block have an inline comment
+			description immediately before them (e.g., "# The parameter description.").
+			Parameters without inline comments are flagged as warnings.
+		.EXAMPLE
+			Detects functions with parameters lacking inline comment descriptions.
+		.INPUTS
+			[System.Management.Automation.Language.ScriptBlockAst]
+		.OUTPUTS
+			[Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]]
+	#>
+	[CmdletBinding()]
+	[OutputType([Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]])]
+	param(
+		[Parameter(Mandatory)]
+		[ValidateNotNullOrEmpty()]
+		[System.Management.Automation.Language.ScriptBlockAst]$ScriptBlockAst
+	)
+
+	process {
+		try {
+			# Only check functions
+			$functions = $ScriptBlockAst.FindAll({ $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $true)
+			
+			foreach ($function in $functions) {
+				# Get the param block
+				$paramBlock = $function.Body.ParamBlock
+				if ($null -eq $paramBlock -or $null -eq $paramBlock.Parameters -or $paramBlock.Parameters.Count -eq 0) {
+					continue
+				}
+
+				# Get the full script text
+				$scriptText = $function.Extent.Text
+				
+				# Check each parameter
+				foreach ($parameter in $paramBlock.Parameters) {
+					$paramName = $parameter.Name.VariablePath.UserPath
+					
+					# Get the line before the parameter (could be attributes or comment)
+					$paramStartLine = $parameter.Extent.StartLineNumber
+					$paramStartOffset = $parameter.Extent.StartOffset
+					
+					# Look backwards from parameter to find if there's a comment
+					# We need to check the tokens/text before this parameter
+					$textBeforeParam = $scriptText.Substring(0, $paramStartOffset - $function.Extent.StartOffset)
+					
+					# Split into lines and check the lines before this parameter
+					$lines = $textBeforeParam -split "`r?`n"
+					$hasComment = $false
+					
+					# Look backwards through lines to find a comment (skip empty/whitespace lines)
+					for ($i = $lines.Count - 1; $i -ge 0; $i--) {
+						$line = $lines[$i].Trim()
+						
+						# Skip empty lines
+						if ([string]::IsNullOrWhiteSpace($line)) {
+							continue
+						}
+						
+						# If we find a comment, we're good
+						if ($line -match '^\s*#\s+\S+') {
+							$hasComment = $true
+							break
+						}
+						
+						# If we find an attribute, keep looking
+						if ($line -match '^\s*\[' -or $line -match '\]') {
+							continue
+						}
+						
+						# If we find param( or another parameter declaration or comma, stop looking
+						if ($line -match '^\s*param\s*\(' -or $line -match '\$\w+\s*[,)]' -or $line -eq ',') {
+							break
+						}
+					}
+					
+					if (-not $hasComment) {
+						$result = [Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord]::new(
+							"Parameter '`$$paramName' in function '$($function.Name)' is missing an inline comment description. Add a comment like '# The $paramName description.' before the parameter.",
+							$parameter.Extent,
+							'PSMissingParameterInlineComment',
+							[Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticSeverity]::Warning,
+							$null,
+							$null,
+							$null
+						)
+						$result
+					}
+				}
+			}
+		} catch {
+			$PSCmdlet.ThrowTerminatingError($_)
+		}
+	}
+}
+
 Export-ModuleMember -Function Measure-*

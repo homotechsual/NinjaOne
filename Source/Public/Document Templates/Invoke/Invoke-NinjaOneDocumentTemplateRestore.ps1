@@ -5,7 +5,7 @@ function Invoke-NinjaOneDocumentTemplateRestore {
 		.DESCRIPTION
 			Restores an archived document template via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Document Templates
+			Document Template Restore
 		.EXAMPLE
 			PS> Invoke-NinjaOneDocumentTemplateRestore -documentTemplateId 10
 
@@ -23,6 +23,7 @@ function Invoke-NinjaOneDocumentTemplateRestore {
 		'post'
 	)]
 	param(
+		# The document template Id to restore.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$documentTemplateId
 	)

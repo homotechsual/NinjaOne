@@ -5,7 +5,7 @@ function Get-NinjaOneCustomFieldsSchema {
 		.DESCRIPTION
 			Retrieves custom fields (node attributes) with pagination support from the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Custom Fields
+			Custom Fields Schema
 		.EXAMPLE
 			PS> Get-NinjaOneCustomFieldsSchema
 

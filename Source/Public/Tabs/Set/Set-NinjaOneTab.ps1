@@ -5,7 +5,7 @@ function Set-NinjaOneTab {
 		.DESCRIPTION
 			Updates a custom tab via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Tabs
+			Tab
 		.EXAMPLE
 			PS> Set-NinjaOneTab -tabId 5 -tab @{ name = 'New Name' }
 
@@ -13,20 +13,20 @@ function Set-NinjaOneTab {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				roleId = 0
+				position = 0
 				items = @(
 					@{
-						itemType = "ATTRIBUTE"
-						id = 0
-						name = "string"
 						uiElementUid = "00000000-0000-0000-0000-000000000000"
-						uiElementType = "TITLE"
 						uiElementValue = "string"
 						uiElementCreateTime = 0
+						itemType = "ATTRIBUTE"
+						uiElementType = "TITLE"
+						id = 0
+						name = "string"
 						uiElementUpdateTime = 0
 					}
 				)
-				position = 0
+				roleId = 0
 			}
 			PS> Set-NinjaOneTab -tabId 1 -tab $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -45,8 +45,10 @@ function Set-NinjaOneTab {
 		'patch'
 	)]
 	param(
+		# The tab Id to update.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$tabId,
+		# The tab update object.
 		[Parameter(Mandatory, Position=1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$tab
@@ -58,6 +60,7 @@ function Set-NinjaOneTab {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

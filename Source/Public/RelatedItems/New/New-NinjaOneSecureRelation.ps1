@@ -9,12 +9,12 @@ function New-NinjaOneSecureRelation {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				name = "string"
+				totpSecret = "string"
+				password = "string"
 				url = "string"
 				notes = "string"
 				username = "string"
-				password = "string"
-				totpSecret = "string"
+				name = "string"
 			}
 			PS> New-NinjaOneSecureRelation -entityType ORGANIZATION -entityId 1 -entityType $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -102,6 +102,7 @@ function New-NinjaOneSecureRelation {
 		}
 	}
 }
+
 
 
 

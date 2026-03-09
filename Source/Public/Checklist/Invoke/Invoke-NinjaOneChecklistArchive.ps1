@@ -5,7 +5,7 @@ function Invoke-NinjaOneChecklistArchive {
 		.DESCRIPTION
 			Archives one or more checklists via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Checklist Templates
+			Checklist Archive
 		.EXAMPLE
 			PS> Invoke-NinjaOneChecklistArchive -checklistsToArchive @{ checklistTemplateIds = @(1,2) }
 
@@ -34,12 +34,14 @@ function Invoke-NinjaOneChecklistArchive {
 		'post'
 	)]
 	param(
+		# The checklist IDs to archive.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$checklistsToArchive
 	)
 	process { try { if($PSCmdlet.ShouldProcess('Checklists','Archive')){ return (New-NinjaOnePOSTRequest -Resource 'v2/checklist/archive' -Body $request) } } catch { New-NinjaOneError -ErrorRecord $_ } }
 }
+
 
 
 

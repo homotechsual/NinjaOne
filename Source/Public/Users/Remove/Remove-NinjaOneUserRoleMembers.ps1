@@ -5,7 +5,7 @@ function Remove-NinjaOneUserRoleMembers {
 		.DESCRIPTION
 			Removes one of more members from the specified user role via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			User Role Members
 		.EXAMPLE
 			PS> Remove-NinjaOneUserRoleMembers -roleId 10 -members @{ userIds = @(1,2) } -Confirm:$false
 
@@ -23,8 +23,10 @@ function Remove-NinjaOneUserRoleMembers {
 		'patch'
 	)]
 	param(
+		# The user role Id to remove members from.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$roleId,
+		# The members object containing user IDs to remove from the role.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$members

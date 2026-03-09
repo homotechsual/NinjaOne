@@ -58,6 +58,7 @@ function Invoke-NinjaOneTempAttachmentUpload {
 				Resource = $Resource
 				QSCollection = $QSCollection
 				Body = $upload
+				UseMultipart = $true
 			}
 			if ($PSCmdlet.ShouldProcess('Temporary attachments', 'Upload')) {
 				return (New-NinjaOnePOSTRequest @RequestParams)
@@ -67,5 +68,6 @@ function Invoke-NinjaOneTempAttachmentUpload {
 		}
 	}
 }
+
 
 

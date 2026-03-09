@@ -14,10 +14,10 @@ function Set-NinjaOneNodeRoles {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @(
 				@{
-					id = 0
-					name = "string"
-					description = "string"
 					icon = "string"
+					id = 0
+					description = "string"
+					name = "string"
 				}
 			)
 			PS> Set-NinjaOneNodeRoles -nodeRoles $body
@@ -62,6 +62,7 @@ function Set-NinjaOneNodeRoles {
 		}
 	}
 }
+
 
 
 

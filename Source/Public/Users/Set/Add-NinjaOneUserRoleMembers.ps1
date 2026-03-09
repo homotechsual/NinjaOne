@@ -5,7 +5,7 @@ function Add-NinjaOneUserRoleMembers {
 		.DESCRIPTION
 			Adds one or more members to the specified user role via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			User Role Members
 		.EXAMPLE
 			PS> Add-NinjaOneUserRoleMembers -roleId 10 -members @{ userIds = @(1,2) }
 
@@ -23,8 +23,10 @@ function Add-NinjaOneUserRoleMembers {
 		'patch'
 	)]
 	param(
+		# The user role Id to add members to.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$roleId,
+		# The members object containing user IDs to add to the role.
 		[Parameter(Mandatory, Position=1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$members

@@ -9,88 +9,88 @@ function Set-NinjaOneDocumentTemplate {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				name = "string"
-				description = "string"
-				mandatory = $false
 				fields = @(
 					@{
-						fieldId = 0
-						fieldLabel = "string"
-						fieldName = "string"
 						fieldDescription = "string"
-						fieldType = "DROPDOWN"
-						fieldTechnicianPermission = "NONE"
-						fieldScriptPermission = "NONE"
+						uiElementType = "TITLE"
+						fieldName = "string"
 						fieldApiPermission = "NONE"
+						fieldScriptPermission = "NONE"
+						fieldType = "DROPDOWN"
+						fieldLabel = "string"
 						fieldDefaultValue = "string"
 						fieldContent = @{
 							values = @(
 								@{
 									id = "00000000-0000-0000-0000-000000000000"
-									name = "string"
 									active = $false
+									name = "string"
 								}
 							)
-							required = $false
 							footerText = "string"
+							required = $false
 							tooltipText = "string"
 							advancedSettings = @{
+								complexityRules = @{
+									greaterOrEqualThanSixCharacters = $false
+									mustContainOneUppercaseLetter = $false
+									mustContainOneInteger = $false
+									mustContainOneLowercaseLetter = $false
+								}
+								monetary = @{
+									currency = "USD"
+								}
+								ipAddressType = "ALL"
 								fileMaxSize = 0
 								fileExtensions = @(
 									"string"
 								)
+								templates = @(
+									0
+								)
+								org = @(
+									0
+								)
 								dateFilters = @{
-									type = "NONE"
 									selected = @(
 										"string"
 									)
+									type = "NONE"
 								}
-								maxCharacters = 0
-								complexityRules = @{
-									mustContainOneInteger = $false
-									mustContainOneLowercaseLetter = $false
-									mustContainOneUppercaseLetter = $false
-									greaterOrEqualThanSixCharacters = $false
+								identifier = @{
+									nextSequenceNumber = 0
+									automaticGenerationEnabled = $false
+									prefix = "string"
+									suffix = "string"
+									scope = "NONE"
+									type = "CUSTOM"
+									assignTo = "NEW_ASSETS_ONLY"
 								}
 								numericRange = @{
 									min = 0
 									max = 0
 								}
-								org = @(
-									0
-								)
+								maxCharacters = 0
 								nodeClass = @(
 									"WINDOWS_SERVER"
 								)
-								ipAddressType = "ALL"
 								expandLargeValueOnRender = $false
-								identifier = @{
-									automaticGenerationEnabled = $false
-									scope = "NONE"
-									assignTo = "NEW_ASSETS_ONLY"
-									type = "CUSTOM"
-									nextSequenceNumber = 0
-									prefix = "string"
-									suffix = "string"
-								}
-								monetary = @{
-									currency = "USD"
-								}
-								templates = @(
-									0
-								)
 							}
 						}
-						uiElementUid = "00000000-0000-0000-0000-000000000000"
-						uiElementName = "string"
-						uiElementType = "TITLE"
+						fieldId = 0
 						uiElementValue = "string"
+						uiElementUid = "00000000-0000-0000-0000-000000000000"
+						fieldTechnicianPermission = "NONE"
+						uiElementName = "string"
 					}
 				)
-				availableToAllTechnicians = $false
+				description = "string"
+				mandatory = $false
 				allowedTechnicianRoles = @(
 					0
 				)
+				availableToAllTechnicians = $false
+				name = "string"
 			}
 			PS> Set-NinjaOneDocumentTemplate -documentTemplateId 1 -documentTemplateId $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -199,6 +199,7 @@ function Set-NinjaOneDocumentTemplate {
 		}
 	}
 }
+
 
 
 

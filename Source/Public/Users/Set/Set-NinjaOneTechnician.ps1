@@ -5,7 +5,7 @@ function Set-NinjaOneTechnician {
 		.DESCRIPTION
 			Updates a technician via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			Technician
 		.EXAMPLE
 			PS> Set-NinjaOneTechnician -Id 77 -technician @{ phone = '+3100000000' }
 
@@ -13,8 +13,8 @@ function Set-NinjaOneTechnician {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				firstName = "string"
 				lastName = "string"
+				firstName = "string"
 			}
 			PS> Set-NinjaOneTechnician -id 1 -technician $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -33,8 +33,10 @@ function Set-NinjaOneTechnician {
 		'patch'
 	)]
 	param(
+		# The technician Id to update.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$id,
+		# The technician update object.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$technician
@@ -50,6 +52,7 @@ function Set-NinjaOneTechnician {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

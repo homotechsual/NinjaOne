@@ -5,7 +5,7 @@ function Set-NinjaOneSoftwareLicense {
 		.DESCRIPTION
 			Updates an existing software license via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Software Licenses
+			Software License
 		.EXAMPLE
 			PS> Set-NinjaOneSoftwareLicense -LicenseId 1 -License @{ name = 'Microsoft Office 365' }
 
@@ -13,49 +13,49 @@ function Set-NinjaOneSoftwareLicense {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				name = "string"
-				description = "string"
-				type = "PER_DEVICE"
-				purchaseDate = 0
-				publisherId = 0
-				vendorId = 0
-				scope = @{
-					global = $false
-					organizationIds = @(
-						0
-					)
-					locationIds = @(
-						0
-					)
-				}
-				quantity = 0
-				currentUsage = 0
-				term = @{
-					renewalUnit = "MONTH"
-					value = 0
-					expirationDate = 0
-					autoRenewal = $false
-					generateActivityAlert = $false
-					daysBeforeExpiration = 0
-					hasNotifiedExpirationDate = $false
-					hasNotifiedUpToRenewal = $false
-				}
-				notificationChannelInfo = @{
-					email = "string"
-					sms = "string"
-					pushNotification = "string"
-				}
-				assigmentAutomationSettings = @{
-					assignmentType = "NORMALIZED_SOFTWARE"
-					type = "string"
-				}
-				assignedLicenses = @(
-					0
-				)
 				unassignedLicenses = @(
 					0
 				)
 				note = "string"
+				purchaseDate = 0
+				assignedLicenses = @(
+					0
+				)
+				notificationChannelInfo = @{
+					pushNotification = "string"
+					sms = "string"
+					email = "string"
+				}
+				publisherId = 0
+				type = "PER_DEVICE"
+				assigmentAutomationSettings = @{
+					type = "string"
+					assignmentType = "NORMALIZED_SOFTWARE"
+				}
+				quantity = 0
+				description = "string"
+				scope = @{
+					locationIds = @(
+						0
+					)
+					global = $false
+					organizationIds = @(
+						0
+					)
+				}
+				vendorId = 0
+				currentUsage = 0
+				term = @{
+					expirationDate = 0
+					value = 0
+					generateActivityAlert = $false
+					hasNotifiedExpirationDate = $false
+					renewalUnit = "MONTH"
+					hasNotifiedUpToRenewal = $false
+					daysBeforeExpiration = 0
+					autoRenewal = $false
+				}
+				name = "string"
 			}
 			PS> Set-NinjaOneSoftwareLicense -LicenseId 1 -License $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -94,6 +94,7 @@ function Set-NinjaOneSoftwareLicense {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

@@ -5,7 +5,7 @@ function Get-NinjaOneTabSummaryEndUser {
 		.DESCRIPTION
 			Retrieves a summary of the custom tabs available to end-user views via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Tabs
+			Tab Summary End User
 		.EXAMPLE
 			PS> Get-NinjaOneTabSummaryEndUser
 

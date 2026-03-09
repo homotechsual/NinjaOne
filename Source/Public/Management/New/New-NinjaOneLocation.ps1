@@ -9,12 +9,12 @@ function New-NinjaOneLocation {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				name = "string"
 				address = "string"
 				description = "string"
 				userData = @{
 					additionalProp1 = "value"
 				}
+				name = "string"
 			}
 			PS> New-NinjaOneLocation -organisationId 1 -location $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -65,6 +65,7 @@ function New-NinjaOneLocation {
 		}
 	}
 }
+
 
 
 

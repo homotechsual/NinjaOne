@@ -9,8 +9,8 @@ function New-NinjaOneIntegrityCheckJob {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				deviceId = 0
 				planUid = "00000000-0000-0000-0000-000000000000"
+				deviceId = 0
 			}
 			PS> New-NinjaOneIntegrityCheckJob -integrityCheckJob $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -72,6 +72,7 @@ function New-NinjaOneIntegrityCheckJob {
 		}
 	}
 }
+
 
 
 

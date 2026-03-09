@@ -9,11 +9,11 @@ function New-NinjaOnePolicy {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
+				enabled = $false
+				nodeClass = "WINDOWS_SERVER"
+				description = "string"
 				parentPolicyId = 0
 				name = "string"
-				description = "string"
-				nodeClass = "WINDOWS_SERVER"
-				enabled = $false
 			}
 			PS> New-NinjaOnePolicy -policy $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -87,6 +87,7 @@ function New-NinjaOnePolicy {
 		}
 	}
 }
+
 
 
 

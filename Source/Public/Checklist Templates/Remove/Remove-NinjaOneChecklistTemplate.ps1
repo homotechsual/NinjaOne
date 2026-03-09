@@ -5,7 +5,7 @@ function Remove-NinjaOneChecklistTemplate {
 		.DESCRIPTION
 			Deletes a checklist template via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Checklist Templates
+			Checklist Template
 		.OUTPUTS
 			Status code (204) on success.
 		.EXAMPLE

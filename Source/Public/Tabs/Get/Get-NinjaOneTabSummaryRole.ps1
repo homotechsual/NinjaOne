@@ -5,7 +5,7 @@ function Get-NinjaOneTabSummaryRole {
 		.DESCRIPTION
 			Retrieves a summary of the custom tabs and extensions as viewed by the specified role via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Tabs
+			Tab Summary Role
 		.EXAMPLE
 			PS> Get-NinjaOneTabSummaryRole -roleId 10
 

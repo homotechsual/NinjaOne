@@ -5,7 +5,7 @@ function Invoke-NinjaOneKnowledgeBaseArticlesArchive {
 		.DESCRIPTION
 			Archives knowledge base articles via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Knowledge Base Articles
+			Knowledge Base Article
 		.EXAMPLE
 			PS> Invoke-NinjaOneKnowledgeBaseArticlesArchive -articleIds @(1,2,3)
 
@@ -23,6 +23,7 @@ function Invoke-NinjaOneKnowledgeBaseArticlesArchive {
 		'post'
 	)]
 	param(
+		# The knowledge base article IDs to archive.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int[]]$articleIds
 	)

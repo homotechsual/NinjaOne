@@ -5,7 +5,7 @@ function Remove-NinjaOneOrganisationChecklist {
 		.DESCRIPTION
 			Deletes an organisation checklist via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Organisation Checklists
+			Organisation Checklist
 		.EXAMPLE
 			PS> Remove-NinjaOneOrganisationChecklist -checklistId 22 -Confirm:$false
 
@@ -23,6 +23,7 @@ function Remove-NinjaOneOrganisationChecklist {
 		'delete'
 	)]
 	param(
+		# The organisation checklist Id to remove.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
 		[Int]$checklistId

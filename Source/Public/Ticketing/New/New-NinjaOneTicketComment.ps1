@@ -67,6 +67,7 @@ function New-NinjaOneTicketComment {
 			$RequestParams = @{
 				Resource = $Resource
 				Body = $comment
+				UseMultipart = $true
 			}
 			if ($PSCmdlet.ShouldProcess(('Ticket comment on ticket {0}' -f $ticketId), 'Create')) {
 				$TicketCreate = New-NinjaOnePOSTRequest @RequestParams
@@ -81,5 +82,7 @@ function New-NinjaOneTicketComment {
 		}
 	}
 }
+
+
 
 

@@ -5,7 +5,7 @@ function Get-NinjaOneSystemContacts {
 		.DESCRIPTION
 			Retrieves system contacts from the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Contacts
+			System Contacts
 		.EXAMPLE
 			PS> Get-NinjaOneSystemContacts
 

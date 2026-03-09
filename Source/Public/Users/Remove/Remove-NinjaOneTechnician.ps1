@@ -5,7 +5,7 @@ function Remove-NinjaOneTechnician {
 		.DESCRIPTION
 			Deletes a technician user via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			Technician
 		.OUTPUTS
 			Status code (204) on success.
 		.LINK

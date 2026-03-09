@@ -5,7 +5,7 @@ function Restore-NinjaOneKnowledgeBaseFolders {
 		.DESCRIPTION
 			Restores archived knowledge base folders via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Knowledge Base Articles
+			Knowledge Base Folder
 		.EXAMPLE
 			PS> Restore-NinjaOneKnowledgeBaseFolders -folderIds @(10,11)
 
@@ -23,6 +23,7 @@ function Restore-NinjaOneKnowledgeBaseFolders {
 		'post'
 	)]
 	param(
+		# The knowledge base folder IDs to restore.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int[]]$folderIds
 	)

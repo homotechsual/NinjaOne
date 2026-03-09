@@ -5,7 +5,7 @@ function Move-NinjaOneKnowledgeBaseItems {
 		.DESCRIPTION
 			Moves knowledge base items using the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Knowledge Base Articles
+			Knowledge Base Item
 		.EXAMPLE
 			PS> Move-NinjaOneKnowledgeBaseItems -moveRequest @{ sourceFolderIds=@(1); sourceDocumentIds=@(2,3); targetFolderId=10 }
 
@@ -13,13 +13,13 @@ function Move-NinjaOneKnowledgeBaseItems {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				folderIds = @(
-					0
-				)
+				destinationFolderId = 0
 				documentIds = @(
 					0
 				)
-				destinationFolderId = 0
+				folderIds = @(
+					0
+				)
 				destinationOrganizationId = 0
 			}
 			PS> Move-NinjaOneKnowledgeBaseItems -moveRequest $body
@@ -55,6 +55,7 @@ function Move-NinjaOneKnowledgeBaseItems {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

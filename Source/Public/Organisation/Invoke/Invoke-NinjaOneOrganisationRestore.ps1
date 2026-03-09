@@ -21,6 +21,7 @@ function Invoke-NinjaOneOrganisationRestore {
 		'post'
 	)]
 	param(
+		# The request object containing organization IDs to restore.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$request

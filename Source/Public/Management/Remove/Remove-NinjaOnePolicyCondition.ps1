@@ -6,16 +6,14 @@ function Remove-NinjaOnePolicyCondition {
 			Removes the given policy condition using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Policy Condition
+		.EXAMPLE
+			PS> Remove-NinjaOnePolicyCondition -policyId 1 -conditionId 10
+
+			Removes policy condition 10 from policy 1.
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Remove/policycondition
-	
-	.EXAMPLE
-		PS> Remove-NinjaOnePolicyCondition -Identity 123
-
-		Removes the specified resource.
-
 	#>
 	[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 	[OutputType([Object])]

@@ -5,7 +5,7 @@ function Remove-NinjaOneTag {
 		.DESCRIPTION
 			Deletes a tag via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Asset Tags
+			Asset Tag
 		.EXAMPLE
 			PS> Remove-NinjaOneTag -tagId 12 -Confirm:$false
 
@@ -23,6 +23,7 @@ function Remove-NinjaOneTag {
 		'delete'
 	)]
 	param(
+		# The tag Id to remove.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$tagId
 	)

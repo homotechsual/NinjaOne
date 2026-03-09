@@ -1,3 +1,4 @@
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal DevOps script does not require parameter descriptions.')]
 <#
 .SYNOPSIS
 Generate full request examples for POST/PUT/PATCH cmdlets.
@@ -433,6 +434,9 @@ function Build-FullRequestExampleBlock {
 	$lines += "$indent`t$beginMarker"
 	$bodyLines = ConvertTo-HashtableLines -Value $ExampleObject -Indent ''
 	
+	# Trim any leading spaces from body lines to prevent extra spacing in final output
+	$bodyLines = $bodyLines | ForEach-Object { $_.TrimStart(' ') }
+	
 	$lines += "$indent`tPS> `$body = " + $bodyLines[0]
 	if ($bodyLines.Count -gt 1) {
 		foreach ($line in $bodyLines[1..($bodyLines.Count - 1)]) {
@@ -513,6 +517,8 @@ function Build-MultipartExampleBlock {
 		if (-not $varName) { $varName = 'field' }
 		$varName = "`$$varName"
 		$bodyLines = ConvertTo-HashtableLines -Value $propExample -Indent ''
+		# Trim any leading spaces from body lines to prevent extra spacing in final output
+		$bodyLines = $bodyLines | ForEach-Object { $_.TrimStart(' ') }
 		$lines += "$indent`tPS> $varName = " + $bodyLines[0]
 		if ($bodyLines.Count -gt 1) {
 			foreach ($line in $bodyLines[1..($bodyLines.Count - 1)]) {

@@ -5,7 +5,7 @@ function New-NinjaOneCustomField {
 		.DESCRIPTION
 			Creates a new custom field (node attribute) via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Custom Fields
+			Custom Field
 		.EXAMPLE
 			PS> New-NinjaOneCustomField -CustomField @{ name = 'Department'; type = 'TEXT' }
 
@@ -13,76 +13,76 @@ function New-NinjaOneCustomField {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				label = "string"
-				fieldName = "string"
-				description = "string"
-				type = "DROPDOWN"
-				technicianPermission = "NONE"
+				addToDefaultTab = $false
 				scriptPermission = "NONE"
-				apiPermission = "NONE"
-				defaultValue = "string"
+				type = "DROPDOWN"
+				groupId = 0
 				content = @{
 					values = @(
 						@{
 							name = "string"
 						}
 					)
-					required = $false
 					footerText = "string"
+					required = $false
 					tooltipText = "string"
 					advancedSettings = @{
+						complexityRules = @{
+							greaterOrEqualThanSixCharacters = $false
+							mustContainOneUppercaseLetter = $false
+							mustContainOneInteger = $false
+							mustContainOneLowercaseLetter = $false
+						}
+						monetary = @{
+							currency = "USD"
+						}
+						ipAddressType = "ALL"
 						fileMaxSize = 0
 						fileExtensions = @(
 							"string"
 						)
+						templates = @(
+							0
+						)
+						org = @(
+							0
+						)
 						dateFilters = @{
-							type = "NONE"
 							selected = @(
 								"string"
 							)
+							type = "NONE"
 						}
-						maxCharacters = 0
-						complexityRules = @{
-							mustContainOneInteger = $false
-							mustContainOneLowercaseLetter = $false
-							mustContainOneUppercaseLetter = $false
-							greaterOrEqualThanSixCharacters = $false
+						identifier = @{
+							nextSequenceNumber = 0
+							automaticGenerationEnabled = $false
+							prefix = "string"
+							suffix = "string"
+							scope = "NONE"
+							type = "CUSTOM"
+							assignTo = "NEW_ASSETS_ONLY"
 						}
 						numericRange = @{
 							min = 0
 							max = 0
 						}
-						org = @(
-							0
-						)
+						maxCharacters = 0
 						nodeClass = @(
 							"WINDOWS_SERVER"
 						)
-						ipAddressType = "ALL"
 						expandLargeValueOnRender = $false
-						identifier = @{
-							automaticGenerationEnabled = $false
-							scope = "NONE"
-							assignTo = "NEW_ASSETS_ONLY"
-							type = "CUSTOM"
-							nextSequenceNumber = 0
-							prefix = "string"
-							suffix = "string"
-						}
-						monetary = @{
-							currency = "USD"
-						}
-						templates = @(
-							0
-						)
 					}
 				}
+				description = "string"
 				scope = "NODE_GLOBAL"
 				definitionScope = @(
 					"NODE"
 				)
-				groupId = 0
-				addToDefaultTab = $false
+				defaultValue = "string"
+				technicianPermission = "NONE"
+				fieldName = "string"
+				apiPermission = "NONE"
+				label = "string"
 			}
 			PS> New-NinjaOneCustomField -CustomField $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -117,6 +117,7 @@ function New-NinjaOneCustomField {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

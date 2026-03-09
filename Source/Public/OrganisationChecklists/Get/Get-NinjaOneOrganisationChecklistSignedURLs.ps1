@@ -5,7 +5,7 @@ function Get-NinjaOneOrganisationChecklistSignedURLs {
 		.DESCRIPTION
 			Retrieves signed URLs for an organisation checklist via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Organisation Checklists
+			Organisation Checklist Signed URLs
 		.EXAMPLE
 			PS> Get-NinjaOneOrganisationChecklistSignedURLs -checklistId 22
 
@@ -23,6 +23,7 @@ function Get-NinjaOneOrganisationChecklistSignedURLs {
 		'get'
 	)]
 	param(
+		# The organisation checklist Id to retrieve signed URLs for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
 		[Int]$checklistId

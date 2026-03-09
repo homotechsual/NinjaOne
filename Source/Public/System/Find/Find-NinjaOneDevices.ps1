@@ -7,7 +7,7 @@ function Find-NinjaOneDevices {
 		.DESCRIPTION
 			Retrieves devices from the NinjaOne v2 API matching a search string.
 		.FUNCTIONALITY
-			Devices
+			Device
 		.EXAMPLE
 			PS> Find-NinjaOneDevices -limit 10 -searchQuery 'ABCD'
 

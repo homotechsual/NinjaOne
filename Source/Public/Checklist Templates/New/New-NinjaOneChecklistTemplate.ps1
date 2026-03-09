@@ -14,20 +14,20 @@ function New-NinjaOneChecklistTemplate {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @(
 				@{
-					name = "string"
 					description = @{
 						text = "string"
 						html = "string"
 					}
+					required = $false
 					tasks = @(
 						@{
 							position = 0
-							name = "string"
 							description = @{
 							}
+							name = "string"
 						}
 					)
-					required = $false
+					name = "string"
 				}
 			)
 			PS> New-NinjaOneChecklistTemplate -template $body
@@ -46,13 +46,13 @@ function New-NinjaOneChecklistTemplate {
 		'/v2/checklist/templates',
 		'post'
 	)]
-	param(
-		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
+	param(		# The checklist template object to create.		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$template
 	)
 	process { try { if($PSCmdlet.ShouldProcess('Checklist Template','Create')){ return (New-NinjaOnePOSTRequest -Resource 'v2/checklist/templates' -Body $template) } } catch { New-NinjaOneError -ErrorRecord $_ } }
 }
+
 
 
 

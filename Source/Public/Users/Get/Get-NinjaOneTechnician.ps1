@@ -5,7 +5,7 @@ function Get-NinjaOneTechnician {
 		.DESCRIPTION
 			Retrieves a specific technician via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			Technician
 		.EXAMPLE
 			PS> Get-NinjaOneTechnician -Id 77
 
@@ -24,6 +24,7 @@ function Get-NinjaOneTechnician {
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
 	param(
+		# The technician Id to retrieve.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Int]$id
 	)

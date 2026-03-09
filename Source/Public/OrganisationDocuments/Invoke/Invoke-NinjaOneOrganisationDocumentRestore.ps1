@@ -21,6 +21,7 @@ function Invoke-NinjaOneOrganisationDocumentRestore {
 		'post'
 	)]
 	param(
+		# The client document Id to restore.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$clientDocumentId
 	)

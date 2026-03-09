@@ -4,6 +4,18 @@ Please note that backwards compatibility breaks are prefixed with `{"BC"}` (shor
 
 Note: Version 2.3.0 was released in error and will be skipped.
 
+## 2026-03-09 - Version 2.4.0
+
+* Fixes:
+  * Fix call depth overflow in `Invoke-NinjaOneDeviceScript` by implementing explicit opt-in for multipart form-data detection.
+  * Fix PSScriptAnalyzer settings compatibility by removing obsolete `ExcludePath` parameter.
+
+* Updates:
+  * Enhance `Invoke-NinjaOneDeviceScript` `-runAs` parameter documentation with comprehensive API permission level syntax and credential ID support.
+  * Make `-runAs` parameter mandatory on `Invoke-NinjaOneDeviceScript` to ensure proper script execution context.
+  * Standardize output behavior in `Invoke-NinjaOneDeviceScript` to return `System.Void` with optional `-show` switch for status code display.
+  * Implement explicit `-UseMultipart` switch on `New-NinjaOnePOSTRequest` for improved multipart detection reliability across file upload endpoints.
+
 ## 2026-02-27 - Version 2.3.1
 
 * Fixes:

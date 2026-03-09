@@ -5,7 +5,7 @@ function Invoke-NinjaOneSoftwareLicenseUpsert {
 		.DESCRIPTION
 			Creates or updates a software license via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Software Licenses
+			Software License
 		.EXAMPLE
 			PS> Invoke-NinjaOneSoftwareLicenseUpsert -License @{ name = 'Microsoft Office'; description = 'Office 365' }
 
@@ -13,33 +13,33 @@ function Invoke-NinjaOneSoftwareLicenseUpsert {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				name = "string"
-				description = "string"
+				currentLicensees = @(
+					"string"
+				)
+				note = "string"
+				quantity = 0
 				type = "PER_DEVICE"
-				date = 0
-				publisherName = "string"
+				licenseesToAssign = @(
+					"string"
+				)
 				vendorName = "string"
+				date = 0
+				description = "string"
 				scope = @{
+					locationNames = @(
+						"string"
+					)
 					global = $false
 					organizationNames = @(
 						"string"
 					)
-					locationNames = @(
-						"string"
-					)
 				}
-				quantity = 0
 				currentUsage = 0
-				currentLicensees = @(
-					"string"
-				)
-				licenseesToAssign = @(
-					"string"
-				)
 				licenseesToRemove = @(
 					"string"
 				)
-				note = "string"
+				name = "string"
+				publisherName = "string"
 			}
 			PS> Invoke-NinjaOneSoftwareLicenseUpsert -License $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -74,6 +74,7 @@ function Invoke-NinjaOneSoftwareLicenseUpsert {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

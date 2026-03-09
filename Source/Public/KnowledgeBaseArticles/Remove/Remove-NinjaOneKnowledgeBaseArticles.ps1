@@ -5,7 +5,7 @@ function Remove-NinjaOneKnowledgeBaseArticles {
 		.DESCRIPTION
 			Deletes knowledge base articles via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Knowledge Base Articles
+			Knowledge Base Article
 		.EXAMPLE
 			PS> Remove-NinjaOneKnowledgeBaseArticles -articleIds @(1,2,3) -Confirm:$false
 
@@ -23,6 +23,7 @@ function Remove-NinjaOneKnowledgeBaseArticles {
 		'post'
 	)]
 	param(
+		# The knowledge base article IDs to remove.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int[]]$articleIds
 	)

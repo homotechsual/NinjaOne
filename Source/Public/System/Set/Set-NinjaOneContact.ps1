@@ -5,16 +5,16 @@ function Set-NinjaOneContact {
 		.DESCRIPTION
 			Updates a system contact via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Contacts
+			Contact
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				firstName = "string"
-				lastName = "string"
-				email = "string"
-				jobTitle = "string"
-				organizationId = 0
 				phone = "string"
+				firstName = "string"
+				organizationId = 0
+				jobTitle = "string"
+				email = "string"
+				lastName = "string"
 			}
 			PS> Set-NinjaOneContact -id 1 -contact $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -61,6 +61,7 @@ function Set-NinjaOneContact {
 		}
 	}
 }
+
 
 
 

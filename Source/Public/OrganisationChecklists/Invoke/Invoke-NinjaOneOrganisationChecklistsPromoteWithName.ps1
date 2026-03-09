@@ -5,7 +5,7 @@ function Invoke-NinjaOneOrganisationChecklistsPromoteWithName {
 		.DESCRIPTION
 			Promotes organisation checklists assigning a new name via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Organisation Checklists
+		Organisation Checklist Promote Named
 		.EXAMPLE
 			PS> Invoke-NinjaOneOrganisationChecklistsPromoteWithName -request @{ checklistIds=@(1); name='New Name' }
 
@@ -35,12 +35,14 @@ function Invoke-NinjaOneOrganisationChecklistsPromoteWithName {
 		'post'
 	)]
 	param(
+		# The request object containing checklist promotion details with names.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$request
 	)
 	process { try { if($PSCmdlet.ShouldProcess('Organisation Checklists','Promote With Name')){ return (New-NinjaOnePOSTRequest -Resource 'v2/organization/checklists/promote-with-name' -Body $request) } } catch { New-NinjaOneError -ErrorRecord $_ } }
 }
+
 
 
 

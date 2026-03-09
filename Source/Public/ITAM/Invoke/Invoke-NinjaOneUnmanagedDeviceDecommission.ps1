@@ -5,7 +5,7 @@ function Invoke-NinjaOneUnmanagedDeviceDecommission {
 		.DESCRIPTION
 			Decommissions an unmanaged device via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Unmanaged Devices
+			Unmanaged Device
 		.EXAMPLE
 			PS> Invoke-NinjaOneUnmanagedDeviceDecommission -NodeId 1
 

@@ -5,7 +5,7 @@ function Set-NinjaOneKnowledgeBaseArticles {
 		.DESCRIPTION
 			Updates one of more knowledge base articles via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Knowledge Base Articles
+			Knowledge Base Article
 		.EXAMPLE
 			PS> Set-NinjaOneKnowledgeBaseArticles -articles @{ articles = @(@{ id=1; name='New' }) }
 
@@ -15,11 +15,11 @@ function Set-NinjaOneKnowledgeBaseArticles {
 			PS> $body = @(
 				@{
 					id = 0
-					name = "string"
 					content = @{
-						html = "string"
 						text = "string"
+						html = "string"
 					}
+					name = "string"
 				}
 			)
 			PS> Set-NinjaOneKnowledgeBaseArticles -articles $body
@@ -39,6 +39,7 @@ function Set-NinjaOneKnowledgeBaseArticles {
 		'patch'
 	)]
 	param(
+		# The knowledge base articles object containing updates.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$articles
@@ -49,6 +50,7 @@ function Set-NinjaOneKnowledgeBaseArticles {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

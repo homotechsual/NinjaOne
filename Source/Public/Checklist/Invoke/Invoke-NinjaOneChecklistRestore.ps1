@@ -5,7 +5,7 @@ function Invoke-NinjaOneChecklistRestore {
 		.DESCRIPTION
 			Restores archived checklists via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Checklist Templates
+			Checklist Restore
 		.EXAMPLE
 			PS> Invoke-NinjaOneChecklistRestore -checklistsToRestore @{ checklistTemplateIds = @(1,2) }
 
@@ -34,12 +34,14 @@ function Invoke-NinjaOneChecklistRestore {
 		'post'
 	)]
 	param(
+		# The checklist IDs to restore.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$checklistsToRestore
 	)
 	process { try { if($PSCmdlet.ShouldProcess('Checklists','Restore')){ return (New-NinjaOnePOSTRequest -Resource 'v2/checklist/restore' -Body $request) } } catch { New-NinjaOneError -ErrorRecord $_ } }
 }
+
 
 
 

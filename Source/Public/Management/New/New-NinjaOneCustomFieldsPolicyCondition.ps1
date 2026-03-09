@@ -9,17 +9,31 @@ function New-NinjaOneCustomFieldsPolicyCondition {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				enabled = $false
-				displayName = "string"
-				severity = "NONE"
 				priority = "NONE"
+				notificationAction = "NONE"
+				notifyOnReset = $false
+				resetThreshold = 0
+				matchAny = @(
+					@{
+						operator = "EQUALS"
+						value = "string"
+						fieldName = "string"
+					}
+				)
+				matchAll = @(
+					@{
+					}
+				)
+				severity = "NONE"
+				displayName = "string"
+				enabled = $false
 				channels = @(
 					0
 				)
 				scripts = @(
 					@{
-						scriptId = 0
 						runAs = "SYSTEM"
+						scriptId = 0
 						scriptParam = "string"
 						scriptVariables = @(
 							@{
@@ -27,20 +41,6 @@ function New-NinjaOneCustomFieldsPolicyCondition {
 								value = "string"
 							}
 						)
-					}
-				)
-				notificationAction = "NONE"
-				notifyOnReset = $false
-				resetThreshold = 0
-				matchAll = @(
-					@{
-						fieldName = "string"
-						operator = "EQUALS"
-						value = "string"
-					}
-				)
-				matchAny = @(
-					@{
 					}
 				)
 			}
@@ -93,6 +93,7 @@ function New-NinjaOneCustomFieldsPolicyCondition {
 		}
 	}
 }
+
 
 
 

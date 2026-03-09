@@ -13,9 +13,9 @@ function Rename-NinjaOneTab {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
+				description = "string"
 				tabId = 0
 				name = "string"
-				description = "string"
 			}
 			PS> Rename-NinjaOneTab -rename $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -45,6 +45,7 @@ function Rename-NinjaOneTab {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

@@ -5,7 +5,7 @@ function Remove-NinjaOneEndUser {
 		.DESCRIPTION
 			Deletes an end-user via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			End User
 		.OUTPUTS
 			Status code (204) on success.
 		.LINK

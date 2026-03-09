@@ -5,6 +5,7 @@
 #>
 [CmdletBinding()]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseCompatibleSyntax', '', Justification = 'Script runs in CI/CD pipelines and is not designed to run on old versions.')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal DevOps script does not require parameter descriptions.')]
 
 param (
 	[ValidateSet('clean', 'build', 'updateManifest', 'publish', 'publishDocs', 'updateHelp', 'generateShortNamesMapping', 'push')]
@@ -319,6 +320,41 @@ This page has been generated from the {0} PowerShell module source. To make chan
 				$CategoryFile.className = 'category-update'
 				$CategoryFile.link.title = 'Update Data (Update)'
 				$CategoryFile.customProps.description = 'This category contains commands for updating data, objects, settings and more. This category will overlap with the Set category.'
+			}
+			'Add' {
+				$CategoryFile.label = 'Add Data'
+				$CategoryFile.position = 0.1
+				$CategoryFile.className = 'category-add'
+				$CategoryFile.link.title = 'Add Data'
+				$CategoryFile.customProps.description = 'This category contains commands for adding or appending data, objects, settings and more.'
+			}
+			'Merge' {
+				$CategoryFile.label = 'Merge Data'
+				$CategoryFile.position = 0.6
+				$CategoryFile.className = 'category-merge'
+				$CategoryFile.link.title = 'Merge Data'
+				$CategoryFile.customProps.description = 'This category contains commands for merging data, objects, settings and more.'
+			}
+			'Move' {
+				$CategoryFile.label = 'Move Data'
+				$CategoryFile.position = 0.6
+				$CategoryFile.className = 'category-move'
+				$CategoryFile.link.title = 'Move Data'
+				$CategoryFile.customProps.description = 'This category contains commands for moving data, objects, settings and more.'
+			}
+			'Start' {
+				$CategoryFile.label = 'Start Services'
+				$CategoryFile.position = 0.5
+				$CategoryFile.className = 'category-start'
+				$CategoryFile.link.title = 'Start Services'
+				$CategoryFile.customProps.description = 'This category contains commands for starting services, processes and more.'
+			}
+			'Rename'{
+				$CategoryFile.label = 'Rename Data'
+				$CategoryFile.position = 0.6
+				$CategoryFile.className = 'category-rename'
+				$CategoryFile.link.title = 'Rename Data'
+				$CategoryFile.customProps.description = 'This category contains commands for renaming data, objects, settings and more.'
 			}
 		}
 		if (-not($HasCategoryFile)) {

@@ -5,14 +5,12 @@ function New-NinjaOneKnowledgeBaseArticlesUpload {
 		.DESCRIPTION
 			Uploads one or more knowledge base articles via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Knowledge Base Articles
-		.EXAMPLE
-			PS> New-NinjaOneKnowledgeBaseArticlesUpload -OrganizationId 1 -FilePath 'C:\articles.zip'
+		Knowledge Base Articles Upload
+	.EXAMPLE
+		PS> New-NinjaOneKnowledgeBaseArticlesUpload -OrganizationId 1 -FilePath 'C:\articles.zip'
 
-			Uploads knowledge base articles from a file to the specified organization.
-		.EXAMPLE
-			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
-			PS> $multipart = [System.Net.Http.MultipartFormDataContent]::new()
+		Uploads knowledge base articles from a file to the specified organization.
+	.EXAMPLE
 			PS> $organizationId = 0
 			PS> $json = $organizationId | ConvertTo-Json -Depth 10
 			PS> $stringContent = [System.Net.Http.StringContent]::new($json, [System.Text.Encoding]::UTF8, "application/json")
@@ -30,6 +28,29 @@ function New-NinjaOneKnowledgeBaseArticlesUpload {
 			PS> $fileContent = [System.Net.Http.StreamContent]::new($fileStream)
 			PS> $fileContent.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::Parse("application/octet-stream")
 			PS> $multipart.Add($fileContent, "files", [System.IO.Path]::GetFileName($filePath))
+			PS> $body = $multipart
+			PS> New-NinjaOneKnowledgeBaseArticlesUpload -OrganizationId $body
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+			
+			Full request example (auto-generated).
+		.EXAMPLE
+			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+			PS> $multipart = [System.Net.Http.MultipartFormDataContent]::new()
+			PS> $folderPath = "
+			PS> $json = $folderPath | ConvertTo-Json -Depth 10
+			PS> $stringContent = [System.Net.Http.StringContent]::new($json, [System.Text.Encoding]::UTF8, "application/json")
+			PS> $multipart.Add($stringContent, "folderPath")
+			PS> $filePath = "C:\Temp\example.txt"
+			PS> $fileStream = [System.IO.FileStream]::new($filePath, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read)
+			PS> $fileContent = [System.Net.Http.StreamContent]::new($fileStream)
+			PS> $fileContent.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::Parse("application/octet-stream")
+			PS> $multipart.Add($fileContent, "files", [System.IO.Path]::GetFileName($filePath))
+			PS> $json = $folderId | ConvertTo-Json -Depth 10
+			PS> $stringContent = [System.Net.Http.StringContent]::new($json, [System.Text.Encoding]::UTF8, "application/json")
+			PS> $multipart.Add($stringContent, "folderId")
+			PS> $json = $organizationId | ConvertTo-Json -Depth 10
+			PS> $stringContent = [System.Net.Http.StringContent]::new($json, [System.Text.Encoding]::UTF8, "application/json")
+			PS> $multipart.Add($stringContent, "organizationId")
 			PS> $body = $multipart
 			PS> New-NinjaOneKnowledgeBaseArticlesUpload -OrganizationId $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -76,7 +97,7 @@ function New-NinjaOneKnowledgeBaseArticlesUpload {
 			if ($FilePath) {
 				$Body.files = $FilePath
 			}
-			$RequestParams = @{ Resource = $Resource; Body = $Body }
+			$RequestParams = @{ Resource = $Resource; Body = $Body; UseMultipart = $true }
 			if ($PSCmdlet.ShouldProcess('Knowledge Base Articles', 'Upload')) {
 				$Result = New-NinjaOnePOSTRequest @RequestParams
 				return $Result
@@ -84,5 +105,6 @@ function New-NinjaOneKnowledgeBaseArticlesUpload {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 

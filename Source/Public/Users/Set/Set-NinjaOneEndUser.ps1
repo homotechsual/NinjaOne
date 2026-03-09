@@ -5,7 +5,7 @@ function Set-NinjaOneEndUser {
 		.DESCRIPTION
 			Updates an end user via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			End User
 		.EXAMPLE
 			PS> Set-NinjaOneEndUser -Id 101 -endUser @{ phone = '+3100000000' }
 
@@ -13,10 +13,10 @@ function Set-NinjaOneEndUser {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				firstName = "string"
 				lastName = "string"
-				organizationId = 0
 				fullPortalAccess = $false
+				organizationId = 0
+				firstName = "string"
 			}
 			PS> Set-NinjaOneEndUser -id 1 -endUser $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -35,8 +35,10 @@ function Set-NinjaOneEndUser {
 		'patch'
 	)]
 	param(
+		# The end user Id to update.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int]$id,
+		# The end user update object.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$endUser
@@ -52,6 +54,7 @@ function Set-NinjaOneEndUser {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

@@ -5,7 +5,7 @@ function Get-NinjaOneOrganisationEndUsers {
 		.DESCRIPTION
 			Returns list of end users for a specific organisation via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Organisation
+			Organisation End Users
 		.EXAMPLE
 			PS> Get-NinjaOneOrganisationEndUsers -organisationId 1 -includeRoles
 
@@ -23,6 +23,7 @@ function Get-NinjaOneOrganisationEndUsers {
 		'get'
 	)]
 	param(
+		# The organisation Id to retrieve end users for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('organizationId')]
 		[Int]$organisationId,

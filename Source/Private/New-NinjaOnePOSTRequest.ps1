@@ -13,6 +13,7 @@ function New-NinjaOnePOSTRequest {
 	#>
 	[CmdletBinding()]
 	[OutputType([Object])]
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal private function does not require parameter descriptions.')]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Private function - no need to support.')]
 	param (
 		# The resource to send the request to.
@@ -23,7 +24,9 @@ function New-NinjaOnePOSTRequest {
 		# A hashtable used to build the body of the request.
 		[Object]$Body,
 		# Parse date/time values returned in JSON.
-		[Switch]$ParseDateTime
+		[Switch]$ParseDateTime,
+		# Enable multipart form-data detection for file uploads.
+		[Switch]$UseMultipart
 	)
 	function Test-NinjaOneMultipartBody {
 		<#
@@ -235,7 +238,7 @@ function New-NinjaOnePOSTRequest {
 		if ($Body) {
 			Write-Verbose 'Building [HttpBody] for New-NinjaOnePOSTRequest'
 			$useParseDateTime = $ParseDateTime -or $Script:ParseDateTimes
-			if ($Body -is [System.Net.Http.HttpContent] -or (Test-NinjaOneMultipartBody -Value $Body)) {
+			if ($UseMultipart -and ($Body -is [System.Net.Http.HttpContent] -or (Test-NinjaOneMultipartBody -Value $Body))) {
 				Write-Verbose 'Detected multipart body, using HttpClient request method'
 				# Avoid PowerShell collection unwrapping - MultipartFormDataContent is IEnumerable
 				# Must use direct assignment in if/else, not if expression that returns values

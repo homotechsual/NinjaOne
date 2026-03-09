@@ -5,7 +5,7 @@ function Start-NinjaOneOSPatchScan {
 		.DESCRIPTION
 			Starts an OS Patch Scan on a device using the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Device OS Patch Scan
+			OS Patch Scan
 		.OUTPUTS
 			A powershell object containing the response.
 		.EXAMPLE

@@ -5,7 +5,7 @@ function New-NinjaOneEndUser {
 		.DESCRIPTION
 			Creates a new end user via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			End User
 		.EXAMPLE
 			PS> New-NinjaOneEndUser -endUser @{ firstName = 'Jane'; lastName = 'Doe'; email = 'jane@example.com' }
 
@@ -13,12 +13,12 @@ function New-NinjaOneEndUser {
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @{
-				firstName = "string"
-				lastName = "string"
-				email = "string"
 				phone = "string"
+				firstName = "string"
 				organizationId = 0
 				fullPortalAccess = $false
+				lastName = "string"
+				email = "string"
 			}
 			PS> New-NinjaOneEndUser -endUser $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
@@ -64,6 +64,7 @@ function New-NinjaOneEndUser {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

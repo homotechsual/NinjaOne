@@ -5,7 +5,7 @@ function Remove-NinjaOneKnowledgeBaseFolders {
 		.DESCRIPTION
 			Deletes knowledge base folders via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Knowledge Base Articles
+			Knowledge Base Folder
 		.EXAMPLE
 			PS> Remove-NinjaOneKnowledgeBaseFolders -folderIds @(10,11) -Confirm:$false
 
@@ -23,6 +23,7 @@ function Remove-NinjaOneKnowledgeBaseFolders {
 		'post'
 	)]
 	param(
+		# The knowledge base folder IDs to remove.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Int[]]$folderIds
 	)

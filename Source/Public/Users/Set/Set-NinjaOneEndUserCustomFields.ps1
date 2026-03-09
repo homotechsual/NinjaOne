@@ -5,7 +5,7 @@ function Set-NinjaOneEndUserCustomFields {
 		.DESCRIPTION
 			Updates end user custom fields via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			End User Custom Fields
 		.EXAMPLE
 			PS> Set-NinjaOneEndUserCustomFields -Id 101 -customFields @{ field1='value' }
 
@@ -33,8 +33,10 @@ function Set-NinjaOneEndUserCustomFields {
 		'patch'
 	)]
 	param(
+		# The end user Id to update custom fields for.
 		[Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
 		[Int]$id,
+		# The custom fields update object.
 		[Parameter(Mandatory, Position=1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
 		[Object]$customFields
@@ -46,6 +48,7 @@ function Set-NinjaOneEndUserCustomFields {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 

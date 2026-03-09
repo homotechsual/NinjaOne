@@ -5,7 +5,7 @@ function Get-NinjaOneEntityCustomFieldsSignedURLs {
 		.DESCRIPTION
 			Retrieves signed URLs for custom fields for a given entity type and Id via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Custom Fields
+			Entity Custom Fields Signed URLs
 		.EXAMPLE
 			PS> Get-NinjaOneEntityCustomFieldsSignedURLs -entityType ORGANIZATION -entityId 1
 

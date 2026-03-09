@@ -5,7 +5,7 @@ function Get-NinjaOneTabOrganisation {
 		.DESCRIPTION
 			Retrieves the organisation associated with a tab via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Tabs
+			Tab Organisation
 		.EXAMPLE
 			PS> Get-NinjaOneTabOrganisation -tabId 5
 
@@ -23,6 +23,7 @@ function Get-NinjaOneTabOrganisation {
 		'get'
 	)]
 	param(
+		# The tab Id to retrieve organisation view for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
 		[Int]$tabId

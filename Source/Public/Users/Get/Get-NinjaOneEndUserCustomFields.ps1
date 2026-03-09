@@ -5,7 +5,7 @@ function Get-NinjaOneEndUserCustomFields {
 		.DESCRIPTION
 			Retrieves the list of custom fields for an end user via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Users
+			End User Custom Fields
 		.EXAMPLE
 			PS> Get-NinjaOneEndUserCustomFields -Id 101
 
@@ -24,6 +24,7 @@ function Get-NinjaOneEndUserCustomFields {
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
 	param(
+		# The end user Id to retrieve custom fields for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
 		[Int]$id
 	)

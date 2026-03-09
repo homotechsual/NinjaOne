@@ -5,7 +5,7 @@ function New-NinjaOneOrganisationChecklist {
 		.DESCRIPTION
 			Creates a new organisation checklist via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Organisation Checklists
+			Organisation Checklist
 		.EXAMPLE
 			PS> New-NinjaOneOrganisationChecklist -checklist @{ name = 'Onboarding'; items = @('Step1','Step2') }
 
@@ -14,28 +14,28 @@ function New-NinjaOneOrganisationChecklist {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $body = @(
 				@{
-					name = "string"
-					description = @{
-						text = "string"
-						html = "string"
-					}
-					required = $false
-					dueDate = 0
-					assignedToUserId = 0
-					organizationId = 0
 					checklistTemplateId = 0
+					required = $false
 					tasks = @(
 						@{
-							id = 0
-							position = 0
-							name = "string"
-							description = @{
-							}
-							assignedToUserId = 0
-							dueDate = 0
 							completed = $false
+							assignedToUserId = 0
+							position = 0
+							description = @{
+								text = "string"
+								html = "string"
+							}
+							id = 0
+							name = "string"
+							dueDate = 0
 						}
 					)
+					assignedToUserId = 0
+					organizationId = 0
+					description = @{
+					}
+					name = "string"
+					dueDate = 0
 				}
 			)
 			PS> New-NinjaOneOrganisationChecklist -checklist $body
@@ -71,6 +71,7 @@ function New-NinjaOneOrganisationChecklist {
 		} catch { New-NinjaOneError -ErrorRecord $_ }
 	}
 }
+
 
 
 
