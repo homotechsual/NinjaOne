@@ -25,8 +25,10 @@ Returns information about the AllMetadata resource.
 This cmdlet is part of the NinjaOne PowerShell module.
 Generated reference help - customize descriptions as needed.
 #>
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal test module does not require parameter descriptions.')]
 function Get-AllMetadata {
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal test module does not require parameter descriptions.')]
+	param()
+	
     $FunctionList = Get-FunctionList
     $AllMetadata = foreach ($Function in $FunctionList) {
         $AST = $Function.ScriptBlock.Ast

@@ -20,20 +20,30 @@ function Invoke-NinjaOneDeviceScript {
 			
 			Full request example (auto-generated).
 		.OUTPUTS
-			A powershell object containing the response.
-		.EXAMPLE
-			PS> Invoke-NinjaOneDeviceScript -deviceId 1 -type 'SCRIPT' -scriptId 1
+			System.Void
 
-			Runs the script with id 1 against the device with id 1.
+			This commandlet returns no output by default. A success message will be written to the information stream if the API returns a 204 success code. Use `-InformationAction Continue` to see this message. Use the `-show` switch to return the HTTP status code.
 		.EXAMPLE
-			PS> Invoke-NinjaOneDeviceScript -deviceId 1 -type 'ACTION' -actionUId '00000000-0000-0000-0000-000000000000'
+			PS> Invoke-NinjaOneDeviceScript -deviceId 1 -type 'SCRIPT' -scriptId 1 -runAs 'system'
 
-			Runs the built-in action with uid 00000000-0000-0000-0000-000000000000 against the device with id 1.
+			Runs the script with id 1 against the device with id 1 with system-level permissions.
+		.EXAMPLE
+			PS> Invoke-NinjaOneDeviceScript -deviceId 1 -type 'ACTION' -actionUId '00000000-0000-0000-0000-000000000000' -runAs 'system'
+
+			Runs the built-in action with uid 00000000-0000-0000-0000-000000000000 against the device with id 1 with system-level permissions.
+		.EXAMPLE
+			PS> Invoke-NinjaOneDeviceScript -deviceId 1 -type 'SCRIPT' -scriptId 1 -runAs 'loggedonuser'
+
+			Runs the script with id 1 as the currently logged-on user on device 1.
+		.EXAMPLE
+			PS> Invoke-NinjaOneDeviceScript -deviceId 1 -type 'SCRIPT' -scriptId 1 -runAs '26'
+
+			Runs the script with id 1 using the preferred credential with ID 26.
 		.LINK
 			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Invoke/scriptoraction
 	#>
 	[CmdletBinding()]
-	[OutputType([Object])]
+	[OutputType([System.Void])]
 	[Alias('inods')]
 	[MetadataAttribute(
 		'/v2/device/{id}/script/run',
@@ -61,13 +71,26 @@ function Invoke-NinjaOneDeviceScript {
 		[Parameter(ParameterSetName = 'SCRIPT', Position = 3, ValueFromPipelineByPropertyName)]
 		[Parameter(ParameterSetName = 'ACTION', Position = 3, ValueFromPipelineByPropertyName)]
 		[String]$parameters,
-		# The credential/role identifier to use when running the script.
-		[Parameter(ParameterSetName = 'SCRIPT', Position = 4, ValueFromPipelineByPropertyName)]
-		[Parameter(ParameterSetName = 'ACTION', Position = 4, ValueFromPipelineByPropertyName)]
+		# The credential/role identifier to use when running the script or action. This parameter is case-sensitive and controls the permission level.
+		# Valid values are:
+		# - 'system': Run with system-level permissions (maps to general.system)
+		# - 'SR_MAC_SCRIPT': Run with system-level permissions on macOS (maps to general.system)
+		# - 'SR_LINUX_SCRIPT': Run with system-level permissions on Linux (maps to general.system)
+		# - 'loggedonuser': Run as the currently logged-on user (maps to editor.credentials.currentLoggedOnUser)
+		# - 'SR_LOCAL_ADMINISTRATOR': Run as local administrator (maps to editor.credentials.preferredWindowsLocalAdmin)
+		# - 'SR_DOMAIN_ADMINISTRATOR': Run as domain administrator (maps to editor.credentials.preferredWindowsDomainAdmin)
+		# - A credential ID as a string (e.g., '26'): Run using a specific user credential from your account. You can find credential IDs in the NinjaOne UI under Account > Credentials (maps to editor.credentials.preferredCredential)
+		[Parameter(Mandatory, ParameterSetName = 'SCRIPT', Position = 4, ValueFromPipelineByPropertyName)]
+		[Parameter(Mandatory, ParameterSetName = 'ACTION', Position = 4, ValueFromPipelineByPropertyName)]
 		[ValidateScript(
-			{ $_ -is [String] -or $_ -in @('system', 'SR_MAC_SCRIPT', 'SR_LINUX_SCRIPT', 'loggedonuser', 'SR_LOCAL_ADMINISTRATOR', 'SR_DOMAIN_ADMINISTRATOR') }
+			{
+				$preset = @('system', 'SR_MAC_SCRIPT', 'SR_LINUX_SCRIPT', 'loggedonuser', 'SR_LOCAL_ADMINISTRATOR', 'SR_DOMAIN_ADMINISTRATOR')
+				$_ -in $preset -or ($_ -match '^\d+$')
+			}
 		)]
-		[String]$runAs
+		[String]$runAs,
+		# Show the status code returned from the API.
+		[Switch]$show
 	)
 	begin { }
 	process {
@@ -94,6 +117,7 @@ function Invoke-NinjaOneDeviceScript {
 					$Resource = ('v2/device/{0}/script/run' -f $deviceId)
 					$RunRequest = @{
 						type = $type
+						runAs = $runAs
 					}
 					if ($scriptId) {
 						$RunRequest.id = $scriptId
@@ -103,9 +127,6 @@ function Invoke-NinjaOneDeviceScript {
 					}
 					if ($parameters) {
 						$RunRequest.parameters = $parameters
-					}
-					if ($runAs) {
-						$RunRequest.runAs = $runAs
 					}
 					Write-Verbose ('Raw run request: {0}' -f ($RunRequest | Out-String))
 				} else {
@@ -125,6 +146,9 @@ function Invoke-NinjaOneDeviceScript {
 			$ScriptRun = New-NinjaOnePOSTRequest @RequestParams
 			if ($ScriptRun -eq 204) {
 				Write-Information ('Requested run for {0} {1} on device {2} successfully.' -f $prettyAction, $ScriptOrAction.Name, $Device.SystemName)
+				if ($show) {
+					return $ScriptRun
+				}
 			}
 		} catch {
 			New-NinjaOneError -ErrorRecord $_

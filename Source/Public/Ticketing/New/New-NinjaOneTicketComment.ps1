@@ -16,10 +16,10 @@ function New-NinjaOneTicketComment {
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $multipart = [System.Net.Http.MultipartFormDataContent]::new()
 			PS> $comment = @{
-				body = "string"
 				public = $false
-				timeTracked = 0
+				body = "string"
 				htmlBody = "string"
+				timeTracked = 0
 				duplicateInIncidents = $false
 			}
 			PS> $json = $comment | ConvertTo-Json -Depth 10
@@ -67,6 +67,7 @@ function New-NinjaOneTicketComment {
 			$RequestParams = @{
 				Resource = $Resource
 				Body = $comment
+				UseMultipart = $true
 			}
 			if ($PSCmdlet.ShouldProcess(('Ticket comment on ticket {0}' -f $ticketId), 'Create')) {
 				$TicketCreate = New-NinjaOnePOSTRequest @RequestParams
@@ -81,6 +82,7 @@ function New-NinjaOneTicketComment {
 		}
 	}
 }
+
 
 
 

@@ -97,7 +97,7 @@ function New-NinjaOneKnowledgeBaseArticlesUpload {
 			if ($FilePath) {
 				$Body.files = $FilePath
 			}
-			$RequestParams = @{ Resource = $Resource; Body = $Body }
+			$RequestParams = @{ Resource = $Resource; Body = $Body; UseMultipart = $true }
 			if ($PSCmdlet.ShouldProcess('Knowledge Base Articles', 'Upload')) {
 				$Result = New-NinjaOnePOSTRequest @RequestParams
 				return $Result

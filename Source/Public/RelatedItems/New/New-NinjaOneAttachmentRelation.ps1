@@ -6,6 +6,10 @@ function New-NinjaOneAttachmentRelation {
 			Create a new attachment relation using the NinjaOne v2 API.
 		.FUNCTIONALITY
 			Attachment Relation
+	.EXAMPLE
+		PS> New-NinjaOneAttachmentRelation -entityType ORGANIZATION -entityId 1 -attachmentRelation $body
+
+		Creates an attachment relation for the specified entity.
 		.EXAMPLE
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
 			PS> $multipart = [System.Net.Http.MultipartFormDataContent]::new()
@@ -54,6 +58,7 @@ function New-NinjaOneAttachmentRelation {
 			$RequestParams = @{
 				Resource = $Resource
 				Body = $Body
+				UseMultipart = $true
 			}
 			if ($PSCmdlet.ShouldProcess(('Attachment relation for {0} with id {1}' -f $entityType, $entityId), 'Create')) {
 				$AttachmentRelationCreate = New-NinjaOnePOSTRequest @RequestParams
@@ -68,6 +73,7 @@ function New-NinjaOneAttachmentRelation {
 		}
 	}
 }
+
 
 
 
