@@ -12,7 +12,7 @@
 RootModule = '.\NinjaOne.psm1'
 
 # Version number of this module.
-ModuleVersion = '2.4.0'
+ModuleVersion = '2.4.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -275,7 +275,7 @@ PrivateData = @{
         ReleaseNotes = '## 2026-02-27'
 
         # Prerelease string of this module
-        Prerelease = 'beta3'
+        Prerelease = ''
 
         # Flag to indicate whether the module requires explicit user acceptance for install/update/save
         # RequireLicenseAcceptance = $false

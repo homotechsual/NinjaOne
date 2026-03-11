@@ -28,13 +28,45 @@ function New-NinjaOnePOSTRequest {
 		# Enable multipart form-data detection for file uploads.
 		[Switch]$UseMultipart
 	)
+	function Get-NinjaOneMultipartEntries {
+		<#
+			.SYNOPSIS
+				Enumerate multipart body entries.
+			.DESCRIPTION
+				Normalises hashtables, ordered dictionaries, and PSCustomObjects into
+				name/value entries suitable for multipart processing.
+			.PARAMETER Value
+				The value to enumerate.
+			.OUTPUTS
+				System.Object[]
+		#>
+		param([Object]$Value)
+		if ($Value -is [System.Collections.IDictionary]) {
+			foreach ($entry in $Value.GetEnumerator()) {
+				[pscustomobject]@{
+					Name = [string]$entry.Key
+					Value = $entry.Value
+				}
+			}
+			return
+		}
+		if ($Value -is [pscustomobject]) {
+			foreach ($property in $Value.PSObject.Properties) {
+				[pscustomobject]@{
+					Name = $property.Name
+					Value = $property.Value
+				}
+			}
+		}
+	}
 	function Test-NinjaOneMultipartBody {
 		<#
 			.SYNOPSIS
 				Detect multipart-compatible values.
 			.DESCRIPTION
-				Recursively inspects a value to determine whether it contains file paths,
-				FileInfo objects, or HttpContent suitable for multipart form-data.
+				Recursively inspects a value to determine whether it can be represented as
+				multipart form-data, including object containers, file paths, FileInfo
+				objects, and HttpContent values.
 			.PARAMETER Value
 				The value to inspect for multipart indicators.
 			.OUTPUTS
@@ -50,10 +82,11 @@ function New-NinjaOnePOSTRequest {
 				if (Test-NinjaOneMultipartBody -Value $item) { return $true }
 			}
 		}
-		if (($Value -is [hashtable]) -or ($Value -is [System.Collections.Specialized.OrderedDictionary]) -or ($Value -is [pscustomobject])) {
-			foreach ($prop in ($Value.PSObject.Properties | Select-Object -ExpandProperty Value)) {
-				if (Test-NinjaOneMultipartBody -Value $prop) { return $true }
+		if (($Value -is [System.Collections.IDictionary]) -or ($Value -is [pscustomobject])) {
+			foreach ($entry in (Get-NinjaOneMultipartEntries -Value $Value)) {
+				if (Test-NinjaOneMultipartBody -Value $entry.Value) { return $true }
 			}
+			return $true
 		}
 		return $false
 	}
@@ -108,7 +141,7 @@ function New-NinjaOnePOSTRequest {
 			}
 			if (($PartValue -is [hashtable]) -or ($PartValue -is [System.Collections.Specialized.OrderedDictionary]) -or ($PartValue -is [pscustomobject])) {
 				$json = $PartValue | ConvertTo-Json -Depth 100
-				$stringContent = [System.Net.Http.StringContent]::new($json, [System.Text.Encoding]::UTF8, 'application/json')
+				$stringContent = [System.Net.Http.StringContent]::new($json, [System.Text.Encoding]::UTF8, 'text/plain')
 				$multipart.Add($stringContent, $Name)
 				return
 			}
@@ -116,8 +149,8 @@ function New-NinjaOnePOSTRequest {
 			$multipart.Add($stringContent, $Name)
 		}
 
-		if (($Value -is [hashtable]) -or ($Value -is [System.Collections.Specialized.OrderedDictionary]) -or ($Value -is [pscustomobject])) {
-			foreach ($prop in $Value.PSObject.Properties) {
+		if (($Value -is [System.Collections.IDictionary]) -or ($Value -is [pscustomobject])) {
+			foreach ($prop in (Get-NinjaOneMultipartEntries -Value $Value)) {
 				$propName = $prop.Name
 				$propValue = $prop.Value
 				if ($propValue -is [array]) {
@@ -142,7 +175,7 @@ function New-NinjaOnePOSTRequest {
 				}
 				Add-ValuePart -Name $propName -PartValue $propValue
 			}
-			return $multipart
+			return , $multipart
 		}
 
 		throw 'Multipart body must be a hashtable or PSCustomObject with file paths or FileInfo values.'
@@ -169,9 +202,13 @@ function New-NinjaOnePOSTRequest {
 		param(
 			[String]$Method,
 			[String]$Uri,
-			[System.Net.Http.HttpContent]$Content,
+			[Object]$Content,
 			[Switch]$ParseDateTime
 		)
+		if ($Content -isnot [System.Net.Http.HttpContent]) {
+			throw "Http content payload must be of type System.Net.Http.HttpContent. Received: $($Content.GetType().FullName)"
+		}
+		$HttpContent = [System.Net.Http.HttpContent]$Content
 		$client = [System.Net.Http.HttpClient]::new()
 		try {
 			$authValue = [System.Net.Http.Headers.AuthenticationHeaderValue]::new(
@@ -181,7 +218,8 @@ function New-NinjaOnePOSTRequest {
 			$client.DefaultRequestHeaders.Authorization = $authValue
 			
 			$request = [System.Net.Http.HttpRequestMessage]::new([System.Net.Http.HttpMethod]::new($Method), $Uri)
-			$request.Content = $Content
+			$request.Content = $HttpContent
+			Write-Verbose "HttpContent request Content-Type: $($request.Content.Headers.ContentType)"
 			$response = $client.SendAsync($request).GetAwaiter().GetResult()
 			$rawContent = $response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
 			if (-not $response.IsSuccessStatusCode) {
@@ -196,7 +234,7 @@ function New-NinjaOnePOSTRequest {
 			}
 			return $results
 		} finally {
-			if ($Content) { $Content.Dispose() }
+			if ($HttpContent) { $HttpContent.Dispose() }
 			if ($client) { $client.Dispose() }
 		}
 	}
@@ -247,8 +285,10 @@ function New-NinjaOnePOSTRequest {
 					$null = $multipartContent
 				} else {
 					$multipartContent = ConvertTo-NinjaOneMultipartContent -Value $Body
+					Write-Verbose "Multipart request body: $($Body | ConvertTo-Json -Depth 100)"
 				}
-				$Result = Invoke-NinjaOneHttpContentRequest -Method 'POST' -Uri $RequestUri.ToString() -Content $multipartContent -ParseDateTime:$useParseDateTime
+				Write-Verbose "Multipart payload runtime type: $($multipartContent.GetType().FullName)"
+				$Result = Invoke-NinjaOneHttpContentRequest -Method 'POST' -Uri $RequestUri.ToString() -Content ([System.Net.Http.HttpContent]$multipartContent) -ParseDateTime:$useParseDateTime
 				Write-Verbose "NinjaOne request returned $($Result | Out-String)"
 				if ($Result['results']) {
 					return $Result.results

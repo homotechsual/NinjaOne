@@ -4,6 +4,15 @@ Please note that backwards compatibility breaks are prefixed with `{"BC"}` (shor
 
 Note: Version 2.3.0 was released in error and will be skipped.
 
+## 2026-03-10 - Version 2.4.1
+
+* Fixes:
+  * Fix HTTP 415 errors on `New-NinjaOneTicketComment` by preventing PowerShell from unwrapping `MultipartFormDataContent` during parameter binding.
+  * Fix multipart body detection to use dictionary enumerator instead of `.PSObject.Properties` to avoid recursive self-reference on hashtable intrinsic members.
+
+* Updates:
+  * Add verbose logging of the request body for both multipart and JSON POST requests.
+
 ## 2026-03-09 - Version 2.4.0
 
 * Fixes:

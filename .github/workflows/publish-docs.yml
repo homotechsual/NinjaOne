@@ -1,26 +1,43 @@
 name: Publish Documentation
 
 on:
-  workflow_run:
-    workflows: ["Build and Publish Module"]
-    types:
-      - completed
+  release:
+    types: [published]
 
 jobs:
   publish-docs:
     name: Publish docs to homotechsualdocs
     runs-on: windows-latest
-    if: github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_branch, 'v') && !startsWith(github.event.workflow_run.head_branch, 'test-v')
     steps:
       - name: Checkout NinjaOne repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Find build workflow run
+        id: find-run
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $tag = '${{ github.event.release.tag_name }}'
+          # Get the latest successful build workflow run for this tag
+          $runs = gh run list --workflow build-and-publish.yml --status success --json databaseId,headBranch | ConvertFrom-Json
+          # Find the run that corresponds to this tag
+          $run = $runs | Where-Object { $_.headBranch -eq $tag } | Select-Object -First 1
+          if ($run) {
+            echo "run_id=$($run.databaseId)" >> $env:GITHUB_OUTPUT
+          } else {
+            Write-Error "Could not find build workflow run for tag $tag"
+            exit 1
+          }
 
       - name: Download documentation artifacts
         uses: actions/download-artifact@v4
         with:
           name: module-docs
           path: docs/
-          run-id: ${{ github.event.workflow_run.id }}
+          run-id: ${{ steps.find-run.outputs.run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Clone and update homotechsualdocs
@@ -35,7 +52,7 @@ jobs:
           try {
             # Verify documentation was generated
             if (-not (Test-Path '../docs/NinjaOne/commandlets')) {
-              Write-Error "Documentation not found in artifact. Build may have failed to generate docs."
+              Write-Error "Documentation not found. Build may have failed to generate docs."
               exit 1
             }
             
@@ -61,7 +78,7 @@ jobs:
             
             # Commit and push
             git add docs/ninjaone/commandlets
-            $commitMsg = "Docs update for NinjaOne ${{ github.event.workflow_run.head_branch }}"
+            $commitMsg = "Docs update for NinjaOne ${{ github.event.release.tag_name }}"
             git commit -m $commitMsg
             git push origin main
             
