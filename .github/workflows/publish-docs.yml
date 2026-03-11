@@ -100,6 +100,9 @@ jobs:
           
           Push-Location docs-repo
           try {
+            git config core.autocrlf false
+            git remote set-url origin https://x-access-token:$env:GH_TOKEN@github.com/homotechsual/homotechsualdocs.git
+
             $targetBranch = git branch --show-current
             if ([string]::IsNullOrWhiteSpace($targetBranch)) {
               Write-Error 'Could not determine the checked-out branch for homotechsualdocs.'
