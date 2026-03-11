@@ -64,6 +64,15 @@ function New-NinjaOneTicketComment {
 	process {
 		try {
 			$Resource = ('v2/ticketing/ticket/{0}/comment' -f $ticketId)
+			$hasMultipartEnvelope = $false
+			if ($comment -is [System.Collections.IDictionary]) {
+				$hasMultipartEnvelope = $comment.Contains('comment') -or $comment.Contains('files')
+			} elseif ($comment -is [PSCustomObject]) {
+				$hasMultipartEnvelope = (($comment.PSObject.Properties.Match('comment')).Count -gt 0) -or (($comment.PSObject.Properties.Match('files')).Count -gt 0)
+			}
+			if (($comment -isnot [System.Net.Http.HttpContent]) -and (-not $hasMultipartEnvelope)) {
+				$comment = @{ comment = $comment }
+			}
 			$RequestParams = @{
 				Resource = $Resource
 				Body = $comment
