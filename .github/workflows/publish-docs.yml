@@ -26,6 +26,8 @@ jobs:
   publish-docs:
     name: Publish docs to homotechsualdocs
     runs-on: windows-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (
@@ -106,6 +108,18 @@ jobs:
             $targetBranch = git branch --show-current
             if ([string]::IsNullOrWhiteSpace($targetBranch)) {
               Write-Error 'Could not determine the checked-out branch for homotechsualdocs.'
+              exit 1
+            }
+
+            # Verify token can push before doing file operations.
+            $pushCheckSucceeded = $true
+            try {
+              git push --dry-run origin "HEAD:$targetBranch"
+            } catch {
+              $pushCheckSucceeded = $false
+            }
+            if (-not $pushCheckSucceeded) {
+              Write-Error "DOCS_REPO_TOKEN cannot push to homotechsual/homotechsualdocs:$targetBranch. Ensure the token has repository write access (contents:write)."
               exit 1
             }
 
