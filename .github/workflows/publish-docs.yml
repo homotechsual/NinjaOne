@@ -1,43 +1,75 @@
 name: Publish Documentation
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
-  release:
-    types: [published]
+  workflow_run:
+    workflows: ['Build and Publish Module']
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'Successful Build and Publish Module workflow run id that produced the docs artifact'
+        required: true
+        type: string
+      tag_name:
+        description: 'Release tag associated with the documentation, for example v2.4.1'
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
 
 jobs:
   publish-docs:
     name: Publish docs to homotechsualdocs
     runs-on: windows-latest
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.event == 'push' &&
+        startsWith(github.event.workflow_run.head_branch, 'v')
+      )
     steps:
       - name: Checkout NinjaOne repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
-      - name: Find build workflow run
-        id: find-run
+      - name: Resolve workflow context
+        id: context
         shell: pwsh
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          $tag = '${{ github.event.release.tag_name }}'
-          # Get the latest successful build workflow run for this tag
-          $runs = gh run list --workflow build-and-publish.yml --status success --json databaseId,headBranch | ConvertFrom-Json
-          # Find the run that corresponds to this tag
-          $run = $runs | Where-Object { $_.headBranch -eq $tag } | Select-Object -First 1
-          if ($run) {
-            echo "run_id=$($run.databaseId)" >> $env:GITHUB_OUTPUT
+          if ('${{ github.event_name }}' -eq 'workflow_dispatch') {
+            $runId = '${{ inputs.run_id }}'
+            $tagName = '${{ inputs.tag_name }}'
           } else {
-            Write-Error "Could not find build workflow run for tag $tag"
+            $runId = '${{ github.event.workflow_run.id }}'
+            $tagName = '${{ github.event.workflow_run.head_branch }}'
+          }
+
+          if ([string]::IsNullOrWhiteSpace($runId)) {
+            Write-Error 'Workflow run id was not provided by the event payload.'
             exit 1
           }
 
+          if ([string]::IsNullOrWhiteSpace($tagName) -or -not $tagName.StartsWith('v')) {
+            Write-Error "Expected a tag-based workflow run, received head_branch '$tagName'."
+            exit 1
+          }
+
+          "run_id=$runId" >> $env:GITHUB_OUTPUT
+          "tag_name=$tagName" >> $env:GITHUB_OUTPUT
+
       - name: Download documentation artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: module-docs
-          path: docs/
-          run-id: ${{ steps.find-run.outputs.run_id }}
+          path: docs-artifact/
+          run-id: ${{ steps.context.outputs.run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Clone and update homotechsualdocs
@@ -45,17 +77,38 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.DOCS_REPO_TOKEN }}
         run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
+
+          $sourceCommandletsPath = Get-ChildItem -Path 'docs-artifact' -Directory -Recurse |
+            Where-Object {
+              $_.Name -eq 'commandlets' -and
+              $_.Parent -and
+              $_.Parent.Name -ieq 'ninjaone'
+            } |
+            Select-Object -First 1 -ExpandProperty FullName
+
+          if (-not $sourceCommandletsPath) {
+            Write-Error 'Documentation artifact does not contain a docs/ninjaone/commandlets directory.'
+            exit 1
+          }
+
+          Write-Host "Using documentation from: $sourceCommandletsPath" -ForegroundColor Cyan
+
           # Clone homotechsualdocs with authentication
-          git clone https://x-access-token:$env:GH_TOKEN@github.com/homotechsual/homotechsualdocs.git docs-repo
+          git -c core.autocrlf=false clone https://x-access-token:$env:GH_TOKEN@github.com/homotechsual/homotechsualdocs.git docs-repo
           
           Push-Location docs-repo
           try {
-            # Verify documentation was generated
-            if (-not (Test-Path '../docs/NinjaOne/commandlets')) {
-              Write-Error "Documentation not found. Build may have failed to generate docs."
+            git config core.autocrlf false
+            git remote set-url origin https://x-access-token:$env:GH_TOKEN@github.com/homotechsual/homotechsualdocs.git
+
+            $targetBranch = git branch --show-current
+            if ([string]::IsNullOrWhiteSpace($targetBranch)) {
+              Write-Error 'Could not determine the checked-out branch for homotechsualdocs.'
               exit 1
             }
-            
+
             # Replace docs
             if (Test-Path 'docs/ninjaone/commandlets') {
               Remove-Item -Path 'docs/ninjaone/commandlets' -Recurse -Force
@@ -63,7 +116,7 @@ jobs:
             New-Item -Path 'docs/ninjaone/commandlets' -ItemType Directory -Force | Out-Null
             
             # Copy generated docs
-            Copy-Item -Path '../docs/NinjaOne/commandlets/*' -Destination 'docs/ninjaone/commandlets' -Recurse -Force
+            Copy-Item -Path (Join-Path -Path $sourceCommandletsPath -ChildPath '*') -Destination 'docs/ninjaone/commandlets' -Recurse -Force
             
             # Configure git
             git config user.email "action@github.com"
@@ -78,9 +131,9 @@ jobs:
             
             # Commit and push
             git add docs/ninjaone/commandlets
-            $commitMsg = "Docs update for NinjaOne ${{ github.event.release.tag_name }}"
+            $commitMsg = "Docs update for NinjaOne ${{ steps.context.outputs.tag_name }}"
             git commit -m $commitMsg
-            git push origin main
+            git push origin "HEAD:$targetBranch"
             
             Write-Host "✓ Documentation published to homotechsualdocs" -ForegroundColor Green
           } finally {
