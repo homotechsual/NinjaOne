@@ -1,5 +1,8 @@
 name: Publish Documentation
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   workflow_run:
     workflows: ['Build and Publish Module']
@@ -75,6 +78,7 @@ jobs:
           GH_TOKEN: ${{ secrets.DOCS_REPO_TOKEN }}
         run: |
           $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
 
           $sourceCommandletsPath = Get-ChildItem -Path 'docs-artifact' -Directory -Recurse |
             Where-Object {
@@ -92,10 +96,16 @@ jobs:
           Write-Host "Using documentation from: $sourceCommandletsPath" -ForegroundColor Cyan
 
           # Clone homotechsualdocs with authentication
-          git clone https://x-access-token:$env:GH_TOKEN@github.com/homotechsual/homotechsualdocs.git docs-repo
+          git -c core.autocrlf=false clone https://x-access-token:$env:GH_TOKEN@github.com/homotechsual/homotechsualdocs.git docs-repo
           
           Push-Location docs-repo
           try {
+            $targetBranch = git branch --show-current
+            if ([string]::IsNullOrWhiteSpace($targetBranch)) {
+              Write-Error 'Could not determine the checked-out branch for homotechsualdocs.'
+              exit 1
+            }
+
             # Replace docs
             if (Test-Path 'docs/ninjaone/commandlets') {
               Remove-Item -Path 'docs/ninjaone/commandlets' -Recurse -Force
@@ -120,7 +130,7 @@ jobs:
             git add docs/ninjaone/commandlets
             $commitMsg = "Docs update for NinjaOne ${{ steps.context.outputs.tag_name }}"
             git commit -m $commitMsg
-            git push origin main
+            git push origin "HEAD:$targetBranch"
             
             Write-Host "✓ Documentation published to homotechsualdocs" -ForegroundColor Green
           } finally {
