@@ -15,7 +15,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Bootstrap environment
         shell: pwsh
@@ -74,7 +74,7 @@ jobs:
     needs: lint
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Bootstrap environment
         shell: pwsh
@@ -164,7 +164,7 @@ jobs:
           reporter: java-junit
 
       - name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: test-results
@@ -174,7 +174,7 @@ jobs:
             .artifacts/TestResults.docs.xml
 
       - name: Upload code coverage
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: code-coverage
@@ -252,7 +252,7 @@ jobs:
     needs: test
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -276,14 +276,14 @@ jobs:
           & "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'generateShortNamesMapping', 'updateHelp', 'publishDocs'
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: module-build
           path: output/
           retention-days: 30
 
       - name: Upload documentation
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: module-docs
           path: .build/docs/
