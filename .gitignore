@@ -426,6 +426,9 @@ FodyWeavers.xsd
 
 # End of https://www.toptal.com/developers/gitignore/api/csharp,visualstudiocode,powershell
 
+# Claude Code
+.claude/
+
 # Custom
 output
 build
