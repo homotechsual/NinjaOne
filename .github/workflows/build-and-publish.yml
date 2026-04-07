@@ -106,10 +106,12 @@ jobs:
           & "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v5
-        with:
-          name: module-build
-          path: output/
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          gh run download ${{ github.run_id }} --name module-build --dir output
 
       - name: Package module for release
         shell: pwsh

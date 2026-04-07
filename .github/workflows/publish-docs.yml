@@ -67,12 +67,12 @@ jobs:
           "tag_name=$tagName" >> $env:GITHUB_OUTPUT
 
       - name: Download documentation artifacts
-        uses: actions/download-artifact@v5
-        with:
-          name: module-docs
-          path: docs-artifact/
-          run-id: ${{ steps.context.outputs.run_id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          gh run download ${{ steps.context.outputs.run_id }} --name module-docs --dir docs-artifact
 
       - name: Clone and update homotechsualdocs
         shell: pwsh
