@@ -34,6 +34,20 @@ Describe ('{0} - Core Tests' -f $ModuleName) -Tags 'Module' {
         $Script:ModuleInformation.RootModule | Should -Be ".\$($ModuleName).psm1"
     }
 
+    It 'Loads required assemblies from the manifest without script-level using statements' {
+        $repoRoot = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..')
+        $initialisationPath = Join-Path -Path $repoRoot -ChildPath 'Source\Initialisation.ps1'
+        $initialisationContent = Get-Content -Path $initialisationPath -TotalCount 5
+        $requiredAssemblyNames = @(
+            $Script:ModuleInformation.RequiredAssemblies |
+                ForEach-Object { [System.IO.Path]::GetFileName([string]$_) }
+        )
+
+        ($initialisationContent -join "`n") | Should -Not -Match 'using assembly'
+        $requiredAssemblyNames | Should -Contain 'MetadataAttribute.dll'
+        $requiredAssemblyNames | Should -Contain 'ValidateNodeRoleId.dll'
+    }
+
     It 'Has a description' {
         $Script:ModuleInformation.Description | Should -Not -BeNullOrEmpty
     }

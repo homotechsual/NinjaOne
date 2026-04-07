@@ -1,6 +1,3 @@
-using assembly '.\Binaries\MetadataAttribute.dll'
-using assembly '.\Binaries\ValidateNodeRoleId.dll'
-
 [int32]$Script:NRAPIDefaultPageSize = 2000
 [bool]$Script:ParseDateTimes = $false
 [bool]$Script:NRAPIInstanceCapabilityCheckEnabled = $true

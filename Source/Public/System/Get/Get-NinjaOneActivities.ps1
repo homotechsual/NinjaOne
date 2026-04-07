@@ -136,14 +136,14 @@ function Get-NinjaOneActivities {
 		$Parameters = (Get-Command -Name $CommandName).Parameters
 		# Workaround to prevent the query string processor from adding an 'deviceid=' parameter by removing it from the set parameters.
 		if ($deviceId) {
-			$Parameters.Remove('deviceId')
+			$Parameters.Remove('deviceId') | Out-Null
 			if ($type) {
-				$Parameters.Remove('type')
+				$Parameters.Remove('type') | Out-Null
 				[string]$activityType = $type
 			}
 		} else {
 			if ($activityType) {
-				$Parameters.Remove('activityType')
+				$Parameters.Remove('activityType') | Out-Null
 				[string]$type = $activityType
 			}
 		}

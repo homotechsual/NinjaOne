@@ -4,6 +4,15 @@ Please note that backwards compatibility breaks are prefixed with `{"BC"}` (shor
 
 Note: Version 2.3.0 was released in error and will be skipped.
 
+## 2026-04-07 - Version 2.4.2
+
+* Fixes:
+  * Fix module import failures for PowerShell on Linux in Azure Functions by relying on `RequiredAssemblies` in the manifest instead of script-level `using assembly` statements.
+  * Fix `Get-NinjaOneActivities` emitting stray boolean output when parameter normalization removes keys from the parameter dictionary.
+
+* Updates:
+  * Add regression tests covering manifest-based assembly loading and `Get-NinjaOneActivities` output behavior.
+
 ## 2026-03-10 - Version 2.4.1
 
 * Fixes:

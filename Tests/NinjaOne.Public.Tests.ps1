@@ -109,6 +109,80 @@ Describe 'New-NinjaOneTicketComment' {
 	}
 }
 
+Describe 'Get-NinjaOneActivities' {
+	It 'does not emit boolean output when using -deviceId with -type' {
+		$module = Get-Module -Name 'NinjaOne' | Select-Object -First 1
+		& $module {
+			function New-NinjaOneGETRequest {
+				<#
+				.SYNOPSIS
+					Returns mock activity data for the `-deviceId` and `-type` test case.
+				#>
+				[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Test fixture mock - parameters mirror the real function signature.')]
+				param(
+					$Resource,
+					$QSCollection,
+					$Raw,
+					$ParseDateTime
+				)
+
+				return [pscustomobject]@{
+					lastActivityId = 42
+					activities = @(
+						[pscustomobject]@{
+							id = 42
+							type = 'Action'
+						}
+					)
+				}
+			}
+
+			$result = @(Get-NinjaOneActivities -deviceId 123 -type 'Action')
+
+			$result.Count | Should -Be 1
+			($result | Where-Object { $_ -is [bool] }).Count | Should -Be 0
+			$result[0].lastActivityId | Should -Be 42
+			$result[0].activities[0].type | Should -Be 'Action'
+		}
+	}
+
+	It 'does not emit boolean output when using -activityType' {
+		$module = Get-Module -Name 'NinjaOne' | Select-Object -First 1
+		& $module {
+			function New-NinjaOneGETRequest {
+				<#
+				.SYNOPSIS
+					Returns mock activity data for the `-activityType` test case.
+				#>
+				[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Test fixture mock - parameters mirror the real function signature.')]
+				param(
+					$Resource,
+					$QSCollection,
+					$Raw,
+					$ParseDateTime
+				)
+
+				return [pscustomobject]@{
+					lastActivityId = 7
+					activities     = @(
+						[pscustomobject]@{
+							id   = 7
+							type = 'Action'
+						}
+					)
+				}
+			}
+
+			$result = @(Get-NinjaOneActivities -activityType 'Action')
+
+			$result.Count | Should -Be 1
+			($result | Where-Object { $_ -is [bool] }).Count | Should -Be 0
+			$result[0].lastActivityId | Should -Be 7
+			$result[0].activities[0].id | Should -Be 7
+		}
+	}
+}
+
 # ============================================================================
 # COMPREHENSIVE PUBLIC QUERY TEST SUITE SUMMARY
 # ============================================================================
