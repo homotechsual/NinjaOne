@@ -114,6 +114,10 @@ Describe 'Get-NinjaOneActivities' {
 		$module = Get-Module -Name 'NinjaOne' | Select-Object -First 1
 		& $module {
 			function New-NinjaOneGETRequest {
+				<#
+				.SYNOPSIS
+					Returns mock activity data for the `-deviceId` and `-type` test case.
+				#>
 				[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Test fixture mock - parameters mirror the real function signature.')]
 				param(
 					$Resource,
@@ -124,9 +128,9 @@ Describe 'Get-NinjaOneActivities' {
 
 				return [pscustomobject]@{
 					lastActivityId = 42
-					activities     = @(
+					activities = @(
 						[pscustomobject]@{
-							id   = 42
+							id = 42
 							type = 'Action'
 						}
 					)
@@ -146,6 +150,10 @@ Describe 'Get-NinjaOneActivities' {
 		$module = Get-Module -Name 'NinjaOne' | Select-Object -First 1
 		& $module {
 			function New-NinjaOneGETRequest {
+				<#
+				.SYNOPSIS
+					Returns mock activity data for the `-activityType` test case.
+				#>
 				[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Test fixture mock - parameters mirror the real function signature.')]
 				param(
 					$Resource,
