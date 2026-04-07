@@ -164,5 +164,9 @@ jobs:
         shell: pwsh
         run: |
           if ('${{ steps.capability_check.outcome }}' -ne 'success') {
-            throw 'Endpoint drift was detected. Review the uploaded report artifact and any created issue.'
+            if ('${{ steps.capability_check.outputs.drift_detected }}' -eq 'true') {
+              throw 'Endpoint drift was detected. Review the uploaded report artifact and any created issue.'
+            }
+
+            throw 'The instance capability check failed before drift analysis completed. Review the workflow logs for the underlying execution error.'
           }

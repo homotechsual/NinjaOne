@@ -33,14 +33,40 @@ if (-not $OutputPath) {
 	$OutputPath = Join-Path -Path $RepoRoot -ChildPath '.artifacts\instance-capability-report.json'
 }
 if (-not $ManifestPath) {
-	$manifestMatches = @(Get-ChildItem -Path (Join-Path -Path $RepoRoot -ChildPath 'Output\NinjaOne\*\NinjaOne.psd1') -ErrorAction Stop)
+	$outputManifestDirectory = Join-Path -Path $RepoRoot -ChildPath 'Output\NinjaOne'
+	if (-not (Test-Path -Path $outputManifestDirectory -PathType Container)) {
+		throw 'No built NinjaOne manifest found under Output\NinjaOne. Build the module first.'
+	}
+
+	$manifestMatches = @(
+		Get-ChildItem -Path (Join-Path -Path $outputManifestDirectory -ChildPath '*\NinjaOne.psd1') -File -ErrorAction SilentlyContinue
+	)
 	if (-not $manifestMatches) {
 		throw 'No built NinjaOne manifest found under Output\NinjaOne. Build the module first.'
 	}
-	$ManifestPath = ($manifestMatches | Sort-Object -Property FullName | Select-Object -Last 1 -ExpandProperty FullName)
+
+	$ManifestPath = (
+		$manifestMatches |
+		Sort-Object -Property @(
+			@{
+				Expression = {
+					$manifestVersion = [version]'0.0'
+					if (-not [version]::TryParse($_.Directory.Name, [ref]$manifestVersion)) {
+						$manifestVersion = [version]'0.0'
+					}
+					$manifestVersion
+				}
+			},
+			'FullName'
+		) |
+		Select-Object -Last 1 -ExpandProperty FullName
+	)
 }
 
 $outputDirectory = Split-Path -Path $OutputPath -Parent
+if ([string]::IsNullOrWhiteSpace($outputDirectory)) {
+	$outputDirectory = '.'
+}
 $null = New-Item -Path $outputDirectory -ItemType Directory -Force
 
 Import-Module -Name $ManifestPath -Force -DisableNameChecking
@@ -227,7 +253,14 @@ $totalRemovedRepoAndCmdlet = (($results | Measure-Object -Property RemovedRepoAn
 $totalRemovedRepoOnly = (($results | Measure-Object -Property RemovedRepoOnlyCount -Sum).Sum | ForEach-Object { if ($null -ne $_) { [int]$_ } else { 0 } })
 $totalRemovedCmdletOnly = (($results | Measure-Object -Property RemovedCmdletOnlyCount -Sum).Sum | ForEach-Object { if ($null -ne $_) { [int]$_ } else { 0 } })
 $totalDriftIssues = $totalCoverageGaps + $totalRemovedRepoAndCmdlet + $totalRemovedRepoOnly + $totalRemovedCmdletOnly
-if ($FailOnDetectedDrift -and $totalDriftIssues -gt 0) {
+$driftDetected = $totalDriftIssues -gt 0
+
+if ($env:GITHUB_OUTPUT) {
+	Add-Content -Path $env:GITHUB_OUTPUT -Value ("drift_detected={0}" -f $driftDetected.ToString().ToLowerInvariant())
+	Add-Content -Path $env:GITHUB_OUTPUT -Value ("drift_issue_count={0}" -f $totalDriftIssues)
+}
+
+if ($FailOnDetectedDrift -and $driftDetected) {
 	throw ('Detected {0} live endpoint coverage/removal issue(s) across the monitored NinjaOne instances.' -f $totalDriftIssues)
 }
 
