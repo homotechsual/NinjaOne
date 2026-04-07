@@ -38,29 +38,28 @@ if (-not $ManifestPath) {
 		throw 'No built NinjaOne manifest found under Output\NinjaOne. Build the module first.'
 	}
 
-	$manifestMatches = @(
-		Get-ChildItem -Path (Join-Path -Path $outputManifestDirectory -ChildPath '*\NinjaOne.psd1') -File -ErrorAction SilentlyContinue
+	$versionDirectories = @(
+		Get-ChildItem -Path $outputManifestDirectory -Directory -ErrorAction SilentlyContinue |
+		Where-Object { $_.Name -match '^\d+(?:\.\d+){1,3}$' } |
+		Sort-Object -Property @{ Expression = { [version]$_.Name }; Descending = $true }
 	)
-	if (-not $manifestMatches) {
+	if (-not $versionDirectories) {
 		throw 'No built NinjaOne manifest found under Output\NinjaOne. Build the module first.'
 	}
 
 	$ManifestPath = (
-		$manifestMatches |
-		Sort-Object -Property @(
-			@{
-				Expression = {
-					$manifestVersion = [version]'0.0'
-					if (-not [version]::TryParse($_.Directory.Name, [ref]$manifestVersion)) {
-						$manifestVersion = [version]'0.0'
-					}
-					$manifestVersion
-				}
-			},
-			'FullName'
-		) |
-		Select-Object -Last 1 -ExpandProperty FullName
+		$versionDirectories |
+		ForEach-Object {
+			$manifestPath = Join-Path -Path $_.FullName -ChildPath 'NinjaOne.psd1'
+			if (Test-Path -Path $manifestPath -PathType Leaf) {
+				$manifestPath
+			}
+		} |
+		Select-Object -First 1
 	)
+	if (-not $ManifestPath) {
+		throw 'No built NinjaOne manifest found under Output\NinjaOne. Build the module first.'
+	}
 }
 
 $outputDirectory = Split-Path -Path $OutputPath -Parent
