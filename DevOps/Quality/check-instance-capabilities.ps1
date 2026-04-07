@@ -67,9 +67,6 @@ $outputDirectory = Split-Path -Path $OutputPath -Parent
 if ([string]::IsNullOrWhiteSpace($outputDirectory)) {
 	$outputDirectory = '.'
 }
-if ([string]::IsNullOrWhiteSpace($outputDirectory)) {
-	$outputDirectory = '.'
-}
 $null = New-Item -Path $outputDirectory -ItemType Directory -Force
 
 Import-Module -Name $ManifestPath -Force -DisableNameChecking
