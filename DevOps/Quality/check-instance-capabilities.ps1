@@ -241,9 +241,10 @@ if ($removalResults.Count -gt 0) {
 	$summary.Add('No removed endpoints were detected across the tracked comparison sets.') | Out-Null
 }
 
-Set-Content -Path $markdownPath -Value $summary -Encoding UTF8
+$summaryLines = $summary.ToArray()
+Set-Content -Path $markdownPath -Value $summaryLines -Encoding UTF8
 if ($env:GITHUB_STEP_SUMMARY) {
-	Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summary
+	Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summaryLines
 }
 
 $totalDriftMeasure = $results | Measure-Object -Property LiveEndpointWithoutCmdletCoverageCount -Sum
