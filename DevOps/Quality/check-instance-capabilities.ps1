@@ -151,13 +151,17 @@ $results = foreach ($instance in ($Instances | Where-Object { -not [string]::IsN
 	Write-Host ('Checking instance {0}...' -f $instance) -ForegroundColor Cyan
 	$capability = Get-NinjaOneInstanceCapabilities -Instance $instance -IncludePaths -Refresh
 	$instanceEndpointSet = & $endpointSetBuilder -Paths $capability.Paths
+	$instanceEndpointLookup = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+	foreach ($endpoint in $instanceEndpointSet) {
+		[void]$instanceEndpointLookup.Add($endpoint)
+	}
 
-	$liveWithoutCmdletCoverage = @($instanceEndpointSet | Where-Object { $_ -notin $cmdletEndpointSet } | Sort-Object)
-	$repoMissingFromLive = @($repoEndpointSet | Where-Object { $_ -notin $instanceEndpointSet } | Sort-Object)
-	$cmdletMissingFromLive = @($cmdletEndpointSet | Where-Object { $_ -notin $instanceEndpointSet } | Sort-Object)
-	$removedRepoAndCmdlet = @($repoMissingFromLive | Where-Object { $_ -in $cmdletEndpointSet } | Sort-Object)
-	$removedRepoOnly = @($repoMissingFromLive | Where-Object { $_ -notin $cmdletEndpointSet } | Sort-Object)
-	$removedCmdletOnly = @($cmdletMissingFromLive | Where-Object { $_ -notin $repoEndpointSet } | Sort-Object)
+	$liveWithoutCmdletCoverage = @($instanceEndpointSet | Where-Object { -not $cmdletEndpointSet.Contains($_) } | Sort-Object)
+	$repoMissingFromLive = @($repoEndpointSet | Where-Object { -not $instanceEndpointLookup.Contains($_) } | Sort-Object)
+	$cmdletMissingFromLive = @($cmdletEndpointSet | Where-Object { -not $instanceEndpointLookup.Contains($_) } | Sort-Object)
+	$removedRepoAndCmdlet = @($repoMissingFromLive | Where-Object { $cmdletEndpointSet.Contains($_) } | Sort-Object)
+	$removedRepoOnly = @($repoMissingFromLive | Where-Object { -not $cmdletEndpointSet.Contains($_) } | Sort-Object)
+	$removedCmdletOnly = @($cmdletMissingFromLive | Where-Object { -not $repoEndpointSet.Contains($_) } | Sort-Object)
 
 	[PSCustomObject]@{
 		Instance = $instance
