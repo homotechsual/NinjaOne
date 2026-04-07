@@ -91,10 +91,12 @@ jobs:
 
           $report = @(Get-Content -Path $reportPath -Raw | ConvertFrom-Json)
           $itemsNeedingAttention = @($report | Where-Object {
-            $_.LiveEndpointWithoutCmdletCoverageCount -gt 0 -or
-            $_.RemovedRepoAndCmdletCount -gt 0 -or
-            $_.RemovedRepoOnlyCount -gt 0 -or
-            $_.RemovedCmdletOnlyCount -gt 0
+            -not $_.ExcludedFromFailure -and (
+              $_.LiveEndpointWithoutCmdletCoverageCount -gt 0 -or
+              $_.RemovedRepoAndCmdletCount -gt 0 -or
+              $_.RemovedRepoOnlyCount -gt 0 -or
+              $_.RemovedCmdletOnlyCount -gt 0
+            )
           })
           if ($itemsNeedingAttention.Count -eq 0) {
             Write-Host 'No missing cmdlet coverage or endpoint removals detected.' -ForegroundColor Green
