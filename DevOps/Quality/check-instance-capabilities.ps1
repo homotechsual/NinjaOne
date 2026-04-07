@@ -18,7 +18,6 @@ param(
 	# Output path for the JSON report.
 	[String]$OutputPath,
 	# Fail the script when live coverage gaps or endpoint removals are detected.
-	[Alias('FailOnNewEndpoints')]
 	[Switch]$FailOnDetectedDrift
 )
 
