@@ -37,6 +37,7 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
           if (-not (Test-Path 'Source\Binaries')) {
             New-Item -Path 'Source\Binaries' -ItemType Directory -Force | Out-Null
           }
@@ -44,6 +45,9 @@ jobs:
           Push-Location 'C# Classes'
           try {
             dotnet build 'C# Classes.sln' -c Release
+            if ($LASTEXITCODE -ne 0) {
+              throw "dotnet build failed with exit code $LASTEXITCODE"
+            }
 
             $projectDirs = @('MetadataAttribute', 'ValidateNodeRoleId', 'ValidateStringOrInt', 'Enums')
             foreach ($projectDir in $projectDirs) {
