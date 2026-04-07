@@ -1,0 +1,173 @@
+name: Monthly Instance Capability Check
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+on:
+  schedule:
+    - cron: '0 6 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  endpoint-drift:
+    name: Check live instance endpoint drift
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Bootstrap environment
+        shell: pwsh
+        working-directory: ${{ github.workspace }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Build C# projects
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not (Test-Path 'Source\Binaries')) {
+            New-Item -Path 'Source\Binaries' -ItemType Directory -Force | Out-Null
+          }
+
+          Push-Location 'C# Classes'
+          try {
+            dotnet build 'C# Classes.sln' -c Release
+
+            $projectDirs = @('MetadataAttribute', 'ValidateNodeRoleId', 'ValidateStringOrInt', 'Enums')
+            foreach ($projectDir in $projectDirs) {
+              $dllPath = Join-Path -Path $projectDir -ChildPath 'bin\Release\*\*.dll'
+              $dlls = Get-ChildItem -Path $dllPath -ErrorAction SilentlyContinue
+              if ($dlls) {
+                Copy-Item -Path $dlls -Destination '..\Source\Binaries\' -Force
+                Write-Host "  ✓ Copied $($dlls.Count) DLL(s) from $projectDir"
+              }
+            }
+          } finally {
+            Pop-Location
+          }
+
+      - name: Build module
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'clean', 'build'
+
+      - name: Run monthly instance capability check
+        id: capability_check
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Quality\check-instance-capabilities.ps1" -FailOnDetectedDrift
+
+      - name: Create or update issue for missing cmdlet coverage or removals
+        if: always()
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $reportPath = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath '.artifacts\instance-capability-report.json'
+          if (-not (Test-Path -Path $reportPath)) {
+            Write-Host 'No instance capability report found; skipping issue creation.' -ForegroundColor Yellow
+            exit 0
+          }
+
+          $report = @(Get-Content -Path $reportPath -Raw | ConvertFrom-Json)
+          $itemsNeedingAttention = @($report | Where-Object {
+            $_.LiveEndpointWithoutCmdletCoverageCount -gt 0 -or
+            $_.RemovedRepoAndCmdletCount -gt 0 -or
+            $_.RemovedRepoOnlyCount -gt 0 -or
+            $_.RemovedCmdletOnlyCount -gt 0
+          })
+          if ($itemsNeedingAttention.Count -eq 0) {
+            Write-Host 'No missing cmdlet coverage or endpoint removals detected.' -ForegroundColor Green
+            exit 0
+          }
+
+          $title = 'Monthly NinjaOne endpoint drift: coverage gaps or removals'
+          $bodyLines = [System.Collections.Generic.List[string]]::new()
+          $bodyLines.Add('## Summary') | Out-Null
+          $bodyLines.Add('The monthly instance capability check found live endpoints without matching cmdlet coverage and/or endpoints removed from live instances.') | Out-Null
+          $bodyLines.Add('') | Out-Null
+          $bodyLines.Add(('Workflow run: {0}/{1}/actions/runs/{2}' -f $env:GITHUB_SERVER_URL, $env:GITHUB_REPOSITORY, $env:GITHUB_RUN_ID)) | Out-Null
+          $bodyLines.Add('') | Out-Null
+
+          foreach ($result in $itemsNeedingAttention) {
+            $bodyLines.Add(('### {0} ({1})' -f $result.Instance, $result.BaseUrl)) | Out-Null
+            $bodyLines.Add(('App version: `{0}`' -f $result.AppVersion)) | Out-Null
+
+            if ($result.LiveEndpointWithoutCmdletCoverageCount -gt 0) {
+              $bodyLines.Add('- Live endpoints without matching cmdlet coverage:') | Out-Null
+              foreach ($endpoint in $result.LiveEndpointsWithoutCmdletCoverage) {
+                $bodyLines.Add(('  - `{0}`' -f $endpoint)) | Out-Null
+              }
+            }
+
+            if ($result.RemovedRepoAndCmdletCount -gt 0) {
+              $bodyLines.Add('- Removed from live and still referenced by both repo spec and cmdlets:') | Out-Null
+              foreach ($endpoint in $result.RemovedRepoAndCmdletEndpoints) {
+                $bodyLines.Add(('  - `{0}`' -f $endpoint)) | Out-Null
+              }
+            }
+
+            if ($result.RemovedRepoOnlyCount -gt 0) {
+              $bodyLines.Add('- Removed from live and still referenced by the repo spec only:') | Out-Null
+              foreach ($endpoint in $result.RemovedRepoOnlyEndpoints) {
+                $bodyLines.Add(('  - `{0}`' -f $endpoint)) | Out-Null
+              }
+            }
+
+            if ($result.RemovedCmdletOnlyCount -gt 0) {
+              $bodyLines.Add('- Removed from live and still referenced by cmdlets only:') | Out-Null
+              foreach ($endpoint in $result.RemovedCmdletOnlyEndpoints) {
+                $bodyLines.Add(('  - `{0}`' -f $endpoint)) | Out-Null
+              }
+            }
+
+            $bodyLines.Add('') | Out-Null
+          }
+
+          $issueBody = $bodyLines -join "`n"
+          $existingIssue = gh issue list --state open --search "$title in:title" --json number,title | ConvertFrom-Json | Select-Object -First 1
+
+          if ($existingIssue) {
+            gh issue comment $existingIssue.number --body $issueBody
+            Write-Host "Updated existing issue #$($existingIssue.number)" -ForegroundColor Yellow
+          } else {
+            gh issue create --title $title --body $issueBody
+            Write-Host 'Created a new issue for coverage gaps or removals.' -ForegroundColor Yellow
+          }
+
+      - name: Upload instance capability report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: instance-capability-report
+          path: |
+            .artifacts/instance-capability-report.json
+            .artifacts/instance-capability-report.md
+
+      - name: Fail if endpoint drift was detected
+        if: always()
+        shell: pwsh
+        run: |
+          if ('${{ steps.capability_check.outcome }}' -ne 'success') {
+            if ('${{ steps.capability_check.outputs.drift_detected }}' -eq 'true') {
+              throw 'Endpoint drift was detected. Review the uploaded report artifact and any created issue.'
+            }
+
+            throw 'The instance capability check failed before drift analysis completed. Review the workflow logs for the underlying execution error.'
+          }
