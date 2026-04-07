@@ -92,7 +92,7 @@ $endpointSetBuilder = {
 		}
 	}
 
-	return @($endpointSet)
+	return [string[]]($endpointSet | Sort-Object)
 }
 
 $cmdletEndpointCollector = {
@@ -139,7 +139,7 @@ $cmdletEndpointCollector = {
 		}
 	}
 
-	return @($endpointSet)
+	return [string[]]($endpointSet | Sort-Object)
 }
 
 $localYaml = Get-Content -Path $SpecPath -Raw
