@@ -69,8 +69,7 @@ if ([string]::IsNullOrWhiteSpace($outputDirectory)) {
 }
 $null = New-Item -Path $outputDirectory -ItemType Directory -Force
 
-Import-Module -Name $ManifestPath -Force -DisableNameChecking
-$module = Get-Module -Name 'NinjaOne' -ErrorAction Stop
+$module = Import-Module -Name $ManifestPath -Force -DisableNameChecking -PassThru -ErrorAction Stop
 
 $endpointSetBuilder = {
 	param(
