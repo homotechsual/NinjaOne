@@ -32,11 +32,9 @@ function Get-NinjaOneAssetRelationships {
 	param(
 		# The related entity type.
 		[Parameter(Mandatory, ParameterSetName = 'ByEntity', ValueFromPipelineByPropertyName)]
-		[Alias('entityType')]
 		[String]$EntityType,
 		# The related entity ID.
 		[Parameter(Mandatory, ParameterSetName = 'ByEntity', ValueFromPipelineByPropertyName)]
-		[Alias('entityId')]
 		[Int]$EntityId
 	)
 	begin {
