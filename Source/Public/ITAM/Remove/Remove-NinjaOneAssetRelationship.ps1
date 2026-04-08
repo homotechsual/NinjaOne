@@ -26,7 +26,6 @@ function Remove-NinjaOneAssetRelationship {
 	param(
 		# Asset relationship ID.
 		[Parameter(Mandatory, ValueFromPipelineByPropertyName)]
-		[Alias('relationId')]
 		[Int]$RelationId
 	)
 	begin {
