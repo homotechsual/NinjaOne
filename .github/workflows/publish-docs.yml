@@ -37,7 +37,7 @@ jobs:
       )
     steps:
       - name: Checkout NinjaOne repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 

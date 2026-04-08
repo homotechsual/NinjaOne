@@ -23,7 +23,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0  # Full history for versioning
 
@@ -73,14 +73,14 @@ jobs:
           & "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'generateShortNamesMapping', 'updateHelp', 'publishDocs'
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: module-build
           path: output/
           retention-days: 30
 
       - name: Upload documentation
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: module-docs
           path: .build/docs/
@@ -96,7 +96,7 @@ jobs:
       url: https://www.powershellgallery.com/packages/NinjaOne
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Bootstrap environment
         shell: pwsh

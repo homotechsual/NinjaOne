@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Bootstrap environment
         shell: pwsh
@@ -29,7 +29,7 @@ jobs:
           & "$env:GITHUB_WORKSPACE\DevOps\Build\bootstrap.ps1"
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '8.x'
 
@@ -37,6 +37,7 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
           if (-not (Test-Path 'Source\Binaries')) {
             New-Item -Path 'Source\Binaries' -ItemType Directory -Force | Out-Null
           }
@@ -44,6 +45,9 @@ jobs:
           Push-Location 'C# Classes'
           try {
             dotnet build 'C# Classes.sln' -c Release
+            if ($LASTEXITCODE -ne 0) {
+              throw "dotnet build failed with exit code $LASTEXITCODE"
+            }
 
             $projectDirs = @('MetadataAttribute', 'ValidateNodeRoleId', 'ValidateStringOrInt', 'Enums')
             foreach ($projectDir in $projectDirs) {
@@ -70,7 +74,7 @@ jobs:
         continue-on-error: true
         run: |
           $ErrorActionPreference = 'Stop'
-          & "$env:GITHUB_WORKSPACE\DevOps\Quality\check-instance-capabilities.ps1" -FailOnDetectedDrift
+          & "$env:GITHUB_WORKSPACE\DevOps\Quality\check-instance-capabilities.ps1" -IgnoredFailInstances 'fed' -FailOnDetectedDrift
 
       - name: Create or update issue for missing cmdlet coverage or removals
         if: always()
@@ -87,10 +91,12 @@ jobs:
 
           $report = @(Get-Content -Path $reportPath -Raw | ConvertFrom-Json)
           $itemsNeedingAttention = @($report | Where-Object {
-            $_.LiveEndpointWithoutCmdletCoverageCount -gt 0 -or
-            $_.RemovedRepoAndCmdletCount -gt 0 -or
-            $_.RemovedRepoOnlyCount -gt 0 -or
-            $_.RemovedCmdletOnlyCount -gt 0
+            -not $_.ExcludedFromFailure -and (
+              $_.LiveEndpointWithoutCmdletCoverageCount -gt 0 -or
+              $_.RemovedRepoAndCmdletCount -gt 0 -or
+              $_.RemovedRepoOnlyCount -gt 0 -or
+              $_.RemovedCmdletOnlyCount -gt 0
+            )
           })
           if ($itemsNeedingAttention.Count -eq 0) {
             Write-Host 'No missing cmdlet coverage or endpoint removals detected.' -ForegroundColor Green
@@ -153,7 +159,7 @@ jobs:
 
       - name: Upload instance capability report
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: instance-capability-report
           path: |

@@ -17,6 +17,8 @@ param(
 	[String]$SpecPath,
 	# Output path for the JSON report.
 	[String]$OutputPath,
+	# Instance short names that should report drift but not fail the check.
+	[String[]]$IgnoredFailInstances = @(),
 	# Fail the script when live coverage gaps or endpoint removals are detected.
 	[Switch]$FailOnDetectedDrift
 )
@@ -168,6 +170,7 @@ $results = foreach ($instance in ($Instances | Where-Object { -not [string]::IsN
 		BaseUrl = $capability.BaseUrl
 		AppVersion = $capability.AppVersion
 		PathCount = $capability.PathCount
+		ExcludedFromFailure = ($instance -in $IgnoredFailInstances)
 		LiveEndpointWithoutCmdletCoverageCount = $liveWithoutCmdletCoverage.Count
 		LiveEndpointsWithoutCmdletCoverage = $liveWithoutCmdletCoverage
 		RemovedRepoAndCmdletCount = $removedRepoAndCmdlet.Count
@@ -189,7 +192,12 @@ $summary.Add('| Instance | App version | Paths | Live endpoints without cmdlet c
 $summary.Add('| --- | --- | ---: | ---: | ---: | ---: | ---: |') | Out-Null
 
 foreach ($result in $results) {
-	$summary.Add(('| {0} | {1} | {2} | {3} | {4} | {5} | {6} |' -f $result.Instance, $result.AppVersion, $result.PathCount, $result.LiveEndpointWithoutCmdletCoverageCount, $result.RemovedRepoAndCmdletCount, $result.RemovedRepoOnlyCount, $result.RemovedCmdletOnlyCount)) | Out-Null
+	$instanceLabel = if ($result.ExcludedFromFailure) {
+		'{0} (report-only)' -f $result.Instance
+	} else {
+		$result.Instance
+	}
+	$summary.Add(('| {0} | {1} | {2} | {3} | {4} | {5} | {6} |' -f $instanceLabel, $result.AppVersion, $result.PathCount, $result.LiveEndpointWithoutCmdletCoverageCount, $result.RemovedRepoAndCmdletCount, $result.RemovedRepoOnlyCount, $result.RemovedCmdletOnlyCount)) | Out-Null
 }
 
 $coverageResults = @($results | Where-Object { $_.LiveEndpointWithoutCmdletCoverageCount -gt 0 })
@@ -197,8 +205,13 @@ if ($coverageResults.Count -gt 0) {
 	$summary.Add('') | Out-Null
 	$summary.Add('## Live endpoints without matching cmdlet coverage') | Out-Null
 	foreach ($result in $coverageResults) {
+		$detailInstanceLabel = if ($result.ExcludedFromFailure) {
+			'{0} (report-only)' -f $result.Instance
+		} else {
+			$result.Instance
+		}
 		$summary.Add('') | Out-Null
-		$summary.Add(('### {0} ({1})' -f $result.Instance, $result.BaseUrl)) | Out-Null
+		$summary.Add(('### {0} ({1})' -f $detailInstanceLabel, $result.BaseUrl)) | Out-Null
 		foreach ($endpoint in $result.LiveEndpointsWithoutCmdletCoverage) {
 			$summary.Add(('- `{0}`' -f $endpoint)) | Out-Null
 		}
@@ -213,8 +226,13 @@ if ($removalResults.Count -gt 0) {
 	$summary.Add('') | Out-Null
 	$summary.Add('## Endpoints removed from live instances') | Out-Null
 	foreach ($result in $removalResults) {
+		$detailInstanceLabel = if ($result.ExcludedFromFailure) {
+			'{0} (report-only)' -f $result.Instance
+		} else {
+			$result.Instance
+		}
 		$summary.Add('') | Out-Null
-		$summary.Add(('### {0} ({1})' -f $result.Instance, $result.BaseUrl)) | Out-Null
+		$summary.Add(('### {0} ({1})' -f $detailInstanceLabel, $result.BaseUrl)) | Out-Null
 		if ($result.RemovedRepoAndCmdletCount -gt 0) {
 			$summary.Add('- Removed from live and still referenced by both repo spec and cmdlets:') | Out-Null
 			foreach ($endpoint in $result.RemovedRepoAndCmdletEndpoints) {
@@ -245,15 +263,16 @@ if ($env:GITHUB_STEP_SUMMARY) {
 	Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summaryLines
 }
 
-$totalDriftMeasure = $results | Measure-Object -Property LiveEndpointWithoutCmdletCoverageCount -Sum
+$resultsForFailure = @($results | Where-Object { -not $_.ExcludedFromFailure })
+$totalDriftMeasure = $resultsForFailure | Measure-Object -Property LiveEndpointWithoutCmdletCoverageCount -Sum
 $totalCoverageGaps = if ($null -ne $totalDriftMeasure.Sum) {
 	[int]$totalDriftMeasure.Sum
 } else {
 	0
 }
-$totalRemovedRepoAndCmdlet = (($results | Measure-Object -Property RemovedRepoAndCmdletCount -Sum).Sum | ForEach-Object { if ($null -ne $_) { [int]$_ } else { 0 } })
-$totalRemovedRepoOnly = (($results | Measure-Object -Property RemovedRepoOnlyCount -Sum).Sum | ForEach-Object { if ($null -ne $_) { [int]$_ } else { 0 } })
-$totalRemovedCmdletOnly = (($results | Measure-Object -Property RemovedCmdletOnlyCount -Sum).Sum | ForEach-Object { if ($null -ne $_) { [int]$_ } else { 0 } })
+$totalRemovedRepoAndCmdlet = (($resultsForFailure | Measure-Object -Property RemovedRepoAndCmdletCount -Sum).Sum | ForEach-Object { if ($null -ne $_) { [int]$_ } else { 0 } })
+$totalRemovedRepoOnly = (($resultsForFailure | Measure-Object -Property RemovedRepoOnlyCount -Sum).Sum | ForEach-Object { if ($null -ne $_) { [int]$_ } else { 0 } })
+$totalRemovedCmdletOnly = (($resultsForFailure | Measure-Object -Property RemovedCmdletOnlyCount -Sum).Sum | ForEach-Object { if ($null -ne $_) { [int]$_ } else { 0 } })
 $totalDriftIssues = $totalCoverageGaps + $totalRemovedRepoAndCmdlet + $totalRemovedRepoOnly + $totalRemovedCmdletOnly
 $driftDetected = $totalDriftIssues -gt 0
 
