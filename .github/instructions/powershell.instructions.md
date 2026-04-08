@@ -1,10 +1,10 @@
-***
-
-applyTo: "Source/**/\*.ps1,Tests/**/*.ps1,DevOps/\*\*/*.ps1"
+---
+applyTo: "Source/**/*.ps1,Tests/**/*.ps1,DevOps/**/*.ps1"
 description: "Use for PowerShell files in the NinjaOne repo: preserve formatting, help, metadata, and cross-platform compatibility patterns."
----------------------------------------------------------------------------------------------------------------------------------------------
+---
 
-# PowerShell file instructions
+PowerShell file instructions
+============================
 
 * Match the existing repository style and indentation.
 * Add or preserve comment-based help where required.

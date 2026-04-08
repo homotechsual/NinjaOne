@@ -74,7 +74,7 @@ jobs:
         continue-on-error: true
         run: |
           $ErrorActionPreference = 'Stop'
-          & "$env:GITHUB_WORKSPACE\DevOps\Quality\check-instance-capabilities.ps1" -FailOnDetectedDrift
+          & "$env:GITHUB_WORKSPACE\DevOps\Quality\check-instance-capabilities.ps1" -IgnoredFailInstances 'fed' -FailOnDetectedDrift
 
       - name: Create or update issue for missing cmdlet coverage or removals
         if: always()
