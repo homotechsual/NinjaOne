@@ -38,6 +38,9 @@ function Get-NinjaOneBillingInvoices {
 	begin {
 		$CommandName = $MyInvocation.InvocationName
 		$Parameters = (Get-Command -Name $CommandName).Parameters
+		if ($PSBoundParameters.ContainsKey('Id')) {
+			$Parameters.Remove('Id') | Out-Null
+		}
 		$QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
 	}
 	process {

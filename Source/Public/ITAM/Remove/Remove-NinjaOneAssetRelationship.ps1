@@ -28,14 +28,9 @@ function Remove-NinjaOneAssetRelationship {
 		[Parameter(Mandatory, ValueFromPipelineByPropertyName)]
 		[Int]$RelationId
 	)
-	begin {
-		$CommandName = $MyInvocation.InvocationName
-		$Parameters = (Get-Command -Name $CommandName).Parameters
-		$QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
-	}
 	process {
 		try {
-			$Resource = 'v2/itam/asset-relationship'
+			$Resource = ('v2/itam/asset-relationship?relationId={0}' -f $RelationId)
 			if ($PSCmdlet.ShouldProcess(('Asset Relationship {0}' -f $RelationId), 'Delete')) {
 				return (New-NinjaOneDELETERequest -Resource $Resource)
 			}

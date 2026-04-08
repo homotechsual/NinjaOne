@@ -40,6 +40,10 @@ function Get-NinjaOneAssetRelationships {
 	begin {
 		$CommandName = $MyInvocation.InvocationName
 		$Parameters = (Get-Command -Name $CommandName).Parameters
+		if ($PSCmdlet.ParameterSetName -eq 'ByEntity') {
+			$Parameters.Remove('EntityType') | Out-Null
+			$Parameters.Remove('EntityId') | Out-Null
+		}
 		$QSCollection = New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters
 	}
 	process {

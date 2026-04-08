@@ -40,6 +40,7 @@ function Measure-RequiredCommentBasedHelp {
 	[CmdletBinding()]
 	[OutputType([Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]])]
 	param(
+		# The script block AST to analyze.
 		[Parameter(Mandatory)]
 		[ValidateNotNullOrEmpty()]
 		[System.Management.Automation.Language.ScriptBlockAst]$ScriptBlockAst
@@ -48,7 +49,8 @@ function Measure-RequiredCommentBasedHelp {
 	process {
 		try {
 			$scriptPath = $ScriptBlockAst.Extent.File
-			if ($scriptPath -and $scriptPath -like '*\CustomRules\*') {
+			$normalizedScriptPath = if ($scriptPath) { $scriptPath -replace '\\', '/' } else { $null }
+			if ($normalizedScriptPath -like '*/CustomRules/*') {
 				return
 			}
 			
@@ -75,7 +77,7 @@ function Measure-RequiredCommentBasedHelp {
 
 			foreach ($function in $functions) {
 				$functionName = $function.Name
-				$isPublic = $scriptPath -and $scriptPath -like '*\Public\*'
+				$isPublic = $normalizedScriptPath -like '*/Public/*'
 				
 				# Skip internal helper functions and cmdlet helpers
 				if ($functionName -match '^(Get|Invoke|WriteMessage|InvokeTask|GetModulePath|GetFunctions|AssertOutputBinariesUnlocked|Push|Publish|Clean)$') {
@@ -192,6 +194,7 @@ function Measure-RequireProperTypeAcceleratorCasing {
 	[CmdletBinding()]
 	[OutputType([Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]])]
 	param(
+		# The script block AST to analyze.
 		[Parameter(Mandatory)]
 		[ValidateNotNullOrEmpty()]
 		[System.Management.Automation.Language.ScriptBlockAst]$ScriptBlockAst
@@ -200,8 +203,11 @@ function Measure-RequireProperTypeAcceleratorCasing {
 	process {
 		try {
 			$scriptPath = $ScriptBlockAst.Extent.File
-			if ($scriptPath -and $scriptPath -like '*\CustomRules\*') {
-				return
+			if ($scriptPath) {
+				$normalizedScriptPath = $scriptPath -replace '\\', '/'
+				if ($normalizedScriptPath -like '*/CustomRules/*') {
+					return
+				}
 			}
 
 			$acceleratorType = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators', $false)
@@ -297,6 +303,7 @@ function Measure-EmptyCommentBasedHelpSections {
 	[CmdletBinding()]
 	[OutputType([Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]])]
 	param(
+		# The script block AST to analyze.
 		[Parameter(Mandatory)]
 		[ValidateNotNullOrEmpty()]
 		[System.Management.Automation.Language.ScriptBlockAst]$ScriptBlockAst
@@ -366,6 +373,7 @@ function Measure-MissingParameterDescription {
 	[CmdletBinding()]
 	[OutputType([Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]])]
 	param(
+		# The script block AST to analyze.
 		[Parameter(Mandatory)]
 		[ValidateNotNullOrEmpty()]
 		[System.Management.Automation.Language.ScriptBlockAst]$ScriptBlockAst
@@ -465,6 +473,7 @@ function Measure-AvoidSelfReferentialParameterAlias {
 	[CmdletBinding()]
 	[OutputType([Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]])]
 	param(
+		# The script block AST to analyze.
 		[Parameter(Mandatory)]
 		[ValidateNotNullOrEmpty()]
 		[System.Management.Automation.Language.ScriptBlockAst]$ScriptBlockAst
@@ -473,8 +482,11 @@ function Measure-AvoidSelfReferentialParameterAlias {
 	process {
 		try {
 			$scriptPath = $ScriptBlockAst.Extent.File
-			if ($scriptPath -and $scriptPath -like '*\CustomRules\*') {
-				return
+			if ($scriptPath) {
+				$normalizedScriptPath = $scriptPath -replace '\\', '/'
+				if ($normalizedScriptPath -like '*/CustomRules/*') {
+					return
+				}
 			}
 
 			$parameters = $ScriptBlockAst.FindAll({
