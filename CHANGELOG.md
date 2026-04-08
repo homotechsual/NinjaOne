@@ -4,6 +4,25 @@ Please note that backwards compatibility breaks are prefixed with `{"BC"}` (shor
 
 Note: Version 2.3.0 was released in error and will be skipped.
 
+## 2026-04-08 - Version 2.5.0
+
+* Additions:
+  * Add 35 new cmdlets covering Billing, ITAM, and end-user device access APIs, including:
+    * `Get-NinjaOneBillingAccounts`, `New-NinjaOneBillingAccount`, `Set-NinjaOneBillingAccount`, `Remove-NinjaOneBillingAccount`
+    * `Get-NinjaOneBillingAgreements`, `New-NinjaOneBillingAgreement`, `Set-NinjaOneBillingAgreement`, `Invoke-NinjaOneBillingAgreementDeactivate`
+    * `Get-NinjaOneBillingInvoices`, `New-NinjaOneBillingInvoice`, `Set-NinjaOneBillingInvoice`, `Set-NinjaOneBillingInvoiceNote`, `Invoke-NinjaOneBillingInvoicesApprove`, `Invoke-NinjaOneBillingInvoicesArchive`, `Invoke-NinjaOneBillingInvoicesExport`, `Invoke-NinjaOneBillingInvoicesUnarchive`
+    * `Get-NinjaOneBillingProducts`, `New-NinjaOneBillingProduct`, `Set-NinjaOneBillingProduct`, `Invoke-NinjaOneBillingProductActivate`, `Invoke-NinjaOneBillingProductDeactivate`
+    * `Get-NinjaOneBillingTicketProducts`, `New-NinjaOneBillingTicketProductAdHoc`, `New-NinjaOneBillingTicketProductCatalog`, `Set-NinjaOneBillingTicketProduct`, `Set-NinjaOneBillingTicketTimeEntry`, `Invoke-NinjaOneBillingTicketProductsDelete`
+    * `Get-NinjaOneAssetRelationships`, `New-NinjaOneAssetRelationship`, `Remove-NinjaOneAssetRelationship`, `Get-NinjaOneAssetRelationshipTypes`, `New-NinjaOneAssetRelationshipType`, `Get-NinjaOneSoftwareLicenses`, `Get-NinjaOneSoftwareLicenseAssignments`, and `Set-NinjaOneEndUserDeviceAccess`
+
+* Updates:
+  * Expand endpoint and metadata coverage for previously missing Billing and ITAM API operations.
+  * Add a custom PSScriptAnalyzer rule to catch self-referential parameter aliases before release.
+
+* Fixes:
+  * Prevent path parameters from being duplicated into query strings for the new Billing and ITAM GET cmdlets.
+  * Improve cross-platform analyzer behavior for Windows and Linux path handling.
+
 ## 2026-04-07 - Version 2.4.2
 
 * Fixes:

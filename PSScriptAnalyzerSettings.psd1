@@ -68,6 +68,7 @@
 		'PSUseCorrectCasing',
 		'Measure-AvoidDoubleQuoteInterpolation',
 		'Measure-AvoidOneLineIfElse',
+		'Measure-AvoidSelfReferentialParameterAlias',
 		'Measure-RequireProperTypeAcceleratorCasing',
 		'Measure-RequiredCommentBasedHelp',
 		'Measure-EmptyCommentBasedHelpSections',

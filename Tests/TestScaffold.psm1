@@ -126,8 +126,32 @@ function Get-Endpoints {
 
     try {
         $YamlContent = Get-Content -Path $YamlPath -Raw
+
+        # Prefer the module's own OpenAPI parser so schema tests follow the same path logic
+        # as the runtime capability checks.
+        # TODO: Add an opt-in mode for validating against live instance capability schemas in CI.
+        $Module = Get-Module -Name (Get-ModuleName)
+        if ($Module) {
+            $ParsedPaths = & $Module {
+                param($OpenApiYaml)
+                Get-NinjaOneOpenApiPaths -OpenApiYaml $OpenApiYaml
+            } $YamlContent
+
+            if ($ParsedPaths) {
+                $Endpoints = foreach ($Path in ($ParsedPaths.Keys | Sort-Object)) {
+                    foreach ($Method in ($ParsedPaths[$Path] | Sort-Object)) {
+                        [PSCustomObject]@{
+                            Path   = $Path
+                            Method = $Method.ToLowerInvariant()
+                        }
+                    }
+                }
+
+                return @($Endpoints)
+            }
+        }
         
-        # Simple YAML parser for paths section
+        # Fallback simple YAML parser for cases where the module parser is unavailable.
         $PathMatches = [regex]::Matches($YamlContent, '^\s{2}(/[^:]+):', [System.Text.RegularExpressions.RegexOptions]::Multiline)
         
         $Endpoints = @()
@@ -147,7 +171,7 @@ function Get-Endpoints {
                 $Method = $MethodMatch.Groups[1].Value
                 $Endpoints += [PSCustomObject]@{
                     Path   = $Path
-                    Method = $Method.ToLower()
+                    Method = $Method.ToLowerInvariant()
                 }
             }
         }

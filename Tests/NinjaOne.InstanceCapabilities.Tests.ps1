@@ -177,5 +177,7 @@ Describe 'Get-NinjaOneInstanceCapabilities -IncludeCmdlets' -Tags 'Module' {
 }
 
 AfterAll {
-    Remove-Module $ModuleName -Force
+    if (Get-Module -Name $ModuleName) {
+        Remove-Module -Name $ModuleName -Force -ErrorAction SilentlyContinue
+    }
 }

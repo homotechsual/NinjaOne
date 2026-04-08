@@ -2794,6 +2794,589 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/RelatedItemPublicApiDTO"
+  /v2/billing/accounts:
+    get:
+      tags:
+        - Billing
+      summary: List billing accounts
+      description: Retrieves billing accounts
+      operationId: getBillingAccounts
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Billing
+      summary: Create billing account
+      description: Creates a billing account
+      operationId: createBillingAccount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/accounts/{id}:
+    get:
+      tags:
+        - Billing
+      summary: Get billing account
+      description: Retrieves a billing account by identifier
+      operationId: getBillingAccountById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Billing
+      summary: Update billing account
+      description: Updates a billing account
+      operationId: updateBillingAccount
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Billing
+      summary: Delete billing account
+      description: Deletes a billing account
+      operationId: deleteBillingAccount
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/agreements:
+    get:
+      tags:
+        - Billing
+      summary: List billing agreements
+      description: Retrieves billing agreements
+      operationId: getBillingAgreements
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Billing
+      summary: Create billing agreement
+      description: Creates a billing agreement
+      operationId: createBillingAgreement
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/agreements/{id}:
+    get:
+      tags:
+        - Billing
+      summary: Get billing agreement
+      description: Retrieves a billing agreement by identifier
+      operationId: getBillingAgreementById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Billing
+      summary: Update billing agreement
+      description: Updates a billing agreement
+      operationId: updateBillingAgreement
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/agreements/{id}/deactivate:
+    patch:
+      tags:
+        - Billing
+      summary: Deactivate billing agreement
+      description: Deactivates a billing agreement
+      operationId: deactivateBillingAgreement
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/invoices:
+    get:
+      tags:
+        - Billing
+      summary: List billing invoices
+      description: Retrieves billing invoices
+      operationId: getBillingInvoices
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Billing
+      summary: Create billing invoice
+      description: Creates a billing invoice
+      operationId: createBillingInvoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/invoices/{id}:
+    get:
+      tags:
+        - Billing
+      summary: Get billing invoice
+      description: Retrieves a billing invoice by identifier
+      operationId: getBillingInvoiceById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Billing
+      summary: Update billing invoice
+      description: Updates a billing invoice
+      operationId: updateBillingInvoice
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/invoices/{id}/note:
+    patch:
+      tags:
+        - Billing
+      summary: Update billing invoice note
+      description: Updates the note on a billing invoice
+      operationId: updateBillingInvoiceNote
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/invoices/approve:
+    post:
+      tags:
+        - Billing
+      summary: Approve billing invoices
+      description: Approves billing invoices
+      operationId: approveBillingInvoices
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/invoices/archive:
+    post:
+      tags:
+        - Billing
+      summary: Archive billing invoices
+      description: Archives billing invoices
+      operationId: archiveBillingInvoices
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/invoices/export:
+    post:
+      tags:
+        - Billing
+      summary: Export billing invoices
+      description: Exports billing invoices
+      operationId: exportBillingInvoices
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/invoices/unarchive:
+    post:
+      tags:
+        - Billing
+      summary: Unarchive billing invoices
+      description: Unarchives billing invoices
+      operationId: unarchiveBillingInvoices
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/products:
+    get:
+      tags:
+        - Billing
+      summary: List billing products
+      description: Retrieves billing products
+      operationId: getBillingProducts
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Billing
+      summary: Create billing product
+      description: Creates a billing product
+      operationId: createBillingProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/products/{id}:
+    get:
+      tags:
+        - Billing
+      summary: Get billing product
+      description: Retrieves a billing product by identifier
+      operationId: getBillingProductById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Billing
+      summary: Update billing product
+      description: Updates a billing product
+      operationId: updateBillingProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/products/{id}/activate:
+    patch:
+      tags:
+        - Billing
+      summary: Activate billing product
+      description: Activates a billing product
+      operationId: activateBillingProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/products/{id}/deactivate:
+    patch:
+      tags:
+        - Billing
+      summary: Deactivate billing product
+      description: Deactivates a billing product
+      operationId: deactivateBillingProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/ticket-products/ticket/{id}:
+    get:
+      tags:
+        - Billing
+      summary: Get billing ticket products for a ticket
+      description: Retrieves billing ticket products for the specified ticket
+      operationId: getBillingTicketProductsByTicketId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/ticket-products/adhoc:
+    post:
+      tags:
+        - Billing
+      summary: Create ad hoc billing ticket product
+      description: Creates an ad hoc billing ticket product
+      operationId: createAdHocBillingTicketProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/ticket-products/catalog:
+    post:
+      tags:
+        - Billing
+      summary: Create catalog billing ticket product
+      description: Creates a catalog billing ticket product
+      operationId: createCatalogBillingTicketProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/ticket-products/delete:
+    post:
+      tags:
+        - Billing
+      summary: Delete billing ticket products
+      description: Deletes billing ticket products
+      operationId: deleteBillingTicketProducts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/ticket-products/{ticketProductId}:
+    put:
+      tags:
+        - Billing
+      summary: Update billing ticket product
+      description: Updates a billing ticket product
+      operationId: updateBillingTicketProduct
+      parameters:
+        - name: ticketProductId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/billing/ticket-time-entry/{timeEntryId}:
+    put:
+      tags:
+        - Billing
+      summary: Update billing ticket time entry
+      description: Updates a billing ticket time entry
+      operationId: updateBillingTicketTimeEntry
+      parameters:
+        - name: timeEntryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
   /v2/software-license:
     post:
       tags:
@@ -2879,6 +3462,37 @@ paths:
           description: default response
           content:
             application/json: {}
+  /v2/software-license/{licenseId}/assignments:
+    get:
+      tags:
+        - Software Licenses
+      summary: Get software license assignments
+      description: Retrieves assignments for a software license
+      operationId: getSoftwareLicenseAssignments
+      parameters:
+        - name: licenseId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/software-license/licenses:
+    get:
+      tags:
+        - Software Licenses
+      summary: List software licenses
+      description: Retrieves software licenses
+      operationId: getSoftwareLicenses
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
   /v2/software-license/upsert:
     post:
       tags:
@@ -2899,6 +3513,100 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SoftwareLicenseDTO"
+  /v2/itam/asset-relationship:
+    post:
+      tags:
+        - Asset Relationships
+      summary: Create asset relationship
+      description: Creates an asset relationship
+      operationId: createAssetRelationship
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Asset Relationships
+      summary: Delete asset relationship
+      description: Deletes an asset relationship
+      operationId: deleteAssetRelationship
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/itam/asset-relationship/{entityType}/{entityId}/relations:
+    get:
+      tags:
+        - Asset Relationships
+      summary: Get asset relationships by entity
+      description: Retrieves asset relationships for the specified entity
+      operationId: getAssetRelationshipsByEntity
+      parameters:
+        - name: entityType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: entityId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/itam/asset-relationship/relations:
+    get:
+      tags:
+        - Asset Relationships
+      summary: List asset relationships
+      description: Retrieves asset relationships
+      operationId: getAssetRelationships
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /v2/itam/asset-relationship/types:
+    get:
+      tags:
+        - Asset Relationships
+      summary: List asset relationship types
+      description: Retrieves asset relationship types
+      operationId: getAssetRelationshipTypes
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Asset Relationships
+      summary: Create asset relationship type
+      description: Creates an asset relationship type
+      operationId: createAssetRelationshipType
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
   /v2/itam/unmanaged-device:
     post:
       tags:
@@ -7144,6 +7852,31 @@ paths:
           description: Forbidden
         "401":
           description: Unauthorized
+  /v2/user/end-user/{id}/device-access:
+    patch:
+      tags:
+        - management
+      summary: Update end user device access
+      description: Updates device access settings for the specified end user
+      operationId: patchEndUserDeviceAccess
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
   /v2/user/end-user/{id}/custom-fields:
     get:
       tags:
