@@ -448,4 +448,93 @@ function Measure-MissingParameterDescription {
 	}
 }
 
+function Measure-AvoidSelfReferentialParameterAlias {
+	<#
+		.SYNOPSIS
+			Ensures parameter aliases do not duplicate the parameter name.
+		.DESCRIPTION
+			Flags any parameter whose Alias attribute includes the parameter's own name,
+			which is redundant and can break command metadata/help discovery.
+		.EXAMPLE
+			Reports [Alias('Id')] on a parameter declared as [int]$Id.
+		.INPUTS
+			[System.Management.Automation.Language.ScriptBlockAst]
+		.OUTPUTS
+			[Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]]
+	#>
+	[CmdletBinding()]
+	[OutputType([Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]])]
+	param(
+		[Parameter(Mandatory)]
+		[ValidateNotNullOrEmpty()]
+		[System.Management.Automation.Language.ScriptBlockAst]$ScriptBlockAst
+	)
+
+	process {
+		try {
+			$scriptPath = $ScriptBlockAst.Extent.File
+			if ($scriptPath -and $scriptPath -like '*\CustomRules\*') {
+				return
+			}
+
+			$parameters = $ScriptBlockAst.FindAll({
+					param([System.Management.Automation.Language.Ast]$Ast)
+					$Ast -is [System.Management.Automation.Language.ParameterAst]
+				}, $false)
+
+			foreach ($parameter in $parameters) {
+				$parameterName = $parameter.Name.VariablePath.UserPath
+				if (-not $parameterName) {
+					continue
+				}
+
+				$functionAst = $parameter.Parent
+				while ($functionAst -and $functionAst -isnot [System.Management.Automation.Language.FunctionDefinitionAst]) {
+					$functionAst = $functionAst.Parent
+				}
+				$functionName = if ($functionAst) { $functionAst.Name } else { '<script>' }
+
+				foreach ($attribute in $parameter.Attributes) {
+					if (-not $attribute.TypeName) {
+						continue
+					}
+
+					$attributeName = $attribute.TypeName.FullName
+					if ($attributeName -notin @('Alias', 'System.Management.Automation.AliasAttribute')) {
+						continue
+					}
+
+					foreach ($argument in $attribute.PositionalArguments) {
+						$aliasValue = $null
+						if ($argument -is [System.Management.Automation.Language.StringConstantExpressionAst]) {
+							$aliasValue = $argument.Value
+						} elseif ($argument -is [System.Management.Automation.Language.ConstantExpressionAst]) {
+							$aliasValue = [string]$argument.Value
+						}
+
+						if (-not $aliasValue) {
+							continue
+						}
+
+						if ($aliasValue.Equals($parameterName, [System.StringComparison]::OrdinalIgnoreCase)) {
+							$result = [Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord]::new(
+								"Parameter '$parameterName' in function '$functionName' defines alias '$aliasValue', which duplicates the parameter name and should be removed.",
+								$argument.Extent,
+								'PSAvoidSelfReferentialParameterAlias',
+								[Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticSeverity]::Warning,
+								$null,
+								$null,
+								$null
+							)
+							$result
+						}
+					}
+				}
+			}
+		} catch {
+			$PSCmdlet.ThrowTerminatingError($_)
+		}
+	}
+}
+
 Export-ModuleMember -Function Measure-*

@@ -25,7 +25,6 @@ function Set-NinjaOneEndUserDeviceAccess {
 	param(
 		# The end user ID.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
-		[Alias('id')]
 		[Int]$Id,
 		# The device access payload per API schema.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
