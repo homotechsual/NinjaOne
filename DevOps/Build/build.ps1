@@ -323,7 +323,7 @@ This page has been generated from the {0} PowerShell module source. To make chan
 			}
 			'Add' {
 				$CategoryFile.label = 'Add Data'
-				$CategoryFile.position = 0.1
+				$CategoryFile.position = 0.5
 				$CategoryFile.className = 'category-add'
 				$CategoryFile.link.title = 'Add Data'
 				$CategoryFile.customProps.description = 'This category contains commands for adding or appending data, objects, settings and more.'
