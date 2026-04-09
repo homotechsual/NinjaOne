@@ -5,7 +5,7 @@ function Invoke-NinjaOneBillingProductDeactivate {
 		.DESCRIPTION
 			Deactivates a billing product using the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Billing Product
+			Billing Product Deactivate
 		.EXAMPLE
 			PS> Invoke-NinjaOneBillingProductDeactivate -Id 1
 

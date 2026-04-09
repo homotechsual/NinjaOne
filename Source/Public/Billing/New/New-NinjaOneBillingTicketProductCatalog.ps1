@@ -5,7 +5,7 @@ function New-NinjaOneBillingTicketProductCatalog {
 		.DESCRIPTION
 			Creates a catalog billing ticket product using the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Billing Ticket Product
+			Billing Ticket Product Catalog
 		.EXAMPLE
 			PS> New-NinjaOneBillingTicketProductCatalog -TicketProduct @{ ticketId = 1 }
 

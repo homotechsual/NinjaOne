@@ -5,7 +5,7 @@ function Invoke-NinjaOneBillingInvoicesApprove {
 		.DESCRIPTION
 			Approves one or more billing invoices using the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Billing Invoices
+			Billing Invoices Approve
 		.EXAMPLE
 			PS> Invoke-NinjaOneBillingInvoicesApprove -Request @{ invoiceIds = @(1,2) }
 

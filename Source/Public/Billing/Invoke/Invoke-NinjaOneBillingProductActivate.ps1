@@ -5,7 +5,7 @@ function Invoke-NinjaOneBillingProductActivate {
 		.DESCRIPTION
 			Activates a billing product using the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Billing Product
+			Billing Product Activate
 		.EXAMPLE
 			PS> Invoke-NinjaOneBillingProductActivate -Id 1
 

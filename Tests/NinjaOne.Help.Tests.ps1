@@ -20,6 +20,27 @@ Describe ('{0} - Help Content' -f $ModuleName) -Tags 'Module' {
     # Get a list of the exported functions.
     $Module = Get-Module -Name $ModuleName
     $FunctionList = $Module.ExportedFunctions.Values
+    Context 'Documentation identifiers' {
+        It 'uses unique Docusaurus doc ids per verb and functionality' {
+            $DocIdEntries = foreach ($Function in $FunctionList) {
+                $HelpContent = Get-Help -Name $Function.Name -Full | Select-Object -Property *
+                $Verb = $Function.Name.Split('-')[0]
+                $Slug = ([regex]::Replace($HelpContent.Functionality.ToLowerInvariant(), '[^a-z0-9]+', '-')).Trim('-')
+                [pscustomobject]@{
+                    Name = $Function.Name
+                    DocId = ('commandlets/{0}/{1}' -f $Verb, $Slug)
+                }
+            }
+
+            $Duplicates = $DocIdEntries | Group-Object DocId | Where-Object Count -gt 1
+            if ($Duplicates) {
+                $DuplicateSummary = $Duplicates | ForEach-Object {
+                    '{0}: {1}' -f $_.Name, (($_.Group.Name | Sort-Object) -join ', ')
+                }
+                throw ("Duplicate Docusaurus doc ids detected:`n{0}" -f ($DuplicateSummary -join "`n"))
+            }
+        }
+    }
     Context 'Function <_>' -ForEach $FunctionList {
         $Help = Get-Help -Name $_ -Full | Select-Object -Property *
         if ($Help.PSObject.Properties.Name -contains 'Examples') {

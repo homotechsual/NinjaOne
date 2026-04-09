@@ -5,7 +5,7 @@ function Invoke-NinjaOneBillingInvoicesExport {
 		.DESCRIPTION
 			Exports one or more billing invoices using the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Billing Invoices
+			Billing Invoices Export
 		.EXAMPLE
 			PS> Invoke-NinjaOneBillingInvoicesExport -Request @{ invoiceIds = @(1,2) }
 

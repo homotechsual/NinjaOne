@@ -5,7 +5,7 @@ function New-NinjaOneBillingTicketProductAdHoc {
 		.DESCRIPTION
 			Creates an ad hoc billing ticket product using the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Billing Ticket Product
+			Billing Ticket Product Ad Hoc
 		.EXAMPLE
 			PS> New-NinjaOneBillingTicketProductAdHoc -TicketProduct @{ ticketId = 1 }
 
