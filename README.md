@@ -22,5 +22,6 @@ Use the [docs website](https://docs.homotechsual.dev/modules/ninjaone) for the m
 Common dev and build tooling lives under DevOps:
 
 - Build: DevOps/Build/build.ps1, DevOps/Build/bootstrap.ps1
-- Quality: DevOps/Quality/run-pssa.ps1, DevOps/Quality/test.ps1
-- Help generation: DevOps/Help/Orchestrate-HelpGeneration.ps1
+- Quality: DevOps/Quality/run-pssa.ps1, DevOps/Quality/test.ps1, DevOps/Quality/check-metadata.ps1
+- Help generation: DevOps/Help/Orchestrate-HelpGeneration.ps1 (plus supporting scripts in DevOps/Help/)
+- Git hooks: DevOps/Install-GitHooks.ps1, DevOps/hooks/
