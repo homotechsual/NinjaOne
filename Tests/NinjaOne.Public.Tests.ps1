@@ -12,7 +12,7 @@ Import-Module $ModulePath -Force
 
 Describe 'Public function definitions' {
 	It 'does not define the same public function in more than one source file' {
-		$PublicRoot = Resolve-Path -Path '.\Source\Public'
+		$PublicRoot = Resolve-Path -Path (Join-Path -Path $RepoRoot -ChildPath 'Source\Public')
 		$Definitions = foreach ($file in Get-ChildItem -Path $PublicRoot -Recurse -Filter '*.ps1') {
 			$tokens = $null
 			$parseErrors = $null
@@ -20,7 +20,7 @@ Describe 'Public function definitions' {
 			foreach ($function in $ast.FindAll({ param($node) $node -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $false)) {
 				[pscustomobject]@{
 					Name = $function.Name
-					File = $file.FullName.Substring((Get-Location).Path.Length + 1)
+					File = $file.FullName.Substring($RepoRoot.Length).TrimStart('\', '/')
 				}
 			}
 		}

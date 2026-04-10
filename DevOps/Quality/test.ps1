@@ -16,8 +16,9 @@ $ModuleName = (Get-Item -Path (Join-Path -Path $RepoRoot -ChildPath 'Source\Ninj
 # Disable default parameters during testing, just in case
 $PSDefaultParameterValues += @{}
 $PSDefaultParameterValues['Disabled'] = $true
-$artifactsPath = Join-Path -Path $RepoRoot -ChildPath '.artifacts'
-$null = New-Item -Path $artifactsPath -ItemType Directory -Force
+$artifactsRoot = Join-Path -Path $RepoRoot -ChildPath '.artifacts'
+$null = New-Item -Path $artifactsRoot -ItemType Directory -Force
+$artifactsPath = $artifactsRoot
 Get-ChildItem -Path $artifactsPath -Filter 'TestResults.*.xml' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
 Get-ChildItem -Path $artifactsPath -Filter 'CodeCoverage.*.xml' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
 
