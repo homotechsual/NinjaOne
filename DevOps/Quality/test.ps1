@@ -5,7 +5,10 @@ using namespace System.Management.Automation
 param(
 	[switch]$SkipScriptAnalyzer,
 	[switch]$IncludeVSCodeMarker,
-	[switch]$UseBuiltModule
+	[switch]$UseBuiltModule,
+	[string[]]$Suite = @('core', 'private', 'public', 'docs'),
+	[ValidateSet('Detailed', 'Normal', 'Minimal', 'None')]
+	[string]$Verbosity = 'Detailed'
 )
 $RepoRoot = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\\..')
 Push-Location $RepoRoot
@@ -13,7 +16,8 @@ $ModuleName = (Get-Item -Path (Join-Path -Path $RepoRoot -ChildPath 'Source\Ninj
 # Disable default parameters during testing, just in case
 $PSDefaultParameterValues += @{}
 $PSDefaultParameterValues['Disabled'] = $true
-$artifactsPath = Join-Path -Path $RepoRoot -ChildPath '.artifacts'
+$artifactsRoot = Join-Path -Path $RepoRoot -ChildPath '.artifacts'
+$artifactsPath = Join-Path -Path $artifactsRoot -ChildPath ('test-run-{0}' -f (Get-Date -Format 'yyyyMMdd-HHmmssfff'))
 $null = New-Item -Path $artifactsPath -ItemType Directory -Force
 
 function New-SourceModuleForTesting {
@@ -51,14 +55,14 @@ function New-SourceModuleForTesting {
 	$moduleLines = @()
 	$moduleLines += ". '$((Join-Path -Path $sourceRoot -ChildPath 'Initialisation.ps1'))'"
 	$moduleLines += Get-ChildItem -Path (Join-Path -Path $sourceRoot -ChildPath 'Classes') -Filter '*.ps1' |
-		Sort-Object -Property Name |
-		ForEach-Object { ". '$($_.FullName)'" }
+	Sort-Object -Property Name |
+	ForEach-Object { ". '$($_.FullName)'" }
 	$moduleLines += Get-ChildItem -Path (Join-Path -Path $sourceRoot -ChildPath 'Private') -Filter '*.ps1' -Recurse |
-		Sort-Object -Property FullName |
-		ForEach-Object { ". '$($_.FullName)'" }
+	Sort-Object -Property FullName |
+	ForEach-Object { ". '$($_.FullName)'" }
 	$moduleLines += Get-ChildItem -Path (Join-Path -Path $sourceRoot -ChildPath 'Public') -Filter '*.ps1' -Recurse |
-		Sort-Object -Property FullName |
-		ForEach-Object { ". '$($_.FullName)'" }
+	Sort-Object -Property FullName |
+	ForEach-Object { ". '$($_.FullName)'" }
 
 	Set-Content -Path $moduleFile -Value $moduleLines -Encoding Ascii
 	return Get-Item -Path $moduleManifest
@@ -96,34 +100,55 @@ Write-Verbose "Code coverage will measure $($coverageFiles.Count) files:"
 $coverageFiles | ForEach-Object { Write-Verbose "  - $_" }
 
 $testSuites = @(
-	@{
-		Name  = 'core'
-			Paths = @('.\Tests\NinjaOne.Core.Tests.ps1', '.\Tests\NinjaOne.Schema.Tests.ps1', '.\Tests\NinjaOne.InstanceCapabilities.Tests.ps1')
+	[pscustomobject]@{
+		Name = 'core'
+		Paths = @('.\Tests\NinjaOne.Core.Tests.ps1', '.\Tests\NinjaOne.Schema.Tests.ps1', '.\Tests\NinjaOne.InstanceCapabilities.Tests.ps1')
 	},
-	@{
-		Name  = 'private'
+	[pscustomobject]@{
+		Name = 'private'
 		Paths = @('.\Tests\NinjaOne.Private.Tests.ps1')
 	},
-	@{
-		Name  = 'public'
+	[pscustomobject]@{
+		Name = 'public'
 		Paths = @('.\Tests\NinjaOne.Public.Tests.ps1')
 	},
-	@{
-		Name  = 'docs'
+	[pscustomobject]@{
+		Name = 'docs'
 		Paths = @('.\Tests\NinjaOne.Help.Tests.ps1')
 	}
 )
 
-foreach ($suite in $testSuites) {
+if ($IncludeVSCodeMarker -and -not $PSBoundParameters.ContainsKey('Verbosity')) {
+	$Verbosity = 'Normal'
+}
+
+$validSuites = $testSuites.Name | Sort-Object -Unique
+$requestedSuites = @(
+	$Suite |
+	ForEach-Object { $_ -split '\s*,\s*' } |
+	Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+	Select-Object -Unique
+)
+$invalidSuites = $requestedSuites | Where-Object { $_ -notin $validSuites }
+if ($invalidSuites) {
+	throw ('Invalid suite selection: {0}. Valid values: {1}' -f (($invalidSuites | Sort-Object) -join ', '), ($validSuites -join ', '))
+}
+
+$selectedSuites = $testSuites | Where-Object { $_.Name -in $requestedSuites }
+if (-not $selectedSuites) {
+	throw ('No matching test suites were selected. Valid values: {0}' -f ($validSuites -join ', '))
+}
+
+foreach ($testSuite in $selectedSuites) {
 	$PesterConfiguration = New-PesterConfiguration
 	$PesterConfiguration.CodeCoverage.Enabled = $true
-	$PesterConfiguration.CodeCoverage.OutputPath = Join-Path -Path $artifactsPath -ChildPath ("CodeCoverage.{0}.xml" -f $suite.Name)
+	$PesterConfiguration.CodeCoverage.OutputPath = Join-Path -Path $artifactsPath -ChildPath ('CodeCoverage.{0}.xml' -f $testSuite.Name)
 	$PesterConfiguration.CodeCoverage.Path = $coverageFiles
-	$PesterConfiguration.Output.Verbosity = 'Detailed'
-	$PesterConfiguration.Run.Path = $suite.Paths
+	$PesterConfiguration.Output.Verbosity = $Verbosity
+	$PesterConfiguration.Run.Path = $testSuite.Paths
 	$PesterConfiguration.Run.PassThru = $true
 	$PesterConfiguration.TestResult.Enabled = $true
-	$PesterConfiguration.TestResult.OutputPath = Join-Path -Path $artifactsPath -ChildPath ("TestResults.{0}.xml" -f $suite.Name)
+	$PesterConfiguration.TestResult.OutputPath = Join-Path -Path $artifactsPath -ChildPath ('TestResults.{0}.xml' -f $testSuite.Name)
 	$PesterConfiguration.TestResult.OutputFormat = 'JUnitXml'
 	if ($IncludeVSCodeMarker) {
 		if ($PesterConfiguration | Get-Member -Name 'VSCodeMarker' -ErrorAction SilentlyContinue) {
@@ -131,7 +156,7 @@ foreach ($suite in $testSuites) {
 		}
 	}
 
-	Write-Host ("`n=== Running {0} test suite ===" -f $suite.Name) -ForegroundColor Cyan
+	Write-Host ("`n=== Running {0} test suite ===" -f $testSuite.Name) -ForegroundColor Cyan
 	$null = Invoke-Pester -Configuration $PesterConfiguration
 }
 
