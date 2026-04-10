@@ -17,6 +17,12 @@ Describe 'Public function definitions' {
 			$tokens = $null
 			$parseErrors = $null
 			$ast = [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$tokens, [ref]$parseErrors)
+			if ($parseErrors) {
+				$ParseErrorSummary = $parseErrors | ForEach-Object {
+					'{0}:{1}:{2}: {3}' -f $_.Extent.File, $_.Extent.StartLineNumber, $_.Extent.StartColumnNumber, $_.Message
+				}
+				throw ("Failed to parse public source file(s):`n{0}" -f ($ParseErrorSummary -join "`n"))
+			}
 			foreach ($function in $ast.FindAll({ param($node) $node -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $false)) {
 				[pscustomobject]@{
 					Name = $function.Name
