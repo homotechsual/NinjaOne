@@ -4,6 +4,16 @@ Please note that backwards compatibility breaks are prefixed with `{"BC"}` (shor
 
 Note: Version 2.3.0 was released in error and will be skipped.
 
+## 2026-04-10 - Version 2.5.1
+
+* Fixes:
+  * Remove duplicate public commandlet source definitions that could shadow the canonical implementations for user role membership and tab rename operations.
+  * Fix `Get-NinjaOneOrganisationDevices` to declare the correct public function name.
+
+* Updates:
+  * Prevent duplicate Docusaurus doc IDs for generated Billing commandlet pages.
+  * Add regression tests to catch duplicate public function definitions and duplicate generated doc IDs before release.
+
 ## 2026-04-08 - Version 2.5.0
 
 * Additions:

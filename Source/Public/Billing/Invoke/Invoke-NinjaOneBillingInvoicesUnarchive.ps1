@@ -5,7 +5,7 @@ function Invoke-NinjaOneBillingInvoicesUnarchive {
 		.DESCRIPTION
 			Unarchives one or more billing invoices using the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Billing Invoices
+			Billing Invoices Unarchive
 		.EXAMPLE
 			PS> Invoke-NinjaOneBillingInvoicesUnarchive -Request @{ invoiceIds = @(1,2) }
 

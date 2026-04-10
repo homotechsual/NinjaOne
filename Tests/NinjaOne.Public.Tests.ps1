@@ -1,7 +1,7 @@
 #Requires -Modules @{ ModuleName = 'Pester'; ModuleVersion = '5.5.0' }
 
 $ModuleName = 'NinjaOne'
-$RepoRoot = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\')
+$RepoRoot = (Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\')).Path
 $ModulePath = $env:NINJAONE_MODULE_MANIFEST
 if ([string]::IsNullOrWhiteSpace($ModulePath)) {
 	$ModulePath = Get-ChildItem -Path "$RepoRoot\Output\$ModuleName\*\$ModuleName.psd1" -ErrorAction Stop | Select-Object -Last 1 -ExpandProperty FullName
@@ -9,6 +9,37 @@ if ([string]::IsNullOrWhiteSpace($ModulePath)) {
 
 Get-Module -Name $ModuleName | Remove-Module -Force -ErrorAction SilentlyContinue
 Import-Module $ModulePath -Force
+
+Describe 'Public function definitions' {
+	It 'does not define the same public function in more than one source file' {
+		$PublicRoot = Resolve-Path -Path (Join-Path -Path $RepoRoot -ChildPath 'Source\Public')
+		$Definitions = foreach ($file in Get-ChildItem -Path $PublicRoot -Recurse -Filter '*.ps1') {
+			$tokens = $null
+			$parseErrors = $null
+			$ast = [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$tokens, [ref]$parseErrors)
+			if ($parseErrors) {
+				$ParseErrorSummary = $parseErrors | ForEach-Object {
+					'{0}:{1}:{2}: {3}' -f $_.Extent.File, $_.Extent.StartLineNumber, $_.Extent.StartColumnNumber, $_.Message
+				}
+				throw ("Failed to parse public source file(s):`n{0}" -f ($ParseErrorSummary -join "`n"))
+			}
+			foreach ($function in $ast.FindAll({ param($node) $node -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $false)) {
+				[pscustomobject]@{
+					Name = $function.Name
+					File = $file.FullName.Substring($RepoRoot.Length).TrimStart('\', '/')
+				}
+			}
+		}
+
+		$Duplicates = $Definitions | Group-Object Name | Where-Object Count -GT 1
+		if ($Duplicates) {
+			$Summary = $Duplicates | ForEach-Object {
+				'{0}: {1}' -f $_.Name, (($_.Group.File | Sort-Object) -join ', ')
+			}
+			throw ("Duplicate public function definitions detected:`n{0}" -f ($Summary -join "`n"))
+		}
+	}
+}
 
 Describe 'Public Query Functions - Existence Tests' {
 	It 'Get-NinjaOneCustomFields should exist' {

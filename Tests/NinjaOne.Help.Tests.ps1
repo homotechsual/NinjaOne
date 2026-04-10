@@ -2,9 +2,10 @@
     .SYNOPSIS
         Help test suite for the NinjaOne module.
 #>
-$ModuleName = Get-ChildItem -Path '.\Source\*' -Include '*.psd1' -Exclude 'build.psd1' | Select-Object -ExpandProperty BaseName
+$RepoRoot = (Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\')).Path
+$ModuleName = Get-ChildItem -Path (Join-Path -Path $RepoRoot -ChildPath 'Source\*') -Include '*.psd1' -Exclude 'build.psd1' | Select-Object -ExpandProperty BaseName
 BeforeDiscovery {
-    $ModuleName = Get-ChildItem -Path '.\Source\*' -Include '*.psd1' -Exclude 'build.psd1' | Select-Object -ExpandProperty BaseName
+    $ModuleName = Get-ChildItem -Path (Join-Path -Path $RepoRoot -ChildPath 'Source\*') -Include '*.psd1' -Exclude 'build.psd1' | Select-Object -ExpandProperty BaseName
     $ManifestPath = $env:NINJAONE_MODULE_MANIFEST
     if ([string]::IsNullOrWhiteSpace($ManifestPath)) {
         $ModulePath = Resolve-Path -Path '.\Output\*\*' | Sort-Object -Property BaseName | Select-Object -Last 1 -ExpandProperty Path
@@ -20,6 +21,29 @@ Describe ('{0} - Help Content' -f $ModuleName) -Tags 'Module' {
     # Get a list of the exported functions.
     $Module = Get-Module -Name $ModuleName
     $FunctionList = $Module.ExportedFunctions.Values
+    Context 'Documentation identifiers' {
+        It 'uses unique Docusaurus doc ids per verb and functionality' {
+            $DocIdEntries = foreach ($Function in $FunctionList) {
+                $HelpContent = Get-Help -Name $Function.Name -Full | Select-Object -Property *
+                $Functionality = [string]$HelpContent.Functionality
+                $Functionality | Should -Not -BeNullOrEmpty -Because ('{0} must declare .FUNCTIONALITY so generated documentation has a stable doc id.' -f $Function.Name)
+                $Verb = $Function.Name.Split('-')[0]
+                $Slug = ([regex]::Replace($Functionality.ToLowerInvariant(), '[^a-z0-9]+', '-')).Trim('-')
+                [pscustomobject]@{
+                    Name = $Function.Name
+                    DocId = ('commandlets/{0}/{1}' -f $Verb, $Slug)
+                }
+            }
+
+            $Duplicates = $DocIdEntries | Group-Object DocId | Where-Object Count -gt 1
+            if ($Duplicates) {
+                $DuplicateSummary = $Duplicates | ForEach-Object {
+                    '{0}: {1}' -f $_.Name, (($_.Group.Name | Sort-Object) -join ', ')
+                }
+                throw ("Duplicate Docusaurus doc ids detected:`n{0}" -f ($DuplicateSummary -join "`n"))
+            }
+        }
+    }
     Context 'Function <_>' -ForEach $FunctionList {
         $Help = Get-Help -Name $_ -Full | Select-Object -Property *
         if ($Help.PSObject.Properties.Name -contains 'Examples') {
@@ -70,7 +94,7 @@ Describe ('{0} - Help Content' -f $ModuleName) -Tags 'Module' {
 }
 
 AfterAll {
-    $ModuleName = Get-ChildItem -Path '.\Source' -Filter '*.psd1' | Select-Object -ExpandProperty BaseName
+    $ModuleName = Get-ChildItem -Path (Join-Path -Path $RepoRoot -ChildPath 'Source') -Filter '*.psd1' | Select-Object -ExpandProperty BaseName
     if (Get-Module -Name $ModuleName) {
         Remove-Module $ModuleName -Force
     }

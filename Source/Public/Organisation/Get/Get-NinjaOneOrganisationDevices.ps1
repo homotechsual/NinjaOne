@@ -1,4 +1,4 @@
-function Get-NinjaOneOrganisationUsers {
+function Get-NinjaOneOrganisationDevices {
 	<#
         .SYNOPSIS
             Wrapper command using `Get-NinjaOneDevices` to get devices for an organisation.

@@ -5,7 +5,7 @@ function Invoke-NinjaOneBillingInvoicesArchive {
 		.DESCRIPTION
 			Archives one or more billing invoices using the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Billing Invoices
+			Billing Invoices Archive
 		.EXAMPLE
 			PS> Invoke-NinjaOneBillingInvoicesArchive -Request @{ invoiceIds = @(1,2) }
 
