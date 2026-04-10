@@ -21,6 +21,7 @@ $null = New-Item -Path $artifactsRoot -ItemType Directory -Force
 $artifactsPath = $artifactsRoot
 Get-ChildItem -Path $artifactsPath -Filter 'TestResults.*.xml' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
 Get-ChildItem -Path $artifactsPath -Filter 'CodeCoverage.*.xml' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
+Get-ChildItem -Path $artifactsPath -Directory -Filter 'SourceModule-*' -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
 
 function New-SourceModuleForTesting {
 	<#
