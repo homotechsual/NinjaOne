@@ -16,9 +16,10 @@ $ModuleName = (Get-Item -Path (Join-Path -Path $RepoRoot -ChildPath 'Source\Ninj
 # Disable default parameters during testing, just in case
 $PSDefaultParameterValues += @{}
 $PSDefaultParameterValues['Disabled'] = $true
-$artifactsRoot = Join-Path -Path $RepoRoot -ChildPath '.artifacts'
-$artifactsPath = Join-Path -Path $artifactsRoot -ChildPath ('test-run-{0}' -f (Get-Date -Format 'yyyyMMdd-HHmmssfff'))
+$artifactsPath = Join-Path -Path $RepoRoot -ChildPath '.artifacts'
 $null = New-Item -Path $artifactsPath -ItemType Directory -Force
+Get-ChildItem -Path $artifactsPath -Filter 'TestResults.*.xml' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
+Get-ChildItem -Path $artifactsPath -Filter 'CodeCoverage.*.xml' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
 
 function New-SourceModuleForTesting {
 	<#
@@ -40,16 +41,13 @@ function New-SourceModuleForTesting {
 		[string]$ArtifactsPath
 	)
 	$sourceRoot = Join-Path -Path $RepoRoot -ChildPath 'Source'
-	$moduleRoot = Join-Path -Path $ArtifactsPath -ChildPath 'SourceModule'
+	$moduleRoot = Join-Path -Path $ArtifactsPath -ChildPath ('SourceModule-{0}' -f ([guid]::NewGuid().ToString('N')))
 	$moduleManifest = Join-Path -Path $moduleRoot -ChildPath ('{0}.psd1' -f $ModuleName)
 	$moduleFile = Join-Path -Path $moduleRoot -ChildPath ('{0}.psm1' -f $ModuleName)
 	$moduleBinaries = Join-Path -Path $moduleRoot -ChildPath 'Binaries'
 
 	$null = New-Item -Path $moduleRoot -ItemType Directory -Force
 	Copy-Item -Path (Join-Path -Path $sourceRoot -ChildPath ('{0}.psd1' -f $ModuleName)) -Destination $moduleManifest -Force
-	if (Test-Path -Path $moduleBinaries) {
-		Remove-Item -Path $moduleBinaries -Recurse -Force
-	}
 	Copy-Item -Path (Join-Path -Path $sourceRoot -ChildPath 'Binaries') -Destination $moduleBinaries -Recurse -Force
 
 	$moduleLines = @()
