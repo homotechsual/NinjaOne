@@ -41,6 +41,33 @@ if (-not (Get-InstalledScript -Name 'Install-RequiredModule' -ErrorAction Silent
 	Install-Script -Name 'Install-RequiredModule' -force -Scope CurrentUser
 }
 
+$installCmd = Get-Command -Name 'Install-RequiredModule' -ErrorAction SilentlyContinue
+if (-not $installCmd) {
+	$installedScript = Get-InstalledScript -Name 'Install-RequiredModule' -ErrorAction SilentlyContinue
+	if ($installedScript) {
+		$installCmdPath = Join-Path -Path $installedScript.InstalledLocation -ChildPath 'Install-RequiredModule.ps1'
+	}
+} else {
+	if ($installCmd.Path) {
+		$installCmdPath = $installCmd.Path
+	} elseif ($installCmd.Source -and (Test-Path -Path $installCmd.Source)) {
+		$installCmdPath = $installCmd.Source
+	}
+}
+
+if (-not $installCmdPath) {
+	$userDocs = [Environment]::GetFolderPath('MyDocuments')
+	$fallbackPaths = @(
+		(Join-Path -Path $userDocs -ChildPath 'PowerShell\Scripts\Install-RequiredModule.ps1'),
+		(Join-Path -Path $userDocs -ChildPath 'WindowsPowerShell\Scripts\Install-RequiredModule.ps1')
+	)
+	$installCmdPath = $fallbackPaths | Where-Object { Test-Path -Path $_ } | Select-Object -First 1
+}
+
+if (-not $installCmdPath) {
+	throw 'Install-RequiredModule script not found. Ensure it is installed and available to the current user.'
+}
+
 # Install required modules from RequiredModules.psd1
 $RequiredModulesPath = Join-Path -Path $BuildToolsRoot -ChildPath 'RequiredModules.psd1'
 if (Test-Path -Path $RequiredModulesPath) {
@@ -59,7 +86,7 @@ if (Test-Path -Path $RequiredModulesPath) {
 	}
 	
 	# Then install/update any missing modules
-	Install-RequiredModule -RequiredModulesFile $RequiredModulesPath -Scope CurrentUser -TrustRegisteredRepositories -Import -Quiet
+	& $installCmdPath -RequiredModulesFile $RequiredModulesPath -Scope CurrentUser -TrustRegisteredRepositories -Import -Quiet
 } else {
 	throw "RequiredModules.psd1 not found at: $RequiredModulesPath"
 }
