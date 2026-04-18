@@ -84,6 +84,74 @@ jobs:
             Write-Host "PSScriptAnalyzer passed!" -ForegroundColor Green
           }
 
+  cross-platform-smoke:
+    name: Cross-Platform Smoke Tests
+    runs-on: ${{ matrix.os }}
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Validate PowerShell version
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($PSVersionTable.PSVersion.Major -ne 7) {
+            throw "Expected PowerShell 7, found $($PSVersionTable.PSVersion)"
+          }
+          Write-Host "Running on PowerShell $($PSVersionTable.PSVersion)" -ForegroundColor Green
+
+      - name: Bootstrap environment
+        shell: pwsh
+        working-directory: ${{ github.workspace }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE/DevOps/Build/bootstrap.ps1"
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '8.x'
+
+      - name: Build C# projects
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          if (-not (Test-Path 'Source/Binaries')) {
+            New-Item -Path 'Source/Binaries' -ItemType Directory -Force | Out-Null
+          }
+
+          Push-Location 'C# Classes'
+          try {
+            dotnet build 'C# Classes.sln' -c Release
+
+            $projectDirs = @('MetadataAttribute', 'ValidateNodeRoleId', 'ValidateStringOrInt', 'Enums')
+            foreach ($projectDir in $projectDirs) {
+              $dllPath = Join-Path -Path $projectDir -ChildPath 'bin/Release/*/*.dll'
+              $dlls = Get-ChildItem -Path $dllPath -ErrorAction SilentlyContinue
+              if ($dlls) {
+                Copy-Item -Path $dlls -Destination '../Source/Binaries/' -Force
+                Write-Host "  ✓ Copied $($dlls.Count) DLL(s) from $projectDir"
+              }
+            }
+            Write-Host '✓ C# projects built and DLLs copied to Source/Binaries' -ForegroundColor Green
+          } finally {
+            Pop-Location
+          }
+
+      - name: Run smoke test suites
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE/DevOps/Quality/test.ps1" -Suite core,private -SkipScriptAnalyzer -Verbosity Normal
+
   test:
     name: Run Tests
     runs-on: windows-latest
@@ -265,7 +333,9 @@ jobs:
   build:
     name: Build Module
     runs-on: windows-latest
-    needs: test
+    needs:
+      - test
+      - cross-platform-smoke
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6

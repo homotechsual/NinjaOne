@@ -41,10 +41,14 @@ The `CI` workflow runs on pushes and pull requests targeting `develop`.
 It executes in this order:
 
 1. **Lint with PSScriptAnalyzer**
-2. **Run Tests**
-3. **Sync development docs after successful push runs**
+2. **Run cross-platform smoke tests on macOS and Linux with PowerShell 7**
+3. **Run the full Windows test job**
+4. **Build the module and publish artifacts**
+5. **Sync development docs after successful push runs**
 
-The test job also bootstraps dependencies, builds the C# helper projects, uploads Pester results, and publishes coverage artifacts to Codecov.
+The cross-platform smoke job runs a lightweight `core,private` Pester subset on `ubuntu-latest` and `macos-latest` using `pwsh`.
+
+The Windows test job also bootstraps dependencies, builds the C# helper projects, uploads Pester results, and publishes coverage artifacts to Codecov.
 
 After a successful `push` run on `develop`, `sync-development-docs.yml` publishes `docs/NinjaOne/development` to `homotechsualdocs` at `docs/ninjaone/development`.
 
