@@ -95,7 +95,22 @@ jobs:
             exit 1
           }
 
+          $sourceFiltersPath = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath 'docs\NinjaOne\filters'
+          $sourceIndexPath = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath 'docs\NinjaOne\index.mdx'
+
+          if (-not (Test-Path -Path $sourceFiltersPath -PathType Container)) {
+            Write-Error "Source filters docs path not found: $sourceFiltersPath"
+            exit 1
+          }
+
+          if (-not (Test-Path -Path $sourceIndexPath -PathType Leaf)) {
+            Write-Error "Source index doc not found: $sourceIndexPath"
+            exit 1
+          }
+
           Write-Host "Using documentation from: $sourceCommandletsPath" -ForegroundColor Cyan
+          Write-Host "Using filters docs from: $sourceFiltersPath" -ForegroundColor Cyan
+          Write-Host "Using index doc from: $sourceIndexPath" -ForegroundColor Cyan
 
           # Clone homotechsualdocs with authentication
           git -c core.autocrlf=false clone https://x-access-token:$env:GH_TOKEN@github.com/homotechsual/homotechsualdocs.git docs-repo
@@ -125,10 +140,16 @@ jobs:
             if (Test-Path 'docs/ninjaone/commandlets') {
               Remove-Item -Path 'docs/ninjaone/commandlets' -Recurse -Force
             }
+            if (Test-Path 'docs/ninjaone/filters') {
+              Remove-Item -Path 'docs/ninjaone/filters' -Recurse -Force
+            }
             New-Item -Path 'docs/ninjaone/commandlets' -ItemType Directory -Force | Out-Null
+            New-Item -Path 'docs/ninjaone/filters' -ItemType Directory -Force | Out-Null
             
             # Copy generated docs
             Copy-Item -Path (Join-Path -Path $sourceCommandletsPath -ChildPath '*') -Destination 'docs/ninjaone/commandlets' -Recurse -Force
+            Copy-Item -Path (Join-Path -Path $sourceFiltersPath -ChildPath '*') -Destination 'docs/ninjaone/filters' -Recurse -Force
+            Copy-Item -Path $sourceIndexPath -Destination 'docs/ninjaone/index.mdx' -Force
             
             # Configure git
             git config user.email "action@github.com"
@@ -142,7 +163,7 @@ jobs:
             }
             
             # Commit and push
-            git add docs/ninjaone/commandlets
+            git add docs/ninjaone/commandlets docs/ninjaone/filters docs/ninjaone/index.mdx
             $commitMsg = "Docs update for NinjaOne ${{ steps.context.outputs.tag_name }}"
             git commit -m $commitMsg
             git push origin "HEAD:$targetBranch"
