@@ -1,0 +1,53 @@
+---
+title: Status Filter
+sidebar_position: 1
+description: The status filter `sf` parameter.
+---
+
+The status filter is, currently, used in the [Get-NinjaOneBackupJobs](../commandlets/Get/Get-NinjaOneBackupJobs.mdx) commandlet (which maps to the `/v2/backup/jobs` endpoint if not using the module) and is used to filter the jobs returned based on the status. It supports two modes of operations and five status values.
+
+## Single status mode
+
+This retrieves backup jobs matching the status provided, for example:
+
+```ps
+Get-NinjaOneBackupJobs -status 'RUNNING'
+```
+
+This will return all running jobs. Under the hood in the module this gets turned into the following query param:
+
+```ps
+https://eu.ninjarmm.com/v2/backup/jobs?sf=status%3dRUNNING
+```
+
+## Multiple status mode
+
+This retrieves backup jobs matching any one of the provided statuses, for example:
+
+```ps
+Get-NinjaOneBackupJobs -status @('RUNNING', 'PROCESSING')
+```
+
+This will return all running or processing jobs. Under the hood in the module this gets turned into the following query param:
+
+```ps
+https://eu.ninjarmm.com/v2/backup/jobs?sf=status in (RUNNING%2cPROCESSING)
+```
+
+## Possible status values
+
+The possible values for the backup job status are:
+
+* PROCESSING
+* RUNNING
+* COMPLETED
+* CANCELED
+* FAILED
+
+## Passing a status filter directly
+
+Instead of using the `-status` parameter you can use `-sf` and pass the filter string directly - don't HTML encode the characters though - the module will handle it. For example:
+
+```ps
+Get-NinjaOneBackupJobs -sf "status = RUNNING"
+```

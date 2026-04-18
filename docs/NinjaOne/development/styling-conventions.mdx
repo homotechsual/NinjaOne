@@ -1,0 +1,462 @@
+---
+title: Styling & Conventions
+sidebar_position: 3
+---
+
+This page documents the coding conventions and style guidelines for the NinjaOne PowerShell module.
+
+## Naming Conventions
+
+### Functions
+
+Follow PowerShell's Verb-Noun naming pattern:
+
+```powershell
+# Good
+Get-NinjaOneDevice
+Set-NinjaOneDeviceName
+New-NinjaOneTag
+Remove-NinjaOneTag
+Invoke-NinjaOneDeviceRestart
+
+# Bad
+GetDevice              # Missing module prefix
+NinjaDevice            # Missing verb
+Get-Device-Details     # Too many hyphens, unclear scope
+GetNinjaOneDevice      # No hyphens (not PowerShell style)
+```
+
+**Rules**:
+- Use **Approved Verbs** from PowerShell's official list (`Get-Verb`)
+- Approved verbs for NinjaOne context: `Add`, `Connect`, `Find`, `Get`,`Invoke`, `Merge`, `Move`, `New`, `Remove`, `Rename`, `Reset`, `Restart`, `Restore`, `Set`, `Start`, `Update`. Additional verbs may be considered if they fit the action and are approved by the team.
+- Always include the module prefix: `NinjaOne`
+- Separate with hyphens: `Verb-NounNoun`
+
+### Function Parameters
+
+Use camelCase for parameter names:
+
+```powershell
+# Good
+param(
+    [string]$deviceId,
+    [string]$organisationId,
+    [int]$pageSize,
+    [switch]$includeDetails
+)
+
+# Bad  
+param(
+    [string]$device_id,        # Snake case
+    [string]$DeviceID,         # All caps (use camelCase for multi-word)
+    [int]$page_size,           # Snake case
+    [switch]$IncludeDetails    # Should be camelCase not PascalCase
+)
+```
+
+**Rules**:
+- Start with lowercase for all parameters, including switches
+- Use camelCase for multi-word parameters
+- Avoid underscores; use overlapping words or abbreviations
+- Switches should be descriptive: `$includeInactive`, `$skipValidation`, not `$i` or `$s`
+
+### Variables
+
+Use camelCase for local variables:
+
+```powershell
+# Good
+$deviceName = $device.name
+$requestUri = "https://api/devices/$deviceId"
+$processedItems = @()
+
+# Bad
+$DeviceName = $device.name      # PascalCase
+$_requestUri = $requestUri      # Leading underscore (private members)
+$processed_items = @()          # Snake case
+```
+
+**Rules**:
+- Use camelCase consistently
+- Private/internal variables: consider context clarity over convention
+- Avoid single letters except in loops: `for ($i = 0; ...)`
+
+### Classes and Enums
+
+Use PascalCase:
+
+```powershell
+# Good
+class NinjaOneOrganisationDocument { }
+enum DeviceStatus { Active; Inactive; Archived }
+
+# Bad
+class ninjaOneOrganisationDocument { }
+enum device_status { }
+```
+
+## Code Style
+
+### Parameter Declarations
+
+Align parameter attributes for readability:
+
+```powershell
+# Good - aligned
+param(
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string]$deviceId,
+
+    [Parameter(ValueFromPipeline)]
+    [AllowNull()]
+    [object]$device,
+
+    [ValidateRange(1, 100)]
+    [int]$pageSize = 50
+)
+
+# Acceptable - compact
+param(
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string]$deviceId,
+    [object]$device,
+    [int]$pageSize = 50
+)
+
+# Avoid - hard to read
+param([Parameter(Mandatory)][ValidateNotNullOrEmpty()][string]$deviceId,[object]$device,[int]$pageSize = 50)
+```
+
+**Rules**:
+- One parameter per line
+- Attributes above parameter name
+- Descriptive comments for clarity
+- Include defaults when appropriate
+
+### Function Structure
+
+Standard layout for NinjaOne functions:
+
+```powershell
+<#
+.SYNOPSIS
+    Brief description.
+.DESCRIPTION
+    Detailed description.
+.EXAMPLE
+    Get-NinjaOneDevice -deviceId 123
+.OUTPUTS
+    [PSCustomObject] Device information.
+#>
+function Get-NinjaOneDevice {
+    [CmdletBinding()]
+    [OutputType([object])]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        # The device ID to retrieve
+        [string]$deviceId
+    )
+
+    begin {
+        # Setup code
+    }
+
+    process {
+        # Main logic
+        try {
+            $null = Invoke-NinjaOnePreFlightCheck
+            $requestUri = "https://api.ninjarmm.com/v2/devices/$deviceId"
+            $response = Invoke-NinjaOneGETRequest -Uri $requestUri
+            return $response
+        }
+        catch {
+            $PSCmdlet.ThrowTerminatingError($_)
+        }
+    }
+
+    end {
+        # Cleanup code
+    }
+}
+```
+
+**Structure**:
+1. Comment-based help (`<#...#>`)
+2. `[CmdletBinding()]` attribute
+3. `[OutputType()]` attribute (when return type is consistent)
+4. `param()` block with inline parameter descriptions
+5. `begin { }`, `process { }`, `end { }` sections (if needed)
+6. Use `try/catch` for error handling
+7. Use the surrounding codebase pattern for fatal errors (`throw` or `$PSCmdlet.ThrowTerminatingError(...)`)
+
+### Conditionals
+
+Use consistent formatting:
+
+```powershell
+# Good - readable
+if ($device.status -eq 'Active') {
+    Write-Verbose "Device is active"
+} elseif ($device.status -eq 'Inactive') {
+    Write-Verbose "Device is inactive"
+} else {
+    Write-Verbose "Device is archived"
+}
+
+# Avoid - cramped
+if ($device.status -eq 'Active') { Write-Verbose "Device is active" } elseif ($device.status -eq 'Inactive') { Write-Verbose "Device is inactive" } else { Write-Verbose "Device is archived" }
+```
+
+**Rules**:
+- Open brace on same line
+- One statement per line in block
+- Use `elseif` (not `else if`)
+- For simple conditions, parentheses optional but recommended
+
+### String Formatting
+
+Prefer readable string formatting and avoid noisy concatenation. The repo contains both `-f` formatting and interpolation already, so follow nearby code and keep the result easy to scan.
+
+```powershell
+# Good - clear formatting
+$message = "Device {0} not found" -f $deviceId
+$uri = "https://api.ninjarmm.com/v2/devices/{0}/details?filter={1}" -f $deviceId, $filter
+
+# Also acceptable when it matches surrounding code and stays readable
+$message = "Device $deviceId not found"
+
+# Avoid - hard to read concatenation
+$message = "Device " + $deviceId + " not found"
+
+# Avoid - mixed styles
+$uri = "https://api.ninjarmm.com/v2/devices/" + $deviceId + "/details?filter=" + $filter
+
+# Avoid - multiline with interpolation (hard to read)
+$message = @"
+    Device $deviceId not found.
+    
+    Please check the ID and try again.
+"@
+```
+
+**Rules**:
+- Prefer `-f` when formatting gets complex.
+- Short interpolation is fine when it is the clearest option and matches nearby code.
+- Avoid string concatenation with `+` for clarity.
+- Avoid hard-to-read interpolation in large or multiline strings.
+
+### Collections
+
+Use array syntax clearly:
+
+```powershell
+# Good - explicit array
+$ids = @(1, 2, 3)
+$items = @()
+
+# Good - pipeline
+$items = Get-Item -Path *.ps1
+
+# Avoid - ambiguous
+$ids = 1, 2, 3
+$items = @
+
+# Avoid - unnecessary conversion
+$ids = @(@(1, 2, 3))
+```
+
+**Rules**:
+- Use `@()` for empty arrays: `$items = @()`
+- Use `@(value1, value2)` for multi-item arrays
+- Single items don't need `@()` prefix
+- Avoid nested `@()` unless necessary
+
+### Error Handling
+
+Use structured error handling:
+
+```powershell
+# Good
+try {
+    $response = $url | Invoke-WebRequest
+}
+catch [System.Net.HttpRequestException] {
+    Write-Error "HTTP request failed: $_"
+    return $null
+}
+catch {
+    $PSCmdlet.ThrowTerminatingError($_)
+}
+
+# Acceptable for internal functions
+try {
+    $response = $url | Invoke-WebRequest
+}
+catch {
+    throw "Failed to fetch: $_"
+}
+```
+
+**Rules**:
+- Catch specific exceptions when possible
+- Log/write error before returning early
+- Use `throw` or `$PSCmdlet.ThrowTerminatingError(...)` consistently with the surrounding code path
+- Include `$_` or `$_.Exception.Message` in error output
+
+## API Design Patterns
+
+### Parameter Guidelines
+
+**Required Parameters**: Use `[Parameter(Mandatory)]`
+
+```powershell
+param(
+    [Parameter(Mandatory)]
+    # Always required
+    [string]$deviceId
+)
+```
+
+**Pipeline Support**: Enable pipeline binding when logical
+
+```powershell
+param(
+    [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName)]
+    # Accept device objects from pipeline
+    [object]$device
+)
+```
+
+**Common Parameter Sets**: Define overlapping parameters
+
+```powershell
+param(
+    [Parameter(Mandatory, ParameterSetName = 'ByDeviceId')]
+    [string]$deviceId,
+
+    [Parameter(Mandatory, ParameterSetName = 'ByName')]
+    [string]$deviceName,
+
+    [Parameter(Mandatory, ParameterSetName = 'ByObject')]
+    [object]$device
+)
+```
+
+### Return Values
+
+Always be explicit about return types:
+
+```powershell
+[OutputType([object])]
+function Get-NinjaOneDevice {
+    return $response
+}
+
+[OutputType([bool])]
+function Test-NinjaOneDeviceAccess {
+    return $true
+}
+
+# Returns $null - no [OutputType] attribute
+function Initialize-NinjaOneSession {
+    # No return statement
+}
+```
+
+**Rules**:
+- Specify `[OutputType()]` with type in brackets
+- Return consistent types (not sometimes array, sometimes single item)
+- Use `[object]` for complex/heterogeneous returns
+- For multiple types: `[OutputType([object[]], [bool])]`
+
+### Filtering and Selection
+
+For functions that filter or retrieve collections:
+
+```powershell
+# Good - logical parameters
+param(
+    [ValidateSet('Active', 'Inactive', 'Archived')]
+    # Filter by status
+    [string]$status,
+
+    [ValidateRange(1, 1000)]
+    # Limit results
+    [int]$limit = 100,
+
+    # Pagination offset
+    [int]$offset = 0,
+
+    # OData filter expression
+    [string]$filter
+)
+
+# Bad - too many optional numeric parameters
+param(
+    [int]$skip,
+    [int]$take,
+    [int]$pageNumber,
+    [int]$pageSize,
+    [int]$offset
+)
+```
+
+**Rules**:
+- Consolidate related filtering into one parameter when possible
+- Use `ValidateSet` for predefined options
+- Support pagination with consistent naming: `offset`/`limit` or `page`/`pageSize`
+- Document filter syntax in help
+
+## Documentation Impact
+
+Code style directly affects generated documentation:
+
+```powershell
+'Well-styled function:
+function Get-NinjaOneDevice {
+    <#
+    .SYNOPSIS
+        Retrieves a specific NinjaOne device.
+    .PARAMETER deviceId
+        The device ID to retrieve                           # ← In generated docs
+    #>
+    param(
+        [Parameter(Mandatory)]
+        # The device ID to retrieve  # ← Also in generated docs
+        [string]$deviceId
+    )
+}
+
+# Generates:
+#   Get-NinjaOneDevice [-deviceId] <string>
+#   
+#   Retrieves a specific NinjaOne device.
+#   
+#   Parameters:
+#     -deviceId <string>
+#       The device ID to retrieve
+```
+
+Always write code as if documentation will be auto-generated—because it will be.
+
+## PR Checklist for Style
+
+Before submitting, verify:
+- [ ] Function names follow `Verb-NounNoun` pattern
+- [ ] Parameter names use camelCase
+- [ ] All parameters have descriptions using a comment line immediately before the parameter.
+- [ ] Return type specified with `[OutputType()]`
+- [ ] Comment-based help complete (SYNOPSIS, DESCRIPTION, examples)
+- [ ] Error handling follows the established pattern in nearby code
+- [ ] No PSScriptAnalyzer violations
+- [ ] Code passes style checks in test suite
+
+## See Also
+
+- [Quality Gates & Code Standards](quality-gates.mdx)
+- [Help Generation Deep Dive](help-generation-detailed.mdx)
+- [PowerShell Best Practices](https://learn.microsoft.com/powershell/scripting/developer/script-development-best-practices)
+- [Approved Verbs](https://learn.microsoft.com/powershell/scripting/developer/cmdlet/approved-verbs-for-powershell-commands)
