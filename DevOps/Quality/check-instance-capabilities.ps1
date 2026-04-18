@@ -12,28 +12,28 @@ param(
 	# Instance short names to query.
 	[String[]]$Instances = @('eu', 'oc', 'us', 'ca', 'us2', 'fed'),
 	# Path to the built module manifest. Defaults to the latest manifest under Output.
-	[String]$ManifestPath,
+	[String]$manifestPath,
 	# Path to the repository OpenAPI snapshot.
-	[String]$SpecPath,
+	[String]$specPath,
 	# Output path for the JSON report.
-	[String]$OutputPath,
+	[String]$outputPath,
 	# Instance short names that should report drift but not fail the check.
 	[String[]]$IgnoredFailInstances = @(),
 	# Fail the script when live coverage gaps or endpoint removals are detected.
-	[Switch]$FailOnDetectedDrift
+	[Switch]$failOnDetectedDrift
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $RepoRoot = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\..')
-if (-not $SpecPath) {
-	$SpecPath = Join-Path -Path $RepoRoot -ChildPath 'ninjaOne-API-core-resources.yaml'
+if (-not $specPath) {
+	$specPath = Join-Path -Path $RepoRoot -ChildPath 'ninjaOne-API-core-resources.yaml'
 }
-if (-not $OutputPath) {
-	$OutputPath = Join-Path -Path $RepoRoot -ChildPath '.artifacts\instance-capability-report.json'
+if (-not $outputPath) {
+	$outputPath = Join-Path -Path $RepoRoot -ChildPath '.artifacts\instance-capability-report.json'
 }
-if (-not $ManifestPath) {
+if (-not $manifestPath) {
 	$outputManifestDirectory = Join-Path -Path $RepoRoot -ChildPath 'Output\NinjaOne'
 	if (-not (Test-Path -Path $outputManifestDirectory -PathType Container)) {
 		throw 'No built NinjaOne manifest found under Output\NinjaOne. Build the module first.'
@@ -48,7 +48,7 @@ if (-not $ManifestPath) {
 		throw 'No built NinjaOne manifest found under Output\NinjaOne. Build the module first.'
 	}
 
-	$ManifestPath = (
+	$manifestPath = (
 		$versionDirectories |
 		ForEach-Object {
 			$manifestPath = Join-Path -Path $_.FullName -ChildPath 'NinjaOne.psd1'
@@ -58,29 +58,29 @@ if (-not $ManifestPath) {
 		} |
 		Select-Object -First 1
 	)
-	if (-not $ManifestPath) {
+	if (-not $manifestPath) {
 		throw 'No built NinjaOne manifest found under Output\NinjaOne. Build the module first.'
 	}
 }
 
-$outputDirectory = Split-Path -Path $OutputPath -Parent
+$outputDirectory = Split-Path -Path $outputPath -Parent
 if ([string]::IsNullOrWhiteSpace($outputDirectory)) {
 	$outputDirectory = '.'
 }
 $null = New-Item -Path $outputDirectory -ItemType Directory -Force
 
-$module = Import-Module -Name $ManifestPath -Force -DisableNameChecking -PassThru -ErrorAction Stop
+$module = Import-Module -Name $manifestPath -Force -DisableNameChecking -PassThru -ErrorAction Stop
 
 $endpointSetBuilder = {
 	param(
 		# OpenAPI paths keyed by route.
 		[Parameter(Mandatory)]
-		[Hashtable]$Paths
+		[Hashtable]$paths
 	)
 
 	$endpointSet = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
-	foreach ($path in ($Paths.Keys | Sort-Object)) {
-		$methods = @($Paths[$path])
+	foreach ($path in ($paths.Keys | Sort-Object)) {
+		$methods = @($paths[$path])
 		if ($methods.Count -eq 0) {
 			$null = $endpointSet.Add(('ANY {0}' -f $path))
 			continue
@@ -141,18 +141,18 @@ $cmdletEndpointCollector = {
 	return [string[]]($endpointSet | Sort-Object)
 }
 
-$localYaml = Get-Content -Path $SpecPath -Raw
+$localYaml = Get-Content -Path $specPath -Raw
 $repoPaths = & $module {
 	param($OpenApiYaml)
 	Get-NinjaOneOpenApiPaths -OpenApiYaml $OpenApiYaml
 } $localYaml
-$repoEndpointSet = & $endpointSetBuilder -Paths $repoPaths
+$repoEndpointSet = & $endpointSetBuilder -paths $repoPaths
 $cmdletEndpointSet = & $cmdletEndpointCollector -Module $module
 
 $results = foreach ($instance in ($Instances | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique)) {
 	Write-Host ('Checking instance {0}...' -f $instance) -ForegroundColor Cyan
 	$capability = Get-NinjaOneInstanceCapabilities -Instance $instance -IncludePaths -Refresh
-	$instanceEndpointSet = & $endpointSetBuilder -Paths $capability.Paths
+	$instanceEndpointSet = & $endpointSetBuilder -paths $capability.Paths
 	$instanceEndpointLookup = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
 	foreach ($endpoint in $instanceEndpointSet) {
 		[void]$instanceEndpointLookup.Add($endpoint)
@@ -182,8 +182,8 @@ $results = foreach ($instance in ($Instances | Where-Object { -not [string]::IsN
 	}
 }
 
-$results | ConvertTo-Json -Depth 8 | Set-Content -Path $OutputPath -Encoding UTF8
-$markdownPath = [System.IO.Path]::ChangeExtension($OutputPath, '.md')
+$results | ConvertTo-Json -Depth 8 | Set-Content -Path $outputPath -Encoding UTF8
+$markdownPath = [System.IO.Path]::ChangeExtension($outputPath, '.md')
 
 $summary = [System.Collections.Generic.List[string]]::new()
 $summary.Add('# NinjaOne instance endpoint drift report') | Out-Null
@@ -281,8 +281,8 @@ if ($env:GITHUB_OUTPUT) {
 	Add-Content -Path $env:GITHUB_OUTPUT -Value ("drift_issue_count={0}" -f $totalDriftIssues)
 }
 
-if ($FailOnDetectedDrift -and $driftDetected) {
+if ($failOnDetectedDrift -and $driftDetected) {
 	throw ('Detected {0} live endpoint coverage/removal issue(s) across the monitored NinjaOne instances.' -f $totalDriftIssues)
 }
 
-Write-Host ('✓ Instance capability check completed. Report written to {0}' -f $OutputPath) -ForegroundColor Green
+Write-Host ('✓ Instance capability check completed. Report written to {0}' -f $outputPath) -ForegroundColor Green

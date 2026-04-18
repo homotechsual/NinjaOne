@@ -7,7 +7,7 @@ function New-NinjaOneStagedDevice {
 		.FUNCTIONALITY
 			Devices
 		.EXAMPLE
-			PS> New-NinjaOneStagedDevice -StagedDevice @{ deviceIdentifier = 'DEVICE-001'; organizationId = 1 }
+			PS> New-NinjaOneStagedDevice -stagedDevice @{ deviceIdentifier = 'DEVICE-001'; organizationId = 1 }
 
 			Creates a staged device.
 		.EXAMPLE
@@ -28,7 +28,7 @@ function New-NinjaOneStagedDevice {
 				itamAssetPurchaseAmount = 0
 				name = "string"
 			}
-			PS> New-NinjaOneStagedDevice -StagedDevice $body
+			PS> New-NinjaOneStagedDevice -stagedDevice $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -48,12 +48,12 @@ function New-NinjaOneStagedDevice {
 		# Staged device configuration per API schema
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$StagedDevice
+		[Object]$stagedDevice
 	)
 	process {
 		try {
 			$Resource = 'v2/staged-device'
-			$RequestParams = @{ Resource = $Resource; Body = $StagedDevice }
+			$RequestParams = @{ Resource = $Resource; Body = $stagedDevice }
 			if ($PSCmdlet.ShouldProcess('Staged Device', 'Create')) {
 				$Result = New-NinjaOnePOSTRequest @RequestParams
 				return $Result

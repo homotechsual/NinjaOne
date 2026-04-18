@@ -9,12 +9,12 @@ Scans PowerShell files, identifies functions without help, generates semantic he
 and inserts it into each function. Processes functions systematically and validates results.
 
 .EXAMPLE
-.\DevOps\Help\Apply-CommentBasedHelpToFunctions.ps1 -SourcePath .\Source\Public -Confirm
+.\DevOps\Help\Apply-CommentBasedHelpToFunctions.ps1 -SourcePath .\Source\Public -confirm
 #>
 
 param(
 	[string]$SourcePath = '.',
-	[switch]$Confirm,
+	[switch]$confirm,
 	[int]$BatchSize = 10
 )
 
@@ -43,11 +43,11 @@ function Test-FunctionHasHelp {
 }
 
 function Get-FunctionParameters {
-	param([System.Management.Automation.Language.FunctionDefinitionAst]$FunctionAst)
+	param([System.Management.Automation.Language.FunctionDefinitionAst]$functionAst)
     
 	$params = @()
-	if ($FunctionAst.Body.ParamBlock.Parameters) {
-		foreach ($param in $FunctionAst.Body.ParamBlock.Parameters) {
+	if ($functionAst.Body.ParamBlock.Parameters) {
+		foreach ($param in $functionAst.Body.ParamBlock.Parameters) {
 			$params += $param.Name.VariablePath.UserPath
 		}
 	}
@@ -61,9 +61,9 @@ function Get-FunctionType {
     .DESCRIPTION
         Returns 'public' when the file path contains a Public folder; otherwise returns 'private'.
     #>
-	param([string]$FilePath)
+	param([string]$filePath)
     
-	if ($FilePath -match '\\Public\\' -or $FilePath -match '/Public/') {
+	if ($filePath -match '\\Public\\' -or $filePath -match '/Public/') {
 		return 'public'
 	}
 	return 'private'
@@ -71,33 +71,33 @@ function Get-FunctionType {
 
 function Insert-HelpIntoFile {
 	param(
-		[string]$FilePath,
-		[System.Management.Automation.Language.FunctionDefinitionAst]$FunctionAst,
-		[string]$HelpContent
+		[string]$filePath,
+		[System.Management.Automation.Language.FunctionDefinitionAst]$functionAst,
+		[string]$helpContent
 	)
     
-	$fileContent = Get-Content -Path $FilePath -Raw
+	$fileContent = Get-Content -Path $filePath -Raw
 	$lines = $fileContent -split "`n"
     
 	# Find the line with "function" keyword
-	$functionLineIndex = $FunctionAst.Extent.StartLineNumber - 1
+	$functionLineIndex = $functionAst.Extent.StartLineNumber - 1
     
 	# Check if there's already help above it
 	$checkAbove = [Math]::Max(0, $functionLineIndex - 50)
 	$precedingText = ($lines[$checkAbove..$functionLineIndex] -join "`n")
     
 	if ($precedingText -match '<#[\s\S]*?#>' -or $precedingText -match '\.SYNOPSIS') {
-		Write-Verbose "Help already exists for $($FunctionAst.Name) in $FilePath"
+		Write-Verbose "Help already exists for $($functionAst.Name) in $filePath"
 		return $false
 	}
     
 	# Prepare new lines with help
-	$helpLines = $HelpContent -split "`n"
+	$helpLines = $helpContent -split "`n"
 	$newLines = @($helpLines) + @($lines[$functionLineIndex..($lines.Count - 1)])
     
 	# Join and save
 	$newContent = $newLines -join "`n"
-	Set-Content -Path $FilePath -Value $newContent -Encoding UTF8 -NoNewline
+	Set-Content -Path $filePath -Value $newContent -Encoding UTF8 -NoNewline
     
 	return $true
 }
@@ -132,8 +132,8 @@ function Process-File {
 			if (-not (Test-FunctionHasHelp -FileContent (Get-Content $File.FullName -Raw) -LineNumber $func.Extent.StartLineNumber)) {
                 
 				# Generate semantic help
-				$params = Get-FunctionParameters -FunctionAst $func
-				$funcType = Get-FunctionType -FilePath $File.FullName
+				$params = Get-FunctionParameters -functionAst $func
+				$funcType = Get-FunctionType -filePath $File.FullName
                 
 				$help = & $semanticHelpPath `
 					-FunctionName $func.Name `
@@ -141,7 +141,7 @@ function Process-File {
 					-FunctionType $funcType
                 
 				# Insert help into file
-				if (Insert-HelpIntoFile -FilePath $File.FullName -FunctionAst $func -HelpContent $help) {
+				if (Insert-HelpIntoFile -filePath $File.FullName -functionAst $func -helpContent $help) {
 					Write-Host "  ✓ Added help to: $($func.Name)" -ForegroundColor Green
 					$modified++
 					$script:totalModified++

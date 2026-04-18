@@ -7,7 +7,7 @@ function New-NinjaOneBillingAgreement {
 		.FUNCTIONALITY
 			Billing Agreement
 		.EXAMPLE
-			PS> New-NinjaOneBillingAgreement -BillingAgreement @{ name = 'Premium Support' }
+			PS> New-NinjaOneBillingAgreement -billingAgreement @{ name = 'Premium Support' }
 
 			Creates a billing agreement.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function New-NinjaOneBillingAgreement {
 		# Billing agreement payload per API schema.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$BillingAgreement
+		[Object]$billingAgreement
 	)
 	process {
 		try {
 			$Resource = 'v2/billing/agreements'
-			$RequestParams = @{ Resource = $Resource; Body = $BillingAgreement }
+			$RequestParams = @{ Resource = $Resource; Body = $billingAgreement }
 			if ($PSCmdlet.ShouldProcess('Billing Agreement', 'Create')) {
 				return (New-NinjaOnePOSTRequest @RequestParams)
 			}

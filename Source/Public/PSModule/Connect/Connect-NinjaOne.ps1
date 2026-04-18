@@ -7,23 +7,23 @@ function Connect-NinjaOne {
 		.FUNCTIONALITY
 			NinjaOne
 		.EXAMPLE
-			PS> Connect-NinjaOne -Instance 'eu' -ClientId 'AAaaA1aaAaAA-aaAaaA11a1A-aA' -ClientSecret '00Z00zzZzzzZzZzZzZzZZZ0zZ0zzZ_0zzz0zZZzzZz0Z0ZZZzz0z0Z' -UseClientAuth
+			PS> Connect-NinjaOne -instance 'eu' -clientId 'AAaaA1aaAaAA-aaAaaA11a1A-aA' -clientSecret '00Z00zzZzzzZzZzZzZzZZZ0zZ0zzZ_0zzz0zZZzzZz0Z0ZZZzz0z0Z' -useClientAuth
 
 			This logs into NinjaOne using the client credentials flow.
 		.EXAMPLE
-			PS> Connect-NinjaOne -Instance 'eu' -ClientId 'AAaaA1aaAaAA-aaAaaA11a1A-aA' -ClientSecret '00Z00zzZzzzZzZzZzZzZZZ0zZ0zzZ_0zzz0zZZzzZz0Z0ZZZzz0z0Z' -Port 9090 -UseWebAuth
+			PS> Connect-NinjaOne -instance 'eu' -clientId 'AAaaA1aaAaAA-aaAaaA11a1A-aA' -clientSecret '00Z00zzZzzzZzZzZzZzZZZ0zZ0zzZ_0zzz0zZZzzZz0Z0ZZZzz0z0Z' -Port 9090 -useWebAuth
 
 			This logs into NinjaOne using the authorization code flow.
 		.EXAMPLE
-			PS> Connect-NinjaOne -Instance 'eu' -ClientId 'AAaaA1aaAaAA-aaAaaA11a1A-aA' -ClientSecret '00Z00zzZzzzZzZzZzZzZZZ0zZ0zzZ_0zzz0zZZzzZz0Z0ZZZzz0z0Z' -RefreshToken 'a1a11a11-aa11-11a1-a111-a1a111aaa111.11AaaAaaa11aA-AA1aaaAAA111aAaaaaA1AAAA1_AAa' -UseTokenAuth
+			PS> Connect-NinjaOne -instance 'eu' -clientId 'AAaaA1aaAaAA-aaAaaA11a1A-aA' -clientSecret '00Z00zzZzzzZzZzZzZzZZZ0zZ0zzZ_0zzz0zZZzzZz0Z0ZZZzz0z0Z' -refreshToken 'a1a11a11-aa11-11a1-a111-a1a111aaa111.11AaaAaaa11aA-AA1aaaAAA111aAaaaaA1AAAA1_AAa' -useTokenAuth
 
 			This logs into NinjaOne using the refresh token flow.
 		.EXAMPLE
-			PS> Connect-NinjaOne -UseSecretManagement -VaultName 'NinjaOneVault' -WriteToSecretVault -Instance 'eu' -ClientId 'AAaaA1aaAaAA-aaAaaA11a1A-aA' -ClientSecret '00Z00zzZzzzZzZzZzZzZZZ0zZ0zzZ_0zzz0zZZzzZz0Z0ZZZzz0z0Z' -UseClientAuth
+			PS> Connect-NinjaOne -useSecretManagement -vaultName 'NinjaOneVault' -writeToSecretVault -instance 'eu' -clientId 'AAaaA1aaAaAA-aaAaaA11a1A-aA' -clientSecret '00Z00zzZzzzZzZzZzZzZZZ0zZ0zzZ_0zzz0zZZzzZz0Z0ZZZzz0z0Z' -useClientAuth
 
 			This logs into NinjaOne using the client credentials flow and writes the connection information to the secret vault.
 		.EXAMPLE
-			PS> Connect-NinjaOne -UseSecretManagement -VaultName 'NinjaOneVault' -ReadFromSecretVault
+			PS> Connect-NinjaOne -useSecretManagement -vaultName 'NinjaOneVault' -readFromSecretVault
 
 			This reads the connection information from the secret vault.
 		.OUTPUTS
@@ -39,99 +39,99 @@ function Connect-NinjaOne {
 		# Use the "Authorisation Code" flow with your web browser.
 		[Parameter( Mandatory, ParameterSetName = 'Authorisation Code')]
 		[Parameter( ParameterSetName = 'Secret Vault Write' )]
-		[Switch]$UseWebAuth,
+		[Switch]$useWebAuth,
 		# Use the "Token Authentication" flow - useful if you already have a refresh token.
 		[Parameter( Mandatory, ParameterSetName = 'Token Authentication' )]
 		[Parameter( ParameterSetName = 'Secret Vault Write' )]
-		[switch]$UseTokenAuth,
+		[switch]$useTokenAuth,
 		# Use the "Client Credentials" flow - useful if you already have a client ID and secret.
 		[Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
 		[Parameter( ParameterSetName = 'Secret Vault Write' )]
-		[switch]$UseClientAuth,
+		[switch]$useClientAuth,
 		# The NinjaOne instance to connect to. Choose from 'eu', 'oc' or 'us'.
 		[Parameter( Mandatory, ParameterSetName = 'Authorisation Code' )]
 		[Parameter( Mandatory, ParameterSetName = 'Token Authentication' )]
 		[Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
 		[Parameter( Mandatory, ParameterSetName = 'Secret Vault Write' )]
 	[ValidateSet('eu', 'oc', 'us', 'ca', 'us2', 'fed')]
-		[string]$Instance,
+		[string]$instance,
 		# The Client Id for the application configured in NinjaOne.
 		[Parameter( Mandatory, ParameterSetName = 'Authorisation Code' )]
 		[Parameter( Mandatory, ParameterSetName = 'Token Authentication' )]
 		[Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
 		[Parameter( Mandatory, ParameterSetName = 'Secret Vault Write' )]
-		[String]$ClientId,
+		[String]$clientId,
 		# The Client Secret for the application configured in NinjaOne.
 		[Parameter( Mandatory, ParameterSetName = 'Authorisation Code' )]
 		[Parameter( Mandatory, ParameterSetName = 'Token Authentication' )]
 		[Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
 		[Parameter( Mandatory, ParameterSetName = 'Secret Vault Write' )]
-		[String]$ClientSecret,
+		[String]$clientSecret,
 		# The API scopes to request, if this isn't passed the scope is assumed to be "all". Pass a string or array of strings. Limited by the scopes granted to the application in NinjaOne.
 		[Parameter( ParameterSetName = 'Authorisation Code' )]
 		[Parameter( ParameterSetName = 'Token Authentication' )]
 		[Parameter( ParameterSetName = 'Client Credentials' )]
 		[Parameter( ParameterSetName = 'Secret Vault Write' )]
 		[ValidateSet('monitoring', 'management', 'control', 'offline_access')]
-		[String[]]$Scopes,
+		[String[]]$scopes,
 		# The redirect URI to use. If not set defaults to 'http://localhost'. Should be a full URI e.g. https://redirect.example.uk:9090/auth
 		[Parameter( ParameterSetName = 'Authorisation Code' )]
 		[Parameter( ParameterSetName = 'Secret Vault Write' )]
-		[URI]$RedirectURL,
+		[URI]$redirectURL,
 		# The port to use for the redirect URI. Must match with the configuration set in NinjaOne. If not set defaults to '9090'.
 		[Parameter( ParameterSetName = 'Authorisation Code' )]
 		[Parameter( ParameterSetName = 'Secret Vault Write' )]
-		[Int]$Port = 9090,
+		[Int]$port = 9090,
 		# The refresh token to use for "Token Authentication" flow.
 		[Parameter( ParameterSetName = 'Token Authentication' )]
 		[Parameter( ParameterSetName = 'Secret Vault Write' )]
-		[String]$RefreshToken,
+		[String]$refreshToken,
 		# Output the tokens - useful when using "Authorisation Code" flow - to use with "Token Authentication" flow.
 		[Parameter( ParameterSetName = 'Authorisation Code' )]
 		[Parameter( ParameterSetName = 'Token Authentication' )]
 		[Parameter( ParameterSetName = 'Client Credentials' )]
-		[Switch]$ShowTokens,
+		[Switch]$showTokens,
 		# Use the secret management module to retrieve credentials and store tokens. Check the docs on setting up the secret management module at https://docs.homotechsual.dev/common/secretmanagement.
 		[Parameter( ParameterSetName = 'Authorisation Code' )]
 		[Parameter( ParameterSetName = 'Token Authentication' )]
 		[Parameter( ParameterSetName = 'Client Credentials' )]
 		[Parameter( Mandatory, ParameterSetName = 'Secret Vault Write' )]
 		[Parameter( Mandatory, ParameterSetName = 'Secret Vault Read' )]
-		[Switch]$UseSecretManagement,
+		[Switch]$useSecretManagement,
 		# The name of the secret vault to use.
 		[Parameter( ParameterSetName = 'Authorisation Code' )]
 		[Parameter( ParameterSetName = 'Token Authentication' )]
 		[Parameter( ParameterSetName = 'Client Credentials' )]
 		[Parameter( Mandatory, ParameterSetName = 'Secret Vault Write' )]
 		[Parameter( Mandatory, ParameterSetName = 'Secret Vault Read' )]
-		[String]$VaultName,
+		[String]$vaultName,
 		# Write updated credentials to secret management vault.
 		[Parameter( ParameterSetName = 'Authorisation Code' )]
 		[Parameter( ParameterSetName = 'Token Authentication' )]
 		[Parameter( ParameterSetName = 'Client Credentials' )]
 		[Parameter( Mandatory, ParameterSetName = 'Secret Vault Write' )]
 		[Parameter( ParameterSetName = 'Secret Vault Read')]
-		[Switch]$WriteToSecretVault,
+		[Switch]$writeToSecretVault,
 		# Read the authentication information from secret management vault.
 		[Parameter( ParameterSetName = 'Secret Vault Read' )]
-		[Switch]$ReadFromSecretVault,
+		[Switch]$readFromSecretVault,
 		# The prefix to add to the name of the secrets stored in the secret vault.
 		[Parameter( ParameterSetName = 'Secret Vault Write' )]
 		[Parameter( ParameterSetName = 'Secret Vault Read' )]
-		[String]$SecretPrefix = 'NinjaOne',
+		[String]$secretPrefix = 'NinjaOne',
 		# Automatically parse date/time values in API responses.
 		[Parameter( ParameterSetName = 'Authorisation Code' )]
 		[Parameter( ParameterSetName = 'Token Authentication' )]
 		[Parameter( ParameterSetName = 'Client Credentials' )]
 		[Parameter( ParameterSetName = 'Secret Vault Write' )]
 		[Parameter( ParameterSetName = 'Secret Vault Read' )]
-		[Switch]$ParseDateTimes
+		[Switch]$parseDateTimes
 	)
 	process {
 		# Run the pre-flight check.
 		Invoke-NinjaOnePreFlightCheck -SkipConnectionChecks
 		# Test for secret management module.
-		if ($UseSecretManagement -or $Script:NRAPIConnectionInformation.UseSecretManagement) {
+		if ($useSecretManagement -or $Script:NRAPIConnectionInformation.UseSecretManagement) {
 			if (-not (Get-Module -Name 'Microsoft.PowerShell.SecretManagement' -ListAvailable)) {
 				Write-Error 'Secret management module not installed, please install the module and try again.'
 				exit 1
@@ -140,46 +140,46 @@ function Connect-NinjaOne {
 				Write-Error 'No secret vaults found, please create a secret vault and try again.'
 				exit 1
 			}
-			if ($ReadFromSecretVault -or $Script:NRAPIConnectionInformation.ReadFromSecretVault) {
+			if ($readFromSecretVault -or $Script:NRAPIConnectionInformation.ReadFromSecretVault) {
 				Write-Verbose 'Reading authentication information from secret vault.'
-				Get-NinjaOneSecrets -VaultName $VaultName
+				Get-NinjaOneSecrets -vaultName $vaultName
 			}
 		}
 		# Set the default scopes if they're not passed.
-		if ($UseClientAuth -and $null -eq $Scopes) {
+		if ($useClientAuth -and $null -eq $scopes) {
 			Write-Verbose 'Setting default scopes for client credentials auth.'
-			$Scopes = @('monitoring', 'management', 'control')
-		} elseif (($UseWebAuth -or $UseTokenAuth) -and $null -eq $Scopes) {
+			$scopes = @('monitoring', 'management', 'control')
+		} elseif (($useWebAuth -or $useTokenAuth) -and $null -eq $scopes) {
 			Write-Verbose 'Setting default scopes for authorisation code or token auth.'
-			$Scopes = @('monitoring', 'management', 'control', 'offline_access')
+			$scopes = @('monitoring', 'management', 'control', 'offline_access')
 		}
 		# Convert scopes to space separated string if it's an array.
-		if ($Scopes -is [System.Array]) {
+		if ($scopes -is [System.Array]) {
 			Write-Verbose ('Scopes are an array, converting to space separated string.')
-			$AuthScopes = $Scopes -join ' '
+			$AuthScopes = $scopes -join ' '
 		} else {
 			Write-Verbose ('Scopes are a string, using as is.')
-			$AuthScopes = $Scopes
+			$AuthScopes = $scopes
 		}
 		# Get the NinjaOne instance URL.
-		if ($Instance) {
-			Write-Verbose "Using instance $($Instance) with URL $($Script:NRAPIInstances[$Instance])"
-			$URL = $Script:NRAPIInstances[$Instance]
+		if ($instance) {
+			Write-Verbose "Using instance $($instance) with URL $($Script:NRAPIInstances[$instance])"
+			$URL = $Script:NRAPIInstances[$instance]
 		}
 		# Generate a GUID to serve as our state validator.
 		$GUID = ([GUID]::NewGuid()).Guid
 		# Build the redirect URI, if we need one.
-		if ($RedirectURL) {
-			$RedirectURI = [System.UriBuilder]$RedirectURL
+		if ($redirectURL) {
+			$RedirectURI = [System.UriBuilder]$redirectURL
 		} else {
-			$RedirectURI = New-Object System.UriBuilder -ArgumentList 'http', 'localhost', $Port
+			$RedirectURI = New-Object System.UriBuilder -ArgumentList 'http', 'localhost', $port
 		}
 		# Determine the authentication mode.
-		if ($UseWebAuth -and $Scopes -notcontains 'offline_access') {
+		if ($useWebAuth -and $scopes -notcontains 'offline_access') {
 			$AuthMode = 'Authorisation Code'
-		} elseif ($UseTokenAuth -or ($UseWebAuth -and $Scopes -contains 'offline_access')) {
+		} elseif ($useTokenAuth -or ($useWebAuth -and $scopes -contains 'offline_access')) {
 			$AuthMode = 'Token Authentication'
-		} elseif ($UseClientAuth) {
+		} elseif ($useClientAuth) {
 			$AuthMode = 'Client Credentials'
 		}
 		# Build a script-scoped variable to hold the connection information.
@@ -187,21 +187,21 @@ function Connect-NinjaOne {
 			$ConnectionInformation = @{
 				AuthMode = $AuthMode
 				URL = $URL
-				Instance = $Instance
-				ClientId = $ClientId
-				ClientSecret = $ClientSecret
-				AuthListenerPort = $Port
+				Instance = $instance
+				ClientId = $clientId
+				ClientSecret = $clientSecret
+				AuthListenerPort = $port
 				AuthScopes = $AuthScopes
 				RedirectURI = $RedirectURI
-				UseSecretManagement = $UseSecretManagement
-				VaultName = $VaultName
-				WriteToSecretVault = $WriteToSecretVault
-				SecretPrefix = $SecretPrefix
+				UseSecretManagement = $useSecretManagement
+				VaultName = $vaultName
+				WriteToSecretVault = $writeToSecretVault
+				SecretPrefix = $secretPrefix
 			}
 			Set-Variable -Name 'NRAPIConnectionInformation' -Value $ConnectionInformation -Visibility Private -Scope Script -Force
 		}
 		# Set the ParseDateTimes module variable based on the parameter
-		if ($ParseDateTimes) {
+		if ($parseDateTimes) {
 			$Script:ParseDateTimes = $true
 			Write-Verbose 'Automatic date/time parsing enabled.'
 		}
@@ -211,16 +211,16 @@ function Connect-NinjaOne {
 			# Set a script-scoped variable to hold authentication information.
 			Set-Variable -Name 'NRAPIAuthenticationInformation' -Value $AuthenticationInformation -Visibility Private -Scope Script -Force
 		}
-		if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Token Authentication' -and $null -eq $UseTokenAuth) {
-			$UseTokenAuth = $true
+		if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Token Authentication' -and $null -eq $useTokenAuth) {
+			$useTokenAuth = $true
 		}
-		if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials' -and $null -eq $UseClientAuth) {
-			$UseClientAuth = $true
+		if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials' -and $null -eq $useClientAuth) {
+			$useClientAuth = $true
 		}
-		if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Authorisation Code' -and $null -eq $UseWebAuth) {
-			$UseWebAuth = $true
+		if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Authorisation Code' -and $null -eq $useWebAuth) {
+			$useWebAuth = $true
 		}
-		if ($UseWebAuth) {
+		if ($useWebAuth) {
 			# NinjaOne authorisation request query params.
 			$AuthRequestParams = @{
 				response_type = 'code'
@@ -259,7 +259,7 @@ function Connect-NinjaOne {
 				New-NinjaOneError -ErrorRecord $_
 			}
 		}
-		if (($UseTokenAuth) -or ($OAuthListenerResponse.GotAuthorisationCode) -or ($UseClientAuth)) {
+		if (($useTokenAuth) -or ($OAuthListenerResponse.GotAuthorisationCode) -or ($useClientAuth)) {
 			Write-Verbose 'Getting authentication token.'
 			try {
 				if ($OAuthListenerResponse.GotAuthorisationCode) {
@@ -272,16 +272,16 @@ function Connect-NinjaOne {
 						redirect_uri = $Script:NRAPIConnectionInformation.RedirectURI.toString()
 						scope = $Script:NRAPIConnectionInformation.AuthScopes
 					}
-				} elseif ($UseTokenAuth) {
+				} elseif ($useTokenAuth) {
 					Write-Verbose 'Using refresh token.'
 					$TokenRequestBody = @{
 						grant_type = 'refresh_token'
 						client_id = $Script:NRAPIConnectionInformation.ClientId
 						client_secret = $Script:NRAPIConnectionInformation.ClientSecret
-						refresh_token = $RefreshToken
+						refresh_token = $refreshToken
 						scope = $Script:NRAPIConnectionInformation.AuthScopes
 					}
-				} elseif ($UseClientAuth) {
+				} elseif ($useClientAuth) {
 					Write-Verbose 'Using client authentication.'
 					$TokenRequestBody = @{
 						grant_type = 'client_credentials'
@@ -315,7 +315,7 @@ function Connect-NinjaOne {
 				$Script:NRAPIAuthenticationInformation.Refresh = $TokenPayload.refresh_token
 				Write-Verbose 'Got authentication token information from NinjaOne.'
 				Write-Verbose "Authentication information set to: $($Script:NRAPIAuthenticationInformation | Format-List | Out-String)"
-				if ($ShowTokens) {
+				if ($showTokens) {
 					Write-Output '================ Auth Tokens ================'
 					Write-Output $($Script:NRAPIAuthenticationInformation | Format-Table -AutoSize)
 					Write-Output '       SAVE THESE IN A SECURE LOCATION       '

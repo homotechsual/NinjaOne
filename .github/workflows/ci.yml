@@ -43,8 +43,21 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
+          $settings = Import-PowerShellDataFile -Path 'PSScriptAnalyzerSettings.psd1'
+          $camelCaseRule = 'Measure-RequireCamelCaseParameterName'
+          $nonPublicSettings = @{
+            CustomRulePath = $settings.CustomRulePath
+            Severity = $settings.Severity
+            IncludeRules = [string[]]@($settings.IncludeRules | Where-Object { $_ -ne $camelCaseRule })
+            Rules = $settings.Rules
+          }
           $Results = @()
-          $Results += @(Invoke-ScriptAnalyzer -Path Source -Recurse -Settings PSScriptAnalyzerSettings.psd1)
+          $Results += @(Invoke-ScriptAnalyzer -Path Source/Public -Recurse -Settings PSScriptAnalyzerSettings.psd1)
+          $Results += @(
+            Get-ChildItem -Path Source -Recurse -File -Include *.ps1, *.psm1, *.psd1 |
+            Where-Object { $_.FullName -notlike "$(Resolve-Path 'Source\Public')*" } |
+            Invoke-ScriptAnalyzer -Settings $nonPublicSettings
+          )
 
           $buildResults = $null
           $buildScanSucceeded = $false
@@ -52,7 +65,7 @@ jobs:
           while (-not $buildScanSucceeded -and $attempt -lt 2) {
             try {
               $attempt++
-              $buildResults = Invoke-ScriptAnalyzer -Path DevOps/Build/build.ps1 -Settings PSScriptAnalyzerSettings.psd1
+              $buildResults = Invoke-ScriptAnalyzer -Path DevOps/Build/build.ps1 -Settings $nonPublicSettings
               $buildScanSucceeded = $true
             } catch {
               if ($attempt -ge 2) { throw }

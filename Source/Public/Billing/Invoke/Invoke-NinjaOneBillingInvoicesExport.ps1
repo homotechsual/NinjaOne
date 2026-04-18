@@ -7,7 +7,7 @@ function Invoke-NinjaOneBillingInvoicesExport {
 		.FUNCTIONALITY
 			Billing Invoices Export
 		.EXAMPLE
-			PS> Invoke-NinjaOneBillingInvoicesExport -Request @{ invoiceIds = @(1,2) }
+			PS> Invoke-NinjaOneBillingInvoicesExport -request @{ invoiceIds = @(1,2) }
 
 			Exports the specified billing invoices.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function Invoke-NinjaOneBillingInvoicesExport {
 		# Export request payload per API schema.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$Request
+		[Object]$request
 	)
 	process {
 		try {
 			$Resource = 'v2/billing/invoices/export'
-			$RequestParams = @{ Resource = $Resource; Body = $Request }
+			$requestParams = @{ Resource = $Resource; Body = $request }
 			if ($PSCmdlet.ShouldProcess('Billing Invoices', 'Export')) {
 				return (New-NinjaOnePOSTRequest @RequestParams)
 			}

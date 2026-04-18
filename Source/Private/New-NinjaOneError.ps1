@@ -14,7 +14,7 @@ This function provides supporting functionality for the NinjaOne module.
     Specifies the HasResponse parameter.
 
 .EXAMPLE
-    PS> New-NinjaOneError -ErrorRecord "value"
+    PS> New-NinjaOneError -errorRecord "value"
 
     create the specified Error.
 
@@ -31,21 +31,21 @@ function New-NinjaOneError {
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Private function - no need to support.')]
 	param (
 		[Parameter(Mandatory = $true)]
-		[errorrecord]$ErrorRecord,
+		[errorrecord]$errorRecord,
 		[Parameter()]
-		[switch]$HasResponse
+		[switch]$hasResponse
 	)
 	if (($Error.Exception -is [System.Net.Http.HttpRequestException]) -or ($Error.Exception -is [System.Net.WebException])) {
 		Write-Verbose 'Generating NinjaOne error output.'
 		$ExceptionMessage = [Hashset[String]]::New()
 		$APIResultMatchString = '*The NinjaOne API said*'
 		$HTTPResponseMatchString = '*The API returned the following HTTP*'
-		if ($ErrorRecord.ErrorDetails) {
+		if ($errorRecord.ErrorDetails) {
 			Write-Verbose 'ErrorDetails contained in error record.'
-			$ErrorDetailsIsJson = Test-Json -Json $ErrorRecord.ErrorDetails -ErrorAction SilentlyContinue
+			$ErrorDetailsIsJson = Test-Json -Json $errorRecord.ErrorDetails -ErrorAction SilentlyContinue
 			if ($ErrorDetailsIsJson) {
 				Write-Verbose 'ErrorDetails is JSON.'
-				$ErrorDetails = $ErrorRecord.ErrorDetails | ConvertFrom-Json
+				$ErrorDetails = $errorRecord.ErrorDetails | ConvertFrom-Json
 				Write-Verbose "Raw error details: $($ErrorDetails | Out-String)"
 				if ($null -ne $ErrorDetails) {
 					if (($null -ne $ErrorDetails.resultCode) -and ($null -ne $ErrorDetails.errorMessage)) {
@@ -59,14 +59,14 @@ function New-NinjaOneError {
 						$ExceptionMessage.Add("The NinjaOne API said $($ErrorDetails.error).") | Out-Null
 					} elseif ($null -ne $ErrorDetails) {
 						Write-Verbose 'ErrorDetails is not null.'
-						$ExceptionMessage.Add("The NinjaOne API said $($ErrorRecord.ErrorDetails).") | Out-Null
+						$ExceptionMessage.Add("The NinjaOne API said $($errorRecord.ErrorDetails).") | Out-Null
 					} else {
 						Write-Verbose 'ErrorDetails is null.'
 						$ExceptionMessage.Add('The NinjaOne API returned an error.') | Out-Null
 					}
 				}
-			} elseif ($ErrorRecord.ErrorDetails -like $APIResultMatchString -and $ErrorRecord.ErrorDetails -like $HTTPResponseMatchString) {
-				$Errors = $ErrorRecord.ErrorDetails -split "`r`n"
+			} elseif ($errorRecord.ErrorDetails -like $APIResultMatchString -and $errorRecord.ErrorDetails -like $HTTPResponseMatchString) {
+				$Errors = $errorRecord.ErrorDetails -split "`r`n"
 				if ($Errors -is [array]) {
 					ForEach-Object -InputObject $Errors {
 						$ExceptionMessage.Add($_) | Out-Null
@@ -78,8 +78,8 @@ function New-NinjaOneError {
 		} else {
 			$ExceptionMessage.Add('The NinjaOne API returned an error but did not provide a result code or error message.') | Out-Null
 		}
-		if (($ErrorRecord.Exception.Response -and $HasResponse) -or $ExceptionMessage -notlike $HTTPResponseMatchString) {
-			$Response = $ErrorRecord.Exception.Response
+		if (($errorRecord.Exception.Response -and $hasResponse) -or $ExceptionMessage -notlike $HTTPResponseMatchString) {
+			$Response = $errorRecord.Exception.Response
 			Write-Verbose "Raw HTTP response: $($Response | Out-String)"
 			if ($Response.StatusCode.value__ -and $Response.ReasonPhrase) {
 				$ExceptionMessage.Add("The API returned the following HTTP error response: $($Response.StatusCode.value__) $($Response.ReasonPhrase)") | Out-Null
@@ -91,17 +91,17 @@ function New-NinjaOneError {
 		}
 		$Exception = [System.Exception]::New(
 			$ExceptionMessage,
-			$ErrorRecord.Exception
+			$errorRecord.Exception
 		)
 		$NinjaOneError = [ErrorRecord]::New(
-			$ErrorRecord,
+			$errorRecord,
 			$Exception
 		)
 		$UniqueExceptions = $ExceptionMessage | Get-Unique
 		$NinjaOneError.ErrorDetails = [String]::Join("`r`n", $UniqueExceptions)
 	} else {
 		Write-Verbose 'Not generating NinjaOne error output.'
-		$NinjaOneError = $ErrorRecord
+		$NinjaOneError = $errorRecord
 	}
 	$PSCmdlet.throwTerminatingError($NinjaOneError)
 }

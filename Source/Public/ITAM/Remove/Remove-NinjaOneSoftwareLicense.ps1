@@ -7,7 +7,7 @@ function Remove-NinjaOneSoftwareLicense {
 		.FUNCTIONALITY
 			Software License
 		.EXAMPLE
-			PS> Remove-NinjaOneSoftwareLicense -LicenseId 1
+			PS> Remove-NinjaOneSoftwareLicense -licenseId 1
 
 			Deletes the software license with ID 1.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function Remove-NinjaOneSoftwareLicense {
 		# The ID of the software license to delete
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
-		[Int]$LicenseId
+		[Int]$licenseId
 	)
 	process {
 		try {
-			$Resource = ('v2/software-license/{0}' -f $LicenseId)
-			if ($PSCmdlet.ShouldProcess('Software License', ('Delete {0}' -f $LicenseId))) {
+			$Resource = ('v2/software-license/{0}' -f $licenseId)
+			if ($PSCmdlet.ShouldProcess('Software License', ('Delete {0}' -f $licenseId))) {
 				$Result = New-NinjaOneDELETERequest -Resource $Resource
 				return $Result
 			}

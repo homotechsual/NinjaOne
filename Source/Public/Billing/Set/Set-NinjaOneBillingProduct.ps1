@@ -7,7 +7,7 @@ function Set-NinjaOneBillingProduct {
 		.FUNCTIONALITY
 			Billing Product
 		.EXAMPLE
-			PS> Set-NinjaOneBillingProduct -Id 1 -BillingProduct @{ name = 'Updated Product' }
+			PS> Set-NinjaOneBillingProduct -id 1 -billingProduct @{ name = 'Updated Product' }
 
 			Updates billing product 1.
 		.OUTPUTS
@@ -26,17 +26,17 @@ function Set-NinjaOneBillingProduct {
 		# Billing product ID.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('productId')]
-		[Int]$Id,
+		[Int]$id,
 		# Billing product payload per API schema.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$BillingProduct
+		[Object]$billingProduct
 	)
 	process {
 		try {
-			$Resource = ('v2/billing/products/{0}' -f $Id)
-			$RequestParams = @{ Resource = $Resource; Body = $BillingProduct }
-			if ($PSCmdlet.ShouldProcess(('Billing Product {0}' -f $Id), 'Update')) {
+			$Resource = ('v2/billing/products/{0}' -f $id)
+			$RequestParams = @{ Resource = $Resource; Body = $billingProduct }
+			if ($PSCmdlet.ShouldProcess(('Billing Product {0}' -f $id), 'Update')) {
 				return (New-NinjaOnePUTRequest @RequestParams)
 			}
 		} catch {

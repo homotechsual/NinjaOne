@@ -7,7 +7,7 @@ function Remove-NinjaOneBillingAccount {
 		.FUNCTIONALITY
 			Billing Account
 		.EXAMPLE
-			PS> Remove-NinjaOneBillingAccount -Id 1
+			PS> Remove-NinjaOneBillingAccount -id 1
 
 			Deletes billing account 1.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function Remove-NinjaOneBillingAccount {
 		# Billing account ID.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('accountId')]
-		[Int]$Id
+		[Int]$id
 	)
 	process {
 		try {
-			$Resource = ('v2/billing/accounts/{0}' -f $Id)
-			if ($PSCmdlet.ShouldProcess(('Billing Account {0}' -f $Id), 'Delete')) {
+			$Resource = ('v2/billing/accounts/{0}' -f $id)
+			if ($PSCmdlet.ShouldProcess(('Billing Account {0}' -f $id), 'Delete')) {
 				return (New-NinjaOneDELETERequest -Resource $Resource)
 			}
 		} catch {

@@ -26,11 +26,11 @@ function Get-NinjaOneCustomFieldsSchema {
 	param(
 		# Pagination cursor
 		[Parameter(Position = 0, ValueFromPipelineByPropertyName)]
-		[String]$CursorName,
+		[String]$cursorName,
 		# Page size
 		[Parameter(Position = 1, ValueFromPipelineByPropertyName)]
 		[ValidateRange(5, 500)]
-		[Int]$PageSize
+		[Int]$pageSize
 	)
 	begin {
 		$CommandName = $MyInvocation.InvocationName

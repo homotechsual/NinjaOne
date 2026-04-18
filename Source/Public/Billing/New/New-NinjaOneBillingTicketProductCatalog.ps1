@@ -7,7 +7,7 @@ function New-NinjaOneBillingTicketProductCatalog {
 		.FUNCTIONALITY
 			Billing Ticket Product Catalog
 		.EXAMPLE
-			PS> New-NinjaOneBillingTicketProductCatalog -TicketProduct @{ ticketId = 1 }
+			PS> New-NinjaOneBillingTicketProductCatalog -ticketProduct @{ ticketId = 1 }
 
 			Creates a catalog billing ticket product.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function New-NinjaOneBillingTicketProductCatalog {
 		# Ticket product payload per API schema.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$TicketProduct
+		[Object]$ticketProduct
 	)
 	process {
 		try {
 			$Resource = 'v2/billing/ticket-products/catalog'
-			$RequestParams = @{ Resource = $Resource; Body = $TicketProduct }
+			$RequestParams = @{ Resource = $Resource; Body = $ticketProduct }
 			if ($PSCmdlet.ShouldProcess('Billing Ticket Product', 'Create Catalog')) {
 				return (New-NinjaOnePOSTRequest @RequestParams)
 			}

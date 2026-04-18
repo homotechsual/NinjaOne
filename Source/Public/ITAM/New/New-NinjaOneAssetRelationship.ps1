@@ -7,7 +7,7 @@ function New-NinjaOneAssetRelationship {
 		.FUNCTIONALITY
 			Asset Relationship
 		.EXAMPLE
-			PS> New-NinjaOneAssetRelationship -AssetRelationship @{ entityId = 1; relEntityId = 2 }
+			PS> New-NinjaOneAssetRelationship -assetRelationship @{ entityId = 1; relEntityId = 2 }
 
 			Creates an asset relationship.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function New-NinjaOneAssetRelationship {
 		# Asset relationship payload per API schema.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$AssetRelationship
+		[Object]$assetRelationship
 	)
 	process {
 		try {
 			$Resource = 'v2/itam/asset-relationship'
-			$RequestParams = @{ Resource = $Resource; Body = $AssetRelationship }
+			$RequestParams = @{ Resource = $Resource; Body = $assetRelationship }
 			if ($PSCmdlet.ShouldProcess('Asset Relationship', 'Create')) {
 				return (New-NinjaOnePOSTRequest @RequestParams)
 			}

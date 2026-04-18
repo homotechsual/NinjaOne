@@ -7,7 +7,7 @@ function New-NinjaOneDELETERequest {
 		.EXAMPLE
 			Cancel the maintenance for device with id 1.
 
-			PS ~> New-NinjaOneDELETERequest -Resource "/v2/device/1/maintenance"
+			PS ~> New-NinjaOneDELETERequest -resource "/v2/device/1/maintenance"
 		.OUTPUTS
 			Outputs an object containing the response from the web request.
 	#>
@@ -17,9 +17,9 @@ function New-NinjaOneDELETERequest {
 	param (
 		# The resource to send the request to.
 		[Parameter(Mandatory = $True)]
-		[String]$Resource,
+		[String]$resource,
 		# Parse date/time values returned in JSON.
-		[Switch]$ParseDateTime
+		[Switch]$parseDateTime
 	)
 	if ($null -eq $Script:NRAPIConnectionInformation) {
 		throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
@@ -27,7 +27,7 @@ function New-NinjaOneDELETERequest {
 	if ($null -eq $Script:NRAPIAuthenticationInformation) {
 		throw "Missing NinjaOne authentication tokens, please run 'Connect-NinjaOne' first."
 	}
-	Test-NinjaOneEndpointSupport -Method 'DELETE' -Resource $Resource -Verbose:$VerbosePreference
+	Test-NinjaOneEndpointSupport -Method 'DELETE' -resource $resource -Verbose:$VerbosePreference
 	try {
 		if ($QSCollection) {
 			Write-Verbose "Query string in New-NinjaOneDELETERequest contains: $($QSCollection | Out-String)"
@@ -41,13 +41,13 @@ function New-NinjaOneDELETERequest {
 		}
 		Write-Verbose "URI is $($Script:NRAPIConnectionInformation.URL)"
 		$RequestUri = [System.UriBuilder]"$($Script:NRAPIConnectionInformation.URL)"
-		Write-Verbose "Path is $($Resource)"
-		$RequestUri.Path = $Resource
+		Write-Verbose "Path is $($resource)"
+		$RequestUri.Path = $resource
 		$WebRequestParams = @{
 			Method = 'DELETE'
 			Uri = $RequestUri.ToString()
 		}
-		if ($ParseDateTime -or $Script:ParseDateTimes) {
+		if ($parseDateTime -or $Script:ParseDateTimes) {
 			$WebRequestParams.ParseDateTime = $true
 		}
 		Write-Verbose "Building new NinjaOneRequest with params: $($WebRequestParams | Out-String)"

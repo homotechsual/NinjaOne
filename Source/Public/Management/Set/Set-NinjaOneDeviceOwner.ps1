@@ -9,7 +9,7 @@ function Set-NinjaOneDeviceOwner {
 		.OUTPUTS
 			A powershell object containing the response.
 		.EXAMPLE
-			PS> Set-NinjaOneDeviceOwner -deviceId 123 -OwnerId 'owner-uid-123'
+			PS> Set-NinjaOneDeviceOwner -deviceId 123 -ownerId 'owner-uid-123'
 
 			Sets the owner for the specified device.
 		.LINK
@@ -28,16 +28,16 @@ function Set-NinjaOneDeviceOwner {
 		# The device information body object.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('ownerUid')]
-		[String]$OwnerId
+		[String]$ownerId
 	)
 	process {
 		try {
 			Write-Verbose ('Setting device owner for device {0}.' -f $deviceId)
-			$Resource = ('v2/device/{0}/owner/{1}' -f $deviceId, $OwnerId)
+			$Resource = ('v2/device/{0}/owner/{1}' -f $deviceId, $ownerId)
 			$RequestParams = @{
 				Resource = $Resource
 			}
-			if ($PSCmdlet.ShouldProcess("Device ID $deviceId", "Set Owner to $OwnerId")) {
+			if ($PSCmdlet.ShouldProcess("Device ID $deviceId", "Set Owner to $ownerId")) {
 				$Response = New-NinjaOnePOSTRequest @RequestParams
 				if ($Response -eq 204) {
 					Write-Information "Device owner updated successfully for device ID $deviceId."

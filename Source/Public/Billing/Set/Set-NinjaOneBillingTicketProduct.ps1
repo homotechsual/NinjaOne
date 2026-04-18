@@ -7,7 +7,7 @@ function Set-NinjaOneBillingTicketProduct {
 		.FUNCTIONALITY
 			Billing Ticket Product
 		.EXAMPLE
-			PS> Set-NinjaOneBillingTicketProduct -TicketProductId 1 -TicketProduct @{ quantity = 2 }
+			PS> Set-NinjaOneBillingTicketProduct -ticketProductId 1 -ticketProduct @{ quantity = 2 }
 
 			Updates ticket product 1.
 		.OUTPUTS
@@ -26,17 +26,17 @@ function Set-NinjaOneBillingTicketProduct {
 		# Ticket product ID.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
-		[Int]$TicketProductId,
+		[Int]$ticketProductId,
 		# Ticket product payload per API schema.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$TicketProduct
+		[Object]$ticketProduct
 	)
 	process {
 		try {
-			$Resource = ('v2/billing/ticket-products/{0}' -f $TicketProductId)
-			$RequestParams = @{ Resource = $Resource; Body = $TicketProduct }
-			if ($PSCmdlet.ShouldProcess(('Billing Ticket Product {0}' -f $TicketProductId), 'Update')) {
+			$Resource = ('v2/billing/ticket-products/{0}' -f $ticketProductId)
+			$RequestParams = @{ Resource = $Resource; Body = $ticketProduct }
+			if ($PSCmdlet.ShouldProcess(('Billing Ticket Product {0}' -f $ticketProductId), 'Update')) {
 				return (New-NinjaOnePUTRequest @RequestParams)
 			}
 		} catch {

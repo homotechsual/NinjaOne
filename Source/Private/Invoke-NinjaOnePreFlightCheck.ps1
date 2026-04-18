@@ -10,7 +10,7 @@ function Invoke-NinjaOnePreFlightCheck {
 
 			Conducts pre-flight checks for the NinjaOne API.
 		.EXAMPLE
-			PS> Invoke-NinjaOnePreFlightCheck -SkipConnectionChecks
+			PS> Invoke-NinjaOnePreFlightCheck -skipConnectionChecks
 
 			Conducts pre-flight checks for the NinjaOne API, skipping the connection checks.
 		.OUTPUTS
@@ -21,9 +21,9 @@ function Invoke-NinjaOnePreFlightCheck {
 	[CmdletBinding()]
 	param(
 		# Skip the connection checks.
-		[Switch]$SkipConnectionChecks
+		[Switch]$skipConnectionChecks
 	)
-	if (-not $SkipConnectionChecks) {
+	if (-not $skipConnectionChecks) {
 		if ($null -eq $Script:NRAPIConnectionInformation) {
 			$NoConnectionInformationException = [System.Exception]::New("Missing NinjaOne connection information, please run 'Connect-NinjaOne' first.")
 			$ErrorRecord = [ErrorRecord]::New($NoConnectionInformationException, 'NoConnectionInformation', 'AuthenticationError', 'NinjaOnePreFlightCheck')

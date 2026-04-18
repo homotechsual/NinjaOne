@@ -16,10 +16,10 @@ function Get-TokenExpiry {
 		[Parameter(
 			Mandatory = $True
 		)]
-		[int64]$ExpiresIn
+		[int64]$expiresIn
 	)
 	$Now = Get-Date
-	$ExpiryDateTime = $Now.AddSeconds($ExpiresIn)
+	$ExpiryDateTime = $Now.AddSeconds($expiresIn)
 	Write-Verbose "Calcuated token expiry as $ExpiryDateTime"
 	return $ExpiryDateTime
 }

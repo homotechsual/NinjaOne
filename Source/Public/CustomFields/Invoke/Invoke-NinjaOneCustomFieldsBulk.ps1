@@ -7,7 +7,7 @@ function Invoke-NinjaOneCustomFieldsBulk {
 		.FUNCTIONALITY
 			Custom Fields Bulk
 		.EXAMPLE
-			PS> Invoke-NinjaOneCustomFieldsBulk -Operation 'create' -CustomFields @( @{ name = 'Field1' }, @{ name = 'Field2' } )
+			PS> Invoke-NinjaOneCustomFieldsBulk -operation 'create' -customFields @( @{ name = 'Field1' }, @{ name = 'Field2' } )
 
 			Creates multiple custom fields in a single request.
 		.OUTPUTS
@@ -30,36 +30,36 @@ function Invoke-NinjaOneCustomFieldsBulk {
 		# Operation type: 'create', 'update', or 'delete'
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[ValidateSet('create', 'update', 'delete')]
-		[String]$Operation,
+		[String]$operation,
 		# Custom fields payload per API schema
 		[Parameter(ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$CustomFields,
+		[Object]$customFields,
 		# Field names for delete operation
 		[Parameter(ValueFromPipelineByPropertyName)]
-		[String[]]$FieldNames
+		[String[]]$fieldNames
 	)
 	process {
 		try {
 			$Resource = 'v2/custom-fields/bulk'
 			
-			switch ($Operation) {
+			switch ($operation) {
 				'create' {
-					$Body = $CustomFields
+					$Body = $customFields
 					$Method = 'post'
 				}
 				'update' {
-					$Body = $CustomFields
+					$Body = $customFields
 					$Method = 'put'
 				}
 				'delete' {
 					$Method = 'delete'
 					#Return custom object for query string parameters
-					$Query = @{'fieldNames' = ($FieldNames -join ',')}
+					$Query = @{'fieldNames' = ($fieldNames -join ',')}
 				}
 			}
 			
-			if ($PSCmdlet.ShouldProcess('Custom Fields', ('Bulk {0}' -f $Operation))) {
+			if ($PSCmdlet.ShouldProcess('Custom Fields', ('Bulk {0}' -f $operation))) {
 				if ($Method -eq 'delete') {
 					$Result = New-NinjaOneDELETERequest -Resource $Resource -QSCollection $Query
 				} elseif ($Method -eq 'post') {

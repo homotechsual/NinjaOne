@@ -7,7 +7,7 @@ function New-NinjaOneBillingAccount {
 		.FUNCTIONALITY
 			Billing Account
 		.EXAMPLE
-			PS> New-NinjaOneBillingAccount -BillingAccount @{ name = 'Managed Services' }
+			PS> New-NinjaOneBillingAccount -billingAccount @{ name = 'Managed Services' }
 
 			Creates a billing account.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function New-NinjaOneBillingAccount {
 		# Billing account payload per API schema.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$BillingAccount
+		[Object]$billingAccount
 	)
 	process {
 		try {
 			$Resource = 'v2/billing/accounts'
-			$RequestParams = @{ Resource = $Resource; Body = $BillingAccount }
+			$RequestParams = @{ Resource = $Resource; Body = $billingAccount }
 			if ($PSCmdlet.ShouldProcess('Billing Account', 'Create')) {
 				return (New-NinjaOnePOSTRequest @RequestParams)
 			}

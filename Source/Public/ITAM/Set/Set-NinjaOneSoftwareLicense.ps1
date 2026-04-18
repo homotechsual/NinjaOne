@@ -7,7 +7,7 @@ function Set-NinjaOneSoftwareLicense {
 		.FUNCTIONALITY
 			Software License
 		.EXAMPLE
-			PS> Set-NinjaOneSoftwareLicense -LicenseId 1 -License @{ name = 'Microsoft Office 365' }
+			PS> Set-NinjaOneSoftwareLicense -licenseId 1 -license @{ name = 'Microsoft Office 365' }
 
 			Updates the software license with ID 1.
 		.EXAMPLE
@@ -57,7 +57,7 @@ function Set-NinjaOneSoftwareLicense {
 				}
 				name = "string"
 			}
-			PS> Set-NinjaOneSoftwareLicense -LicenseId 1 -License $body
+			PS> Set-NinjaOneSoftwareLicense -licenseId 1 -license $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -77,17 +77,17 @@ function Set-NinjaOneSoftwareLicense {
 		# The ID of the software license to update
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
-		[Int]$LicenseId,
+		[Int]$licenseId,
 		# Software license update payload per API schema
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$License
+		[Object]$license
 	)
 	process {
 		try {
-			$Resource = ('v2/software-license/{0}' -f $LicenseId)
-			$RequestParams = @{ Resource = $Resource; Body = $License }
-			if ($PSCmdlet.ShouldProcess('Software License', ('Update {0}' -f $LicenseId))) {
+			$Resource = ('v2/software-license/{0}' -f $licenseId)
+			$RequestParams = @{ Resource = $Resource; Body = $license }
+			if ($PSCmdlet.ShouldProcess('Software License', ('Update {0}' -f $licenseId))) {
 				$Result = New-NinjaOnePUTRequest @RequestParams
 				return $Result
 			}

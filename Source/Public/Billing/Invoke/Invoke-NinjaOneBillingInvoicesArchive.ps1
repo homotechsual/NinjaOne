@@ -7,7 +7,7 @@ function Invoke-NinjaOneBillingInvoicesArchive {
 		.FUNCTIONALITY
 			Billing Invoices Archive
 		.EXAMPLE
-			PS> Invoke-NinjaOneBillingInvoicesArchive -Request @{ invoiceIds = @(1,2) }
+			PS> Invoke-NinjaOneBillingInvoicesArchive -request @{ invoiceIds = @(1,2) }
 
 			Archives the specified billing invoices.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function Invoke-NinjaOneBillingInvoicesArchive {
 		# Archive request payload per API schema.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$Request
+		[Object]$request
 	)
 	process {
 		try {
 			$Resource = 'v2/billing/invoices/archive'
-			$RequestParams = @{ Resource = $Resource; Body = $Request }
+			$requestParams = @{ Resource = $Resource; Body = $request }
 			if ($PSCmdlet.ShouldProcess('Billing Invoices', 'Archive')) {
 				return (New-NinjaOnePOSTRequest @RequestParams)
 			}

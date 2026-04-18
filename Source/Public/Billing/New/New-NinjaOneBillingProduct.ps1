@@ -7,7 +7,7 @@ function New-NinjaOneBillingProduct {
 		.FUNCTIONALITY
 			Billing Product
 		.EXAMPLE
-			PS> New-NinjaOneBillingProduct -BillingProduct @{ name = 'Managed Endpoint' }
+			PS> New-NinjaOneBillingProduct -billingProduct @{ name = 'Managed Endpoint' }
 
 			Creates a billing product.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function New-NinjaOneBillingProduct {
 		# Billing product payload per API schema.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$BillingProduct
+		[Object]$billingProduct
 	)
 	process {
 		try {
 			$Resource = 'v2/billing/products'
-			$RequestParams = @{ Resource = $Resource; Body = $BillingProduct }
+			$RequestParams = @{ Resource = $Resource; Body = $billingProduct }
 			if ($PSCmdlet.ShouldProcess('Billing Product', 'Create')) {
 				return (New-NinjaOnePOSTRequest @RequestParams)
 			}

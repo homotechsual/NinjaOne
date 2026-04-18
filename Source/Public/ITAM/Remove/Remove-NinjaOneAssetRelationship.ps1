@@ -7,7 +7,7 @@ function Remove-NinjaOneAssetRelationship {
 		.FUNCTIONALITY
 			Asset Relationship
 		.EXAMPLE
-			PS> Remove-NinjaOneAssetRelationship -RelationId 1
+			PS> Remove-NinjaOneAssetRelationship -relationId 1
 
 			Deletes asset relationship 1.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function Remove-NinjaOneAssetRelationship {
 	param(
 		# Asset relationship ID.
 		[Parameter(Mandatory, ValueFromPipelineByPropertyName)]
-		[Int]$RelationId
+		[Int]$relationId
 	)
 	process {
 		try {
-			$Resource = ('v2/itam/asset-relationship?relationId={0}' -f $RelationId)
-			if ($PSCmdlet.ShouldProcess(('Asset Relationship {0}' -f $RelationId), 'Delete')) {
+			$Resource = ('v2/itam/asset-relationship?relationId={0}' -f $relationId)
+			if ($PSCmdlet.ShouldProcess(('Asset Relationship {0}' -f $relationId), 'Delete')) {
 				return (New-NinjaOneDELETERequest -Resource $Resource)
 			}
 		} catch {

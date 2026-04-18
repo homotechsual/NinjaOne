@@ -7,7 +7,7 @@ function New-NinjaOnePATCHRequest {
 		.EXAMPLE
 			Make a PATCH request to the custom fields endpoint for device 1.
 
-			PS C:\> New-NinjaOnePATCHRequest -Resource "/v2/device/1/custom-fields" -Body @{"myCustomField" = "value"}
+			PS C:\> New-NinjaOnePATCHRequest -resource "/v2/device/1/custom-fields" -body @{"myCustomField" = "value"}
 		.OUTPUTS
 			Outputs an object containing the response from the web request.
 	#>
@@ -17,14 +17,14 @@ function New-NinjaOnePATCHRequest {
 	param (
 		# The resource to send the request to.
 		[Parameter(Mandatory = $True)]
-		[String]$Resource,
+		[String]$resource,
 		# A hashtable used to build the query string.
-		[HashTable]$QSCollection,
+		[HashTable]$qSCollection,
 		# A hashtable used to build the body of the request.
 		[Parameter(Mandatory = $True)]
-		[Object]$Body,
+		[Object]$body,
 		# Parse date/time values returned in JSON.
-		[Switch]$ParseDateTime
+		[Switch]$parseDateTime
 	)
 	if ($null -eq $Script:NRAPIConnectionInformation) {
 		throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
@@ -32,22 +32,22 @@ function New-NinjaOnePATCHRequest {
 	if ($null -eq $Script:NRAPIAuthenticationInformation) {
 		throw "Missing NinjaOne authentication tokens, please run 'Connect-NinjaOne' first."
 	}
-	Test-NinjaOneEndpointSupport -Method 'PATCH' -Resource $Resource -Verbose:$VerbosePreference
+	Test-NinjaOneEndpointSupport -Method 'PATCH' -resource $resource -Verbose:$VerbosePreference
 	try {
-		if ($QSCollection) {
-			Write-Verbose "Query string in New-NinjaOnePATCHRequest contains: $($QSCollection | Out-String)"
+		if ($qSCollection) {
+			Write-Verbose "Query string in New-NinjaOnePATCHRequest contains: $($qSCollection | Out-String)"
 			$QueryStringCollection = [System.Web.HTTPUtility]::ParseQueryString([String]::Empty)
 			Write-Verbose 'Building [HttpQSCollection] for New-NinjaOnePATCHRequest'
-			foreach ($Key in $QSCollection.Keys) {
-				$QueryStringCollection.Add($Key, $QSCollection.$Key)
+			foreach ($Key in $qSCollection.Keys) {
+				$QueryStringCollection.Add($Key, $qSCollection.$Key)
 			}
 		} else {
 			Write-Verbose 'Query string collection not present...'
 		}
 		Write-Verbose "URI is $($Script:NRAPIConnectionInformation.URL)"
 		$RequestUri = [System.UriBuilder]"$($Script:NRAPIConnectionInformation.URL)"
-		Write-Verbose "Path is $($Resource)"
-		$RequestUri.Path = $Resource
+		Write-Verbose "Path is $($resource)"
+		$RequestUri.Path = $resource
 		if ($QueryStringCollection) {
 			Write-Verbose "Query string is $($QueryStringCollection | Out-String)"
 			$RequestUri.Query = $QueryStringCollection
@@ -57,9 +57,9 @@ function New-NinjaOnePATCHRequest {
 		$WebRequestParams = @{
 			Method = 'PATCH'
 			Uri = $RequestUri.ToString()
-			Body = (ConvertTo-Json -InputObject $Body -Depth 100)
+			Body = (ConvertTo-Json -InputObject $body -Depth 100)
 		}
-		if ($ParseDateTime -or $Script:ParseDateTimes) {
+		if ($parseDateTime -or $Script:ParseDateTimes) {
 			$WebRequestParams.ParseDateTime = $true
 		}
 		Write-Verbose "Raw body is $($WebRequestParams.Body)"

@@ -11,7 +11,7 @@ function Get-NinjaOneBillingAccounts {
 
 			Gets all billing accounts.
 		.EXAMPLE
-			PS> Get-NinjaOneBillingAccounts -Id 1
+			PS> Get-NinjaOneBillingAccounts -id 1
 
 			Gets billing account 1.
 		.OUTPUTS
@@ -33,7 +33,7 @@ function Get-NinjaOneBillingAccounts {
 		# Billing account ID.
 		[Parameter(ValueFromPipelineByPropertyName)]
 		[Alias('accountId')]
-		[Int]$Id
+		[Int]$id
 	)
 	begin {
 		$CommandName = $MyInvocation.InvocationName
@@ -45,9 +45,9 @@ function Get-NinjaOneBillingAccounts {
 	}
 	process {
 		try {
-			if ($Id) {
-				Write-Verbose ('Getting billing account with id {0}.' -f $Id)
-				$Resource = ('v2/billing/accounts/{0}' -f $Id)
+			if ($id) {
+				Write-Verbose ('Getting billing account with id {0}.' -f $id)
+				$Resource = ('v2/billing/accounts/{0}' -f $id)
 			} else {
 				Write-Verbose 'Retrieving billing accounts.'
 				$Resource = 'v2/billing/accounts'

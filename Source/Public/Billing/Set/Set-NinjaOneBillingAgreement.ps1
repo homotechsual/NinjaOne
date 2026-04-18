@@ -7,7 +7,7 @@ function Set-NinjaOneBillingAgreement {
 		.FUNCTIONALITY
 			Billing Agreement
 		.EXAMPLE
-			PS> Set-NinjaOneBillingAgreement -Id 1 -BillingAgreement @{ name = 'Updated Agreement' }
+			PS> Set-NinjaOneBillingAgreement -id 1 -billingAgreement @{ name = 'Updated Agreement' }
 
 			Updates billing agreement 1.
 		.OUTPUTS
@@ -26,17 +26,17 @@ function Set-NinjaOneBillingAgreement {
 		# Billing agreement ID.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('agreementId')]
-		[Int]$Id,
+		[Int]$id,
 		# Billing agreement payload per API schema.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$BillingAgreement
+		[Object]$billingAgreement
 	)
 	process {
 		try {
-			$Resource = ('v2/billing/agreements/{0}' -f $Id)
-			$RequestParams = @{ Resource = $Resource; Body = $BillingAgreement }
-			if ($PSCmdlet.ShouldProcess(('Billing Agreement {0}' -f $Id), 'Update')) {
+			$Resource = ('v2/billing/agreements/{0}' -f $id)
+			$RequestParams = @{ Resource = $Resource; Body = $billingAgreement }
+			if ($PSCmdlet.ShouldProcess(('Billing Agreement {0}' -f $id), 'Update')) {
 				return (New-NinjaOnePUTRequest @RequestParams)
 			}
 		} catch {

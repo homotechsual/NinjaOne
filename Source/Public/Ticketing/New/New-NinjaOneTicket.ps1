@@ -76,7 +76,7 @@ function New-NinjaOneTicket {
 		# Show the ticket that was created.
 		[Switch]$show,
 		# Parse date/time values in the response.
-		[Switch]$ParseDateTime
+		[Switch]$parseDateTime
 	)
 	begin { }
 	process {
@@ -86,8 +86,8 @@ function New-NinjaOneTicket {
 				Resource = $Resource
 				Body = $ticket
 			}
-			if ($ParseDateTime) {
-				$RequestParams.ParseDateTime = $ParseDateTime
+			if ($parseDateTime) {
+				$RequestParams.ParseDateTime = $parseDateTime
 			}
 			if ($PSCmdlet.ShouldProcess(('Ticket {0}' -f $ticket.Subject), 'Create')) {
 				$TicketCreate = New-NinjaOnePOSTRequest @RequestParams

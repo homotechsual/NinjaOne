@@ -32,11 +32,11 @@ Generates full request examples using the eu.ninjarmm.com OpenAPI YAML.
 #>
 [CmdletBinding(SupportsShouldProcess)]
 param(
-	[String]$BaseUrl = 'https://eu.ninjarmm.com',
-	[String]$YamlPath,
-	[String]$SourcePath = (Join-Path -Path $PSScriptRoot -ChildPath '..\..\Source\Public'),
-	[String]$EndpointPath,
-	[String[]]$CommandName
+	[String]$baseUrl = 'https://eu.ninjarmm.com',
+	[String]$yamlPath,
+	[String]$SourcePath = (Join-path -path $PSScriptRoot -ChildPath '..\..\Source\Public'),
+	[String]$endpointPath,
+	[String[]]$commandName
 )
 
 $beginMarker = '# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN'
@@ -44,18 +44,18 @@ $endMarker = '# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END'
 
 function Get-OpenApiDocument {
 	param(
-		[String]$BaseUrl,
-		[String]$YamlPath
+		[String]$baseUrl,
+		[String]$yamlPath
 	)
 
-	if ($YamlPath) {
-		if (-not (Test-Path -Path $YamlPath)) {
-			throw "OpenAPI YAML file not found at '$YamlPath'."
+	if ($yamlPath) {
+		if (-not (Test-path -path $yamlPath)) {
+			throw "OpenAPI YAML file not found at '$yamlPath'."
 		}
-		return Get-Content -Path $YamlPath -Raw
+		return Get-content -path $yamlPath -Raw
 	}
 
-	$uri = "{0}/apidocs-beta/NinjaRMM-API-v2.yaml" -f $BaseUrl.TrimEnd('/')
+	$uri = "{0}/apidocs-beta/NinjaRMM-API-v2.yaml" -f $baseUrl.TrimEnd('/')
 	$webParams = @{ Uri = $uri; ErrorAction = 'Stop' }
 	if ($PSVersionTable.PSVersion.Major -eq 5) {
 		$webParams.UseBasicParsing = $true
@@ -93,39 +93,39 @@ function ConvertFrom-OpenApiYaml {
 	throw 'ConvertFrom-Yaml is available but does not expose a supported parameter set.'
 }
 
-function Resolve-SchemaRef {
+function Resolve-schemaRef {
 	<#
 	.SYNOPSIS
 		Resolves a schema $ref to a concrete schema object.
 	#>
 	param(
-		[Object]$Schema,
-		[Hashtable]$Schemas
+		[Object]$schema,
+		[Hashtable]$schemas
 	)
-	$hasRef = if (($Schema -is [hashtable]) -or ($Schema -is [System.Collections.Specialized.OrderedDictionary])) {
-		$Schema.Contains('$ref')
+	$hasRef = if (($schema -is [hashtable]) -or ($schema -is [System.Collections.Specialized.OrderedDictionary])) {
+		$schema.Contains('$ref')
 	} else {
-		$Schema.PSObject.Properties.Name -contains '$ref'
+		$schema.PSObject.Properties.Name -contains '$ref'
 	}
 	
-	if ($Schema -and $hasRef) {
-		$ref = if (($Schema -is [hashtable]) -or ($Schema -is [System.Collections.Specialized.OrderedDictionary])) {
-			$Schema['$ref']
+	if ($schema -and $hasRef) {
+		$ref = if (($schema -is [hashtable]) -or ($schema -is [System.Collections.Specialized.OrderedDictionary])) {
+			$schema['$ref']
 		} else {
-			$Schema.'$ref'
+			$schema.'$ref'
 		}
 		if ($ref -match '#/components/schemas/(?<name>[^/]+)$') {
 			$name = $Matches['name']
-			$resolved = $Schemas[$name]
+			$resolved = $schemas[$name]
 			if ($resolved) {
 				return $resolved
 			}
 		}
 	}
-	return $Schema
+	return $schema
 }
 
-function Test-SchemaProperty {
+function Test-schemaProperty {
 	<#
 	.SYNOPSIS
 		Checks whether a schema object has a given property name.
@@ -137,7 +137,7 @@ function Test-SchemaProperty {
 	return ($Obj.PSObject.Properties.Name -contains $PropName)
 }
 
-function Get-SchemaValue {
+function Get-schemaValue {
 	<#
 	.SYNOPSIS
 		Gets a schema property value by name.
@@ -149,7 +149,7 @@ function Get-SchemaValue {
 	return $Obj.$PropName
 }
 
-function Get-SchemaProperties {
+function Get-schemaProperties {
 	<#
 	.SYNOPSIS
 		Enumerates schema properties as name/value pairs.
@@ -169,47 +169,47 @@ function New-ExampleFromSchema {
 		Builds a sample value from an OpenAPI schema definition.
 	#>
 	param(
-		[Object]$Schema,
-		[Hashtable]$Schemas,
-		[Hashtable]$Visited
+		[Object]$schema,
+		[Hashtable]$schemas,
+		[Hashtable]$visited
 	)
-	if (-not $Visited) {
-		$Visited = @{}
+	if (-not $visited) {
+		$visited = @{}
 	}
 
 	# Guard against recursive schema references.
-	if (Test-SchemaProperty -Obj $Schema -PropName '$ref') {
-		$refValue = Get-SchemaValue -Obj $Schema -PropName '$ref'
+	if (Test-schemaProperty -Obj $schema -PropName '$ref') {
+		$refValue = Get-schemaValue -Obj $schema -PropName '$ref'
 		if ($refValue -match '#/components/schemas/(?<name>[^/]+)$') {
 			$refName = $Matches['name']
 			if ($refName -eq 'FormDataBodyPart') {
 				return '__RAW__Get-Item "C:\Temp\example.txt"'
 			}
-			if ($Visited.ContainsKey($refName)) {
+			if ($visited.ContainsKey($refName)) {
 				return [ordered]@{}
 			}
-			$Visited[$refName] = $true
+			$visited[$refName] = $true
 		}
 	}
 
-	$Schema = Resolve-SchemaRef -Schema $Schema -Schemas $Schemas
-	if (-not $Schema) {
+	$schema = Resolve-schemaRef -schema $schema -schemas $schemas
+	if (-not $schema) {
 		return $null
 	}
 
-	if (Test-SchemaProperty -Obj $Schema -PropName 'oneOf') {
-		$oneOf = Get-SchemaValue -Obj $Schema -PropName 'oneOf'
-		return New-ExampleFromSchema -Schema $oneOf[0] -Schemas $Schemas -Visited $Visited
+	if (Test-schemaProperty -Obj $schema -PropName 'oneOf') {
+		$oneOf = Get-schemaValue -Obj $schema -PropName 'oneOf'
+		return New-ExampleFromSchema -schema $oneOf[0] -schemas $schemas -visited $visited
 	}
-	if (Test-SchemaProperty -Obj $Schema -PropName 'anyOf') {
-		$anyOf = Get-SchemaValue -Obj $Schema -PropName 'anyOf'
-		return New-ExampleFromSchema -Schema $anyOf[0] -Schemas $Schemas -Visited $Visited
+	if (Test-schemaProperty -Obj $schema -PropName 'anyOf') {
+		$anyOf = Get-schemaValue -Obj $schema -PropName 'anyOf'
+		return New-ExampleFromSchema -schema $anyOf[0] -schemas $schemas -visited $visited
 	}
-	if (Test-SchemaProperty -Obj $Schema -PropName 'allOf') {
-		$allOf = Get-SchemaValue -Obj $Schema -PropName 'allOf'
+	if (Test-schemaProperty -Obj $schema -PropName 'allOf') {
+		$allOf = Get-schemaValue -Obj $schema -PropName 'allOf'
 		$merged = [ordered]@{}
 		foreach ($item in $allOf) {
-			$child = New-ExampleFromSchema -Schema $item -Schemas $Schemas -Visited $Visited
+			$child = New-ExampleFromSchema -schema $item -schemas $schemas -visited $visited
 			if (($child -is [hashtable]) -or ($child -is [System.Collections.Specialized.OrderedDictionary])) {
 				foreach ($key in $child.Keys) { $merged[$key] = $child[$key] }
 			}
@@ -217,42 +217,42 @@ function New-ExampleFromSchema {
 		return $merged
 	}
 
-	if (Test-SchemaProperty -Obj $Schema -PropName 'enum') {
-		$enum = Get-SchemaValue -Obj $Schema -PropName 'enum'
+	if (Test-schemaProperty -Obj $schema -PropName 'enum') {
+		$enum = Get-schemaValue -Obj $schema -PropName 'enum'
 		return $enum[0]
 	}
 
-	$schemaType = Get-SchemaValue -Obj $Schema -PropName 'type'
-	if (-not $schemaType -and (Test-SchemaProperty -Obj $Schema -PropName 'properties')) {
+	$schemaType = Get-schemaValue -Obj $schema -PropName 'type'
+	if (-not $schemaType -and (Test-schemaProperty -Obj $schema -PropName 'properties')) {
 		$schemaType = 'object'
 	}
 
 	switch ($schemaType) {
 		'object' {
-			if (Test-SchemaProperty -Obj $Schema -PropName 'properties') {
-				$properties = Get-SchemaValue -Obj $Schema -PropName 'properties'
+			if (Test-schemaProperty -Obj $schema -PropName 'properties') {
+				$properties = Get-schemaValue -Obj $schema -PropName 'properties'
 				$result = [ordered]@{}
-				foreach ($prop in (Get-SchemaProperties -Obj $properties)) {
+				foreach ($prop in (Get-schemaProperties -Obj $properties)) {
 					$propName = $prop.Name
 					$propSchema = $prop.Value
-					$result[$propName] = New-ExampleFromSchema -Schema $propSchema -Schemas $Schemas -Visited $Visited
+					$result[$propName] = New-ExampleFromSchema -schema $propSchema -schemas $schemas -visited $visited
 				}
 				return $result
 			}
-			if (Test-SchemaProperty -Obj $Schema -PropName 'additionalProperties') {
-				$additionalSchema = Get-SchemaValue -Obj $Schema -PropName 'additionalProperties'
+			if (Test-schemaProperty -Obj $schema -PropName 'additionalProperties') {
+				$additionalSchema = Get-schemaValue -Obj $schema -PropName 'additionalProperties'
 				if ($additionalSchema -eq $true) {
 					return [ordered]@{ additionalProp1 = 'value' }
 				}
-				$additionalValue = New-ExampleFromSchema -Schema $additionalSchema -Schemas $Schemas -Visited $Visited
+				$additionalValue = New-ExampleFromSchema -schema $additionalSchema -schemas $schemas -visited $visited
 				return [ordered]@{ additionalProp1 = $additionalValue }
 			}
 			return [ordered]@{}
 		}
 		'array' {
-			if (Test-SchemaProperty -Obj $Schema -PropName 'items') {
-				$items = Get-SchemaValue -Obj $Schema -PropName 'items'
-				$item = New-ExampleFromSchema -Schema $items -Schemas $Schemas -Visited $Visited
+			if (Test-schemaProperty -Obj $schema -PropName 'items') {
+				$items = Get-schemaValue -Obj $schema -PropName 'items'
+				$item = New-ExampleFromSchema -schema $items -schemas $schemas -visited $visited
 				return ,@($item)
 			}
 			return @()
@@ -261,7 +261,7 @@ function New-ExampleFromSchema {
 		'number' { return 0 }
 		'boolean' { return $false }
 		'string' {
-			$format = Get-SchemaValue -Obj $Schema -PropName 'format'
+			$format = Get-schemaValue -Obj $schema -PropName 'format'
 			if ($format -eq 'date-time') { return '2024-01-01T00:00:00Z' }
 			if ($format -eq 'date') { return '2024-01-01' }
 			if ($format -eq 'uuid') { return '00000000-0000-0000-0000-000000000000' }
@@ -278,15 +278,15 @@ function ConvertTo-HashtableLines {
 		Formats an object into PowerShell hashtable/array literal lines.
 	#>
 	param(
-		[Object]$Value,
-		[String]$Indent
+		[Object]$value,
+		[String]$indent
 	)
 
 	$lines = @()
-	if (($Value -is [hashtable]) -or ($Value -is [System.Collections.Specialized.OrderedDictionary])) {
+	if (($value -is [hashtable]) -or ($value -is [System.Collections.Specialized.OrderedDictionary])) {
 		$lines += "${Indent}@{"
-		foreach ($key in $Value.Keys) {
-			$child = ConvertTo-HashtableLines -Value $Value[$key] -Indent ($Indent + "`t")
+		foreach ($key in $value.Keys) {
+			$child = ConvertTo-HashtableLines -value $value[$key] -indent ($indent + "`t")
 			if ($child.Count -eq 1) {
 				# Single line value - check if it's a complex type that needs special formatting
 				$childValue = $child[0]
@@ -312,9 +312,9 @@ function ConvertTo-HashtableLines {
 		$lines += "${Indent}}"
 		return $lines
 	}
-	if ($Value -is [array]) {
-		if ($Value.Count -eq 0) { return @("@()") }
-		$child = ConvertTo-HashtableLines -Value $Value[0] -Indent ($Indent + "`t")
+	if ($value -is [array]) {
+		if ($value.Count -eq 0) { return @("@()") }
+		$child = ConvertTo-HashtableLines -value $value[0] -indent ($indent + "`t")
 		$lines += "${Indent}@("
 		foreach ($line in $child) {
 			if ($line -match '^\s') {
@@ -326,56 +326,56 @@ function ConvertTo-HashtableLines {
 		$lines += "${Indent})"
 		return $lines
 	}
-	if ($Value -is [string]) {
-		if ($Value.StartsWith('__RAW__')) {
-			$raw = $Value.Substring(7)
+	if ($value -is [string]) {
+		if ($value.StartsWith('__RAW__')) {
+			$raw = $value.Substring(7)
 			return , @($raw)  # Comma forces array to not unravel
 		}
-		$quoted = '"{0}"' -f $Value
+		$quoted = '"{0}"' -f $value
 		return , @($quoted)  # Comma forces array to not unravel
 	}
-	if ($Value -is [bool]) {
-		$result = if ($Value) { '$true' } else { '$false' }
+	if ($value -is [bool]) {
+		$result = if ($value) { '$true' } else { '$false' }
 
 		return , @($result)
 	}
-	if ($null -eq $Value) { return @('$null') }
-	return @($Value)
+	if ($null -eq $value) { return @('$null') }
+	return @($value)
 }
 
-function Get-BodyParameterName {
+function Get-bodyParameterName {
 	<#
 	.SYNOPSIS
 		Determines the cmdlet body parameter name from a function file.
 	#>
-	param([String]$Content)
+	param([String]$content)
 
 	# Look for parameter with 'body' in its Alias attribute (can be first or not)
-	$bodyMatch = [regex]::Match($Content, '\[Alias\([^\)]*''body''[^\)]*\)\][\s\S]*?\$(?<name>[A-Za-z0-9_]+)')
+	$bodyMatch = [regex]::Match($content, '\[Alias\([^\)]*''body''[^\)]*\)\][\s\S]*?\$(?<name>[A-Za-z0-9_]+)')
 	if ($bodyMatch.Success) { return $bodyMatch.Groups['name'].Value }
 
-	$objectMatch = [regex]::Match($Content, '\[Parameter\([^\)]*\)\][\s\S]*?\[Object\]\$(?<name>[A-Za-z0-9_]+)')
+	$objectMatch = [regex]::Match($content, '\[Parameter\([^\)]*\)\][\s\S]*?\[Object\]\$(?<name>[A-Za-z0-9_]+)')
 	if ($objectMatch.Success) { return $objectMatch.Groups['name'].Value }
 
-	$paramMatch = [regex]::Match($Content, '\[Parameter\([^\)]*Mandatory[^\)]*\)\][\s\S]*?\$(?<name>[A-Za-z0-9_]+)')
+	$paramMatch = [regex]::Match($content, '\[Parameter\([^\)]*Mandatory[^\)]*\)\][\s\S]*?\$(?<name>[A-Za-z0-9_]+)')
 	if ($paramMatch.Success) { return $paramMatch.Groups['name'].Value }
 
 	return 'Body'
 }
 
-function Get-PathParameters {
+function Get-pathParameters {
 	<#
 	.SYNOPSIS
 		Maps OpenAPI path parameters to cmdlet parameter names.
 	#>
 	param(
-		[String]$Content,
-		[String]$Path
+		[String]$content,
+		[String]$path
 	)
 
 	$pathParams = @()
 	# Extract {id}, {organizationId}, etc from the path
-	$matches = [regex]::Matches($Path, '\{(?<param>[^}]+)\}')
+	$matches = [regex]::Matches($path, '\{(?<param>[^}]+)\}')
 	if ($matches.Count -eq 0) { return $pathParams }
 
 	# For each path parameter, find the corresponding PowerShell parameter
@@ -383,7 +383,7 @@ function Get-PathParameters {
 		$pathParam = $match.Groups['param'].Value
 		# Look for parameter defined before the body parameter
 		$pattern = '\[Parameter\([^\)]*\)\][\s\S]*?\$(?<name>[A-Za-z0-9_]+)'
-		$paramMatches = [regex]::Matches($Content, $pattern)
+		$paramMatches = [regex]::Matches($content, $pattern)
 		
 		foreach ($pm in $paramMatches) {
 			$paramName = $pm.Groups['name'].Value
@@ -422,17 +422,17 @@ function Build-FullRequestExampleBlock {
 		Builds the full request example help block text.
 	#>
 	param(
-		[String]$CommandName,
-		[String]$BodyParam,
-		[Object]$ExampleObject,
-		[Array]$PathParameters = @()
+		[String]$commandName,
+		[String]$bodyParam,
+		[Object]$exampleObject,
+		[Array]$pathParameters = @()
 	)
 
 	$indent = "`t`t"
 	$lines = @()
 	$lines += "$indent.EXAMPLE"
 	$lines += "$indent`t$beginMarker"
-	$bodyLines = ConvertTo-HashtableLines -Value $ExampleObject -Indent ''
+	$bodyLines = ConvertTo-HashtableLines -value $exampleObject -indent ''
 	
 	# Trim any leading spaces from body lines to prevent extra spacing in final output
 	$bodyLines = $bodyLines | ForEach-Object { $_.TrimStart(' ') }
@@ -445,13 +445,13 @@ function Build-FullRequestExampleBlock {
 	}
 	
 	# Build the command line with path parameters first, then body
-	$cmdLine = "$indent`tPS> $CommandName"
-	if ($PathParameters.Count -gt 0) {
-		foreach ($pathParam in $PathParameters) {
+	$cmdLine = "$indent`tPS> $commandName"
+	if ($pathParameters.Count -gt 0) {
+		foreach ($pathParam in $pathParameters) {
 			$cmdLine += " -$($pathParam.Name) $($pathParam.Placeholder)"
 		}
 	}
-	$cmdLine += " -$BodyParam `$body"
+	$cmdLine += " -$bodyParam `$body"
 	$lines += $cmdLine
 	
 	$lines += "$indent`t$endMarker"
@@ -466,10 +466,10 @@ function Build-MultipartExampleBlock {
 		Builds a multipart/form-data example help block.
 	#>
 	param(
-		[String]$CommandName,
-		[String]$BodyParam,
-		[Object]$Schema,
-		[Array]$PathParameters = @()
+		[String]$commandName,
+		[String]$bodyParam,
+		[Object]$schema,
+		[Array]$pathParameters = @()
 	)
 
 	$indent = "`t`t"
@@ -478,24 +478,24 @@ function Build-MultipartExampleBlock {
 	$lines += "$indent`t$beginMarker"
 	$lines += "$indent`tPS> `$multipart = [System.Net.Http.MultipartFormDataContent]::new()"
 
-	$properties = if (Test-SchemaProperty -Obj $Schema -PropName 'properties') {
-		Get-SchemaValue -Obj $Schema -PropName 'properties'
+	$properties = if (Test-schemaProperty -Obj $schema -PropName 'properties') {
+		Get-schemaValue -Obj $schema -PropName 'properties'
 	}
-	foreach ($prop in (Get-SchemaProperties -Obj $properties)) {
+	foreach ($prop in (Get-schemaProperties -Obj $properties)) {
 		$propName = $prop.Name
 		$propSchema = $prop.Value
-		$propType = Get-SchemaValue -Obj $propSchema -PropName 'type'
-		$propItems = if ($propType -eq 'array' -and (Test-SchemaProperty -Obj $propSchema -PropName 'items')) {
-			Get-SchemaValue -Obj $propSchema -PropName 'items'
+		$propType = Get-schemaValue -Obj $propSchema -PropName 'type'
+		$propItems = if ($propType -eq 'array' -and (Test-schemaProperty -Obj $propSchema -PropName 'items')) {
+			Get-schemaValue -Obj $propSchema -PropName 'items'
 		}
-		$propRef = if (Test-SchemaProperty -Obj $propSchema -PropName '$ref') {
-			Get-SchemaValue -Obj $propSchema -PropName '$ref'
+		$propRef = if (Test-schemaProperty -Obj $propSchema -PropName '$ref') {
+			Get-schemaValue -Obj $propSchema -PropName '$ref'
 		}
-		$itemRef = if ($propItems -and (Test-SchemaProperty -Obj $propItems -PropName '$ref')) {
-			Get-SchemaValue -Obj $propItems -PropName '$ref'
+		$itemRef = if ($propItems -and (Test-schemaProperty -Obj $propItems -PropName '$ref')) {
+			Get-schemaValue -Obj $propItems -PropName '$ref'
 		}
-		$propFormat = Get-SchemaValue -Obj $propSchema -PropName 'format'
-		$itemFormat = if ($propItems) { Get-SchemaValue -Obj $propItems -PropName 'format' }
+		$propFormat = Get-schemaValue -Obj $propSchema -PropName 'format'
+		$itemFormat = if ($propItems) { Get-schemaValue -Obj $propItems -PropName 'format' }
 
 		$isFile = $false
 		if ($propRef -match 'FormDataBodyPart$') { $isFile = $true }
@@ -512,11 +512,11 @@ function Build-MultipartExampleBlock {
 			continue
 		}
 
-		$propExample = New-ExampleFromSchema -Schema $propSchema -Schemas $schemas -Visited @{}
+		$propExample = New-ExampleFromSchema -schema $propSchema -schemas $schemas -visited @{}
 		$varName = ($propName -replace '[^A-Za-z0-9_]', '')
 		if (-not $varName) { $varName = 'field' }
 		$varName = "`$$varName"
-		$bodyLines = ConvertTo-HashtableLines -Value $propExample -Indent ''
+		$bodyLines = ConvertTo-HashtableLines -value $propExample -indent ''
 		# Trim any leading spaces from body lines to prevent extra spacing in final output
 		$bodyLines = $bodyLines | ForEach-Object { $_.TrimStart(' ') }
 		$lines += "$indent`tPS> $varName = " + $bodyLines[0]
@@ -531,13 +531,13 @@ function Build-MultipartExampleBlock {
 	}
 
 	$lines += "$indent`tPS> `$body = `$multipart"
-	$cmdLine = "$indent`tPS> $CommandName"
-	if ($PathParameters.Count -gt 0) {
-		foreach ($pathParam in $PathParameters) {
+	$cmdLine = "$indent`tPS> $commandName"
+	if ($pathParameters.Count -gt 0) {
+		foreach ($pathParam in $pathParameters) {
 			$cmdLine += " -$($pathParam.Name) $($pathParam.Placeholder)"
 		}
 	}
-	$cmdLine += " -$BodyParam `$body"
+	$cmdLine += " -$bodyParam `$body"
 	$lines += $cmdLine
 	$lines += "$indent`t$endMarker"
 	$lines += "$indent`t"
@@ -551,11 +551,11 @@ function Update-HelpBlock {
 		Inserts or replaces the auto-generated example block in a help comment.
 	#>
 	param(
-		[String]$Content,
-		[String]$ExampleBlock
+		[String]$content,
+		[String]$exampleBlock
 	)
 
-	$lines = $Content -split "\r?\n"
+	$lines = $content -split "\r?\n"
 	$beginIndex = [array]::FindIndex($lines, [System.Predicate[string]]{ param($line) $line -match [regex]::Escape($beginMarker) })
 	$endIndex = [array]::FindIndex($lines, [System.Predicate[string]]{ param($line) $line -match [regex]::Escape($endMarker) })
 	
@@ -583,20 +583,20 @@ function Update-HelpBlock {
 		$after = if ($exampleEnd -lt $lines.Count) { $lines[$exampleEnd..($lines.Count - 1)] } else { @() }
 		$updated = @()
 		$updated += $before
-		$updated += ($ExampleBlock -split "`n")
+		$updated += ($exampleBlock -split "`n")
 		$updated += $after
 		return ($updated -join "`n")
 	}
 
 	$insertAt = [array]::FindIndex($lines, [System.Predicate[string]]{ param($line) $line -match '^\s*\.OUTPUTS\b' })
 	if ($insertAt -lt 0) {
-		return $Content
+		return $content
 	}
 	$before = if ($insertAt -gt 0) { $lines[0..($insertAt - 1)] } else { @() }
 	$after = $lines[$insertAt..($lines.Count - 1)]
 	$updated = @()
 	$updated += $before
-	$updated += ($ExampleBlock -split "`n")
+	$updated += ($exampleBlock -split "`n")
 	$updated += $after
 	return ($updated -join "`n")
 }
@@ -608,13 +608,13 @@ function Normalize-HelpContent {
 	.DESCRIPTION
 		Replaces literal backtick sequences that should be actual newlines in comment-based help.
 	#>
-	param([String]$Content)
+	param([String]$content)
 	# Fix literal backtick sequences that should be real newlines in comment-based help
-	$normalized = $Content -replace '`n`t#>', "`n`t#>"
+	$normalized = $content -replace '`n`t#>', "`n`t#>"
 	return $normalized
 }
 
-$yamlText = Get-OpenApiDocument -BaseUrl $BaseUrl -YamlPath $YamlPath
+$yamlText = Get-OpenApiDocument -baseUrl $baseUrl -yamlPath $yamlPath
 $openApi = ConvertFrom-OpenApiYaml -Yaml $yamlText
 
 $schemas = @{}
@@ -632,19 +632,19 @@ if ($openApi.components -and $openApi.components.schemas) {
 }
 Write-Host "Loaded $($schemas.Count) schemas from OpenAPI document" -ForegroundColor Cyan
 
-$publicFiles = Get-ChildItem -Path $SourcePath -Recurse -Filter '*.ps1'
+$publicFiles = Get-ChildItem -path $SourcePath -Recurse -Filter '*.ps1'
 Write-Host "Found $($publicFiles.Count) PowerShell files" -ForegroundColor Cyan
-if ($CommandName) {
-	Write-Host "Filtering for command: $($CommandName -join ', ')" -ForegroundColor Yellow
+if ($commandName) {
+	Write-Host "Filtering for command: $($commandName -join ', ')" -ForegroundColor Yellow
 	$publicFiles = $publicFiles | Where-Object { 
 		$fileName = $_.BaseName
-		$CommandName -contains $fileName
+		$commandName -contains $fileName
 	}
 	Write-Host "After filtering: $($publicFiles.Count) files" -ForegroundColor Yellow
 }
 foreach ($file in $publicFiles) {
 	Write-Host "Examining file: $($file.FullName)" -ForegroundColor Magenta
-	$content = Get-Content -Path $file.FullName -Raw
+	$content = Get-content -path $file.FullName -Raw
 	if ([string]::IsNullOrWhiteSpace($content)) {
 		Write-Host "  Skipping: empty content" -ForegroundColor Gray
 		continue
@@ -656,7 +656,7 @@ foreach ($file in $publicFiles) {
 	}
 	$commandName = $functionMatch.Groups['name'].Value
 	Write-Host "  Found function: $commandName" -ForegroundColor Green
-	if ($CommandName -and $CommandName.Count -gt 0 -and $CommandName -notcontains $commandName) {
+	if ($commandName -and $commandName.Count -gt 0 -and $commandName -notcontains $commandName) {
 		Write-Host "  Skipping: function name doesn't match filter" -ForegroundColor Gray
 		continue
 	}
@@ -669,7 +669,7 @@ foreach ($file in $publicFiles) {
 	$path = $metaMatch.Groups['path'].Value
 	$method = $metaMatch.Groups['method'].Value.ToLowerInvariant()
 	Write-Host "  Metadata: $path ($method)" -ForegroundColor Green
-	if ($EndpointPath -and $path -ne $EndpointPath) {
+	if ($endpointPath -and $path -ne $endpointPath) {
 		Write-Host "  Skipping: endpoint doesn't match filter" -ForegroundColor Gray
 		continue
 	}
@@ -699,27 +699,27 @@ foreach ($file in $publicFiles) {
 	}
 	$schema = $null
 	$isMultipart = $false
-	if (Test-SchemaProperty -Obj $contentMap -PropName 'application/json') {
-		$jsonContent = Get-SchemaValue -Obj $contentMap -PropName 'application/json'
-		$schema = Get-SchemaValue -Obj $jsonContent -PropName 'schema'
+	if (Test-schemaProperty -Obj $contentMap -PropName 'application/json') {
+		$jsonContent = Get-schemaValue -Obj $contentMap -PropName 'application/json'
+		$schema = Get-schemaValue -Obj $jsonContent -PropName 'schema'
 		if ($schema) {
 			Write-Host "  Found application/json schema" -ForegroundColor Green
 		}
 	}
-	if (-not $schema -and (Test-SchemaProperty -Obj $contentMap -PropName 'multipart/form-data')) {
-		$formContent = Get-SchemaValue -Obj $contentMap -PropName 'multipart/form-data'
-		$schema = Get-SchemaValue -Obj $formContent -PropName 'schema'
+	if (-not $schema -and (Test-schemaProperty -Obj $contentMap -PropName 'multipart/form-data')) {
+		$formContent = Get-schemaValue -Obj $contentMap -PropName 'multipart/form-data'
+		$schema = Get-schemaValue -Obj $formContent -PropName 'schema'
 		if ($schema) {
 			Write-Host "  Found multipart/form-data schema" -ForegroundColor Green
 			$isMultipart = $true
 		}
 	}
 	if (-not $schema) {
-		$firstContent = (Get-SchemaProperties -Obj $contentMap | Select-Object -First 1).Value
-		$schema = Get-SchemaValue -Obj $firstContent -PropName 'schema'
+		$firstContent = (Get-schemaProperties -Obj $contentMap | Select-Object -First 1).Value
+		$schema = Get-schemaValue -Obj $firstContent -PropName 'schema'
 		if ($schema) {
 			Write-Host "  Found schema from first content type" -ForegroundColor Green
-			$firstName = (Get-SchemaProperties -Obj $contentMap | Select-Object -First 1).Name
+			$firstName = (Get-schemaProperties -Obj $contentMap | Select-Object -First 1).Name
 			if ($firstName -eq 'multipart/form-data') { $isMultipart = $true }
 		}
 	}
@@ -728,22 +728,22 @@ foreach ($file in $publicFiles) {
 		continue
 	}
 
-	$bodyParam = Get-BodyParameterName -Content $content
-	$pathParams = Get-PathParameters -Content $content -Path $path
+	$bodyParam = Get-bodyParameterName -content $content
+	$pathParams = Get-pathParameters -content $content -path $path
 	$exampleBlock = $null
 	if ($isMultipart) {
-		$exampleBlock = Build-MultipartExampleBlock -CommandName $commandName -BodyParam $bodyParam -Schema $schema -PathParameters $pathParams
+		$exampleBlock = Build-MultipartExampleBlock -commandName $commandName -bodyParam $bodyParam -schema $schema -pathParameters $pathParams
 	} else {
-		$exampleObject = New-ExampleFromSchema -Schema $schema -Schemas $schemas -Visited @{}
+		$exampleObject = New-ExampleFromSchema -schema $schema -schemas $schemas -visited @{}
 		if (-not $exampleObject) {
 			Write-Host "  Skipping: could not generate example from schema" -ForegroundColor Red
 			continue
 		}
 		Write-Host "  Generated example object" -ForegroundColor Green
-		$exampleBlock = Build-FullRequestExampleBlock -CommandName $commandName -BodyParam $bodyParam -ExampleObject $exampleObject -PathParameters $pathParams
+		$exampleBlock = Build-FullRequestExampleBlock -commandName $commandName -bodyParam $bodyParam -exampleObject $exampleObject -pathParameters $pathParams
 	}
-	$updatedContent = Update-HelpBlock -Content $content -ExampleBlock $exampleBlock
-	$updatedContent = Normalize-HelpContent -Content $updatedContent
+	$updatedContent = Update-HelpBlock -content $content -exampleBlock $exampleBlock
+	$updatedContent = Normalize-HelpContent -content $updatedContent
 
 	Write-Host "Processing: $commandName at $path ($method)" -ForegroundColor Cyan
 	Write-Host "Content length: $($content.Length), Updated length: $($updatedContent.Length)" -ForegroundColor Yellow
@@ -756,7 +756,7 @@ foreach ($file in $publicFiles) {
 			Write-Host "Preview of updated content (first 20 lines):" -ForegroundColor Cyan
 			$previewLines | ForEach-Object { Write-Host "  $_" -ForegroundColor DarkGray }
 			
-			Set-Content -Path $file.FullName -Value $updatedContent
+			Set-content -path $file.FullName -value $updatedContent
 			Write-Host "File updated successfully!" -ForegroundColor Green
 		}
 	} else {

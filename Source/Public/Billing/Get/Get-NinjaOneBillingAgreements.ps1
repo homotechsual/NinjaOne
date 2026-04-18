@@ -11,7 +11,7 @@ function Get-NinjaOneBillingAgreements {
 
 			Gets all billing agreements.
 		.EXAMPLE
-			PS> Get-NinjaOneBillingAgreements -Id 1
+			PS> Get-NinjaOneBillingAgreements -id 1
 
 			Gets billing agreement 1.
 		.OUTPUTS
@@ -33,7 +33,7 @@ function Get-NinjaOneBillingAgreements {
 		# Billing agreement ID.
 		[Parameter(ValueFromPipelineByPropertyName)]
 		[Alias('agreementId')]
-		[Int]$Id
+		[Int]$id
 	)
 	begin {
 		$CommandName = $MyInvocation.InvocationName
@@ -45,9 +45,9 @@ function Get-NinjaOneBillingAgreements {
 	}
 	process {
 		try {
-			if ($Id) {
-				Write-Verbose ('Getting billing agreement with id {0}.' -f $Id)
-				$Resource = ('v2/billing/agreements/{0}' -f $Id)
+			if ($id) {
+				Write-Verbose ('Getting billing agreement with id {0}.' -f $id)
+				$Resource = ('v2/billing/agreements/{0}' -f $id)
 			} else {
 				Write-Verbose 'Retrieving billing agreements.'
 				$Resource = 'v2/billing/agreements'

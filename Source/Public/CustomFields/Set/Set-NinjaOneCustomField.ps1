@@ -7,7 +7,7 @@ function Set-NinjaOneCustomField {
 		.FUNCTIONALITY
 			Custom Field
 		.EXAMPLE
-			PS> Set-NinjaOneCustomField -FieldName 'department' -CustomField @{ description = 'Department of the user' }
+			PS> Set-NinjaOneCustomField -fieldName 'department' -customField @{ description = 'Department of the user' }
 
 			Updates the custom field named 'department' with new description.
 		.EXAMPLE
@@ -87,7 +87,7 @@ function Set-NinjaOneCustomField {
 				apiPermission = "NONE"
 				label = "string"
 			}
-			PS> Set-NinjaOneCustomField -FieldName string -CustomField $body
+			PS> Set-NinjaOneCustomField -fieldName string -customField $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -107,17 +107,17 @@ function Set-NinjaOneCustomField {
 		# The field name of the custom field to update
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('name')]
-		[String]$FieldName,
+		[String]$fieldName,
 		# Custom field update payload per API schema
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$CustomField
+		[Object]$customField
 	)
 	process {
 		try {
-			$Resource = ('v2/custom-fields/field-name/{0}' -f $FieldName)
-			$RequestParams = @{ Resource = $Resource; Body = $CustomField }
-			if ($PSCmdlet.ShouldProcess('Custom Field', ('Update {0}' -f $FieldName))) {
+			$Resource = ('v2/custom-fields/field-name/{0}' -f $fieldName)
+			$RequestParams = @{ Resource = $Resource; Body = $customField }
+			if ($PSCmdlet.ShouldProcess('Custom Field', ('Update {0}' -f $fieldName))) {
 				$Result = New-NinjaOnePUTRequest @RequestParams
 				return $Result
 			}

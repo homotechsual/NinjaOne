@@ -10,9 +10,9 @@ function Get-NinjaOneExpandCompleter {
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal private function does not require parameter descriptions.')]
 	[CmdletBinding()]
 	param(
-		[String]$WordToComplete,
-		[System.Management.Automation.Language.CommandAst]$CommandAst,
-		[Int]$CursorPosition
+		[String]$wordToComplete,
+		[System.Management.Automation.Language.CommandAst]$commandAst,
+		[Int]$cursorPosition
 	)
 	
 	# Known expansion options for NinjaOne API
@@ -29,7 +29,7 @@ function Get-NinjaOneExpandCompleter {
 	)
 	
 	$KnownExpansions |
-	Where-Object { $_ -like "$WordToComplete*" } |
+	Where-Object { $_ -like "$wordToComplete*" } |
 	ForEach-Object {
 		[System.Management.Automation.CompletionResult]::new(
 			$_,

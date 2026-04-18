@@ -7,7 +7,7 @@ function Invoke-NinjaOneSoftwareLicenseUpsert {
 		.FUNCTIONALITY
 			Software License
 		.EXAMPLE
-			PS> Invoke-NinjaOneSoftwareLicenseUpsert -License @{ name = 'Microsoft Office'; description = 'Office 365' }
+			PS> Invoke-NinjaOneSoftwareLicenseUpsert -license @{ name = 'Microsoft Office'; description = 'Office 365' }
 
 			Creates or updates a software license.
 		.EXAMPLE
@@ -41,7 +41,7 @@ function Invoke-NinjaOneSoftwareLicenseUpsert {
 				name = "string"
 				publisherName = "string"
 			}
-			PS> Invoke-NinjaOneSoftwareLicenseUpsert -License $body
+			PS> Invoke-NinjaOneSoftwareLicenseUpsert -license $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -61,12 +61,12 @@ function Invoke-NinjaOneSoftwareLicenseUpsert {
 		# Software license configuration per API schema
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$License
+		[Object]$license
 	)
 	process {
 		try {
 			$Resource = 'v2/software-license/upsert'
-			$RequestParams = @{ Resource = $Resource; Body = $License }
+			$RequestParams = @{ Resource = $Resource; Body = $license }
 			if ($PSCmdlet.ShouldProcess('Software License', 'Upsert')) {
 				$Result = New-NinjaOnePOSTRequest @RequestParams
 				return $Result

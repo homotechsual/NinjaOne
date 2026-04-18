@@ -7,7 +7,7 @@
 #>
 [CmdletBinding()]
 param(
-	[Switch]$Force
+	[Switch]$force
 )
 
 $BuildToolsRoot = $PSScriptRoot
@@ -31,14 +31,14 @@ if (Test-Path -Path $BundledModulesPath) {
 # Install PowerShellGet if needed (for older systems)
 if (-not (Get-Module -Name PowerShellGet -ListAvailable).Where({ $_.Version -ge '2.0.0' })) {
 	Write-Host 'Bootstrap: Installing PowerShellGet' -ForegroundColor Yellow
-	Install-Module -Name PowerShellGet -Force -Scope CurrentUser -AllowClobber
-	Import-Module PowerShellGet -Force
+	Install-Module -Name PowerShellGet -force -Scope CurrentUser -AllowClobber
+	Import-Module PowerShellGet -force
 }
 
 # Install Install-RequiredModule script if not present
 if (-not (Get-InstalledScript -Name 'Install-RequiredModule' -ErrorAction SilentlyContinue)) {
 	Write-Host 'Bootstrap: Installing Install-RequiredModule script' -ForegroundColor Yellow
-	Install-Script -Name 'Install-RequiredModule' -Force -Scope CurrentUser
+	Install-Script -Name 'Install-RequiredModule' -force -Scope CurrentUser
 }
 
 # Install required modules from RequiredModules.psd1
@@ -53,7 +53,7 @@ if (Test-Path -Path $RequiredModulesPath) {
 			$manifestPath = Microsoft.PowerShell.Management\Get-ChildItem -LiteralPath $moduleDir -Filter '*.psd1' -Recurse | Select-Object -First 1
 			if ($manifestPath) {
 				Write-Host "Bootstrap: Loading bundled module version from: $($_.Name)" -ForegroundColor Green
-				Import-Module -Name $manifestPath.FullName -Force -WarningAction SilentlyContinue
+				Import-Module -Name $manifestPath.FullName -force -WarningAction SilentlyContinue
 			}
 		}
 	}
