@@ -56,7 +56,7 @@ function Get-NinjaOneAlerts {
 		[Alias('tz')]
 		[String]$timeZone,
 		# Parse date/time values in the response.
-		[Switch]$ParseDateTime
+		[Switch]$parseDateTime
 	)
 	begin {
 		$CommandName = $MyInvocation.InvocationName
@@ -80,8 +80,8 @@ function Get-NinjaOneAlerts {
 				Resource = $Resource
 				QSCollection = $QSCollection
 			}
-			if ($ParseDateTime) {
-				$RequestParams.ParseDateTime = $ParseDateTime
+			if ($parseDateTime) {
+				$RequestParams.ParseDateTime = $parseDateTime
 			}
 			try {
 				$AlertResults = New-NinjaOneGETRequest @RequestParams

@@ -7,7 +7,7 @@ function New-NinjaOnePOSTRequest {
 		.EXAMPLE
 			Make a POST request to the organisations endpoint.
 
-			PS C:\> New-NinjaOnePOSTRequest -Method "POST" -Resource "/v2/organizations"
+			PS C:\> New-NinjaOnePOSTRequest -method "POST" -resource "/v2/organizations"
 		.OUTPUTS
 			Outputs an object containing the response from the web request.
 	#>
@@ -18,15 +18,15 @@ function New-NinjaOnePOSTRequest {
 	param (
 		# The resource to send the request to.
 		[Parameter(Mandatory = $True)]
-		[String]$Resource,
+		[String]$resource,
 		# A hashtable used to build the query string.
-		[Hashtable]$QSCollection,
+		[Hashtable]$qSCollection,
 		# A hashtable used to build the body of the request.
-		[Object]$Body,
+		[Object]$body,
 		# Parse date/time values returned in JSON.
-		[Switch]$ParseDateTime,
+		[Switch]$parseDateTime,
 		# Enable multipart form-data detection for file uploads.
-		[Switch]$UseMultipart
+		[Switch]$useMultipart
 	)
 	function Get-NinjaOneMultipartEntries {
 		<#
@@ -200,15 +200,15 @@ function New-NinjaOnePOSTRequest {
 				System.Object
 		#>
 		param(
-			[String]$Method,
-			[String]$Uri,
-			[Object]$Content,
-			[Switch]$ParseDateTime
+			[String]$method,
+			[String]$uri,
+			[Object]$content,
+			[Switch]$parseDateTime
 		)
-		if ($Content -isnot [System.Net.Http.HttpContent]) {
-			throw "Http content payload must be of type System.Net.Http.HttpContent. Received: $($Content.GetType().FullName)"
+		if ($content -isnot [System.Net.Http.HttpContent]) {
+			throw "Http content payload must be of type System.Net.Http.HttpContent. Received: $($content.GetType().FullName)"
 		}
-		$HttpContent = [System.Net.Http.HttpContent]$Content
+		$HttpContent = [System.Net.Http.HttpContent]$content
 		$client = [System.Net.Http.HttpClient]::new()
 		try {
 			$authValue = [System.Net.Http.Headers.AuthenticationHeaderValue]::new(
@@ -217,7 +217,7 @@ function New-NinjaOnePOSTRequest {
 			)
 			$client.DefaultRequestHeaders.Authorization = $authValue
 			
-			$request = [System.Net.Http.HttpRequestMessage]::new([System.Net.Http.HttpMethod]::new($Method), $Uri)
+			$request = [System.Net.Http.HttpRequestMessage]::new([System.Net.Http.HttpMethod]::new($method), $uri)
 			$request.Content = $HttpContent
 			Write-Verbose "HttpContent request Content-Type: $($request.Content.Headers.ContentType)"
 			$response = $client.SendAsync($request).GetAwaiter().GetResult()
@@ -229,7 +229,7 @@ function New-NinjaOnePOSTRequest {
 				return $response.StatusCode
 			}
 			$results = $rawContent | ConvertFrom-Json
-			if ($ParseDateTime -and $null -ne $results) {
+			if ($parseDateTime -and $null -ne $results) {
 				$results = ConvertFrom-NinjaOneDateTime -InputObject $results
 			}
 			return $results
@@ -244,22 +244,22 @@ function New-NinjaOnePOSTRequest {
 	if ($null -eq $Script:NRAPIAuthenticationInformation) {
 		throw "Missing NinjaOne authentication tokens, please run 'Connect-NinjaOne' first."
 	}
-	Test-NinjaOneEndpointSupport -Method 'POST' -Resource $Resource -Verbose:$VerbosePreference
+	Test-NinjaOneEndpointSupport -method 'POST' -resource $resource -Verbose:$VerbosePreference
 	try {
-		if ($QSCollection) {
-			Write-Verbose "Query string in New-NinjaOnePOSTRequest contains: $($QSCollection | Out-String)"
+		if ($qSCollection) {
+			Write-Verbose "Query string in New-NinjaOnePOSTRequest contains: $($qSCollection | Out-String)"
 			$QueryStringCollection = [System.Web.HTTPUtility]::ParseQueryString([String]::Empty)
 			Write-Verbose 'Building [HttpQSCollection] for New-NinjaOnePOSTRequest'
-			foreach ($Key in $QSCollection.Keys) {
-				$QueryStringCollection.Add($Key, $QSCollection.$Key)
+			foreach ($Key in $qSCollection.Keys) {
+				$QueryStringCollection.Add($Key, $qSCollection.$Key)
 			}
 		} else {
 			Write-Verbose 'Query string collection not present...'
 		}
 		Write-Verbose "URI is $($Script:NRAPIConnectionInformation.URL)"
 		$RequestUri = [System.UriBuilder]"$($Script:NRAPIConnectionInformation.URL)"
-		Write-Verbose "Path is $($Resource)"
-		$RequestUri.Path = $Resource
+		Write-Verbose "Path is $($resource)"
+		$RequestUri.Path = $resource
 		if ($QueryStringCollection) {
 			Write-Verbose "Query string is $($QueryStringCollection.toString())"
 			$RequestUri.Query = $QueryStringCollection.toString()
@@ -270,25 +270,25 @@ function New-NinjaOnePOSTRequest {
 			Method = 'POST'
 			Uri = $RequestUri.ToString()
 		}
-		if ($ParseDateTime -or $Script:ParseDateTimes) {
+		if ($parseDateTime -or $Script:ParseDateTimes) {
 			$WebRequestParams.ParseDateTime = $true
 		}
-		if ($Body) {
+		if ($body) {
 			Write-Verbose 'Building [HttpBody] for New-NinjaOnePOSTRequest'
-			$useParseDateTime = $ParseDateTime -or $Script:ParseDateTimes
-			if ($UseMultipart -and ($Body -is [System.Net.Http.HttpContent] -or (Test-NinjaOneMultipartBody -Value $Body))) {
+			$useParseDateTime = $parseDateTime -or $Script:ParseDateTimes
+			if ($useMultipart -and ($body -is [System.Net.Http.HttpContent] -or (Test-NinjaOneMultipartBody -Value $body))) {
 				Write-Verbose 'Detected multipart body, using HttpClient request method'
 				# Avoid PowerShell collection unwrapping - MultipartFormDataContent is IEnumerable
 				# Must use direct assignment in if/else, not if expression that returns values
-				if ($Body -is [System.Net.Http.HttpContent]) {
-					$multipartContent = $Body
+				if ($body -is [System.Net.Http.HttpContent]) {
+					$multipartContent = $body
 					$null = $multipartContent
 				} else {
-					$multipartContent = ConvertTo-NinjaOneMultipartContent -Value $Body
-					Write-Verbose "Multipart request body: $($Body | ConvertTo-Json -Depth 100)"
+					$multipartContent = ConvertTo-NinjaOneMultipartContent -Value $body
+					Write-Verbose "Multipart request body: $($body | ConvertTo-Json -Depth 100)"
 				}
 				Write-Verbose "Multipart payload runtime type: $($multipartContent.GetType().FullName)"
-				$Result = Invoke-NinjaOneHttpContentRequest -Method 'POST' -Uri $RequestUri.ToString() -Content ([System.Net.Http.HttpContent]$multipartContent) -ParseDateTime:$useParseDateTime
+				$Result = Invoke-NinjaOneHttpContentRequest -method 'POST' -uri $RequestUri.ToString() -content ([System.Net.Http.HttpContent]$multipartContent) -parseDateTime:$useParseDateTime
 				Write-Verbose "NinjaOne request returned $($Result | Out-String)"
 				if ($Result['results']) {
 					return $Result.results
@@ -298,7 +298,7 @@ function New-NinjaOnePOSTRequest {
 					return $Result
 				}
 			}
-			$WebRequestParams.Body = (ConvertTo-Json -InputObject $Body -Depth 100)
+			$WebRequestParams.Body = (ConvertTo-Json -InputObject $body -Depth 100)
 			Write-Verbose "Raw body is $($WebRequestParams.Body)"
 		} else {
 			Write-Verbose 'No body provided for New-NinjaOnePOSTRequest'

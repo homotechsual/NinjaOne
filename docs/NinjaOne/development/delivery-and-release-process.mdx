@@ -1,0 +1,155 @@
+---
+title: Delivery & Release Process
+sidebar_position: 5
+---
+
+This page records the repo's normal development, CI, and release flow.
+
+## Branch model
+
+- `develop` is the active integration branch for day-to-day work.
+- `main` is the stable release branch.
+- Normal contributions should target `develop`.
+- Stable tags such as `v2.5.0` must point to commits reachable from `main`.
+- Preview tags such as `v2.6.0-beta1` may point to `develop`.
+
+## Local change flow
+
+1. Bootstrap the development environment.
+2. Make the code or documentation changes.
+3. Build and validate locally.
+4. Regenerate help/docs if public cmdlets changed.
+5. Open or update the pull request targeting `develop`.
+
+```powershell
+pwsh -File .\DevOps\Build\bootstrap.ps1
+pwsh -File .\DevOps\Build\build.ps1 -TaskNames build
+pwsh -File .\DevOps\Quality\test.ps1
+pwsh -File .\DevOps\Quality\run-pssa.ps1
+```
+
+If public functions or comment-based help changed, also run:
+
+```powershell
+pwsh -File .\DevOps\Build\build.ps1 -TaskNames generateShortNamesMapping,updateHelp,publishDocs
+```
+
+## CI pipeline on `develop`
+
+The `CI` workflow runs on pushes and pull requests targeting `develop`.
+
+It executes in this order:
+
+1. **Lint with PSScriptAnalyzer**
+2. **Run cross-platform smoke tests on macOS and Linux with PowerShell 7**
+3. **Run the full Windows test job**
+4. **Build the module and publish artifacts**
+5. **Sync development docs after successful push runs**
+
+The cross-platform smoke job runs a lightweight `core,private` Pester subset on `ubuntu-latest` and `macos-latest` using `pwsh`.
+
+The Windows test job also bootstraps dependencies, builds the C# helper projects, uploads Pester results, and publishes coverage artifacts to Codecov.
+
+After a successful `push` run on `develop`, `sync-development-docs.yml` publishes `docs/NinjaOne/development` to `homotechsualdocs` at `docs/ninjaone/development`.
+
+## Stable release flow
+
+1. Update `CHANGELOG.md` and `Source/NinjaOne.psd1` together on `develop`.
+2. Make sure the release-prep commit is green in CI.
+3. Open or update the PR from `develop` into `main`.
+4. Merge only after the required checks pass.
+5. Create the stable release tag from the merged `main` commit.
+6. Let the release workflows publish the module, release notes, and docs.
+
+Example tag flow:
+
+```powershell
+git checkout main
+git pull origin main
+git tag v2.5.0
+git push origin v2.5.0
+```
+
+## What the tag workflows do
+
+### `tag-validate.yml`
+
+Validates that the tag came from the correct branch:
+
+- stable tags must be reachable from `main`
+- prerelease tags must be reachable from `develop`
+
+### `build-and-publish.yml`
+
+Builds and packages the module, generates documentation artifacts, publishes to the PowerShell Gallery, and uploads the release zip asset.
+
+### `create-release.yml`
+
+Creates or updates the GitHub release using the matching section from `CHANGELOG.md`.
+
+### `publish-docs.yml`
+
+Publishes the generated documentation artifact after a successful tagged release build.
+
+The release docs sync currently updates these paths in `homotechsualdocs`:
+
+- `docs/ninjaone/commandlets` from the generated release docs artifact
+- `docs/ninjaone/filters` from `docs/NinjaOne/filters`
+- `docs/ninjaone/index.mdx` from `docs/NinjaOne/index.mdx`
+
+### `sync-development-docs.yml`
+
+Runs after successful `CI` push runs on `develop` and syncs `docs/NinjaOne/development` to `homotechsualdocs/docs/ninjaone/development`.
+
+## Preview release flow
+
+Preview releases follow the same basic pattern, but use prerelease tags such as:
+
+- `v2.6.0-alpha1`
+- `v2.6.0-beta1`
+- `v2.6.0-rc1`
+
+These tags should be cut from commits reachable from `develop`.
+
+## Scheduled maintenance workflow
+
+The repo also includes a monthly instance capability check workflow. It compares live instance API paths with repo metadata and cmdlet coverage, then produces a report and can open or update tracking issues when drift is detected.
+
+## Issue triage workflow
+
+When new work is identified, the normal pattern is:
+
+1. Open or update a GitHub issue describing the bug, drift, or feature gap.
+2. Confirm whether the work belongs in `develop` and whether it affects cmdlet metadata, tests, or docs.
+3. Prefer small, targeted changes over large refactors.
+4. If the issue is endpoint coverage related, match the existing cmdlet scaffold and metadata patterns.
+5. Add or update lasting regression coverage where it protects real behavior.
+
+For endpoint drift and missing-coverage work, the monthly capability check report can be used as the starting point for new issues.
+
+## Pull request workflow
+
+- Branch and PR work should flow through `develop`.
+- Run local validation before asking for review.
+- If public cmdlets changed, include help/doc regeneration in the update.
+- Address CI failures first, then address review comments with minimal, targeted fixes.
+- Merge to `main` only when the release branch or PR is ready for a stable cut.
+
+A typical PR checklist is:
+
+- build succeeds locally
+- tests pass locally
+- PSScriptAnalyzer is clean
+- manifest exports are updated if new public cmdlets were added
+- changelog is updated when the change is user-visible
+- review feedback and Copilot comments are addressed before merge
+
+## Release checklist
+
+- `CHANGELOG.md` and `Source/NinjaOne.psd1` are updated together
+- CI is green on the release-prep commit
+- the release PR into `main` is merged cleanly
+- the tag is created from the correct branch
+- GitHub Release and PowerShell Gallery publication complete successfully
+- documentation publishing completes successfully
+- development docs sync completes successfully after normal `develop` pushes when development pages changed

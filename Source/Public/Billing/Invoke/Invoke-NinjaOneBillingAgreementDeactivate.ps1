@@ -7,7 +7,7 @@ function Invoke-NinjaOneBillingAgreementDeactivate {
 		.FUNCTIONALITY
 			Billing Agreement
 		.EXAMPLE
-			PS> Invoke-NinjaOneBillingAgreementDeactivate -Id 1
+			PS> Invoke-NinjaOneBillingAgreementDeactivate -id 1
 
 			Deactivates billing agreement 1.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function Invoke-NinjaOneBillingAgreementDeactivate {
 		# Billing agreement ID.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('agreementId')]
-		[Int]$Id
+		[Int]$id
 	)
 	process {
 		try {
-			$Resource = ('v2/billing/agreements/{0}/deactivate' -f $Id)
-			if ($PSCmdlet.ShouldProcess(('Billing Agreement {0}' -f $Id), 'Deactivate')) {
+			$Resource = ('v2/billing/agreements/{0}/deactivate' -f $id)
+			if ($PSCmdlet.ShouldProcess(('Billing Agreement {0}' -f $id), 'Deactivate')) {
 				return (New-NinjaOnePATCHRequest -Resource $Resource)
 			}
 		} catch {

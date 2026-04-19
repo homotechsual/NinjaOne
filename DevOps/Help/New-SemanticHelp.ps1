@@ -9,7 +9,7 @@ sections for functions based on naming patterns and actual parameters.
 #>
 
 param(
-    [string]$FunctionName,
+    [string]$functionName,
     [object[]]$Parameters,
     [string]$FunctionType = 'public' # 'public' or 'private'
 )
@@ -28,7 +28,7 @@ $verbPatterns = @{
 }
 
 # Extract verb from function name
-$funcNameParts = $FunctionName -split '-'
+$funcNameParts = $functionName -split '-'
 $verb = $funcNameParts[0]
 
 # Extract and clean noun (remove "NinjaOne" prefix)
@@ -56,7 +56,7 @@ $description = if ($FunctionType -eq 'public') {
     $desc += "Appropriate API credentials and permissions are required."
     $desc
 } else {
-    "Internal helper function for $FunctionName operations.`n`nThis function provides supporting functionality for the NinjaOne module."
+    "Internal helper function for $functionName operations.`n`nThis function provides supporting functionality for the NinjaOne module."
 }
 
 # Build PARAMETERS section
@@ -101,7 +101,7 @@ $firstParam = if ($Parameters -and @($Parameters).Count -gt 0) {
     'Identity'
 }
 
-$example = ".EXAMPLE`n    PS> $FunctionName" + $(
+$example = ".EXAMPLE`n    PS> $functionName" + $(
     if ($Parameters -and @($Parameters).Count -gt 0) {
         switch -Regex ($firstParam) {
             'ID$|Id$' { " -$firstParam 12345" }

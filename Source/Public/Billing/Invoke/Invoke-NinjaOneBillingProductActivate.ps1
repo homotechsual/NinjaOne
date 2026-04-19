@@ -7,7 +7,7 @@ function Invoke-NinjaOneBillingProductActivate {
 		.FUNCTIONALITY
 			Billing Product Activate
 		.EXAMPLE
-			PS> Invoke-NinjaOneBillingProductActivate -Id 1
+			PS> Invoke-NinjaOneBillingProductActivate -id 1
 
 			Activates billing product 1.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function Invoke-NinjaOneBillingProductActivate {
 		# Billing product ID.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('productId')]
-		[Int]$Id
+		[Int]$id
 	)
 	process {
 		try {
-			$Resource = ('v2/billing/products/{0}/activate' -f $Id)
-			if ($PSCmdlet.ShouldProcess(('Billing Product {0}' -f $Id), 'Activate')) {
+			$Resource = ('v2/billing/products/{0}/activate' -f $id)
+			if ($PSCmdlet.ShouldProcess(('Billing Product {0}' -f $id), 'Activate')) {
 				return (New-NinjaOnePATCHRequest -Resource $Resource)
 			}
 		} catch {

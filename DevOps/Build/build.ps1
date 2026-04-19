@@ -9,41 +9,41 @@
 
 param (
 	[ValidateSet('clean', 'build', 'updateManifest', 'publish', 'publishDocs', 'updateHelp', 'generateShortNamesMapping', 'push')]
-	[String[]]$TaskNames = ('clean', 'build', 'updateManifest', 'publish', 'updateHelp', 'generateShortNamesMapping', 'push'),
+	[String[]]$taskNames = ('clean', 'build', 'updateManifest', 'publish', 'updateHelp', 'generateShortNamesMapping', 'push'),
 	[Hashtable]$BuildConfig = (
-		Join-Path -Path $PSScriptRoot -ChildPath 'build.config.psd1' | Import-PowerShellDataFile -LiteralPath { $_ } -ErrorAction SilentlyContinue
+		Join-path -path $PSScriptRoot -ChildPath 'build.config.psd1' | Import-PowerShellDataFile -LiteralPath { $_ } -ErrorAction SilentlyContinue
 	),
-	[Switch]$ExcludeCustomTasks = $false,
-	[System.Management.Automation.SemanticVersion]$SemVer
+	[Switch]$excludeCustomTasks = $false,
+	[System.Management.Automation.SemanticVersion]$semVer
 )
 $BuildToolsRoot = $PSScriptRoot
-$RepoRoot = Resolve-Path -Path (Join-Path -Path $BuildToolsRoot -ChildPath '..\..')
+$RepoRoot = Resolve-path -path (Join-path -path $BuildToolsRoot -ChildPath '..\..')
 $Script:ModuleName = 'NinjaOne'
-$Script:DocsSourcePath = Join-Path -Path $RepoRoot -ChildPath 'docs\NinjaOne\commandlets'
+$Script:DocsSourcePath = Join-path -path $RepoRoot -ChildPath 'docs\NinjaOne\commandlets'
 
 function Invoke-IsolatedBuildIfNeeded {
 	param(
-		[string[]]$TaskNames,
-		[switch]$ExcludeCustomTasks,
-		[System.Management.Automation.SemanticVersion]$SemVer
+		[string[]]$taskNames,
+		[switch]$excludeCustomTasks,
+		[System.Management.Automation.SemanticVersion]$semVer
 	)
 
 	if ($env:NINJAONE_BUILD_ISOLATED_CHILD) {
 		return
 	}
 
-	if ($TaskNames -notcontains 'clean' -and $TaskNames -notcontains 'build') {
+	if ($taskNames -notcontains 'clean' -and $taskNames -notcontains 'build') {
 		return
 	}
 
 	$escapedScriptPath = $PSCommandPath.Replace("'", "''")
-	$taskList = ($TaskNames | ForEach-Object { "'$($_.Replace("'", "''"))'" }) -join ','
-	$command = "`$env:NINJAONE_BUILD_ISOLATED_CHILD='1'; & '$escapedScriptPath' -TaskNames @($taskList)"
-	if ($ExcludeCustomTasks) {
-		$command += ' -ExcludeCustomTasks'
+	$taskList = ($taskNames | ForEach-Object { "'$($_.Replace("'", "''"))'" }) -join ','
+	$command = "`$env:NINJAONE_BUILD_ISOLATED_CHILD='1'; & '$escapedScriptPath' -taskNames @($taskList)"
+	if ($excludeCustomTasks) {
+		$command += ' -excludeCustomTasks'
 	}
-	if ($SemVer) {
-		$command += " -SemVer '$SemVer'"
+	if ($semVer) {
+		$command += " -semVer '$semVer'"
 	}
 
 	$argList = @(
@@ -57,7 +57,7 @@ function Invoke-IsolatedBuildIfNeeded {
 	exit $proc.ExitCode
 }
 
-Invoke-IsolatedBuildIfNeeded -TaskNames $TaskNames -ExcludeCustomTasks:$ExcludeCustomTasks -SemVer $SemVer
+Invoke-IsolatedBuildIfNeeded -taskNames $taskNames -excludeCustomTasks:$excludeCustomTasks -semVer $semVer
 # Install required modules
 if (-not (Get-Command -Name 'Install-RequiredModule' -ErrorAction SilentlyContinue)) {
 	Install-Script -Name 'Install-RequiredModule' -Force -Scope CurrentUser
@@ -67,12 +67,12 @@ $installCmd = Get-Command -Name 'Install-RequiredModule' -ErrorAction SilentlyCo
 if (-not $installCmd) {
 	$installedScript = Get-InstalledScript -Name 'Install-RequiredModule' -ErrorAction SilentlyContinue
 	if ($installedScript) {
-		$installCmdPath = Join-Path -Path $installedScript.InstalledLocation -ChildPath 'Install-RequiredModule.ps1'
+		$installCmdPath = Join-path -path $installedScript.InstalledLocation -ChildPath 'Install-RequiredModule.ps1'
 	}
 } else {
 	if ($installCmd.Path) {
 		$installCmdPath = $installCmd.Path
-	} elseif ($installCmd.Source -and (Test-Path $installCmd.Source)) {
+	} elseif ($installCmd.Source -and (Test-path $installCmd.Source)) {
 		$installCmdPath = $installCmd.Source
 	}
 }
@@ -80,10 +80,10 @@ if (-not $installCmd) {
 if (-not $installCmdPath) {
 	$userDocs = [Environment]::GetFolderPath('MyDocuments')
 	$fallbackPaths = @(
-		(Join-Path -Path $userDocs -ChildPath 'PowerShell\Scripts\Install-RequiredModule.ps1'),
-		(Join-Path -Path $userDocs -ChildPath 'WindowsPowerShell\Scripts\Install-RequiredModule.ps1')
+		(Join-path -path $userDocs -ChildPath 'PowerShell\Scripts\Install-RequiredModule.ps1'),
+		(Join-path -path $userDocs -ChildPath 'WindowsPowerShell\Scripts\Install-RequiredModule.ps1')
 	)
-	$installCmdPath = $fallbackPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
+	$installCmdPath = $fallbackPaths | Where-Object { Test-path $_ } | Select-Object -First 1
 }
 
 if (-not $installCmdPath) {
@@ -99,11 +99,11 @@ function GetModulePath {
 	[CmdletBinding()]
 	param(
 		[Parameter(Mandatory)]
-		[String]$ModuleName
+		[String]$moduleName
 	)
-	$ModulePath = (Get-ChildItem -Path ('{0}\Output\*\*\{1}.psd1' -f $RepoRoot, $ModuleName)).FullName
-	if (!(Test-Path -Path $ModulePath)) {
-		throw ('Module {0} not found at "{1}".' -f $ModuleName, $ModulePath)
+	$ModulePath = (Get-ChildItem -path ('{0}\Output\*\*\{1}.psd1' -f $RepoRoot, $moduleName)).FullName
+	if (!(Test-path -path $ModulePath)) {
+		throw ('Module {0} not found at "{1}".' -f $moduleName, $ModulePath)
 	}
 	return $ModulePath
 }
@@ -113,9 +113,9 @@ function GetFunctions {
 	[OutputType([System.Collections.Generic.List[String]])]
 	param(
 		[Parameter(Mandatory)]
-		[String]$ModuleName
+		[String]$moduleName
 	)
-	$ModulePath = GetModulePath -ModuleName $ModuleName
+	$ModulePath = GetModulePath -moduleName $moduleName
 	Import-Module $ModulePath -Force
 	$Module = Get-Module -Name $Script:ModuleName
 	$CommandletList = [System.Collections.Generic.List[String]]::new()
@@ -149,9 +149,9 @@ function GenerateShortNamesMapping {
 	#>
 	$OutputFilePath = [System.IO.FileInfo]'.\.build\CommandletShortNames.yaml'
 	$ShortNameOutput = [System.Collections.Generic.Dictionary[String, String]]::new()
-	$CommandletList = GetFunctions -ModuleName $Script:ModuleName
+	$CommandletList = GetFunctions -moduleName $Script:ModuleName
 	foreach ($Commandlet in $CommandletList) {
-		$AST = (Get-Content -Path ('function:/{0}' -f $Commandlet) -ErrorAction Ignore).AST
+		$AST = (Get-Content -path ('function:/{0}' -f $Commandlet) -ErrorAction Ignore).AST
 		$ShortName = $AST.GetHelpContent().Functionality
 		if ($ShortName) {
 			$ShortNameOutput.Add($Commandlet, $ShortName)
@@ -187,28 +187,28 @@ function UpdateHelp {
 		[System.IO.DirectoryInfo]$DocusaurusPath = '.\docs',
 		[bool]$ForceUpdateCategoryFiles = $true
 	)
-	$DocsFolderPath = Join-Path -Path $DocusaurusPath -ChildPath $Script:ModuleName
-	if (-not(Test-Path -Path $DocsFolderPath)) {
-		New-Item -Path $DocsFolderPath -ItemType Directory | Out-Null
+	$DocsFolderPath = Join-path -path $DocusaurusPath -ChildPath $Script:ModuleName
+	if (-not(Test-path -path $DocsFolderPath)) {
+		New-Item -path $DocsFolderPath -ItemType Directory | Out-Null
 	}
-	$bundledDocusaurusRoot = Join-Path -Path $RepoRoot -ChildPath 'Modules\Alt3.Docusaurus.Powershell'
-	if (Test-Path -Path $bundledDocusaurusRoot) {
-		$bundledManifest = Get-ChildItem -Path $bundledDocusaurusRoot -Filter 'Alt3.Docusaurus.Powershell.psd1' -Recurse | Sort-Object FullName -Descending | Select-Object -First 1
+	$bundledDocusaurusRoot = Join-path -path $RepoRoot -ChildPath 'Modules\Alt3.Docusaurus.Powershell'
+	if (Test-path -path $bundledDocusaurusRoot) {
+		$bundledManifest = Get-ChildItem -path $bundledDocusaurusRoot -Filter 'Alt3.Docusaurus.Powershell.psd1' -Recurse | Sort-Object FullName -Descending | Select-Object -First 1
 		if ($bundledManifest) {
 			Import-Module -Name $bundledManifest.FullName -Force -ErrorAction Stop
 		}
 	}
 	$ShortNamesFilePath = [System.IO.FileInfo]'.\.build\CommandletShortNames.yaml'
-	$ShortNamesYAML = Get-Content -Path $ShortNamesFilePath -Raw
+	$ShortNamesYAML = Get-Content -path $ShortNamesFilePath -Raw
 	$ShortNamesDictionary = $ShortNamesYAML | ConvertFrom-Yaml
 	$MarkdownHeader = @'
 :::powershell[Generated Cmdlet Help]
 This page has been generated from the {0} PowerShell module source. To make changes please edit the appropriate PowerShell source file.
 :::
 '@ -f $Script:ModuleName
-	$ExcludeFiles = Get-ChildItem -Path (Join-Path -Path $RepoRoot -ChildPath 'Source\Private') -Filter '*.ps1' -Recurse | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_.FullName) }
+	$ExcludeFiles = Get-ChildItem -path (Join-path -path $RepoRoot -ChildPath 'Source\Private') -Filter '*.ps1' -Recurse | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_.FullName) }
 	$NewDocusaurusHelpParams = @{
-		Module = (GetModulePath -ModuleName $Script:ModuleName)
+		Module = (GetModulePath -moduleName $Script:ModuleName)
 		DocsFolder = $DocsFolderPath
 		Exclude = $ExcludeFiles
 		Sidebar = 'commandlets'
@@ -221,8 +221,8 @@ This page has been generated from the {0} PowerShell module source. To make chan
 		RemoveParameters = @('-ProgressAction', '-FakeParam')
 	}
 	New-DocusaurusHelp @NewDocusaurusHelpParams | Out-Null
-	$CommandletDocsFolder = Join-Path -Path $DocusaurusPath -ChildPath $Script:ModuleName -AdditionalChildPath 'commandlets'
-	$VerbFolders = Get-ChildItem -Path $CommandletDocsFolder -Directory
+	$CommandletDocsFolder = Join-path -path $DocusaurusPath -ChildPath $Script:ModuleName -AdditionalChildPath 'commandlets'
+	$VerbFolders = Get-ChildItem -path $CommandletDocsFolder -Directory
 	$CategoryFileBase = @{
 		position = 1
 		collapsible = $true
@@ -238,8 +238,8 @@ This page has been generated from the {0} PowerShell module source. To make chan
 		}
 	}
 	foreach ($VerbFolder in $VerbFolders) {
-		$HasCategoryFile = Get-ChildItem -Path $VerbFolder.FullName -Filter '_category_.*' -File -ErrorAction SilentlyContinue
-		$CategoryFilePath = Join-Path -Path $VerbFolder.FullName -ChildPath '_category_.json'
+		$HasCategoryFile = Get-ChildItem -path $VerbFolder.FullName -Filter '_category_.*' -File -ErrorAction SilentlyContinue
+		$CategoryFilePath = Join-path -path $VerbFolder.FullName -ChildPath '_category_.json'
 		# Start with a fresh copy so each verb gets its own object
 		$CategoryFile = $CategoryFileBase | ConvertTo-Json -Depth 5 | ConvertFrom-Json
 		switch ($VerbFolder.Name) {
@@ -361,9 +361,9 @@ This page has been generated from the {0} PowerShell module source. To make chan
 			$CategoryFile | ConvertTo-Json | Out-File -FilePath $CategoryFilePath -Force
 		} else {
 			if (-not($ForceUpdateCategoryFiles)) {
-				Write-Warning -Message ('Category file already exists in "{0}" verb folder. Use the ForceUpdateCategoryFiles switch to overwrite existing category files.' -f $VerbFolder.Name)
+				Write-Warning -message ('Category file already exists in "{0}" verb folder. Use the ForceUpdateCategoryFiles switch to overwrite existing category files.' -f $VerbFolder.Name)
 			} else {
-				Set-Content -Path $CategoryFilePath -Value ($CategoryFile | ConvertTo-Json) -Force
+				Set-Content -path $CategoryFilePath -Value ($CategoryFile | ConvertTo-Json) -Force
 			}
 		}
 	}
@@ -381,33 +381,33 @@ function Build {
 	#>
 	$outputDirConfig = $BuildConfig.OutputDirectory ?? 'output'
 	# ModuleBuilder creates output relative to the Source directory
-	$moduleOutputRoot = Join-Path -Path $RepoRoot -ChildPath $outputDirConfig
-	$moduleOutputPath = Join-Path -Path $moduleOutputRoot -ChildPath $Script:ModuleName
-	AssertOutputBinariesUnlocked -OutputPath $moduleOutputPath
+	$moduleOutputRoot = Join-path -path $RepoRoot -ChildPath $outputDirConfig
+	$moduleOutputPath = Join-path -path $moduleOutputRoot -ChildPath $Script:ModuleName
+	AssertOutputBinariesUnlocked -outputPath $moduleOutputPath
 
-	if ($SemVer) {
-		Build-Module -Path '.\Source' -SemVer $SemVer.ToString() -Prefix 'Initialisation.ps1'
+	if ($semVer) {
+		Build-Module -path '.\Source' -semVer $semVer.ToString() -Prefix 'Initialisation.ps1'
 	} else {
-		Build-Module -Path '.\Source' -Prefix 'Initialisation.ps1'
+		Build-Module -path '.\Source' -Prefix 'Initialisation.ps1'
 	}
 
 	# Ensure Binaries folder is copied to output module (post-build step)
 	# Find all module manifest files (which tells us where the module was built)
-	$moduleManifests = Get-ChildItem -Path './Output' -Recurse -Filter '*.psd1' -ErrorAction SilentlyContinue | Where-Object { $_.Name -like 'NinjaOne.psd1' -and $_.Directory.Name -match '^[\d\.]' }
+	$moduleManifests = Get-ChildItem -path './Output' -Recurse -Filter '*.psd1' -ErrorAction SilentlyContinue | Where-Object { $_.Name -like 'NinjaOne.psd1' -and $_.Directory.Name -match '^[\d\.]' }
 	
 	foreach ($manifest in $moduleManifests) {
 		$moduleDir = $manifest.Directory.FullName
-		$binariesDir = Join-Path -Path $moduleDir -ChildPath 'Binaries'
+		$binariesDir = Join-path -path $moduleDir -ChildPath 'Binaries'
 		
-		if ((Test-Path '.\Source\Binaries') -and (-not (Test-Path $binariesDir))) {
-			Copy-Item -Path '.\Source\Binaries' -Destination $binariesDir -Recurse -Force
+		if ((Test-path '.\Source\Binaries') -and (-not (Test-path $binariesDir))) {
+			Copy-Item -path '.\Source\Binaries' -Destination $binariesDir -Recurse -Force
 			Write-Host "✓ Copied Binaries folder to: $binariesDir" -ForegroundColor Green
 		}
 	}
 	
 	# Restore Prerelease field to Output manifests if it exists in Source (ModuleBuilder strips it)
-	$sourceManifestPath = Join-Path -Path $RepoRoot -ChildPath (Join-Path -Path 'Source' -ChildPath "$Script:ModuleName.psd1")
-	$sourceManifest = Import-PowerShellDataFile -Path $sourceManifestPath
+	$sourceManifestPath = Join-path -path $RepoRoot -ChildPath (Join-path -path 'Source' -ChildPath "$Script:ModuleName.psd1")
+	$sourceManifest = Import-PowerShellDataFile -path $sourceManifestPath
 	if ($sourceManifest.PrivateData.PSData.Prerelease) {
 		$prerelease = $sourceManifest.PrivateData.PSData.Prerelease
 		Write-Host "Restoring Prerelease = '$prerelease' to output manifests" -ForegroundColor Gray
@@ -422,17 +422,17 @@ function AssertOutputBinariesUnlocked {
 	[CmdletBinding()]
 	param(
 		[Parameter(Mandatory)]
-		[string]$OutputPath
+		[string]$outputPath
 	)
 
-	if (-not (Test-Path $OutputPath)) {
+	if (-not (Test-path $outputPath)) {
 		return
 	}
-	$resolvedOutputPath = (Resolve-Path -Path $OutputPath).Path
+	$resolvedOutputPath = (Resolve-path -path $outputPath).Path
 
 	$locked = [System.Collections.Generic.List[string]]::new()
 	$processInfo = [System.Collections.Generic.List[string]]::new()
-	$dlls = Get-ChildItem -Path $resolvedOutputPath -Filter '*.dll' -Recurse -ErrorAction SilentlyContinue
+	$dlls = Get-ChildItem -path $resolvedOutputPath -Filter '*.dll' -Recurse -ErrorAction SilentlyContinue
 	Write-Verbose ('Checking output DLL locks in {0}' -f $resolvedOutputPath)
 	if (-not $dlls) {
 		return
@@ -446,7 +446,7 @@ function AssertOutputBinariesUnlocked {
 					$processInfo.Add("$($proc.ProcessName)($($proc.Id)) -> $originalPath")
 				}
 			} catch {
-				Write-Verbose -Message "Unable to inspect process $($proc.ProcessName): $_"
+				Write-Verbose -message "Unable to inspect process $($proc.ProcessName): $_"
 			}
 		}
 	}
@@ -455,8 +455,8 @@ function AssertOutputBinariesUnlocked {
 		try {
 			$originalPath = $_.FullName
 			$tempPath = "$originalPath.lockcheck"
-			Move-Item -Path $originalPath -Destination $tempPath -ErrorAction Stop
-			Move-Item -Path $tempPath -Destination $originalPath -ErrorAction Stop
+			Move-Item -path $originalPath -Destination $tempPath -ErrorAction Stop
+			Move-Item -path $tempPath -Destination $originalPath -ErrorAction Stop
 		} catch {
 			$locked.Add($_.FullName)
 		}
@@ -491,14 +491,14 @@ function UpdateManifest {
 	# Import PlatyPS. Needed for parsing the versions in the Changelog.
 	Import-Module -Name PlatyPS
 	# Find Latest Version in Change log.
-	$CHANGELOG = Get-Content -Path "$($RepoRoot)\CHANGELOG.md"
+	$CHANGELOG = Get-Content -path "$($RepoRoot)\CHANGELOG.md"
 	$MarkdownObject = [Markdown.MAML.Parser.MarkdownParser]::new()
 	[regex]$Regex = '\d\.\d\.\d'
 	$Versions = $Regex.Matches($MarkdownObject.ParseString($CHANGELOG).Children.Spans.Text) | ForEach-Object { $_.Value }
 	$ChangeLogVersion = ($Versions | Measure-Object -Maximum).Maximum
-	$ManifestPath = Join-Path -Path $RepoRoot -ChildPath (Join-Path -Path 'Source' -ChildPath "$Script:ModuleName.psd1")
+	$ManifestPath = Join-path -path $RepoRoot -ChildPath (Join-path -path 'Source' -ChildPath "$Script:ModuleName.psd1")
 	# Read the manifest as a hashtable to determine the current version
-	$Manifest = Import-PowerShellDataFile -Path $ManifestPath
+	$Manifest = Import-PowerShellDataFile -path $ManifestPath
 	[System.Version]$Version = $Manifest.ModuleVersion
 
 	if ($ChangeLogVersion -eq $Version) {
@@ -507,7 +507,7 @@ function UpdateManifest {
 	Write-Output -InputObject ("Current Module Version: $($Version)")
 	Write-Output -InputObject ("New Module version: $($ChangeLogVersion)")
 	# Update Manifest file with Release Notes
-	$CHANGELOG = Get-Content -Path "$($RepoRoot)\CHANGELOG.md"
+	$CHANGELOG = Get-Content -path "$($RepoRoot)\CHANGELOG.md"
 	$MarkdownObject = [Markdown.MAML.Parser.MarkdownParser]::new()
 	$ReleaseNotes = ((($MarkdownObject.ParseString($CHANGELOG).Children.Spans.Text) -match '\d\.\d\.\d') -split ' - ')[1]
 	
@@ -515,7 +515,7 @@ function UpdateManifest {
 	$OriginalPrerelease = $Manifest.PrivateData.PSData.Prerelease
 	
 	# Update Module with new version
-	Update-ModuleManifest -ModuleVersion $ChangeLogVersion -Path $ManifestPath -ReleaseNotes $ReleaseNotes
+	Update-ModuleManifest -ModuleVersion $ChangeLogVersion -path $ManifestPath -ReleaseNotes $ReleaseNotes
 	
 	# Restore Prerelease field if it existed in source manifest
 	if ($OriginalPrerelease) {
@@ -524,7 +524,7 @@ function UpdateManifest {
 		(Get-Content $ManifestPath) -replace "Prerelease = ''", "Prerelease = '$OriginalPrerelease'" | Set-Content $ManifestPath
 		
 		# Also restore in Output manifest if it exists (from previous build)
-		$OutputManifestPath = Get-ChildItem -Path (Join-Path -Path $RepoRoot -ChildPath "output\*\*\NinjaOne.psd1") -ErrorAction SilentlyContinue | Select-Object -First 1
+		$OutputManifestPath = Get-ChildItem -path (Join-path -path $RepoRoot -ChildPath "output\*\*\NinjaOne.psd1") -ErrorAction SilentlyContinue | Select-Object -First 1
 		if ($OutputManifestPath) {
 			Write-Output "Restoring Prerelease in output manifest: $($OutputManifestPath.FullName)"
 			(Get-Content $OutputManifestPath.FullName) -replace "Prerelease = ''", "Prerelease = '$OriginalPrerelease'" | Set-Content $OutputManifestPath.FullName
@@ -538,7 +538,7 @@ function Publish {
 	try {
 		# Build a splat containing the required details and make sure to Stop for errors which will trigger the catch
 		$PublishParams = @{
-			Path = Join-Path -Path $RepoRoot -ChildPath 'output\*\*\*.psd1' | Get-Item | Where-Object { $_.BaseName -eq $_.Directory.Parent.Name } | Select-Object -ExpandProperty Directory
+			Path = Join-path -path $RepoRoot -ChildPath 'output\*\*\*.psd1' | Get-Item | Where-Object { $_.BaseName -eq $_.Directory.Parent.Name } | Select-Object -ExpandProperty Directory
 			NuGetApiKey = if ($ENV:PSGalleryAPIKey) {
 				$ENV:PSGalleryAPIKey
 			} elseif ($ENV:TF_BUILD) {
@@ -548,8 +548,8 @@ function Publish {
 			}
 			ErrorAction = 'Stop'
 		}
-		$ManifestPath = Get-ChildItem -Path $PublishParams.Path -Filter '*.psd1'
-		$Manifest = Test-ModuleManifest -Path $ManifestPath
+		$ManifestPath = Get-ChildItem -path $PublishParams.Path -Filter '*.psd1'
+		$Manifest = Test-ModuleManifest -path $ManifestPath
 		if ($Manifest.PrivateData.PSData.Prerelease) {
 			[System.Management.Automation.SemanticVersion]$Version = ('{0}-{1}' -f $Manifest.Version, $Manifest.PrivateData.PSData.Prerelease)
 		} else {
@@ -576,7 +576,7 @@ function PublishDocsTask {
 	#>
 	[CmdletBinding()]
 	param()
-	PublishDocs -DocsOutputPath $DocsOutputPath
+	PublishDocs -docsOutputPath $docsOutputPath
 }
 
 # Task: Export docs for publishing to external repo
@@ -601,33 +601,33 @@ function PublishDocs {
 	[CmdletBinding()]
 	param(
 		[Parameter(Mandatory = $false)]
-		[string]$DocsOutputPath
+		[string]$docsOutputPath
 	)
 
-	if (-not $DocsOutputPath) {
-		$DocsOutputPath = Join-Path -Path $RepoRoot -ChildPath '.build\docs'
+	if (-not $docsOutputPath) {
+		$docsOutputPath = Join-path -path $RepoRoot -ChildPath '.build\docs'
 	}
 
 	# Create output structure matching target repo path: docs/ninjaone/commandlets
-	$destPath = Join-Path -Path $DocsOutputPath -ChildPath 'docs\ninjaone\commandlets'
-	if (Test-Path $destPath) {
-		Remove-Item -Path $destPath -Recurse -Force
+	$destPath = Join-path -path $docsOutputPath -ChildPath 'docs\ninjaone\commandlets'
+	if (Test-path $destPath) {
+		Remove-Item -path $destPath -Recurse -Force
 	}
-	New-Item -Path $destPath -ItemType Directory -Force | Out-Null
+	New-Item -path $destPath -ItemType Directory -Force | Out-Null
 
 	# Copy generated docs to output
-	Copy-Item -Path $Script:DocsSourcePath\* -Destination $destPath -Recurse -Force
+	Copy-Item -path $Script:DocsSourcePath\* -Destination $destPath -Recurse -Force
 
-	WriteMessage -Message 'Docs exported to output directory' -Details $destPath -Category Success
-	WriteMessage -Message 'Next step: GitHub Actions workflow will push these to homotechsualdocs/dev' -Category Information
+	WriteMessage -message 'Docs exported to output directory' -details $destPath -Category Success
+	WriteMessage -message 'Next step: GitHub Actions workflow will push these to homotechsualdocs/dev' -Category Information
 }
 # Task: Clean up Output folder
 function Clean {
 	# Clean output folder
-	$moduleOutput = Join-Path -Path $RepoRoot -ChildPath ('output\{0}\*\Binaries' -f $Script:ModuleName)
-	AssertOutputBinariesUnlocked -OutputPath $moduleOutput
-	if ((Test-Path "$($RepoRoot)\Build")) {
-		Remove-Item -Path "$($RepoRoot)\Build" -Recurse -Force
+	$moduleOutput = Join-path -path $RepoRoot -ChildPath ('output\{0}\*\Binaries' -f $Script:ModuleName)
+	AssertOutputBinariesUnlocked -outputPath $moduleOutput
+	if ((Test-path "$($RepoRoot)\Build")) {
+		Remove-Item -path "$($RepoRoot)\Build" -Recurse -Force
 	}
 }
 # Helper: Write a message to the console.
@@ -637,16 +637,16 @@ function WriteMessage {
 	param (
 		# The message to write to the console.
 		[Parameter(Mandatory, ValueFromPipeline)]
-		[String]$Message,
+		[String]$message,
 		# The category of the message.
 		[ValidateSet('Information', 'Warning', 'Error', 'Success')]
 		[String]$Category = 'Information',
 		# Additional details to write to the console.
-		[String]$Details
+		[String]$details
 	)
 	process {
 		$Params = @{
-			Object = ('{0}: {1}' -f $Message, $Details).TrimEnd(' :')
+			Object = ('{0}: {1}' -f $message, $details).TrimEnd(' :')
 			ForegroundColor = switch ($Category) {
 				'Success' { 'Green' }
 				'Information' { 'Cyan' }
@@ -663,40 +663,40 @@ function InvokeTask {
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Script is not intended to be used as a module.')]
 	param (
 		[Parameter(Mandatory, ParameterSetName = 'ExecuteFunction', ValueFromPipeline)]
-		[String]$TaskName,
+		[String]$taskName,
 		[Parameter(Mandatory, ParameterSetName = 'ExecuteScript', ValueFromPipelineByPropertyName)]
 		[Alias('FullName')]
-		[String]$Path
+		[String]$path
 	)
 	begin {
 		WriteMessage ('Build {0}' -f $PSCommandPath) -Category Success
 	}
 	process {
 		if ($PSCmdlet.ParameterSetName -eq 'ExecuteScript') {
-			$TaskName = [System.IO.Path]::GetFileNameWithoutExtension($Path)
+			$taskName = [System.IO.Path]::GetFileNameWithoutExtension($path)
 		}
 		$ErrorActionPreference = 'Stop'
 		try {
 			$StopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-			WriteMessage -Message ('Task {0}' -f $TaskName)
+			WriteMessage -message ('Task {0}' -f $taskName)
 			if ($PSCmdlet.ParameterSetName -eq 'ExecuteFunction') {
-				& "Script:$TaskName"
+				& "Script:$taskName"
 			} else {
-				& $Path
+				& $path
 			}
-			WriteMessage -Message ('Done {0} {1}' -f $TaskName, $StopWatch.Elapsed)
+			WriteMessage -message ('Done {0} {1}' -f $taskName, $StopWatch.Elapsed)
 		} catch {
-			WriteMessage -Message ('Failed {0} [{1}]' -f $TaskName, $StopWatch.Elapsed) -Category Error -Details $_.Exception.Message
+			WriteMessage -message ('Failed {0} [{1}]' -f $taskName, $StopWatch.Elapsed) -Category Error -details $_.Exception.Message
 			exit 1
 		} finally {
 			$StopWatch.Stop()
 		}
 	}
 }
-$TasksPath = Join-Path -Path $RepoRoot -ChildPath '.build\tasks'
+$TasksPath = Join-path -path $RepoRoot -ChildPath '.build\tasks'
 @(
-	$TaskNames
-	if ((-not $ExcludeCustomTasks) -and (Test-Path $TasksPath)) {
-		Get-ChildItem -Path $TasksPath
+	$taskNames
+	if ((-not $excludeCustomTasks) -and (Test-path $TasksPath)) {
+		Get-ChildItem -path $TasksPath
 	}
 ) | Where-Object { -not $BuildConfig -or $BuildConfig['Skip'] -notcontains $_ } | InvokeTask

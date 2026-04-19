@@ -7,7 +7,7 @@ function Get-NinjaOneBillingTicketProducts {
 		.FUNCTIONALITY
 			Billing Ticket Products
 		.EXAMPLE
-			PS> Get-NinjaOneBillingTicketProducts -TicketId 1
+			PS> Get-NinjaOneBillingTicketProducts -ticketId 1
 
 			Gets ticket billing products for ticket 1.
 		.OUTPUTS
@@ -27,7 +27,7 @@ function Get-NinjaOneBillingTicketProducts {
 		# Ticket ID.
 		[Parameter(Mandatory, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
-		[Int]$TicketId
+		[Int]$ticketId
 	)
 	begin {
 		$CommandName = $MyInvocation.InvocationName
@@ -39,7 +39,7 @@ function Get-NinjaOneBillingTicketProducts {
 	}
 	process {
 		try {
-			$Resource = ('v2/billing/ticket-products/ticket/{0}' -f $TicketId)
+			$Resource = ('v2/billing/ticket-products/ticket/{0}' -f $ticketId)
 			$RequestParams = @{
 				Resource = $Resource
 				QSCollection = $QSCollection
@@ -48,7 +48,7 @@ function Get-NinjaOneBillingTicketProducts {
 			if ($Results) {
 				return $Results
 			} else {
-				throw ('No billing ticket products found for ticket {0}.' -f $TicketId)
+				throw ('No billing ticket products found for ticket {0}.' -f $ticketId)
 			}
 		} catch {
 			New-NinjaOneError -ErrorRecord $_

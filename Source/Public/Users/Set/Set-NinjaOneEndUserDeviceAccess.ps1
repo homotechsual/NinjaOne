@@ -7,7 +7,7 @@ function Set-NinjaOneEndUserDeviceAccess {
 		.FUNCTIONALITY
 			End User Device Access
 		.EXAMPLE
-			PS> Set-NinjaOneEndUserDeviceAccess -Id 101 -DeviceAccess @{ canRemote = $true }
+			PS> Set-NinjaOneEndUserDeviceAccess -id 101 -deviceAccess @{ canRemote = $true }
 
 			Updates device access settings for end user 101.
 		.OUTPUTS
@@ -25,17 +25,17 @@ function Set-NinjaOneEndUserDeviceAccess {
 	param(
 		# The end user ID.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
-		[Int]$Id,
+		[Int]$id,
 		# The device access payload per API schema.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$DeviceAccess
+		[Object]$deviceAccess
 	)
 	process {
 		try {
-			$Resource = ('v2/user/end-user/{0}/device-access' -f $Id)
-			$RequestParams = @{ Resource = $Resource; Body = $DeviceAccess }
-			if ($PSCmdlet.ShouldProcess(('End User {0}' -f $Id), 'Update Device Access')) {
+			$Resource = ('v2/user/end-user/{0}/device-access' -f $id)
+			$RequestParams = @{ Resource = $Resource; Body = $deviceAccess }
+			if ($PSCmdlet.ShouldProcess(('End User {0}' -f $id), 'Update Device Access')) {
 				return (New-NinjaOnePATCHRequest @RequestParams)
 			}
 		} catch {

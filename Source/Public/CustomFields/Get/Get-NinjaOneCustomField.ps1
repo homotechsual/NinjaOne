@@ -7,7 +7,7 @@ function Get-NinjaOneCustomField {
 		.FUNCTIONALITY
 			Custom Field
 		.EXAMPLE
-			PS> Get-NinjaOneCustomField -FieldName 'department'
+			PS> Get-NinjaOneCustomField -fieldName 'department'
 
 			Gets the custom field with the name 'department'.
 		.OUTPUTS
@@ -26,11 +26,11 @@ function Get-NinjaOneCustomField {
 		# The field name of the custom field
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('name')]
-		[String]$FieldName
+		[String]$fieldName
 	)
 	process {
 		try {
-			$Resource = ('v2/custom-fields/field-name/{0}' -f $FieldName)
+			$Resource = ('v2/custom-fields/field-name/{0}' -f $fieldName)
 			$RequestParams = @{
 				Resource = $Resource
 			}

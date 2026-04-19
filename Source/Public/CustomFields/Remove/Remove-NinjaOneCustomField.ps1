@@ -7,7 +7,7 @@ function Remove-NinjaOneCustomField {
 		.FUNCTIONALITY
 			Custom Field
 		.EXAMPLE
-			PS> Remove-NinjaOneCustomField -FieldName 'department'
+			PS> Remove-NinjaOneCustomField -fieldName 'department'
 
 			Deletes the custom field named 'department'.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function Remove-NinjaOneCustomField {
 		# The field name of the custom field to delete
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('name')]
-		[String]$FieldName
+		[String]$fieldName
 	)
 	process {
 		try {
-			$Resource = ('v2/custom-fields/field-name/{0}' -f $FieldName)
-			if ($PSCmdlet.ShouldProcess('Custom Field', ('Delete {0}' -f $FieldName))) {
+			$Resource = ('v2/custom-fields/field-name/{0}' -f $fieldName)
+			if ($PSCmdlet.ShouldProcess('Custom Field', ('Delete {0}' -f $fieldName))) {
 				$Result = New-NinjaOneDELETERequest -Resource $Resource
 				return $Result
 			}

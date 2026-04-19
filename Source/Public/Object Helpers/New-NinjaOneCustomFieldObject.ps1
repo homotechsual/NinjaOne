@@ -25,24 +25,24 @@ function New-NinjaOneCustomFieldObject {
 	param(
 		# The custom field name.
 		[Parameter(Mandatory, Position = 0)]
-		[String]$Name,
+		[String]$name,
 		# The custom field value.
 		[Parameter(Mandatory, Position = 1)]
-		[Object]$Value,
+		[Object]$value,
 		# Is the custom field value HTML.
 		[Parameter(Position = 2)]
-		[Bool]$IsHTML
+		[Bool]$isHTML
 	)
 	process {
-		if ($IsHTML) {
+		if ($isHTML) {
 			$OutputObject = [PSCustomObject]@{
-				name = $Name
-				value = @{ html = $Value }
+				name = $name
+				value = @{ html = $value }
 			}
 		} else {
 			$OutputObject = [PSCustomObject]@{
-				name = $Name
-				value = $Value
+				name = $name
+				value = $value
 			}
 		}
 		$OutputObject.PSTypeNames.Insert(0, 'CustomField')

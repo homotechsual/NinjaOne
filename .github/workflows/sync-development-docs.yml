@@ -1,0 +1,94 @@
+name: Sync Development Documentation
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+on:
+  workflow_run:
+    workflows: ['CI']
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  publish-development-docs:
+    name: Publish development docs to homotechsualdocs
+    runs-on: windows-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'develop'
+    steps:
+      - name: Checkout NinjaOne repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Clone and update homotechsualdocs
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.DOCS_REPO_TOKEN }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
+
+          $sourceDevelopmentPath = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath 'docs\NinjaOne\development'
+          if (-not (Test-Path -Path $sourceDevelopmentPath -PathType Container)) {
+            Write-Error "Source development docs path not found: $sourceDevelopmentPath"
+            exit 1
+          }
+
+          Write-Host "Using development documentation from: $sourceDevelopmentPath" -ForegroundColor Cyan
+
+          git -c core.autocrlf=false clone https://x-access-token:$env:GH_TOKEN@github.com/homotechsual/homotechsualdocs.git docs-repo
+
+          Push-Location docs-repo
+          try {
+            git config core.autocrlf false
+            git remote set-url origin https://x-access-token:$env:GH_TOKEN@github.com/homotechsual/homotechsualdocs.git
+
+            $targetBranch = 'main'
+            git fetch origin $targetBranch
+            git checkout -B $targetBranch "origin/$targetBranch"
+
+            $pushCheckSucceeded = $true
+            try {
+              git push --dry-run origin "HEAD:$targetBranch"
+            } catch {
+              $pushCheckSucceeded = $false
+            }
+
+            if (-not $pushCheckSucceeded) {
+              Write-Error "DOCS_REPO_TOKEN cannot push to homotechsual/homotechsualdocs:$targetBranch. Ensure the token has repository write access (contents:write)."
+              exit 1
+            }
+
+            if (Test-Path 'docs/ninjaone/development') {
+              Remove-Item -Path 'docs/ninjaone/development' -Recurse -Force
+            }
+            New-Item -Path 'docs/ninjaone/development' -ItemType Directory -Force | Out-Null
+
+            Copy-Item -Path (Join-Path -Path $sourceDevelopmentPath -ChildPath '*') -Destination 'docs/ninjaone/development' -Recurse -Force
+
+            git config user.email 'action@github.com'
+            git config user.name 'GitHub Action'
+
+            $changes = git status --porcelain
+            if (-not $changes) {
+              Write-Host 'No development documentation changes to commit.' -ForegroundColor Yellow
+              exit 0
+            }
+
+            git add docs/ninjaone/development
+            $commitMsg = 'Sync NinjaOne development docs from develop'
+            git commit -m $commitMsg
+            git push origin "HEAD:$targetBranch"
+
+            Write-Host '✓ Development documentation published to homotechsualdocs' -ForegroundColor Green
+          } finally {
+            Pop-Location
+          }

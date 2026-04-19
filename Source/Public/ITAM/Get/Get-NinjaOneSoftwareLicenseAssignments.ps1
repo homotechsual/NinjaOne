@@ -7,7 +7,7 @@ function Get-NinjaOneSoftwareLicenseAssignments {
 		.FUNCTIONALITY
 			Software License Assignments
 		.EXAMPLE
-			PS> Get-NinjaOneSoftwareLicenseAssignments -LicenseId 1
+			PS> Get-NinjaOneSoftwareLicenseAssignments -licenseId 1
 
 			Gets assignments for software license 1.
 		.OUTPUTS
@@ -26,16 +26,16 @@ function Get-NinjaOneSoftwareLicenseAssignments {
 		# Software license ID.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
-		[Int]$LicenseId
+		[Int]$licenseId
 	)
 	process {
 		try {
-			$Resource = ('v2/software-license/{0}/assignments' -f $LicenseId)
+			$Resource = ('v2/software-license/{0}/assignments' -f $licenseId)
 			$Results = New-NinjaOneGETRequest -Resource $Resource
 			if ($Results) {
 				return $Results
 			} else {
-				throw ('No assignments found for software license {0}.' -f $LicenseId)
+				throw ('No assignments found for software license {0}.' -f $licenseId)
 			}
 		} catch {
 			New-NinjaOneError -ErrorRecord $_

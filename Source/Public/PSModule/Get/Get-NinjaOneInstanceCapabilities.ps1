@@ -11,11 +11,11 @@ function Get-NinjaOneInstanceCapabilities {
 
 			Gets capabilities for the currently connected instance.
 		.EXAMPLE
-			PS> Get-NinjaOneInstanceCapabilities -Instance 'fed' -IncludeCmdlets
+			PS> Get-NinjaOneInstanceCapabilities -instance 'fed' -includeCmdlets
 
 			Gets capabilities and cmdlet support for the fed instance.
 		.EXAMPLE
-			PS> Get-NinjaOneInstanceCapabilities -BaseUrl 'https://fed.ninjarmm.com' -Refresh
+			PS> Get-NinjaOneInstanceCapabilities -baseUrl 'https://fed.ninjarmm.com' -refresh
 
 			Forces a refresh of cached capabilities for a specific instance URL.
 		.OUTPUTS
@@ -26,39 +26,39 @@ function Get-NinjaOneInstanceCapabilities {
 	param(
 		# Instance short name (eu, oc, us, app, ca, us2, fed).
 		[ValidateSet('eu', 'oc', 'us', 'app', 'ca', 'us2', 'fed')]
-		[String]$Instance,
+		[String]$instance,
 		# Full base URL (https://<instance>.ninjarmm.com).
-		[String]$BaseUrl,
+		[String]$baseUrl,
 		# Refresh cached capabilities for this instance.
-		[Switch]$Refresh,
+		[Switch]$refresh,
 		# Include supported/unsupported cmdlet lists.
-		[Switch]$IncludeCmdlets,
+		[Switch]$includeCmdlets,
 		# Include raw OpenAPI paths and methods.
-		[Switch]$IncludePaths
+		[Switch]$includePaths
 	)
 
 	$resolvedBaseUrl = $null
-	if (-not [string]::IsNullOrWhiteSpace($BaseUrl)) {
-		$resolvedBaseUrl = $BaseUrl
-	} elseif (-not [string]::IsNullOrWhiteSpace($Instance)) {
-		if ($Script:NRAPIInstances.ContainsKey($Instance)) {
-			$resolvedBaseUrl = $Script:NRAPIInstances[$Instance]
+	if (-not [string]::IsNullOrWhiteSpace($baseUrl)) {
+		$resolvedBaseUrl = $baseUrl
+	} elseif (-not [string]::IsNullOrWhiteSpace($instance)) {
+		if ($Script:NRAPIInstances.ContainsKey($instance)) {
+			$resolvedBaseUrl = $Script:NRAPIInstances[$instance]
 		}
 	} elseif ($Script:NRAPIConnectionInformation -and $Script:NRAPIConnectionInformation.URL) {
 		$resolvedBaseUrl = $Script:NRAPIConnectionInformation.URL
 	}
 
 	if ([string]::IsNullOrWhiteSpace($resolvedBaseUrl)) {
-		throw 'No instance selected. Provide -Instance, -BaseUrl, or connect first.'
+		throw 'No instance selected. Provide -instance, -baseUrl, or connect first.'
 	}
 
-	$capabilities = Get-NinjaOneInstanceCapabilitiesInternal -BaseUrl $resolvedBaseUrl -Force:$Refresh
+	$capabilities = Get-NinjaOneInstanceCapabilitiesInternal -baseUrl $resolvedBaseUrl -Force:$refresh
 	if ($null -eq $capabilities) {
 		throw "Unable to retrieve OpenAPI spec from '$resolvedBaseUrl'."
 	}
 
 	$summary = [ordered]@{
-		Instance = $Instance
+		Instance = $instance
 		BaseUrl = $capabilities.BaseUrl
 		AppVersion = $capabilities.Version
 		SpecUrl = $capabilities.SpecUrl
@@ -66,7 +66,7 @@ function Get-NinjaOneInstanceCapabilities {
 		PathCount = $capabilities.Paths.Count
 	}
 
-	if ($IncludeCmdlets) {
+	if ($includeCmdlets) {
 		$moduleName = 'NinjaOne'
 		$module = Get-Module -Name $moduleName -ErrorAction Stop
 		$exportedFunctionNames = @($module.ExportedFunctions.Keys)
@@ -160,7 +160,7 @@ function Get-NinjaOneInstanceCapabilities {
 		$summary.UnknownCmdletCount = $unknown.Count
 	}
 
-	if ($IncludePaths) {
+	if ($includePaths) {
 		$summary.Paths = $capabilities.Paths
 	}
 

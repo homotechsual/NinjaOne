@@ -22,7 +22,7 @@
 param(
 	[ValidateSet('Generate', 'ApplyPublic', 'Verify', 'ApplyPrivate', 'All')]
 	[string]$Phase = 'All',
-	[switch]$Force
+	[switch]$force
 )
 
 $ErrorActionPreference = 'Stop'
@@ -190,7 +190,7 @@ function Invoke-ApplyPublicPhase {
     
 	Write-Host "This will add help to $($GenerationData.Stats.Public) public functions." -ForegroundColor Cyan
     
-	if (-not $Force) {
+	if (-not $force) {
 		$proceed = Read-Host "`nProceed with applying help to public functions? (y/n)"
 		if ($proceed -ne 'y') {
 			Write-Host 'Skipped.' -ForegroundColor Yellow

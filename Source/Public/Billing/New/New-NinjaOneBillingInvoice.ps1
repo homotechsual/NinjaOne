@@ -7,7 +7,7 @@ function New-NinjaOneBillingInvoice {
 		.FUNCTIONALITY
 			Billing Invoice
 		.EXAMPLE
-			PS> New-NinjaOneBillingInvoice -BillingInvoice @{ invoiceNumber = 'INV-001' }
+			PS> New-NinjaOneBillingInvoice -billingInvoice @{ invoiceNumber = 'INV-001' }
 
 			Creates a billing invoice.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function New-NinjaOneBillingInvoice {
 		# Billing invoice payload per API schema.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$BillingInvoice
+		[Object]$billingInvoice
 	)
 	process {
 		try {
 			$Resource = 'v2/billing/invoices'
-			$RequestParams = @{ Resource = $Resource; Body = $BillingInvoice }
+			$RequestParams = @{ Resource = $Resource; Body = $billingInvoice }
 			if ($PSCmdlet.ShouldProcess('Billing Invoice', 'Create')) {
 				return (New-NinjaOnePOSTRequest @RequestParams)
 			}

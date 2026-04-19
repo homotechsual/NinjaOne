@@ -7,7 +7,7 @@ function Invoke-NinjaOneUnmanagedDeviceDecommission {
 		.FUNCTIONALITY
 			Unmanaged Device
 		.EXAMPLE
-			PS> Invoke-NinjaOneUnmanagedDeviceDecommission -NodeId 1
+			PS> Invoke-NinjaOneUnmanagedDeviceDecommission -nodeId 1
 
 			Decommissions the unmanaged device with ID 1.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function Invoke-NinjaOneUnmanagedDeviceDecommission {
 		# The ID of the unmanaged device to decommission
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
-		[Int]$NodeId
+		[Int]$nodeId
 	)
 	process {
 		try {
-			$Resource = ('v2/itam/unmanaged-device/{0}/decommission' -f $NodeId)
-			if ($PSCmdlet.ShouldProcess('Unmanaged Device', ('Decommission {0}' -f $NodeId))) {
+			$Resource = ('v2/itam/unmanaged-device/{0}/decommission' -f $nodeId)
+			if ($PSCmdlet.ShouldProcess('Unmanaged Device', ('Decommission {0}' -f $nodeId))) {
 				$Result = New-NinjaOnePOSTRequest -Resource $Resource
 				return $Result
 			}

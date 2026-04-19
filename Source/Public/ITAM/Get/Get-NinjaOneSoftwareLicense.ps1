@@ -7,7 +7,7 @@ function Get-NinjaOneSoftwareLicense {
 		.FUNCTIONALITY
 			Software License
 		.EXAMPLE
-			PS> Get-NinjaOneSoftwareLicense -LicenseId 1
+			PS> Get-NinjaOneSoftwareLicense -licenseId 1
 
 			Gets the software license with ID 1.
 		.OUTPUTS
@@ -26,11 +26,11 @@ function Get-NinjaOneSoftwareLicense {
 		# The ID of the software license
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
-		[Int]$LicenseId
+		[Int]$licenseId
 	)
 	process {
 		try {
-			$Resource = ('v2/software-license/{0}' -f $LicenseId)
+			$Resource = ('v2/software-license/{0}' -f $licenseId)
 			$RequestParams = @{
 				Resource = $Resource
 			}

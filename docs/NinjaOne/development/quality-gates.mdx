@@ -1,0 +1,286 @@
+---
+title: Quality Gates & Code Standards
+sidebar_position: 4
+---
+
+This page documents the quality gates and code standards enforced in the NinjaOne module through PSScriptAnalyzer and custom rules.
+
+## Overview
+
+Code quality is maintained through:
+- **PSScriptAnalyzer** - Static analysis rules from the PSScriptAnalyzer module
+- **Custom Rules** - Project-specific rules that enforce module conventions
+- **Parameter Documentation** - Inline comment descriptions emitted as the `PSMissingParameterInlineComment` diagnostic
+- **Help Documentation** - Comment-based help for all public functions
+
+## Running Quality Checks
+
+### Full Analysis
+
+Run all quality checks including tests and analysis:
+
+```powershell
+pwsh -File .\DevOps\Quality\test.ps1
+```
+
+### Analysis Only
+
+Run PSScriptAnalyzer without tests:
+
+```powershell
+pwsh -File .\DevOps\Quality\run-pssa.ps1
+```
+
+The analyzer uses `PSScriptAnalyzerSettings.psd1` and excludes:
+- `CustomRules` - Custom rule definitions themselves
+- `output` - Generated build artifacts
+- `Modules` - Third-party bundled modules
+- `test-rules.ps1` - Test helper for PSSA itself
+
+The repo lint entrypoints also split rule scope deliberately:
+- Full settings are applied to `Source\Public`
+- Non-public files are analyzed with a reduced settings object
+
+This is how the repo currently enforces public-surface conventions such as camelCase parameter names without forcing the same rule across every test and helper script.
+
+## Custom Rules
+
+Custom rules are defined in `CustomRules/` and loaded automatically by the test and analysis scripts.
+
+Common custom rules currently enforced by the repo include:
+
+| Diagnostic ID | Implemented By | Scope in repo linting | Purpose |
+|------|----------|---------|---------|
+| `PSMissingParameterInlineComment` | `Measure-MissingParameterDescription` | scanned files unless suppressed | Requires a comment line immediately before each parameter |
+| `PSRequiredCommentBasedHelp` | `Measure-RequiredCommentBasedHelp` | scanned files | Requires comment-based help; public functions also need `.DESCRIPTION` and `.EXAMPLE` |
+| `PSCommentBasedHelpEmptySection` | `Measure-EmptyCommentBasedHelpSections` | scanned files | Flags empty CBH sections |
+| `PSUseCamelCaseParameterName` | `Measure-RequireCamelCaseParameterName` | `Source\Public` in repo lint entrypoints | Enforces camelCase parameter names on exported cmdlets |
+| `PSAvoidSelfReferentialParameterAlias` | `Measure-AvoidSelfReferentialParameterAlias` | `Source\Public` | Flags aliases that duplicate the parameter name |
+| `PSUseProperTypeAcceleratorCasing` | `Measure-RequireProperTypeAcceleratorCasing` | `Source\Public` | Enforces canonical casing for type accelerators |
+
+### Measure-MissingParameterDescription (`PSMissingParameterInlineComment`)
+
+**Rule**: Parameters in analyzed functions must have a comment line immediately before the parameter declaration unless that diagnostic is suppressed.
+
+**Purpose**: Ensures parameters are described close to the declaration site and keeps generated help grounded in the source.
+
+**Example - Bad**:
+
+```powershell
+function Get-NinjaOneDevice {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string]$deviceId,
+        [string]$filter
+    )
+```
+
+**Example - Good**:
+
+```powershell
+function Get-NinjaOneDevice {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        # The device ID to retrieve information for.
+        [string]$deviceId,
+        # Optional filter expression. See the filters documentation for more information.
+        [string]$filter
+    )
+```
+
+**For Public Functions**:
+- Required in normal repo linting.
+- These comments should sit immediately before the parameter, not after it.
+
+**For Internal Functions**:
+- The diagnostic still exists when those files are analyzed.
+- Internal/dev/test scripts often suppress it explicitly when full parameter prose would add noise.
+
+## Suppressing Rules
+
+Some internal scripts (DevOps tooling, private functions, test utilities) don't require full parameter documentation. Use diagnostic suppression attributes to explicitly allow this.
+
+### Suppression Syntax
+
+```powershell
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('RuleName', '', Justification = 'reason')]
+```
+
+### Script-Level Suppression
+
+Apply at the top of the script file to suppress the rule for all functions:
+
+```powershell
+#requires -Version 7
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal DevOps script does not require parameter descriptions.')]
+param()
+
+function Build-Module {
+    param(
+        [string]$config,
+        [switch]$verbose
+    )
+    # ...
+}
+```
+
+### Function-Level Suppression
+
+Apply immediately before the function declaration to suppress only that function:
+
+```powershell
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Private helper function used internally.')]
+function ConvertTo-JsonString {
+    param(
+        [hashtable]$data,
+        [int]$depth
+    )
+    # ...
+}
+```
+
+### Nested Function Suppression
+
+Each nested function requires its own suppression:
+
+```powershell
+function Test-Configuration {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Nested test helper.')]
+    function ValidateInput {
+        param([string]$value)
+        return $value -ne $null
+    }
+    
+    # Main logic
+}
+```
+
+## Built-In Rules
+
+Common PSScriptAnalyzer rules enforced in this project:
+
+| Rule | Severity | Purpose |
+|------|----------|---------|
+| PSUseSingularNouns | Warning | Encourages singular naming for non-collection objects |
+| PSAvoidDefaultValueSwitchParameter | Warning | Prevents switch parameters with default values |
+| PSUseCompatibleSyntax | Error | Ensures PowerShell 7+ compatibility |
+| PSAvoidUsingPositionalParameters | Warning | Encourages named parameters in function calls |
+| PSUseOutputTypeCorrectly | Warning | Validates `[OutputType()]` attributes |
+| PSAvoidUsingInvokeExpression | Error | Prevents security vulnerabilities with dynamic code |
+| PSAvoidUsingConvertToSecureStringWithPlainText | Error | Prevents plaintext password exposure |
+
+For the full list, see `PSScriptAnalyzerSettings.psd1`.
+
+## Parameter Documentation Examples
+
+### Minimal Good Parameter
+
+```powershell
+param(
+    [Parameter(Mandatory)]
+    # Device identifier
+    [string]$deviceId
+)
+```
+
+### Comprehensive Parameter
+
+```powershell
+param(
+    [Parameter(Mandatory, ValueFromPipeline)]
+    [ValidateNotNullOrEmpty()]
+    [Alias('DeviceID', 'ID')]
+    # Device object(s) to retrieve information for
+    [object[]]$device,
+
+    [Parameter(ValueFromPipelineByPropertyName)]
+    [ValidateSet('Active', 'Inactive', 'Archived')]
+    # Filter by device status; defaults to Active
+    [string]$status = 'Active',
+
+    # Include detailed device information
+    [switch]$includeDetails,
+    
+    # Results per page; defaults to 100
+    [int]$pageSize = 100
+)
+```
+
+**Key points**:
+- **First line**: Brief purpose or value description
+- **For switches**: Explain what enabling the switch does
+- **For parameters with defaults**: Explain the default behavior
+- **For enums**: List valid options if not self-explanatory
+- **For collections**: Clarify if single or multiple values accepted
+
+## Documentation Quality Checklist
+
+Before submitting a PR with new or modified public functions:
+
+- [ ] All parameters have inline descriptions (comment line immediately before the parameter)
+- [ ] Descriptions follow the style guide above
+- [ ] Comment-based help is present and accurate
+- [ ] Any hand-written `.PARAMETER` sections are still accurate if present
+- [ ] `PSScriptAnalyzer` passes without warnings
+- [ ] No placeholder text in generated docs (e.g., `Fill parameter Description`)
+
+## Troubleshooting Quality Failures
+
+### "PSScriptAnalyzer found violations"
+
+Run the analyzer to see details:
+
+```powershell
+pwsh -File .\DevOps\Quality\run-pssa.ps1
+```
+
+### "Directory scan shows 0 violations but file scan shows many"
+
+When running `Invoke-ScriptAnalyzer` with a directory path, you must use the `-Recurse` parameter to scan subdirectories:
+
+```powershell
+# ❌ This won't find violations in subdirectories
+Invoke-ScriptAnalyzer -Path .\Source
+
+# ✅ This will find all violations
+Invoke-ScriptAnalyzer -Path .\Source -Recurse
+```
+
+The `run-pssa.ps1` script scans files recursively and applies the public-only rules through a split-settings approach.
+
+### "Rule doesn't apply to my function"
+
+Verify the rule scope:
+- `PSMissingParameterInlineComment` can appear anywhere the analyzer scans unless it is suppressed
+- `PSUseCamelCaseParameterName`, `PSAvoidSelfReferentialParameterAlias`, and `PSUseProperTypeAcceleratorCasing` are intentionally enforced on `Source\Public` in the repo lint entrypoints
+- If suppressing, use a clear justification explaining why the diagnostic should not apply
+
+### "Suppression attribute isn't working"
+
+Common issues:
+
+1. **Wrong rule name**: Must match exactly (e.g., `PSMissingParameterInlineComment`, not `PSMissingParameter`)
+
+2. **Wrong indentation**: Ensure the attribute is immediately before the function:
+   ```powershell
+   # ❌ Won't work - extra line
+   [Diagnostics.CodeAnalysis.SuppressMessageAttribute(...)]
+   
+   function MyFunction {
+   
+   # ✅ Works - directly before function
+   [Diagnostics.CodeAnalysis.SuppressMessageAttribute(...)]
+   function MyFunction {
+   ```
+
+3. **Nested function scope**: Nested functions need individual suppressions; script-level suppressions don't cascade
+
+## See Also
+
+- [Help Generation](help-generation-detailed.mdx)
+- [Development Workflow](index.mdx)
+- [PSScriptAnalyzer Documentation](https://learn.microsoft.com/powershell/utility-modules/psscriptanalyzer/overview)

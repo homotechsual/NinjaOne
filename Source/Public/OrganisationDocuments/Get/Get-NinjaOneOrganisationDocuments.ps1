@@ -47,7 +47,7 @@ function Get-NinjaOneOrganisationDocuments {
 		[Parameter(ParameterSetName = 'All Organisations', Position = 5, ValueFromPipelineByPropertyName)]
 		[String]$templateName,
 		# Parse date/time values in the response.
-		[Switch]$ParseDateTime
+		[Switch]$parseDateTime
 
 	)
 	begin {
@@ -73,8 +73,8 @@ function Get-NinjaOneOrganisationDocuments {
 				Resource = $Resource
 				QSCollection = $QSCollection
 			}
-			if ($ParseDateTime) {
-				$RequestParams.ParseDateTime = $ParseDateTime
+			if ($parseDateTime) {
+				$RequestParams.ParseDateTime = $parseDateTime
 			}
 			$OrganisationDocumentResults = New-NinjaOneGETRequest @RequestParams
 			if ($OrganisationDocumentResults) {

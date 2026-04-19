@@ -20,51 +20,51 @@ function Set-NinjaOneSecrets {
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Parameters accepted for API consistency but populated from script variables.')]
 	param(
 		# The authentication mode to use.
-		[String]$AuthMode,
+		[String]$authMode,
 		# The URL of the NinjaRMM instance.
-		[URI]$URL,
+		[URI]$uRL,
 		# The NinjaRMM instance name.
-		[String]$Instance,
+		[String]$instance,
 		# The client ID of the application.
-		[String]$ClientId,
+		[String]$clientId,
 		# The client secret of the application.
-		[String]$ClientSecret,
+		[String]$clientSecret,
 		# The port to listen on for the authentication callback.
-		[Int]$AuthListenerPort,
+		[Int]$authListenerPort,
 		# The authentication scopes to request.
-		[String]$AuthScopes,
+		[String]$authScopes,
 		# The redirect URI to use for the authentication callback.
-		[URI]$RedirectURI,
+		[URI]$redirectURI,
 		# Use the Key Vault to store the connection information.
 		[Parameter(Mandatory)]
-		[Switch]$UseSecretManagement,
+		[Switch]$useSecretManagement,
 		# The name of the secret vault to use.
-		[String]$VaultName,
+		[String]$vaultName,
 		# Whether to write updated connection information to the secret vault.
-		[Switch]$WriteToSecretVault,
+		[Switch]$writeToSecretVault,
 		# Whether to read the connection information from the secret vault.
-		[Switch]$ReadFromSecretVault,
+		[Switch]$readFromSecretVault,
 		# The type of the authentication token.
-		[String]$Type,
+		[String]$type,
 		# The access token to use for authentication.
-		[String]$Access,
+		[String]$access,
 		# The expiration time of the access token.
-		[DateTime]$Expires,
+		[DateTime]$expires,
 		# The refresh token to use for authentication.
-		[String]$Refresh,
+		[String]$refresh,
 		# The prefix to use for the secret names.
 		[String]$SecretPrefix = 'NinjaOne',
 		# Whether to automatically parse date/time values.
-		[Boolean]$ParseDateTimes
+		[Boolean]$parseDateTimes
 	)
 	# Check if the secret vault exists.
-	$SecretVault = Get-SecretVault -Name $VaultName -ErrorAction SilentlyContinue
+	$SecretVault = Get-SecretVault -Name $vaultName -ErrorAction SilentlyContinue
 	if ($null -eq $SecretVault) {
-		Write-Error ('Secret vault {0} does not exist.' -f $VaultName)
+		Write-Error ('Secret vault {0} does not exist.' -f $vaultName)
 		exit 1
 	}
 	# Make sure we've been told to write to the secret vault.
-	if ($false -eq $WriteToSecretVault) {
+	if ($false -eq $writeToSecretVault) {
 		Write-Error 'WriteToSecretVault must be specified.'
 		exit 1
 	}
@@ -131,7 +131,7 @@ function Set-NinjaOneSecrets {
 			Write-Verbose ('Secret {0} is null. Skipping.' -f $SecretName)
 			continue
 		}
-		Set-Secret -Vault $VaultName -Name $SecretName -Secret $SecretValue -ErrorAction Stop
-		Write-Verbose ('Secret {0} written to secret vault {1}.' -f $SecretName, $VaultName)
+		Set-Secret -Vault $vaultName -Name $SecretName -Secret $SecretValue -ErrorAction Stop
+		Write-Verbose ('Secret {0} written to secret vault {1}.' -f $SecretName, $vaultName)
 	}
 }

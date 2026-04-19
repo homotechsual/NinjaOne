@@ -7,7 +7,7 @@ function New-NinjaOneAssetRelationshipType {
 		.FUNCTIONALITY
 			Asset Relationship Type
 		.EXAMPLE
-			PS> New-NinjaOneAssetRelationshipType -RelationshipType @{ name = 'Depends On' }
+			PS> New-NinjaOneAssetRelationshipType -relationshipType @{ name = 'Depends On' }
 
 			Creates an asset relationship type.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function New-NinjaOneAssetRelationshipType {
 		# Asset relationship type payload per API schema.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$RelationshipType
+		[Object]$relationshipType
 	)
 	process {
 		try {
 			$Resource = 'v2/itam/asset-relationship/types'
-			$RequestParams = @{ Resource = $Resource; Body = $RelationshipType }
+			$RequestParams = @{ Resource = $Resource; Body = $relationshipType }
 			if ($PSCmdlet.ShouldProcess('Asset Relationship Type', 'Create')) {
 				return (New-NinjaOnePOSTRequest @RequestParams)
 			}

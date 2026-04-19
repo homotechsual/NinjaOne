@@ -20,7 +20,7 @@ This function provides supporting functionality for the NinjaOne module.
     Specifies the AsString parameter.
 
 .EXAMPLE
-    PS> New-NinjaOneQuery -CommandName "*search*"
+    PS> New-NinjaOneQuery -commandName "*search*"
 
     create the specified Query.
 
@@ -40,18 +40,18 @@ function New-NinjaOneQuery {
 		[Parameter(
 			Mandatory = $True
 		)]
-		[String]$CommandName,
+		[String]$commandName,
 		[Parameter(
 			Mandatory = $True
 		)]
-		[HashTable]$Parameters,
-		[Switch]$CommaSeparatedArrays,
-		[Switch]$AsString
+		[HashTable]$parameters,
+		[Switch]$commaSeparatedArrays,
+		[Switch]$asString
 	)
-	Write-Verbose "Building parameters for $($CommandName). Use '-Debug' with '-Verbose' to see parameter values as they are built."
+	Write-Verbose "Building parameters for $($commandName). Use '-Debug' with '-Verbose' to see parameter values as they are built."
 	$QSCollection = [HashTable]@{}
-	Write-Verbose "$($Parameters.Values | Out-String)"
-	foreach ($Parameter in $Parameters.Values) {
+	Write-Verbose "$($parameters.Values | Out-String)"
+	foreach ($Parameter in $parameters.Values) {
 		# Skip system parameters.
 		if (([System.Management.Automation.Cmdlet]::CommonParameters).Contains($Parameter.Name)) {
 			Write-Verbose "Excluding system parameter $($Parameter.Name)."
@@ -78,12 +78,12 @@ function New-NinjaOneQuery {
 					$Query = ([String]$ParameterVariable.Name)
 				}
 				$Value = $ParameterVariable.Value
-				if (($Value -is [Array]) -and ($CommaSeparatedArrays)) {
+				if (($Value -is [Array]) -and ($commaSeparatedArrays)) {
 					Write-Verbose 'Building comma separated array string.'
 					$QueryValue = $Value -join ','
 					$QSCollection.Add($Query, $QueryValue)
 					Write-Verbose "Adding parameter $($Query) with value $($QueryValue)"
-				} elseif (($Value -is [Array]) -and (-not $CommaSeparatedArrays)) {
+				} elseif (($Value -is [Array]) -and (-not $commaSeparatedArrays)) {
 					foreach ($ArrayValue in $Value) {
 						$QSCollection.Add($Query, $ArrayValue)
 						Write-Verbose "Adding parameter $($Query) with value(s) $($ArrayValue)"
@@ -139,12 +139,12 @@ function New-NinjaOneQuery {
 					$Query = ([String]$ParameterVariable.Name)
 				}
 				$Value = $ParameterVariable.Value
-				if (($Value -is [Array]) -and ($CommaSeparatedArrays)) {
+				if (($Value -is [Array]) -and ($commaSeparatedArrays)) {
 					Write-Verbose 'Building comma separated array string.'
 					$QueryValue = $Value -join ','
 					$QSCollection.Add($Query, $QueryValue)
 					Write-Verbose "Adding parameter $($Query) with value $($QueryValue)"
-				} elseif (($Value -is [Array]) -and (-not $CommaSeparatedArrays)) {
+				} elseif (($Value -is [Array]) -and (-not $commaSeparatedArrays)) {
 					foreach ($ArrayValue in $Value) {
 						$QSCollection.Add($Query, $ArrayValue)
 						Write-Verbose "Adding parameter $($Query) with value $($ArrayValue)"
@@ -169,12 +169,12 @@ function New-NinjaOneQuery {
 					$Query = ([String]$ParameterVariable.Name)
 				}
 				$Value = $ParameterVariable.Value
-				if (($Value -is [Array]) -and ($CommaSeparatedArrays)) {
+				if (($Value -is [Array]) -and ($commaSeparatedArrays)) {
 					Write-Verbose 'Building comma separated array string.'
 					$QueryValue = $Value -join ','
 					$QSCollection.Add($Query, $QueryValue.ToUnixEpoch())
 					Write-Verbose "Adding parameter $($Query) with value $($QueryValue)"
-				} elseif (($Value -is [Array]) -and (-not $CommaSeparatedArrays)) {
+				} elseif (($Value -is [Array]) -and (-not $commaSeparatedArrays)) {
 					foreach ($ArrayValue in $Value) {
 						$QSCollection.Add($Query, $ArrayValue)
 						Write-Verbose "Adding parameter $($Query) with value $($ArrayValue)"
@@ -187,7 +187,7 @@ function New-NinjaOneQuery {
 		}
 	}
 	Write-Verbose "Query collection contains $($QSCollection | Out-String)"
-	if ($AsString) {
+	if ($asString) {
 		$QSBuilder = [System.UriBuilder]::new()
 		$QSBuilder.Query = $QSCollection.ToString()
 		$Query = $QSBuilder.Query.ToString()

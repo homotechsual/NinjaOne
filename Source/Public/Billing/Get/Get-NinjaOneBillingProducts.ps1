@@ -11,7 +11,7 @@ function Get-NinjaOneBillingProducts {
 
 			Gets all billing products.
 		.EXAMPLE
-			PS> Get-NinjaOneBillingProducts -Id 1
+			PS> Get-NinjaOneBillingProducts -id 1
 
 			Gets billing product 1.
 		.OUTPUTS
@@ -33,7 +33,7 @@ function Get-NinjaOneBillingProducts {
 		# Billing product ID.
 		[Parameter(ValueFromPipelineByPropertyName)]
 		[Alias('productId')]
-		[Int]$Id
+		[Int]$id
 	)
 	begin {
 		$CommandName = $MyInvocation.InvocationName
@@ -45,9 +45,9 @@ function Get-NinjaOneBillingProducts {
 	}
 	process {
 		try {
-			if ($Id) {
-				Write-Verbose ('Getting billing product with id {0}.' -f $Id)
-				$Resource = ('v2/billing/products/{0}' -f $Id)
+			if ($id) {
+				Write-Verbose ('Getting billing product with id {0}.' -f $id)
+				$Resource = ('v2/billing/products/{0}' -f $id)
 			} else {
 				Write-Verbose 'Retrieving billing products.'
 				$Resource = 'v2/billing/products'

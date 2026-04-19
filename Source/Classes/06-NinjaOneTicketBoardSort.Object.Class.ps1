@@ -11,18 +11,18 @@
 		for ticket board API queries.
 #>
 class NinjaOneTicketBoardSort {
-	[String]$Field
-	[String]$Direction
+	[String]$field
+	[String]$direction
 
 	# Full constructor
 	NinjaOneTicketBoardSort(
-		[String]$Field,
-		[String]$Direction
+		[String]$field,
+		[String]$direction
 	) {
-		if ($Direction -notmatch '^(asc|desc)$') {
+		if ($direction -notmatch '^(asc|desc)$') {
 			throw [System.ArgumentException]::new("Direction must be 'asc' or 'desc'")
 		}
-		$this.Field = $Field
-		$this.Direction = $Direction
+		$this.Field = $field
+		$this.Direction = $direction
 	}
 }

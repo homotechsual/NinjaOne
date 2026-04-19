@@ -9,9 +9,9 @@ function Test-NinjaOneEndpointSupport {
 	[CmdletBinding()]
 	param(
 		[Parameter(Mandatory)]
-		[String]$Method,
+		[String]$method,
 		[Parameter(Mandatory)]
-		[String]$Resource
+		[String]$resource
 	)
 
 	if (-not $Script:NRAPIInstanceCapabilityCheckEnabled) {
@@ -33,7 +33,7 @@ function Test-NinjaOneEndpointSupport {
 		return $true
 	}
 
-	$path = $Resource
+	$path = $resource
 	if (-not $path.StartsWith('/')) {
 		$path = '/' + $path
 	}
@@ -41,7 +41,7 @@ function Test-NinjaOneEndpointSupport {
 	if ($path.Length -gt 1) {
 		$path = $path.TrimEnd('/')
 	}
-	$methodKey = $Method.ToUpperInvariant()
+	$methodKey = $method.ToUpperInvariant()
 	$paths = $capabilities.Paths
 	$testPathSupport = {
 		param($pathsToCheck, $pathToCheck, $methodToCheck)

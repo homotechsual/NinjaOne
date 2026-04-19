@@ -16,27 +16,27 @@ function ConvertTo-UnixEpoch {
 		[Parameter(
 			Mandatory = $True
 		)]
-		[Object]$DateTime,
+		[Object]$dateTime,
 		[Alias("Millis", "Ms")]
-		[switch]$Milliseconds
+		[switch]$milliseconds
 	)
-	if ($DateTime -is [String]) {
-		$DateTime = [DateTime]::Parse($DateTime)
-	} elseif ($DateTime -is [Int]) {
-		$DateTime = (Get-Date 01.01.1970).AddSeconds($DateTime)
-	} elseif ($DateTime -is [DateTime]) {
-		$DateTime = $DateTime
+	if ($dateTime -is [String]) {
+		$dateTime = [DateTime]::Parse($dateTime)
+	} elseif ($dateTime -is [Int]) {
+		$dateTime = (Get-Date 01.01.1970).AddSeconds($dateTime)
+	} elseif ($dateTime -is [DateTime]) {
+		$dateTime = $dateTime
 	} else {
 		Write-Error 'The DateTime parameter must be a DateTime object, a string, or an integer.'
 		exit 1
 	}
-	$UniversalDateTime = $DateTime.ToUniversalTime()
+	$UniversalDateTime = $dateTime.ToUniversalTime()
 	$UnixEpochTimestamp = Get-Date -Date $UniversalDateTime -UFormat %s
 
-	if ($Milliseconds) {
+	if ($milliseconds) {
 		$UnixEpochTimestamp = [Int64]$UnixEpochTimestamp * 1000
 	}
 
-	Write-Verbose "Converted $DateTime to Unix Epoch timestamp $UnixEpochTimestamp"
+	Write-Verbose "Converted $dateTime to Unix Epoch timestamp $UnixEpochTimestamp"
 	return $UnixEpochTimestamp
 }

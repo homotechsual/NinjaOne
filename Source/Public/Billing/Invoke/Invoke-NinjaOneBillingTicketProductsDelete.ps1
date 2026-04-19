@@ -7,7 +7,7 @@ function Invoke-NinjaOneBillingTicketProductsDelete {
 		.FUNCTIONALITY
 			Billing Ticket Products
 		.EXAMPLE
-			PS> Invoke-NinjaOneBillingTicketProductsDelete -Request @{ ticketProductIds = @(1,2) }
+			PS> Invoke-NinjaOneBillingTicketProductsDelete -request @{ ticketProductIds = @(1,2) }
 
 			Deletes the specified billing ticket products.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function Invoke-NinjaOneBillingTicketProductsDelete {
 		# Delete request payload per API schema.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$Request
+		[Object]$request
 	)
 	process {
 		try {
 			$Resource = 'v2/billing/ticket-products/delete'
-			$RequestParams = @{ Resource = $Resource; Body = $Request }
+			$requestParams = @{ Resource = $Resource; Body = $request }
 			if ($PSCmdlet.ShouldProcess('Billing Ticket Products', 'Delete')) {
 				return (New-NinjaOnePOSTRequest @RequestParams)
 			}

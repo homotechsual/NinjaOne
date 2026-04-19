@@ -7,7 +7,7 @@ function Invoke-NinjaOneUnmanagedDeviceDecommissionList {
 		.FUNCTIONALITY
 			Unmanaged Devices
 		.EXAMPLE
-			PS> Invoke-NinjaOneUnmanagedDeviceDecommissionList -DecommissionRequest @{ nodeIds = @(1, 2, 3) }
+			PS> Invoke-NinjaOneUnmanagedDeviceDecommissionList -decommissionRequest @{ nodeIds = @(1, 2, 3) }
 
 			Decommissions multiple unmanaged devices in a single request.
 		.EXAMPLE
@@ -17,7 +17,7 @@ function Invoke-NinjaOneUnmanagedDeviceDecommissionList {
 					0
 				)
 			}
-			PS> Invoke-NinjaOneUnmanagedDeviceDecommissionList -DecommissionRequest $body
+			PS> Invoke-NinjaOneUnmanagedDeviceDecommissionList -decommissionRequest $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -37,12 +37,12 @@ function Invoke-NinjaOneUnmanagedDeviceDecommissionList {
 		# Decommission request payload per API schema
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$DecommissionRequest
+		[Object]$decommissionRequest
 	)
 	process {
 		try {
 			$Resource = 'v2/itam/unmanaged-device/decommissionList'
-			$RequestParams = @{ Resource = $Resource; Body = $DecommissionRequest }
+			$RequestParams = @{ Resource = $Resource; Body = $decommissionRequest }
 			if ($PSCmdlet.ShouldProcess('Unmanaged Devices', 'Decommission List')) {
 				$Result = New-NinjaOnePOSTRequest @RequestParams
 				return $Result

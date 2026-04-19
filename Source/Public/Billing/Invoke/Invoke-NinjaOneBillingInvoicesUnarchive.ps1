@@ -7,7 +7,7 @@ function Invoke-NinjaOneBillingInvoicesUnarchive {
 		.FUNCTIONALITY
 			Billing Invoices Unarchive
 		.EXAMPLE
-			PS> Invoke-NinjaOneBillingInvoicesUnarchive -Request @{ invoiceIds = @(1,2) }
+			PS> Invoke-NinjaOneBillingInvoicesUnarchive -request @{ invoiceIds = @(1,2) }
 
 			Unarchives the specified billing invoices.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function Invoke-NinjaOneBillingInvoicesUnarchive {
 		# Unarchive request payload per API schema.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$Request
+		[Object]$request
 	)
 	process {
 		try {
 			$Resource = 'v2/billing/invoices/unarchive'
-			$RequestParams = @{ Resource = $Resource; Body = $Request }
+			$requestParams = @{ Resource = $Resource; Body = $request }
 			if ($PSCmdlet.ShouldProcess('Billing Invoices', 'Unarchive')) {
 				return (New-NinjaOnePOSTRequest @RequestParams)
 			}

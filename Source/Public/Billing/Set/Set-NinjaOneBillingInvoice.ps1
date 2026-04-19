@@ -7,7 +7,7 @@ function Set-NinjaOneBillingInvoice {
 		.FUNCTIONALITY
 			Billing Invoice
 		.EXAMPLE
-			PS> Set-NinjaOneBillingInvoice -Id 1 -BillingInvoice @{ note = 'Updated invoice' }
+			PS> Set-NinjaOneBillingInvoice -id 1 -billingInvoice @{ note = 'Updated invoice' }
 
 			Updates billing invoice 1.
 		.OUTPUTS
@@ -26,17 +26,17 @@ function Set-NinjaOneBillingInvoice {
 		# Billing invoice ID.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('invoiceId')]
-		[Int]$Id,
+		[Int]$id,
 		# Billing invoice payload per API schema.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$BillingInvoice
+		[Object]$billingInvoice
 	)
 	process {
 		try {
-			$Resource = ('v2/billing/invoices/{0}' -f $Id)
-			$RequestParams = @{ Resource = $Resource; Body = $BillingInvoice }
-			if ($PSCmdlet.ShouldProcess(('Billing Invoice {0}' -f $Id), 'Update')) {
+			$Resource = ('v2/billing/invoices/{0}' -f $id)
+			$RequestParams = @{ Resource = $Resource; Body = $billingInvoice }
+			if ($PSCmdlet.ShouldProcess(('Billing Invoice {0}' -f $id), 'Update')) {
 				return (New-NinjaOnePUTRequest @RequestParams)
 			}
 		} catch {

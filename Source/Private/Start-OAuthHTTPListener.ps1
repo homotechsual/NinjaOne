@@ -6,7 +6,7 @@ function Start-OAuthHTTPListener {
 		.DESCRIPTION
 			Utilises the `System.Net.HttpListener` class to create a simple HTTP listener on a user-defined port
 		.EXAMPLE
-			PS C:\> New-NinjaOnePATCHRequest -OpenURI 'http://localhost:9090'
+			PS C:\> New-NinjaOnePATCHRequest -openURI 'http://localhost:9090'
 		.OUTPUTS
 			Outputs an object containing the response from the web request.
 	#>
@@ -16,16 +16,16 @@ function Start-OAuthHTTPListener {
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Private function - no need to support.')]
 	param (
 		[Parameter(Mandatory)]
-		[System.UriBuilder]$OpenURI,
+		[System.UriBuilder]$openURI,
 		[Parameter()]
 		[int] $TimeoutSeconds = 15
 	)
 	Write-Verbose 'Opening browser to authenticate.'
-	Write-Verbose "Authentication URL: $($OpenURI.ToString())"
+	Write-Verbose "Authentication URL: $($openURI.ToString())"
 	$HTTP = [System.Net.HttpListener]::new()
 	$HTTP.Prefixes.Add("http://localhost:$Port/")
 	$HTTP.Start()
-	Start-Process $OpenURI.ToString()
+	Start-Process $openURI.ToString()
 	$Timeout = [System.TimeSpan]::FromSeconds($TimeoutSeconds)
 	$ContextTask = $HTTP.GetContextAsync()
 	$Result = @{}

@@ -15,12 +15,12 @@ Path to scan for PS1/PSM1 files (defaults to current directory)
 Skip confirmations and apply all changes automatically
 
 .EXAMPLE
-.\DevOps\Help\Generate-CommentBasedHelp.ps1 -Path .\Source\Public -Force
+.\DevOps\Help\Generate-CommentBasedHelp.ps1 -Path .\Source\Public -force
 #>
 
 param(
     [string]$Path = '.',
-    [switch]$Force
+    [switch]$force
 )
 
 $RepoRoot = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\\..')
@@ -61,13 +61,13 @@ function Get-VerbDescription {
 
 function Generate-HelpForFunction {
     param(
-        [System.Management.Automation.Language.FunctionDefinitionAst]$FunctionAst,
-        [string]$FilePath
+        [System.Management.Automation.Language.FunctionDefinitionAst]$functionAst,
+        [string]$filePath
     )
     
-    $functionName = $FunctionAst.Name
-    $isPublic = $FilePath -match '\\Public\\' -or $FilePath -match '/Public/'
-    $parameters = $FunctionAst.Body.ParamBlock.Parameters
+    $functionName = $functionAst.Name
+    $isPublic = $filePath -match '\\Public\\' -or $filePath -match '/Public/'
+    $parameters = $functionAst.Body.ParamBlock.Parameters
     
     # Generate SYNOPSIS
     $verb = Get-VerbDescription -FunctionName $functionName
@@ -126,15 +126,15 @@ Generated help. Customize as needed for accurate documentation.
 
 function Add-HelpToFile {
     param(
-        [string]$FilePath
+        [string]$filePath
     )
     
     $tokens = $null
     $errors = $null
-    $ast = [System.Management.Automation.Language.Parser]::ParseFile($FilePath, [ref]$tokens, [ref]$errors)
+    $ast = [System.Management.Automation.Language.Parser]::ParseFile($filePath, [ref]$tokens, [ref]$errors)
     
     if ($errors) {
-        Write-Warning "Parse errors in $FilePath : $($errors[0].Message)"
+        Write-Warning "Parse errors in $filePath : $($errors[0].Message)"
         return
     }
     
@@ -151,17 +151,17 @@ function Add-HelpToFile {
     }
     
     if (-not $functionsNeedingHelp) {
-        Write-Verbose "No functions needing help in $FilePath"
+        Write-Verbose "No functions needing help in $filePath"
         return
     }
     
-    Write-Host "Found $($functionsNeedingHelp.Count) functions needing help in $(Split-Path -Leaf $FilePath)" -ForegroundColor Yellow
+    Write-Host "Found $($functionsNeedingHelp.Count) functions needing help in $(Split-Path -Leaf $filePath)" -ForegroundColor Yellow
     
-    $fileContent = Get-Content -Path $FilePath -Raw
+    $fileContent = Get-Content -Path $filePath -Raw
     $modifications = @()
     
     foreach ($func in $functionsNeedingHelp) {
-        $help = Generate-HelpForFunction -FunctionAst $func -FilePath $FilePath
+        $help = Generate-HelpForFunction -functionAst $func -filePath $filePath
         $startLine = $func.Extent.StartLineNumber
         $startOffset = $func.Extent.StartOffset
         
@@ -178,7 +178,7 @@ function Add-HelpToFile {
     if (@($modifications).Count -gt 0) {
         Write-Host "Ready to add help to $(@($modifications).Count) functions. Preview first modification? (Y/n)" -ForegroundColor Cyan
         
-        if (-not $Force) {
+        if (-not $force) {
             $response = Read-Host
             if ($response -eq 'n') { return }
         }
@@ -203,7 +203,7 @@ Write-Host "Scanning $($files.Count) files for functions needing help..." -Foreg
 Write-Host ""
 
 foreach ($file in $files) {
-    Add-HelpToFile -FilePath $file.FullName
+    Add-HelpToFile -filePath $file.FullName
 }
 
 Write-Host "`nCompleted scan." -ForegroundColor Green

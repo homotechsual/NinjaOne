@@ -3,20 +3,20 @@ using namespace Microsoft.PackageManagement.Provider.Utility
 using namespace System.Management.Automation
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal test script does not require parameter descriptions.')]
 param(
-	[switch]$SkipScriptAnalyzer,
-	[switch]$IncludeVSCodeMarker,
-	[switch]$UseBuiltModule,
+	[switch]$skipScriptAnalyzer,
+	[switch]$includeVSCodeMarker,
+	[switch]$useBuiltModule,
 	[string[]]$Suite = @('core', 'private', 'public', 'docs'),
 	[ValidateSet('Detailed', 'Normal', 'Minimal', 'None')]
 	[string]$Verbosity = 'Detailed'
 )
-$RepoRoot = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\\..')
-Push-Location $RepoRoot
-$ModuleName = (Get-Item -Path (Join-Path -Path $RepoRoot -ChildPath 'Source\NinjaOne.psd1')).BaseName
+$repoRoot = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\\..')
+Push-Location $repoRoot
+$moduleName = (Get-Item -Path (Join-Path -Path $repoRoot -ChildPath 'Source\NinjaOne.psd1')).BaseName
 # Disable default parameters during testing, just in case
 $PSDefaultParameterValues += @{}
 $PSDefaultParameterValues['Disabled'] = $true
-$artifactsRoot = Join-Path -Path $RepoRoot -ChildPath '.artifacts'
+$artifactsRoot = Join-Path -Path $repoRoot -ChildPath '.artifacts'
 $null = New-Item -Path $artifactsRoot -ItemType Directory -Force
 $artifactsPath = $artifactsRoot
 Get-ChildItem -Path $artifactsPath -Filter 'TestResults.*.xml' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
@@ -36,20 +36,20 @@ function New-SourceModuleForTesting {
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal test script does not require parameter descriptions.')]
 	param(
 		[Parameter(Mandatory = $true)]
-		[string]$RepoRoot,
+		[string]$repoRoot,
 		[Parameter(Mandatory = $true)]
-		[string]$ModuleName,
+		[string]$moduleName,
 		[Parameter(Mandatory = $true)]
-		[string]$ArtifactsPath
+		[string]$artifactsPath
 	)
-	$sourceRoot = Join-Path -Path $RepoRoot -ChildPath 'Source'
-	$moduleRoot = Join-Path -Path $ArtifactsPath -ChildPath ('SourceModule-{0}' -f ([guid]::NewGuid().ToString('N')))
-	$moduleManifest = Join-Path -Path $moduleRoot -ChildPath ('{0}.psd1' -f $ModuleName)
-	$moduleFile = Join-Path -Path $moduleRoot -ChildPath ('{0}.psm1' -f $ModuleName)
+	$sourceRoot = Join-Path -Path $repoRoot -ChildPath 'Source'
+	$moduleRoot = Join-Path -Path $artifactsPath -ChildPath ('SourceModule-{0}' -f ([guid]::NewGuid().ToString('N')))
+	$moduleManifest = Join-Path -Path $moduleRoot -ChildPath ('{0}.psd1' -f $moduleName)
+	$moduleFile = Join-Path -Path $moduleRoot -ChildPath ('{0}.psm1' -f $moduleName)
 	$moduleBinaries = Join-Path -Path $moduleRoot -ChildPath 'Binaries'
 
 	$null = New-Item -Path $moduleRoot -ItemType Directory -Force
-	Copy-Item -Path (Join-Path -Path $sourceRoot -ChildPath ('{0}.psd1' -f $ModuleName)) -Destination $moduleManifest -Force
+	Copy-Item -Path (Join-Path -Path $sourceRoot -ChildPath ('{0}.psd1' -f $moduleName)) -Destination $moduleManifest -Force
 	Copy-Item -Path (Join-Path -Path $sourceRoot -ChildPath 'Binaries') -Destination $moduleBinaries -Recurse -Force
 
 	$moduleLines = @()
@@ -68,29 +68,29 @@ function New-SourceModuleForTesting {
 	return Get-Item -Path $moduleManifest
 }
 
-if ($UseBuiltModule) {
+if ($useBuiltModule) {
 	$ModulePath = Resolve-Path -Path '.\Output\*\*' | Sort-Object -Property BaseName | Select-Object -Last 1 -ExpandProperty Path
-	$FoundModule = Get-ChildItem -Path ('{0}\*' -f $ModulePath) -Filter ('{0}.psd1' -f $ModuleName) -ErrorAction SilentlyContinue
+	$FoundModule = Get-ChildItem -Path ('{0}\*' -f $ModulePath) -Filter ('{0}.psd1' -f $moduleName) -ErrorAction SilentlyContinue
 	if (!$FoundModule) {
-		throw ('Cannot find {0}.psd1 in {1}' -f $ModuleName, $ModulePath)
+		throw ('Cannot find {0}.psd1 in {1}' -f $moduleName, $ModulePath)
 	}
 } else {
-	$FoundModule = New-SourceModuleForTesting -RepoRoot $RepoRoot -ModuleName $ModuleName -ArtifactsPath $artifactsPath
+	$FoundModule = New-SourceModuleForTesting -repoRoot $repoRoot -moduleName $moduleName -artifactsPath $artifactsPath
 }
-Remove-Module $ModuleName -ErrorAction Ignore -Force
+Remove-Module $moduleName -ErrorAction Ignore -Force
 $ModuleUnderTest = Import-Module $FoundModule.FullName -PassThru -Force -DisableNameChecking -Verbose:$false
 $env:NINJAONE_MODULE_MANIFEST = $FoundModule.FullName
-$env:NINJAONE_MODULE_NAME = $ModuleName
+$env:NINJAONE_MODULE_NAME = $moduleName
 Write-Verbose ('Invoke-Pester for Module {0} version {1}' -f $ModuleUnderTest, $ModuleUnderTest.Version)
 $PesterConfiguration = New-PesterConfiguration
 
-if ($UseBuiltModule) {
+if ($useBuiltModule) {
 	# Measure coverage against the built module file that is actually executed.
-	$coverageFiles = @(Get-ChildItem -Path $ModuleUnderTest.ModuleBase -Filter ('{0}.psm1' -f $ModuleName) -File |
+	$coverageFiles = @(Get-ChildItem -Path $ModuleUnderTest.ModuleBase -Filter ('{0}.psm1' -f $moduleName) -File |
 		Select-Object -ExpandProperty FullName)
 } else {
 	# Measure coverage against the source files for granular component reporting.
-	$coverageRoot = Join-Path -Path $RepoRoot -ChildPath 'Source'
+	$coverageRoot = Join-Path -Path $repoRoot -ChildPath 'Source'
 	$coverageFiles = @(Get-ChildItem -Path $coverageRoot -Recurse -Include '*.ps1' -Exclude 'Initialisation.ps1' |
 		Where-Object { $_.FullName -notmatch 'TestScaffold|\\Tests\\' } |
 		Select-Object -ExpandProperty FullName)
@@ -118,7 +118,7 @@ $testSuites = @(
 	}
 )
 
-if ($IncludeVSCodeMarker -and -not $PSBoundParameters.ContainsKey('Verbosity')) {
+if ($includeVSCodeMarker -and -not $PSBoundParameters.ContainsKey('Verbosity')) {
 	$Verbosity = 'Normal'
 }
 
@@ -150,7 +150,7 @@ foreach ($testSuite in $selectedSuites) {
 	$PesterConfiguration.TestResult.Enabled = $true
 	$PesterConfiguration.TestResult.OutputPath = Join-Path -Path $artifactsPath -ChildPath ('TestResults.{0}.xml' -f $testSuite.Name)
 	$PesterConfiguration.TestResult.OutputFormat = 'JUnitXml'
-	if ($IncludeVSCodeMarker) {
+	if ($includeVSCodeMarker) {
 		if ($PesterConfiguration | Get-Member -Name 'VSCodeMarker' -ErrorAction SilentlyContinue) {
 			$PesterConfiguration.VSCodeMarker = $true
 		}
@@ -235,9 +235,9 @@ $combinedResults = [pscustomobject]@{
 
 $combinedResults
 
-if (-not $SkipScriptAnalyzer) {
+if (-not $skipScriptAnalyzer) {
 	Write-Host "`n=== Running PSScriptAnalyzer ===" -ForegroundColor Cyan
-	$null = Invoke-ScriptAnalyzer $ModuleUnderTest.Path -Settings (Join-Path -Path $RepoRoot -ChildPath 'PSScriptAnalyzerSettings.psd1')
+	$null = Invoke-ScriptAnalyzer $ModuleUnderTest.Path -Settings (Join-Path -Path $repoRoot -ChildPath 'PSScriptAnalyzerSettings.psd1')
 }
 Pop-Location
 

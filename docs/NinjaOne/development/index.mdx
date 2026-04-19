@@ -1,0 +1,238 @@
+---
+title: Overview
+sidebar_position: 1
+---
+
+This page documents development workflows for the NinjaOne PowerShell module.
+
+## Quick Start
+
+```powershell
+pwsh -File .\DevOps\Build\bootstrap.ps1
+pwsh -File .\DevOps\Build\build.ps1 -TaskNames build
+pwsh -File .\DevOps\Quality\test.ps1
+```
+
+## Contributing
+
+There are many ways to contribute to the project, including:
+- Submitting bug reports and feature requests.
+- Opening pull requests with bug fixes and new features.
+- Improving documentation and examples (note that most docs are generated from comment-based help, so doc improvements often come with code changes).
+- Reviewing and providing feedback on open pull requests.
+- Sponsoring development on [GitHub Sponsors](https://github.com/sponsors/homotechsual).
+
+## Development Process
+
+Improvements should be submitted via pull requests *against the `develop` branch*. This allows for review and testing before merging into `main` for release. The project uses a CI workflow to run tests and build on pull requests, and a separate workflow to handle releases when changes are merged into `main` and tagged.
+
+PRs against main which are not from our `develop` branch will be closed without review, so please ensure you are targeting the correct branch. If you are unsure about the process or have questions, feel free to ask in the [Homotechsual Discord](https://discord.gg/NrCjh5ht7K) or the [NinjaOne Discord](https://discord.gg/NinjaOne).
+
+## Repo Layout
+
+- `DevOps/Build` - build orchestration scripts and build config.
+- `DevOps/Quality` - test and static analysis scripts.
+- `DevOps/Help` - comment-based help generation and orchestration.
+- `Source` - module source.
+- `Tests` - Pester tests.
+- `docs/NinjaOne` - generated commandlet docs output.
+
+## Bootstrap Environment
+
+Bootstrap installs required modules, prioritizes bundled modules, and configures git hooks.
+
+```powershell
+pwsh -File .\DevOps\Build\bootstrap.ps1
+```
+
+If bootstrap does not recover your local environment, rerun it and then reinstall the specific missing module from `DevOps\Build\RequiredModules.psd1`.
+
+```powershell
+pwsh -File .\DevOps\Build\bootstrap.ps1
+Install-Module Pester -Force
+```
+
+`bootstrap.ps1` currently accepts `-Force`, but the flag does not change reinstall behavior.
+
+## Build
+
+The build script supports multiple tasks:
+
+- `clean`
+- `build`
+- `updateManifest`
+- `publish`
+- `publishDocs`
+- `updateHelp`
+- `generateShortNamesMapping`
+- `push`
+
+Build only:
+
+```powershell
+pwsh -File .\DevOps\Build\build.ps1 -TaskNames build
+```
+
+The current default task list is:
+
+- `clean`
+- `build`
+- `updateManifest`
+- `publish`
+- `updateHelp`
+- `generateShortNamesMapping`
+- `push`
+
+For normal local development, prefer explicit task lists rather than invoking the default, because the default path includes publish and push-oriented tasks.
+
+```powershell
+pwsh -File .\DevOps\Build\build.ps1
+```
+
+## Tests
+
+Tests run with Pester 5.x. By default, `test.ps1` runs the selected Pester suites and then performs a direct `Invoke-ScriptAnalyzer` pass against the module under test.
+
+```powershell
+pwsh -File .\DevOps\Quality\test.ps1
+```
+
+Skip ScriptAnalyzer during tests:
+
+```powershell
+pwsh -File .\DevOps\Quality\test.ps1 -SkipScriptAnalyzer
+```
+
+## PSScriptAnalyzer
+
+Run the standalone analyzer pass (uses PSScriptAnalyzerSettings.psd1):
+
+```powershell
+pwsh -File .\DevOps\Quality\run-pssa.ps1
+```
+
+The standalone analyzer wrapper excludes `CustomRules`, `output`, `Modules`, and `test-rules.ps1`.
+
+In normal repo linting, full settings are applied to `Source\Public`, and reduced settings are applied elsewhere. Public-surface rules such as camelCase parameter enforcement are intentionally scoped to exported cmdlets.
+
+## Help Generation
+
+The help orchestration script exposes these phases:
+
+- `Generate`
+- `ApplyPublic`
+- `Verify`
+- `ApplyPrivate`
+- `All`
+
+Current state:
+
+- `Generate` creates the inventory/database of functions needing help.
+- `ApplyPublic` in the orchestrator prints next-step guidance rather than modifying files itself.
+- `Verify` in the orchestrator prints the suggested validation command.
+- Actual help insertion is handled by the dedicated helper scripts under `DevOps\Help`.
+
+Run the orchestrator inventory/preview flow:
+
+```powershell
+pwsh -File .\DevOps\Help\Orchestrate-HelpGeneration.ps1 -Phase All
+```
+
+## Full Request Example Generation
+
+The full request example generator injects a dedicated help example for POST/PUT/PATCH cmdlets that accept request bodies. It reads the OpenAPI YAML (downloaded by default) and inserts a help block between the explicit markers shown below. Existing examples remain untouched.
+
+It requires a `ConvertFrom-Yaml` implementation (install either `powershell-yaml` or `Yayaml`).
+
+```text
+# FULL REQUEST EXAMPLE (AUTO-GENERATED) - BEGIN
+# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
+```
+
+Default run (downloads the OpenAPI YAML from the EU tenant):
+
+```powershell
+pwsh -File .\DevOps\Help\Generate-FullRequestExamples.ps1
+```
+
+Point at a local OpenAPI YAML file:
+
+```powershell
+pwsh -File .\DevOps\Help\Generate-FullRequestExamples.ps1 -YamlPath C:\path\to\NinjaRMM-API-v2.yaml
+```
+
+Target a single endpoint path:
+
+```powershell
+pwsh -File .\DevOps\Help\Generate-FullRequestExamples.ps1 -EndpointPath /v2/user/end-users
+```
+
+Target a specific cmdlet:
+
+```powershell
+pwsh -File .\DevOps\Help\Generate-FullRequestExamples.ps1 -CommandName New-NinjaOneEndUser
+```
+
+What it does:
+
+- Downloads or loads the OpenAPI YAML and parses request body schemas.
+- Builds a minimal example object from the schema (first option for oneOf/anyOf/allOf).
+- Updates only the marked example block in comment-based help.
+- Inserts the example before the .OUTPUTS section if no block exists.
+
+Common parameters:
+
+- `-BaseUrl` defaults to `https://eu.ninjarmm.com`.
+- `-SourcePath` defaults to `Source\Public`.
+- `-EndpointPath` and `-CommandName` filter the scope.
+
+## Docs Generation
+
+Regenerate the short name map and update docs output:
+
+```powershell
+pwsh -File .\DevOps\Build\build.ps1 -TaskNames generateShortNamesMapping,updateHelp,publishDocs
+```
+
+`updateHelp` writes the canonical local `.mdx` output to `docs\NinjaOne\commandlets`. `publishDocs` then copies that generated output to `.build\docs` for downstream publishing automation.
+
+## Release and Versioning
+
+- The build script accepts `-SemVer` to set a specific version during build.
+- Update `CHANGELOG.md` and `Source/NinjaOne.psd1` together for releases.
+- Stable releases are promoted by merging `develop` into `main` and tagging the merge commit.
+- Stable `vX.Y.Z` tags must be cut from commits reachable from `main`.
+- Preview tags such as `-alpha`, `-beta`, and `-rc` must be reachable from `develop`.
+
+## Delivery Workflow Summary
+
+1. Develop and validate changes on `develop`.
+2. Run `bootstrap`, `build`, `test`, and `run-pssa` locally.
+3. If public cmdlets changed, regenerate help and docs output.
+4. Merge the release-prep PR from `develop` into `main`.
+5. Create the release tag and let the CI/release workflows publish the module, release notes, and docs.
+
+## Development Docs
+
+Additional development pages are handled by the Docusaurus sidebar, including:
+
+- `Quality Gates & Code Standards`
+- `Help Generation Deep Dive`
+- `Styling & Conventions`
+- `Troubleshooting Guide`
+- `Delivery & Release Process`
+
+## PR Checklist
+
+- Run `bootstrap.ps1` after pulling new dependencies.
+- Run `build.ps1 -TaskNames build` before opening a PR.
+- Run `test.ps1` (or `test.ps1 -SkipScriptAnalyzer` if PSSA is already run).
+- Run `run-pssa.ps1` to validate style and quality rules.
+- Update comment-based help and docs if you touched public functions.
+- Confirm `CHANGELOG.md` is updated when appropriate.
+- Review [Styling & Conventions](styling-conventions.mdx) for code standards.
+- Review [Quality Gates & Code Standards](quality-gates.mdx) for parameter documentation.
+
+## Need Help?
+
+See the **[Troubleshooting Guide](troubleshooting.mdx)** for solutions to common issues.

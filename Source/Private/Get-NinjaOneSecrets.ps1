@@ -13,7 +13,7 @@ function Get-NinjaOneSecrets {
 	[OutputType([System.Void])]
 	param(
 		# The vault name to use for retrieving the secrets.
-		[String]$VaultName,
+		[String]$vaultName,
 		# The prefix to use for the secret names.
 		[String]$SecretPrefix = 'NinjaOne'
 	)
@@ -48,12 +48,12 @@ function Get-NinjaOneSecrets {
 		Write-Verbose ('Processing secret {0} for vault retrieval.' -f $ConnectionSecret.Key)
 		$SecretName = $ConnectionSecret.Key
 		$VaultSecretName = $ConnectionSecret.Value
-		$SecretValue = Get-Secret -Name $VaultSecretName -Vault $VaultName -AsPlainText -ErrorAction SilentlyContinue
+		$SecretValue = Get-Secret -Name $VaultSecretName -Vault $vaultName -AsPlainText -ErrorAction SilentlyContinue
 		if ($null -eq $SecretValue) {
 			Write-Verbose ('Secret {0} is null. Skipping.' -f $SecretName)
 			continue
 		}
-		Write-Verbose ('Secret {0} retrieved from secret vault {1}.' -f $SecretName, $VaultName)
+		Write-Verbose ('Secret {0} retrieved from secret vault {1}.' -f $SecretName, $vaultName)
 		$Script:NRAPIConnectionInformation.$SecretName = $SecretValue
 	}
 	# Retrieve the authentication information from the secret vault.
@@ -61,12 +61,12 @@ function Get-NinjaOneSecrets {
 		Write-Verbose ('Processing secret {0} for vault retrieval.' -f $AuthenticationSecret.Key)
 		$SecretName = $AuthenticationSecret.Key
 		$VaultSecretName = $AuthenticationSecret.Value
-		$SecretValue = Get-Secret -Name $VaultSecretName -Vault $VaultName -AsPlainText -ErrorAction SilentlyContinue
+		$SecretValue = Get-Secret -Name $VaultSecretName -Vault $vaultName -AsPlainText -ErrorAction SilentlyContinue
 		if ($null -eq $SecretValue) {
 			Write-Verbose ('Secret {0} is null. Skipping.' -f $SecretName)
 			continue
 		}
-		Write-Verbose ('Secret {0} retrieved from secret vault {1}.' -f $SecretName, $VaultName)
+		Write-Verbose ('Secret {0} retrieved from secret vault {1}.' -f $SecretName, $vaultName)
 		$Script:NRAPIAuthenticationInformation.$SecretName = $SecretValue
 	}
 	# If we have the port value, convert it to an integer.
@@ -131,6 +131,6 @@ function Get-NinjaOneSecrets {
 	}
 	$Script:NRAPIConnectionInformation.UseSecretManagement = $true
 	$Script:NRAPIConnectionInformation.WriteToSecretVault = $true
-	$Script:NRAPIConnectionInformation.VaultName = $VaultName
+	$Script:NRAPIConnectionInformation.VaultName = $vaultName
 	$Script:NRAPIConnectionInformation.ReadFromSecretVault = $true
 }

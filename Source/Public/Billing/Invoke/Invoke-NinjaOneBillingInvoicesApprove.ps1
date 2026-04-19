@@ -7,7 +7,7 @@ function Invoke-NinjaOneBillingInvoicesApprove {
 		.FUNCTIONALITY
 			Billing Invoices Approve
 		.EXAMPLE
-			PS> Invoke-NinjaOneBillingInvoicesApprove -Request @{ invoiceIds = @(1,2) }
+			PS> Invoke-NinjaOneBillingInvoicesApprove -request @{ invoiceIds = @(1,2) }
 
 			Approves the specified billing invoices.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function Invoke-NinjaOneBillingInvoicesApprove {
 		# Approval request payload per API schema.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$Request
+		[Object]$request
 	)
 	process {
 		try {
 			$Resource = 'v2/billing/invoices/approve'
-			$RequestParams = @{ Resource = $Resource; Body = $Request }
+			$requestParams = @{ Resource = $Resource; Body = $request }
 			if ($PSCmdlet.ShouldProcess('Billing Invoices', 'Approve')) {
 				return (New-NinjaOnePOSTRequest @RequestParams)
 			}

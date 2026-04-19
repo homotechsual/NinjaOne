@@ -7,7 +7,7 @@ function Invoke-NinjaOneDeviceDecommission {
 		.FUNCTIONALITY
 			Devices
 		.EXAMPLE
-			PS> Invoke-NinjaOneDeviceDecommission -DeviceId 1
+			PS> Invoke-NinjaOneDeviceDecommission -deviceId 1
 
 			Decommissions the device with ID 1.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function Invoke-NinjaOneDeviceDecommission {
 		# The ID of the device to decommission
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
-		[Int]$DeviceId
+		[Int]$deviceId
 	)
 	process {
 		try {
-			$Resource = ('v2/device/{0}/decommission' -f $DeviceId)
-			if ($PSCmdlet.ShouldProcess('Device', ('Decommission {0}' -f $DeviceId))) {
+			$Resource = ('v2/device/{0}/decommission' -f $deviceId)
+			if ($PSCmdlet.ShouldProcess('Device', ('Decommission {0}' -f $deviceId))) {
 				$Result = New-NinjaOnePOSTRequest -Resource $Resource
 				return $Result
 			}

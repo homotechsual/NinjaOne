@@ -10,15 +10,15 @@ function Invoke-NinjaOneRequest {
 		.FUNCTIONALITY
 			API Request
 		.EXAMPLE
-			PS> Invoke-NinjaOneRequest -Method 'GET' -Uri 'https://eu.ninjarmm.com/v2/activities'
+			PS> Invoke-NinjaOneRequest -method 'GET' -uri 'https://eu.ninjarmm.com/v2/activities'
 
 			Make a GET request to the activities resource.
 		.EXAMPLE
-			PS> Invoke-NinjaOneRequest -Method 'GET' -Uri 'https://eu.ninjarmm.com/v2/activities' -ParseDateTime
+			PS> Invoke-NinjaOneRequest -method 'GET' -uri 'https://eu.ninjarmm.com/v2/activities' -parseDateTime
 
 			Parse ISO 8601 and Unix epoch values in the response to [DateTime].
 		.EXAMPLE
-			PS> Invoke-NinjaOneRequest -Method 'GET' -Uri 'https://eu.ninjarmm.com/v2/activities' -ParseDateTime
+			PS> Invoke-NinjaOneRequest -method 'GET' -uri 'https://eu.ninjarmm.com/v2/activities' -parseDateTime
 
 			Make a GET request and convert ISO 8601 or Unix epoch values to [DateTime].
 		.OUTPUTS
@@ -34,17 +34,17 @@ function Invoke-NinjaOneRequest {
 		# HTTP method to use.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[ValidateSet('GET', 'POST', 'PUT', 'PATCH', 'DELETE')]
-		[String]$Method,
+		[String]$method,
 		# The URI to send the request to.
 		[Parameter(Mandatory, Position = 1, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-		[String]$Uri,
+		[String]$uri,
 		# The body of the request.
 		[Parameter(Position = 2)]
-		[String]$Body,
+		[String]$body,
 		# Return the raw response - don't convert from JSON.
-		[Switch]$Raw,
+		[Switch]$raw,
 		# Parse date/time values returned in JSON.
-		[Switch]$ParseDateTime
+		[Switch]$parseDateTime
 
 	)
 	begin {
@@ -71,12 +71,12 @@ function Invoke-NinjaOneRequest {
 		try {
 			Write-Verbose ('Making a {0} request to {1}' -f $WebRequestParams.Method, $WebRequestParams.Uri)
 			$WebRequestParams = @{
-				Method = $Method
-				Uri = $Uri
+				Method = $method
+				Uri = $uri
 			}
-			if ($Body) {
-				Write-Verbose ('Body is {0}' -f ($Body | Out-String))
-				$WebRequestParams.Add('Body', $Body)
+			if ($body) {
+				Write-Verbose ('Body is {0}' -f ($body | Out-String))
+				$WebRequestParams.Add('Body', $body)
 			} else {
 				Write-Verbose 'No body present.'
 			}
@@ -97,7 +97,7 @@ function Invoke-NinjaOneRequest {
 			} else {
 				Write-Verbose 'No response content.'
 			}
-			if ($Raw) {
+			if ($raw) {
 				Write-Verbose 'Raw switch present, returning raw response.'
 				$Results = $Response.Content
 			} else {
@@ -106,7 +106,7 @@ function Invoke-NinjaOneRequest {
 					$Results = $null
 				} else {
 					$Results = $Response.Content | ConvertFrom-Json
-					if ($ParseDateTime -and $null -ne $Results) {
+					if ($parseDateTime -and $null -ne $Results) {
 						$Results = ConvertFrom-NinjaOneDateTime -InputObject $Results
 					}
 				}
