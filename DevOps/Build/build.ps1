@@ -101,8 +101,11 @@ function GetModulePath {
 		[Parameter(Mandatory)]
 		[String]$moduleName
 	)
-	$ModulePath = (Get-ChildItem -path ('{0}\Output\*\*\{1}.psd1' -f $RepoRoot, $moduleName)).FullName
-	if (!(Test-path -path $ModulePath)) {
+	$moduleManifest = Get-ChildItem -Path ('{0}\Output\*\*\{1}.psd1' -f $RepoRoot, $moduleName) -ErrorAction SilentlyContinue |
+	Sort-Object { [version]$_.Directory.Name } -Descending |
+	Select-Object -First 1
+	$ModulePath = $moduleManifest.FullName
+	if (!(Test-Path -Path $ModulePath)) {
 		throw ('Module {0} not found at "{1}".' -f $moduleName, $ModulePath)
 	}
 	return $ModulePath
@@ -116,10 +119,12 @@ function GetFunctions {
 		[String]$moduleName
 	)
 	$ModulePath = GetModulePath -moduleName $moduleName
-	Import-Module $ModulePath -Force
-	$Module = Get-Module -Name $Script:ModuleName
+	Remove-Module -Name $moduleName -Force -ErrorAction SilentlyContinue
+	$Module = Import-Module $ModulePath -Force -PassThru
 	$CommandletList = [System.Collections.Generic.List[String]]::new()
-	$CommandletList.AddRange($Module.ExportedFunctions.Keys)
+	foreach ($exportedFunction in $Module.ExportedFunctions.Keys) {
+		$null = $CommandletList.Add([string]$exportedFunction)
+	}
 	return $CommandletList
 }
 # Task: Push to remote repositories.

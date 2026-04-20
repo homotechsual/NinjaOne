@@ -102,6 +102,10 @@
 			},
 			"git pull": true,
 			"git fetch": true,
+			"/^pwsh -File \\.\\\\DevOps\\\\Build\\\\build\\.ps1 -TaskNames generateShortNamesMapping,updateHelp,publishDocs$/": {
+				"approve": true,
+				"matchCommandLine": true,
+			},
 		},
 		"codeQL.githubDatabase.download": "never",
 		"cSpell.words": ["Analyzer"],
