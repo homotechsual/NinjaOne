@@ -4,7 +4,7 @@ sidebar_position: 2
 description: The start time filter `stf` parameter.
 ---
 
-The start time filter is, currently, used in the [Get-NinjaOneBackupJobs](../commandlets/Get/Get-NinjaOneBackupJobs.mdx) commandlet (which maps to the `/v2/backup/jobs` endpoint if not using the module) and is used to filter the jobs returned based on the time the job started. It supports two modes of operations and five status values.
+The start time filter is, currently, used in the [Get-NinjaOneBackupJobs](../commandlets/Get/Get-NinjaOneBackupJobs.mdx) commandlet (which maps to the `/v2/backup/jobs` endpoint if not using the module) and is used to filter the jobs returned based on the time the job started. It supports two modes of operation.
 
 ## Between start times mode
 
@@ -17,7 +17,7 @@ Get-NinjaOneBackupJobs -startTimeBetween @((Get-Date).AddDays(-1), (Get-Date))
 This will retrieve all jobs that started between 24 hours ago and now. The `startTimeBetween` parameter takes an array of two `DateTime` objects. Under the hood, this is converted to a string in the format `yyyy-MM-ddTHH:mm:ss.fffZ` and passed to the API as the following query string parameter:
 
 ```powershell
-https://eu.ninjaone.com/v2/backup/jobs?stf=startTime between (2021-08-01T00%3a00%3a00.000Z%2c2021-08-02T00%3a00%3a00.000Z)
+https://eu.ninjarmm.com/v2/backup/jobs?stf=startTime between (2021-08-01T00%3a00%3a00.000Z%2c2021-08-02T00%3a00%3a00.000Z)
 ```
 
 :::note[Time Zone Handling]
@@ -35,7 +35,7 @@ Get-NinjaOneBackupJobs -startTimeAfter (Get-Date).AddDays(-1)
 This will retrieve all jobs that started after 24 hours ago. The `startTimeAfter` parameter takes a `DateTime` object. Under the hood, this is converted to a string in the format `yyyy-MM-ddTHH:mm:ss.fffZ` and passed to the API as the following query string parameter:
 
 ```powershell
-https://eu.ninjaone.com/v2/backup/jobs?stf=startTime after 2021-08-01T00%3a00%3a00.000Z
+https://eu.ninjarmm.com/v2/backup/jobs?stf=startTime after 2021-08-01T00%3a00%3a00.000Z
 ```
 
 :::note[Time Zone Handling]

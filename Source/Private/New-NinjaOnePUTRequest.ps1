@@ -5,7 +5,7 @@ function New-NinjaOnePUTRequest {
 		.DESCRIPTION
 			Wrapper function to build web requests for the NinjaOne API.
 		.EXAMPLE
-			PS C:\> New-NinjaOnePUTRequest -resource "/v2/organizations -body @{"name"="MyOrg"}
+			PS C:\> New-NinjaOnePUTRequest -resource '/v2/organizations' -body @{ name = 'MyOrg' }
 		.OUTPUTS
 			Outputs an object containing the response from the web request.
 	#>
