@@ -91,7 +91,7 @@ function Get-NinjaOneDevices {
 		})]
 		[String[]]$expand,
 		# Parse date/time values in the response.
-		[Switch]$ParseDateTime
+		[Switch]$parseDateTime
 	)
 	begin {
 		$CommandName = $MyInvocation.InvocationName
@@ -141,8 +141,8 @@ function Get-NinjaOneDevices {
 				Resource = $Resource
 				QSCollection = $QSCollection
 			}
-			if ($ParseDateTime) {
-				$RequestParams.ParseDateTime = $ParseDateTime
+			if ($parseDateTime) {
+				$RequestParams.ParseDateTime = $parseDateTime
 			}
 			try {
 				$DeviceResults = New-NinjaOneGETRequest @RequestParams

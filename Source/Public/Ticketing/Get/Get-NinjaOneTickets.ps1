@@ -63,7 +63,7 @@ function Get-NinjaOneTickets {
 		[Parameter(ParameterSetName = 'Board', Position = 7)]
 		[Switch]$includeMetadata,
 		# Parse date/time values in the response.
-		[Switch]$ParseDateTime
+		[Switch]$parseDateTime
 	)
 	begin {
 	}
@@ -105,8 +105,8 @@ function Get-NinjaOneTickets {
 			if ($lastCursorId) {
 				$RequestParams.Body.lastCursorId = $lastCursorId
 			}
-			if ($ParseDateTime) {
-				$RequestParams.ParseDateTime = $ParseDateTime
+			if ($parseDateTime) {
+				$RequestParams.ParseDateTime = $parseDateTime
 			}
 			if ($Method -eq 'GET') {
 				$Tickets = New-NinjaOneGETRequest @RequestParams

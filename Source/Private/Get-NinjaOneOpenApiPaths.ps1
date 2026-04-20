@@ -11,14 +11,14 @@ function Get-NinjaOneOpenApiPaths {
 	[CmdletBinding()]
 	param(
 		[Parameter(Mandatory)]
-		[String]$OpenApiYaml
+		[String]$openApiYaml
 	)
 
 	$paths = @{}
 	$allowedMethods = @('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD')
 	$inPaths = $false
 	$currentPath = $null
-	$lines = $OpenApiYaml -split "`n"
+	$lines = $openApiYaml -split "`n"
 
 	foreach ($line in $lines) {
 		$lineToParse = $line.TrimEnd("`r")

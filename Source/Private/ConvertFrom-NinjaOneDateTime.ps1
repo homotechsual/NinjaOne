@@ -12,7 +12,7 @@ function ConvertFrom-NinjaOneDateTime {
 	[OutputType([Object])]
 	param (
 		[Parameter(Mandatory = $True)]
-		[Object]$InputObject
+		[Object]$inputObject
 	)
 	$isoFormats = @(
 		'o',
@@ -34,64 +34,64 @@ function ConvertFrom-NinjaOneDateTime {
 			[Object]
 		#>
 		param (
-			[Object]$Value
+			[Object]$value
 		)
-		if ($null -eq $Value) {
+		if ($null -eq $value) {
 			return $null
 		}
-		if ($Value -is [string]) {
-			if ($Value -match '^[0-9]{10}$' -or $Value -match '^[0-9]{13}$') {
+		if ($value -is [string]) {
+			if ($value -match '^[0-9]{10}$' -or $value -match '^[0-9]{13}$') {
 				[long]$epochCandidate = 0
-				if ([long]::TryParse($Value, [ref]$epochCandidate)) {
-					return Convert-NinjaOneEpoch -EpochValue $epochCandidate
+				if ([long]::TryParse($value, [ref]$epochCandidate)) {
+					return Convert-NinjaOneEpoch -epochValue $epochCandidate
 				}
 			}
-			if ($Value -match '^[0-9]{10}\.[0-9]+$' -or $Value -match '^[0-9]{13}\.[0-9]+$') {
+			if ($value -match '^[0-9]{10}\.[0-9]+$' -or $value -match '^[0-9]{13}\.[0-9]+$') {
 				[double]$epochCandidate = 0
-				if ([double]::TryParse($Value, [ref]$epochCandidate)) {
-					return Convert-NinjaOneEpochFraction -EpochValue $epochCandidate
+				if ([double]::TryParse($value, [ref]$epochCandidate)) {
+					return Convert-NinjaOneEpochFraction -epochValue $epochCandidate
 				}
 			}
 			[DateTime]$parsedDate = [DateTime]::MinValue
-			if ([DateTime]::TryParseExact($Value, $isoFormats, $invariantCulture, $dateStyles, [ref]$parsedDate)) {
+			if ([DateTime]::TryParseExact($value, $isoFormats, $invariantCulture, $dateStyles, [ref]$parsedDate)) {
 				return $parsedDate
 			}
-			if ($Value -match '^[0-9]{4}-[0-9]{2}-[0-9]{2}T') {
+			if ($value -match '^[0-9]{4}-[0-9]{2}-[0-9]{2}T') {
 				$parseStyles = [System.Globalization.DateTimeStyles]::AssumeUniversal -bor [System.Globalization.DateTimeStyles]::AdjustToUniversal
-				if ([DateTime]::TryParse($Value, $invariantCulture, $parseStyles, [ref]$parsedDate)) {
+				if ([DateTime]::TryParse($value, $invariantCulture, $parseStyles, [ref]$parsedDate)) {
 					return $parsedDate
 				}
 			}
-			return $Value
+			return $value
 		}
-		if ($Value -is [int] -or $Value -is [long]) {
-			return Convert-NinjaOneEpoch -EpochValue ([long]$Value)
+		if ($value -is [int] -or $value -is [long]) {
+			return Convert-NinjaOneEpoch -epochValue ([long]$value)
 		}
-		if ($Value -is [double] -or $Value -is [decimal]) {
-			return Convert-NinjaOneEpochFraction -EpochValue ([double]$Value)
+		if ($value -is [double] -or $value -is [decimal]) {
+			return Convert-NinjaOneEpochFraction -epochValue ([double]$value)
 		}
-		if ($Value -is [System.Collections.IDictionary]) {
-			foreach ($Key in @($Value.Keys)) {
-				$Value[$Key] = Convert-NinjaOneValue -Value $Value[$Key]
+		if ($value -is [System.Collections.IDictionary]) {
+			foreach ($Key in @($value.Keys)) {
+				$value[$Key] = Convert-NinjaOneValue -value $value[$Key]
 			}
-			return $Value
+			return $value
 		}
-		if ($Value -is [System.Collections.IList]) {
-			for ($Index = 0; $Index -lt $Value.Count; $Index++) {
-				$Value[$Index] = Convert-NinjaOneValue -Value $Value[$Index]
+		if ($value -is [System.Collections.IList]) {
+			for ($Index = 0; $Index -lt $value.Count; $Index++) {
+				$value[$Index] = Convert-NinjaOneValue -value $value[$Index]
 			}
-			return $Value
+			return $value
 		}
-		if ($Value -is [DateTime]) {
-			return $Value
+		if ($value -is [DateTime]) {
+			return $value
 		}
-		if ($Value -is [psobject]) {
-			foreach ($Property in $Value.PSObject.Properties) {
-				$Value.$($Property.Name) = Convert-NinjaOneValue -Value $Property.Value
+		if ($value -is [psobject]) {
+			foreach ($Property in $value.PSObject.Properties) {
+				$value.$($Property.Name) = Convert-NinjaOneValue -value $Property.Value
 			}
-			return $Value
+			return $value
 		}
-		return $Value
+		return $value
 	}
 	function Convert-NinjaOneEpoch {
 		<#
@@ -102,27 +102,27 @@ function ConvertFrom-NinjaOneDateTime {
 		#>
 		param (
 			[Parameter(Mandatory = $True)]
-			[long]$EpochValue
+			[long]$epochValue
 		)
 		$minSeconds = 946684800
 		$maxSeconds = 4102444800
 		$minMilliseconds = 946684800000
 		$maxMilliseconds = 4102444800000
-		if ($EpochValue -ge $minSeconds -and $EpochValue -le $maxSeconds) {
+		if ($epochValue -ge $minSeconds -and $epochValue -le $maxSeconds) {
 			try {
-				return [DateTimeOffset]::FromUnixTimeSeconds($EpochValue).UtcDateTime
+				return [DateTimeOffset]::FromUnixTimeSeconds($epochValue).UtcDateTime
 			} catch {
-				return (Get-Date 01.01.1970).AddSeconds($EpochValue)
+				return (Get-Date 01.01.1970).AddSeconds($epochValue)
 			}
 		}
-		if ($EpochValue -ge $minMilliseconds -and $EpochValue -le $maxMilliseconds) {
+		if ($epochValue -ge $minMilliseconds -and $epochValue -le $maxMilliseconds) {
 			try {
-				return [DateTimeOffset]::FromUnixTimeMilliseconds($EpochValue).UtcDateTime
+				return [DateTimeOffset]::FromUnixTimeMilliseconds($epochValue).UtcDateTime
 			} catch {
-				return (Get-Date 01.01.1970).AddMilliseconds($EpochValue)
+				return (Get-Date 01.01.1970).AddMilliseconds($epochValue)
 			}
 		}
-		return $EpochValue
+		return $epochValue
 	}
 	function Convert-NinjaOneEpochFraction {
 		<#
@@ -133,29 +133,29 @@ function ConvertFrom-NinjaOneDateTime {
 		#>
 		param (
 			[Parameter(Mandatory = $True)]
-			[double]$EpochValue
+			[double]$epochValue
 		)
 		$minSeconds = 946684800
 		$maxSeconds = 4102444800
 		$minMilliseconds = 946684800000
 		$maxMilliseconds = 4102444800000
-		if ($EpochValue -ge $minSeconds -and $EpochValue -le $maxSeconds) {
-			$epochMilliseconds = [long][Math]::Round($EpochValue * 1000)
+		if ($epochValue -ge $minSeconds -and $epochValue -le $maxSeconds) {
+			$epochMilliseconds = [long][Math]::Round($epochValue * 1000)
 			try {
 				return [DateTimeOffset]::FromUnixTimeMilliseconds($epochMilliseconds).UtcDateTime
 			} catch {
 				return (Get-Date 01.01.1970).AddMilliseconds($epochMilliseconds)
 			}
 		}
-		if ($EpochValue -ge $minMilliseconds -and $EpochValue -le $maxMilliseconds) {
-			$epochMilliseconds = [long][Math]::Round($EpochValue)
+		if ($epochValue -ge $minMilliseconds -and $epochValue -le $maxMilliseconds) {
+			$epochMilliseconds = [long][Math]::Round($epochValue)
 			try {
 				return [DateTimeOffset]::FromUnixTimeMilliseconds($epochMilliseconds).UtcDateTime
 			} catch {
 				return (Get-Date 01.01.1970).AddMilliseconds($epochMilliseconds)
 			}
 		}
-		return $EpochValue
+		return $epochValue
 	}
-	return Convert-NinjaOneValue -Value $InputObject
+	return Convert-NinjaOneValue -value $inputObject
 }

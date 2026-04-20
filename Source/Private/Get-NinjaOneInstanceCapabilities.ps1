@@ -11,12 +11,12 @@ function Get-NinjaOneInstanceCapabilitiesInternal {
 	[CmdletBinding()]
 	param(
 		[Parameter(Mandatory)]
-		[String]$BaseUrl,
-		[Switch]$Force
+		[String]$baseUrl,
+		[Switch]$force
 	)
 
-	$cacheKey = $BaseUrl.TrimEnd('/')
-	if (-not $Force -and $Script:NRAPIInstanceCapabilities.ContainsKey($cacheKey)) {
+	$cacheKey = $baseUrl.TrimEnd('/')
+	if (-not $force -and $Script:NRAPIInstanceCapabilities.ContainsKey($cacheKey)) {
 		return $Script:NRAPIInstanceCapabilities[$cacheKey]
 	}
 

@@ -11,7 +11,7 @@ function Get-NinjaOneAssetRelationships {
 
 			Gets all available asset relationships.
 		.EXAMPLE
-			PS> Get-NinjaOneAssetRelationships -EntityType DEVICE -EntityId 1
+			PS> Get-NinjaOneAssetRelationships -entityType DEVICE -entityId 1
 
 			Gets asset relationships for the specified entity.
 		.OUTPUTS
@@ -32,10 +32,10 @@ function Get-NinjaOneAssetRelationships {
 	param(
 		# The related entity type.
 		[Parameter(Mandatory, ParameterSetName = 'ByEntity', ValueFromPipelineByPropertyName)]
-		[String]$EntityType,
+		[String]$entityType,
 		# The related entity ID.
 		[Parameter(Mandatory, ParameterSetName = 'ByEntity', ValueFromPipelineByPropertyName)]
-		[Int]$EntityId
+		[Int]$entityId
 	)
 	begin {
 		$CommandName = $MyInvocation.InvocationName
@@ -49,7 +49,7 @@ function Get-NinjaOneAssetRelationships {
 	process {
 		try {
 			if ($PSCmdlet.ParameterSetName -eq 'ByEntity') {
-				$Resource = ('v2/itam/asset-relationship/{0}/{1}/relations' -f $EntityType, $EntityId)
+				$Resource = ('v2/itam/asset-relationship/{0}/{1}/relations' -f $entityType, $entityId)
 			} else {
 				$Resource = 'v2/itam/asset-relationship/relations'
 			}

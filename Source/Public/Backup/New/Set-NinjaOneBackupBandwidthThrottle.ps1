@@ -7,7 +7,7 @@ function Set-NinjaOneBackupBandwidthThrottle {
 		.FUNCTIONALITY
 			Backup
 		.EXAMPLE
-			PS> Set-NinjaOneBackupBandwidthThrottle -ThrottleSetting @{ deviceId = 1; bandwidthLimit = 5242880 }
+			PS> Set-NinjaOneBackupBandwidthThrottle -throttleSetting @{ deviceId = 1; bandwidthLimit = 5242880 }
 
 			Sets the bandwidth throttle for a device.
 		.EXAMPLE
@@ -31,7 +31,7 @@ function Set-NinjaOneBackupBandwidthThrottle {
 				}
 				deviceId = 0
 			}
-			PS> Set-NinjaOneBackupBandwidthThrottle -ThrottleSetting $body
+			PS> Set-NinjaOneBackupBandwidthThrottle -throttleSetting $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -51,12 +51,12 @@ function Set-NinjaOneBackupBandwidthThrottle {
 		# Bandwidth throttle setting payload per API schema
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$ThrottleSetting
+		[Object]$throttleSetting
 	)
 	process {
 		try {
 			$Resource = 'v2/backup/bandwidth-throttle'
-			$RequestParams = @{ Resource = $Resource; Body = $ThrottleSetting }
+			$RequestParams = @{ Resource = $Resource; Body = $throttleSetting }
 			if ($PSCmdlet.ShouldProcess('Backup Bandwidth Throttle', 'Set')) {
 				$Result = New-NinjaOnePOSTRequest @RequestParams
 				return $Result

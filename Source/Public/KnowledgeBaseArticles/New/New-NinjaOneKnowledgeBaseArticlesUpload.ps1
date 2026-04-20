@@ -7,7 +7,7 @@ function New-NinjaOneKnowledgeBaseArticlesUpload {
 		.FUNCTIONALITY
 		Knowledge Base Articles Upload
 	.EXAMPLE
-		PS> New-NinjaOneKnowledgeBaseArticlesUpload -OrganizationId 1 -FilePath 'C:\articles.zip'
+		PS> New-NinjaOneKnowledgeBaseArticlesUpload -organizationId 1 -FilePath 'C:\articles.zip'
 
 		Uploads knowledge base articles from a file to the specified organization.
 	.EXAMPLE
@@ -29,7 +29,7 @@ function New-NinjaOneKnowledgeBaseArticlesUpload {
 			PS> $fileContent.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::Parse("application/octet-stream")
 			PS> $multipart.Add($fileContent, "files", [System.IO.Path]::GetFileName($filePath))
 			PS> $body = $multipart
-			PS> New-NinjaOneKnowledgeBaseArticlesUpload -OrganizationId $body
+			PS> New-NinjaOneKnowledgeBaseArticlesUpload -organizationId $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -52,7 +52,7 @@ function New-NinjaOneKnowledgeBaseArticlesUpload {
 			PS> $stringContent = [System.Net.Http.StringContent]::new($json, [System.Text.Encoding]::UTF8, "application/json")
 			PS> $multipart.Add($stringContent, "organizationId")
 			PS> $body = $multipart
-			PS> New-NinjaOneKnowledgeBaseArticlesUpload -OrganizationId $body
+			PS> New-NinjaOneKnowledgeBaseArticlesUpload -organizationId $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -71,31 +71,31 @@ function New-NinjaOneKnowledgeBaseArticlesUpload {
 	param(
 		# Organization ID
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
-		[Int]$OrganizationId,
+		[Int]$organizationId,
 		# Folder ID
 		[Parameter(Position = 1, ValueFromPipelineByPropertyName)]
-		[Int]$FolderId,
+		[Int]$folderId,
 		# Folder Path
 		[Parameter(Position = 2, ValueFromPipelineByPropertyName)]
-		[String]$FolderPath,
+		[String]$folderPath,
 		# File path(s) to upload
 		[Parameter(Mandatory, Position = 3, ValueFromPipelineByPropertyName)]
-		[String[]]$FilePath
+		[String[]]$filePath
 	)
 	process {
 		try {
 			$Resource = 'v2/knowledgebase/articles/upload'
 			$Body = @{
-				organizationId = $OrganizationId
+				organizationId = $organizationId
 			}
-			if ($FolderId) {
-				$Body.folderId = $FolderId
+			if ($folderId) {
+				$Body.folderId = $folderId
 			}
-			if ($FolderPath) {
-				$Body.folderPath = $FolderPath
+			if ($folderPath) {
+				$Body.folderPath = $folderPath
 			}
-			if ($FilePath) {
-				$Body.files = $FilePath
+			if ($filePath) {
+				$Body.files = $filePath
 			}
 			$RequestParams = @{ Resource = $Resource; Body = $Body; UseMultipart = $true }
 			if ($PSCmdlet.ShouldProcess('Knowledge Base Articles', 'Upload')) {

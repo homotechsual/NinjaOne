@@ -7,7 +7,7 @@ function New-NinjaOneBillingTicketProductAdHoc {
 		.FUNCTIONALITY
 			Billing Ticket Product Ad Hoc
 		.EXAMPLE
-			PS> New-NinjaOneBillingTicketProductAdHoc -TicketProduct @{ ticketId = 1 }
+			PS> New-NinjaOneBillingTicketProductAdHoc -ticketProduct @{ ticketId = 1 }
 
 			Creates an ad hoc billing ticket product.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function New-NinjaOneBillingTicketProductAdHoc {
 		# Ticket product payload per API schema.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$TicketProduct
+		[Object]$ticketProduct
 	)
 	process {
 		try {
 			$Resource = 'v2/billing/ticket-products/adhoc'
-			$RequestParams = @{ Resource = $Resource; Body = $TicketProduct }
+			$RequestParams = @{ Resource = $Resource; Body = $ticketProduct }
 			if ($PSCmdlet.ShouldProcess('Billing Ticket Product', 'Create Ad Hoc')) {
 				return (New-NinjaOnePOSTRequest @RequestParams)
 			}

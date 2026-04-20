@@ -25,21 +25,21 @@ function New-NinjaOneEntityRelationObject {
 	param(
 		# The entity type of the relation.
 		[Parameter(Mandatory, Position = 0)]
-		[String]$EntityType,
+		[String]$entityType,
 		# The related entity type.
 		[Parameter(Mandatory, Position = 1)]
-		[String]$RelationEntityType,
+		[String]$relationEntityType,
 		# The relation property name.
 		[Parameter(Position = 2)]
-		[String]$Property
+		[String]$property
 	)
 	process {
 		$OutputObject = [PSCustomObject]@{
-			entityType = $EntityType
-			relationEntityType = $RelationEntityType
+			entityType = $entityType
+			relationEntityType = $relationEntityType
 		}
-		if ($Property) {
-			$OutputObject | Add-Member -MemberType NoteProperty -Name 'property' -Value $Property
+		if ($property) {
+			$OutputObject | Add-Member -MemberType NoteProperty -Name 'property' -Value $property
 		}
 		$OutputObject.PSTypeNames.Insert(0, 'EntityRelation')
 		return $OutputObject

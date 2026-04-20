@@ -11,7 +11,7 @@ function Get-NinjaOneBillingInvoices {
 
 			Gets all billing invoices.
 		.EXAMPLE
-			PS> Get-NinjaOneBillingInvoices -Id 1
+			PS> Get-NinjaOneBillingInvoices -id 1
 
 			Gets billing invoice 1.
 		.OUTPUTS
@@ -33,7 +33,7 @@ function Get-NinjaOneBillingInvoices {
 		# Billing invoice ID.
 		[Parameter(ValueFromPipelineByPropertyName)]
 		[Alias('invoiceId')]
-		[Int]$Id
+		[Int]$id
 	)
 	begin {
 		$CommandName = $MyInvocation.InvocationName
@@ -45,9 +45,9 @@ function Get-NinjaOneBillingInvoices {
 	}
 	process {
 		try {
-			if ($Id) {
-				Write-Verbose ('Getting billing invoice with id {0}.' -f $Id)
-				$Resource = ('v2/billing/invoices/{0}' -f $Id)
+			if ($id) {
+				Write-Verbose ('Getting billing invoice with id {0}.' -f $id)
+				$Resource = ('v2/billing/invoices/{0}' -f $id)
 			} else {
 				Write-Verbose 'Retrieving billing invoices.'
 				$Resource = 'v2/billing/invoices'

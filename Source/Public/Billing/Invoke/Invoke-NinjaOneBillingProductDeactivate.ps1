@@ -7,7 +7,7 @@ function Invoke-NinjaOneBillingProductDeactivate {
 		.FUNCTIONALITY
 			Billing Product Deactivate
 		.EXAMPLE
-			PS> Invoke-NinjaOneBillingProductDeactivate -Id 1
+			PS> Invoke-NinjaOneBillingProductDeactivate -id 1
 
 			Deactivates billing product 1.
 		.OUTPUTS
@@ -26,12 +26,12 @@ function Invoke-NinjaOneBillingProductDeactivate {
 		# Billing product ID.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('productId')]
-		[Int]$Id
+		[Int]$id
 	)
 	process {
 		try {
-			$Resource = ('v2/billing/products/{0}/deactivate' -f $Id)
-			if ($PSCmdlet.ShouldProcess(('Billing Product {0}' -f $Id), 'Deactivate')) {
+			$Resource = ('v2/billing/products/{0}/deactivate' -f $id)
+			if ($PSCmdlet.ShouldProcess(('Billing Product {0}' -f $id), 'Deactivate')) {
 				return (New-NinjaOnePATCHRequest -Resource $Resource)
 			}
 		} catch {

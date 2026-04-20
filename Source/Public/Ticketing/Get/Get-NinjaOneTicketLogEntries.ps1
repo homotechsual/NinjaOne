@@ -43,7 +43,7 @@ function Get-NinjaOneTicketLogEntries {
 		[ValidateSet('DESCRIPTION', 'COMMENT', 'CONDITION', 'SAVE', 'DELETE')]
 		[String]$type,
 		# Parse date/time values in the response.
-		[Switch]$ParseDateTime
+		[Switch]$parseDateTime
 	)
 	begin {
 		$CommandName = $MyInvocation.InvocationName
@@ -59,8 +59,8 @@ function Get-NinjaOneTicketLogEntries {
 				Resource = $Resource
 				QSCollection = $QSCollection
 			}
-			if ($ParseDateTime) {
-				$RequestParams.ParseDateTime = $ParseDateTime
+			if ($parseDateTime) {
+				$RequestParams.ParseDateTime = $parseDateTime
 			}
 			$TicketLogEntries = New-NinjaOneGETRequest @RequestParams
 			if ($TicketLogEntries) {

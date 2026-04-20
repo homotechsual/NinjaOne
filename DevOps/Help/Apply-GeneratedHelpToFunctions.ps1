@@ -15,12 +15,12 @@ List of function names to update
 Skip confirmations
 
 .EXAMPLE
-.\DevOps\Help\Apply-GeneratedHelpToFunctions.ps1 -FunctionNames @('Get-NinjaOneDevices')
+.\DevOps\Help\Apply-GeneratedHelpToFunctions.ps1 -functionNames @('Get-NinjaOneDevices')
 #>
 
 param(
-    [string[]]$FunctionNames,
-    [switch]$Force
+    [string[]]$functionNames,
+    [switch]$force
 )
 
 $RepoRoot = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\\..')
@@ -29,38 +29,38 @@ $helpGenerationPath = Join-Path -Path $RepoRoot -ChildPath 'HelpGeneration'
 
 function Insert-HelpBeforeFunction {
     param(
-        [string]$FilePath,
-        [string]$FunctionName,
-        [string]$HelpContent
+        [string]$filePath,
+        [string]$functionName,
+        [string]$helpContent
     )
     
-    Write-Host "  Processing: $FunctionName" -ForegroundColor White
+    Write-Host "  Processing: $functionName" -ForegroundColor White
     
     # Read file as array of lines
-    $lines = @(Get-Content -Path $FilePath -Encoding UTF8)
+    $lines = @(Get-Content -Path $filePath -Encoding UTF8)
     $content = $lines -join "`n"
     
     # Parse to find function
     $tokens = $null
     $errors = $null
     $ast = [System.Management.Automation.Language.Parser]::ParseFile(
-        $FilePath, [ref]$tokens, [ref]$errors
+        $filePath, [ref]$tokens, [ref]$errors
     )
     
     if ($errors) {
-        Write-Error "Parse errors in $FilePath"
+        Write-Error "Parse errors in $filePath"
         return $false
     }
     
     # Find the target function
     $targetFunc = $ast.FindAll(
         { $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst] -and 
-          $args[0].Name -eq $FunctionName },
+          $args[0].Name -eq $functionName },
         $false
     ) | Select-Object -First 1
     
     if (-not $targetFunc) {
-        Write-Warning "Function $FunctionName not found in $FilePath"
+        Write-Warning "Function $functionName not found in $filePath"
         return $false
     }
     
@@ -70,7 +70,7 @@ function Insert-HelpBeforeFunction {
     $precedingContent = ($lines[$searchStart..$funcLineNum] -join "`n")
     
     if ($precedingContent -match '<#[\s\S]*?\.SYNOPSIS' -or $precedingContent -match '\.SYNOPSIS') {
-        Write-Warning "Help already exists for $FunctionName"
+        Write-Warning "Help already exists for $functionName"
         return $false
     }
     
@@ -80,10 +80,10 @@ function Insert-HelpBeforeFunction {
     
     # Add newline before help if there's content before it
     if ($beforeFunction.Trim()) {
-        $newContent = $beforeFunction + "`n`n" + $HelpContent + "`n" + $functionAndAfter
+        $newContent = $beforeFunction + "`n`n" + $helpContent + "`n" + $functionAndAfter
     }
     else {
-        $newContent = $HelpContent + "`n" + $functionAndAfter
+        $newContent = $helpContent + "`n" + $functionAndAfter
     }
     
     # Validate syntax
@@ -99,7 +99,7 @@ function Insert-HelpBeforeFunction {
     }
     
     # Write back
-    Set-Content -Path $FilePath -Value $newContent -Encoding UTF8 -NoNewline
+    Set-Content -Path $filePath -Value $newContent -Encoding UTF8 -NoNewline
     Write-Host "    ✓ Help added and validated" -ForegroundColor Green
     return $true
 }
@@ -121,8 +121,8 @@ $db = Get-Content $dbFile.FullName | ConvertFrom-Json
 $allFunctions = $db | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name
 
 # If no functions specified, show public functions only
-if (-not $FunctionNames -or $FunctionNames.Count -eq 0) {
-    $FunctionNames = @(
+if (-not $functionNames -or $functionNames.Count -eq 0) {
+    $functionNames = @(
         'Invoke-NinjaOneDocumentTemplatesArchive',
         'Invoke-NinjaOneDocumentTemplatesRestore',
         'Invoke-NinjaOneOrganisationDocumentArchive',
@@ -133,10 +133,10 @@ if (-not $FunctionNames -or $FunctionNames.Count -eq 0) {
     )
 }
 
-Write-Host "Will apply help to $($FunctionNames.Count) functions:`n" -ForegroundColor Cyan
-$FunctionNames | ForEach-Object { Write-Host "  - $_" -ForegroundColor White }
+Write-Host "Will apply help to $($functionNames.Count) functions:`n" -ForegroundColor Cyan
+$functionNames | ForEach-Object { Write-Host "  - $_" -ForegroundColor White }
 
-if (-not $Force) {
+if (-not $force) {
     Write-Host ""
     $proceed = Read-Host "Proceed? (y/n)"
     if ($proceed -ne 'y') {
@@ -150,7 +150,7 @@ Write-Host "`nApplying help...`n" -ForegroundColor Cyan
 $successCount = 0
 $failureCount = 0
 
-foreach ($funcName in $FunctionNames) {
+foreach ($funcName in $functionNames) {
     if ($funcName -notin $allFunctions) {
         Write-Warning "Function $funcName not in database"
         $failureCount++
@@ -165,12 +165,12 @@ foreach ($funcName in $FunctionNames) {
     $funcType = if ($funcMetadata.IsPublic) { 'public' } else { 'private' }
     
     $helpContent = & $semanticHelpPath `
-        -FunctionName $funcName `
+        -functionName $funcName `
         -Parameters $params `
         -FunctionType $funcType
     
     # Apply help
-    if (Insert-HelpBeforeFunction -FilePath $filePath -FunctionName $funcName -HelpContent $helpContent) {
+    if (Insert-HelpBeforeFunction -filePath $filePath -functionName $funcName -helpContent $helpContent) {
         $successCount++
     }
     else {

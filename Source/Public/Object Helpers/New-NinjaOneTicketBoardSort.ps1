@@ -9,7 +9,7 @@ function New-NinjaOneTicketBoardSort {
 		.OUTPUTS
 			[Object]
 		.EXAMPLE
-			PS> New-NinjaOneTicketBoardSort -Field 'created' -Direction 'asc'
+			PS> New-NinjaOneTicketBoardSort -field 'created' -direction 'asc'
 	#>
 	[CmdletBinding()]
 	[OutputType([Object])]
@@ -18,16 +18,16 @@ function New-NinjaOneTicketBoardSort {
 	param(
 		# The field to sort by.
 		[Parameter(Mandatory, Position = 0)]
-		[String]$Field,
+		[String]$field,
 		# The sort direction.
 		[Parameter(Mandatory, Position = 1)]
 		[ValidateSet('asc', 'desc')]
-		[String]$Direction
+		[String]$direction
 	)
 	process {
 		$sort = [PSCustomObject]@{
-			Field = $Field
-			Direction = $Direction
+			Field = $field
+			Direction = $direction
 		}
 		$sort.PSTypeNames.Insert(0, 'NinjaOneTicketBoardSort')
 		return $sort

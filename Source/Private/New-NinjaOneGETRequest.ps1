@@ -7,7 +7,7 @@ function New-NinjaOneGETRequest {
 		.EXAMPLE
 			Make a GET request to the organisations endpoint.
 
-			PS C:\> New-NinjaOneGETRequest -Resource "/v2/organizations"
+			PS C:\> New-NinjaOneGETRequest -resource "/v2/organizations"
 		.OUTPUTS
 			Outputs an object containing the response from the web request.
 	#>
@@ -17,13 +17,13 @@ function New-NinjaOneGETRequest {
 	param (
 		# The resource to send the request to.
 		[Parameter( Mandatory = $True )]
-		[String]$Resource,
+		[String]$resource,
 		# A hashtable used to build the query string.
-		[HashTable]$QSCollection,
+		[HashTable]$qSCollection,
 		# return the raw response.
-		[Switch]$Raw,
+		[Switch]$raw,
 		# Parse date/time values returned in JSON.
-		[Switch]$ParseDateTime
+		[Switch]$parseDateTime
 	)
 	if ($null -eq $Script:NRAPIConnectionInformation) {
 		throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
@@ -31,21 +31,21 @@ function New-NinjaOneGETRequest {
 	if ($null -eq $Script:NRAPIAuthenticationInformation) {
 		throw "Missing NinjaOne authentication tokens, please run 'Connect-NinjaOne' first."
 	}
-	Test-NinjaOneEndpointSupport -Method 'GET' -Resource $Resource -Verbose:$VerbosePreference
+	Test-NinjaOneEndpointSupport -Method 'GET' -resource $resource -Verbose:$VerbosePreference
 	try {
-		if ($QSCollection) {
-			Write-Verbose "Query string in New-NinjaOneGETRequest contains: $($QSCollection | Out-String)"
+		if ($qSCollection) {
+			Write-Verbose "Query string in New-NinjaOneGETRequest contains: $($qSCollection | Out-String)"
 			$QueryStringCollection = [System.Web.HTTPUtility]::ParseQueryString([String]::Empty)
 			Write-Verbose 'Building [HttpQSCollection] for New-NinjaOneGETRequest'
-			foreach ($Key in $QSCollection.Keys) {
-				$QueryStringCollection.Add($Key, $QSCollection.$Key)
+			foreach ($Key in $qSCollection.Keys) {
+				$QueryStringCollection.Add($Key, $qSCollection.$Key)
 			}
 		} else {
 			Write-Verbose 'Query string collection not present...'
 		}
 		Write-Verbose "URI is $($Script:NRAPIConnectionInformation.URL)"
 		$RequestUri = [System.UriBuilder]"$($Script:NRAPIConnectionInformation.URL)"
-		$RequestUri.Path = $Resource
+		$RequestUri.Path = $resource
 		if ($QueryStringCollection) {
 			$RequestUri.Query = $QueryStringCollection.toString()
 		} else {
@@ -55,9 +55,9 @@ function New-NinjaOneGETRequest {
 			Method = 'GET'
 			Uri = $RequestUri.ToString()
 		}
-		if ($Raw) {
-			$WebRequestParams.Add('Raw', $Raw)
-		} elseif ($ParseDateTime -or $Script:ParseDateTimes) {
+		if ($raw) {
+			$WebRequestParams.Add('Raw', $raw)
+		} elseif ($parseDateTime -or $Script:ParseDateTimes) {
 			$WebRequestParams.Add('ParseDateTime', $true)
 		} else {
 			Write-Verbose 'Raw switch not present.'

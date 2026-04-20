@@ -7,7 +7,7 @@ function Set-NinjaOneBillingInvoiceNote {
 		.FUNCTIONALITY
 			Billing Invoice Note
 		.EXAMPLE
-			PS> Set-NinjaOneBillingInvoiceNote -Id 1 -Note @{ note = 'Customer confirmed billing details' }
+			PS> Set-NinjaOneBillingInvoiceNote -id 1 -note @{ note = 'Customer confirmed billing details' }
 
 			Updates the note on billing invoice 1.
 		.OUTPUTS
@@ -26,17 +26,17 @@ function Set-NinjaOneBillingInvoiceNote {
 		# Billing invoice ID.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('invoiceId')]
-		[Int]$Id,
+		[Int]$id,
 		# Billing invoice note payload per API schema.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$Note
+		[Object]$note
 	)
 	process {
 		try {
-			$Resource = ('v2/billing/invoices/{0}/note' -f $Id)
-			$RequestParams = @{ Resource = $Resource; Body = $Note }
-			if ($PSCmdlet.ShouldProcess(('Billing Invoice {0}' -f $Id), 'Update Note')) {
+			$Resource = ('v2/billing/invoices/{0}/note' -f $id)
+			$RequestParams = @{ Resource = $Resource; Body = $note }
+			if ($PSCmdlet.ShouldProcess(('Billing Invoice {0}' -f $id), 'Update Note')) {
 				return (New-NinjaOnePATCHRequest @RequestParams)
 			}
 		} catch {

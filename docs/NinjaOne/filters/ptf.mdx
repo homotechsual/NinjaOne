@@ -1,0 +1,51 @@
+---
+title: Plan Type Filter
+sidebar_position: 3
+description: The start time filter `stf` parameter.
+description: The plan type filter `ptf` parameter.
+---
+
+The plan type filter is, currently, used in the [Get-NinjaOneBackupJobs](../commandlets/Get/Get-NinjaOneBackupJobs.mdx) commandlet (which maps to the `/v2/backup/jobs` endpoint if not using the module) and is used to filter the jobs returned based on the backup plan type. It supports two modes of operations and two plan type values.
+
+## Single plan type mode
+
+This retrieves backup jobs matching the plan type provided, for example:
+
+```ps
+Get-NinjaOneBackupJobs -planType 'IMAGE'
+```
+
+This will return all jobs for an image backup plan. Under the hood in the module this gets turned into the following query param:
+
+```ps
+https://eu.ninjarmm.com/v2/backup/jobs?ptf=planType%3dIMAGE
+```
+
+## Multiple plan type mode
+
+This retrieves backup jobs matching any one of the provided plan types, for example:
+
+```ps
+Get-NinjaOneBackupJobs -planType @('IMAGE', 'FILE_FOLDER')
+```
+
+This will return all jobs for an image or file/folder backup plan. Under the hood in the module this gets turned into the following query param:
+
+```ps
+https://eu.ninjarmm.com/v2/backup/jobs?ptf=planType in (IMAGE%2cFILE_FOLDER)
+```
+
+## Possible plan type values
+
+The possible values for the backup job plan type are:
+
+* IMAGE
+* FILE_FOLDER
+
+## Passing a planType filter directly
+
+Instead of using the `-planType` parameter you can use `-ptf` and pass the filter string directly - don't HTML encode the characters though - the module will handle it. For example:
+
+```ps
+Get-NinjaOneBackupJobs -ptf "planType = IMAGE"
+```

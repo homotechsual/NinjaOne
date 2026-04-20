@@ -7,7 +7,7 @@ function New-NinjaOneSoftwareLicense {
 		.FUNCTIONALITY
 			Software License
 		.EXAMPLE
-			PS> New-NinjaOneSoftwareLicense -License @{ name = 'Microsoft Office'; description = 'Office 365 subscriptions' }
+			PS> New-NinjaOneSoftwareLicense -license @{ name = 'Microsoft Office'; description = 'Office 365 subscriptions' }
 
 			Creates a new software license.
 		.EXAMPLE
@@ -57,7 +57,7 @@ function New-NinjaOneSoftwareLicense {
 				}
 				name = "string"
 			}
-			PS> New-NinjaOneSoftwareLicense -License $body
+			PS> New-NinjaOneSoftwareLicense -license $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -77,12 +77,12 @@ function New-NinjaOneSoftwareLicense {
 		# Software license configuration per API schema
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$License
+		[Object]$license
 	)
 	process {
 		try {
 			$Resource = 'v2/software-license'
-			$RequestParams = @{ Resource = $Resource; Body = $License }
+			$RequestParams = @{ Resource = $Resource; Body = $license }
 			if ($PSCmdlet.ShouldProcess('Software License', 'Create')) {
 				$Result = New-NinjaOnePOSTRequest @RequestParams
 				return $Result

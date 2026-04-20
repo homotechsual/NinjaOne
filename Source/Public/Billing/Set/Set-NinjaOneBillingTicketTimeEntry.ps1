@@ -7,7 +7,7 @@ function Set-NinjaOneBillingTicketTimeEntry {
 		.FUNCTIONALITY
 			Billing Ticket Time Entry
 		.EXAMPLE
-			PS> Set-NinjaOneBillingTicketTimeEntry -TimeEntryId 1 -TimeEntry @{ billable = $true }
+			PS> Set-NinjaOneBillingTicketTimeEntry -timeEntryId 1 -timeEntry @{ billable = $true }
 
 			Updates billing ticket time entry 1.
 		.OUTPUTS
@@ -26,17 +26,17 @@ function Set-NinjaOneBillingTicketTimeEntry {
 		# Time entry ID.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('id')]
-		[Int]$TimeEntryId,
+		[Int]$timeEntryId,
 		# Time entry payload per API schema.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$TimeEntry
+		[Object]$timeEntry
 	)
 	process {
 		try {
-			$Resource = ('v2/billing/ticket-time-entry/{0}' -f $TimeEntryId)
-			$RequestParams = @{ Resource = $Resource; Body = $TimeEntry }
-			if ($PSCmdlet.ShouldProcess(('Billing Ticket Time Entry {0}' -f $TimeEntryId), 'Update')) {
+			$Resource = ('v2/billing/ticket-time-entry/{0}' -f $timeEntryId)
+			$RequestParams = @{ Resource = $Resource; Body = $timeEntry }
+			if ($PSCmdlet.ShouldProcess(('Billing Ticket Time Entry {0}' -f $timeEntryId), 'Update')) {
 				return (New-NinjaOnePUTRequest @RequestParams)
 			}
 		} catch {

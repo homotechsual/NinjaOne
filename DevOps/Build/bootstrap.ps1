@@ -7,7 +7,7 @@
 #>
 [CmdletBinding()]
 param(
-	[Switch]$Force
+	[Switch]$force
 )
 
 $BuildToolsRoot = $PSScriptRoot
@@ -31,14 +31,41 @@ if (Test-Path -Path $BundledModulesPath) {
 # Install PowerShellGet if needed (for older systems)
 if (-not (Get-Module -Name PowerShellGet -ListAvailable).Where({ $_.Version -ge '2.0.0' })) {
 	Write-Host 'Bootstrap: Installing PowerShellGet' -ForegroundColor Yellow
-	Install-Module -Name PowerShellGet -Force -Scope CurrentUser -AllowClobber
-	Import-Module PowerShellGet -Force
+	Install-Module -Name PowerShellGet -force -Scope CurrentUser -AllowClobber
+	Import-Module PowerShellGet -force
 }
 
 # Install Install-RequiredModule script if not present
 if (-not (Get-InstalledScript -Name 'Install-RequiredModule' -ErrorAction SilentlyContinue)) {
 	Write-Host 'Bootstrap: Installing Install-RequiredModule script' -ForegroundColor Yellow
-	Install-Script -Name 'Install-RequiredModule' -Force -Scope CurrentUser
+	Install-Script -Name 'Install-RequiredModule' -force -Scope CurrentUser
+}
+
+$installCmd = Get-Command -Name 'Install-RequiredModule' -ErrorAction SilentlyContinue
+if (-not $installCmd) {
+	$installedScript = Get-InstalledScript -Name 'Install-RequiredModule' -ErrorAction SilentlyContinue
+	if ($installedScript) {
+		$installCmdPath = Join-Path -Path $installedScript.InstalledLocation -ChildPath 'Install-RequiredModule.ps1'
+	}
+} else {
+	if ($installCmd.Path) {
+		$installCmdPath = $installCmd.Path
+	} elseif ($installCmd.Source -and (Test-Path -Path $installCmd.Source)) {
+		$installCmdPath = $installCmd.Source
+	}
+}
+
+if (-not $installCmdPath) {
+	$userDocs = [Environment]::GetFolderPath('MyDocuments')
+	$fallbackPaths = @(
+		(Join-Path -Path $userDocs -ChildPath 'PowerShell\Scripts\Install-RequiredModule.ps1'),
+		(Join-Path -Path $userDocs -ChildPath 'WindowsPowerShell\Scripts\Install-RequiredModule.ps1')
+	)
+	$installCmdPath = $fallbackPaths | Where-Object { Test-Path -Path $_ } | Select-Object -First 1
+}
+
+if (-not $installCmdPath) {
+	throw 'Install-RequiredModule script not found. Ensure it is installed and available to the current user.'
 }
 
 # Install required modules from RequiredModules.psd1
@@ -53,13 +80,13 @@ if (Test-Path -Path $RequiredModulesPath) {
 			$manifestPath = Microsoft.PowerShell.Management\Get-ChildItem -LiteralPath $moduleDir -Filter '*.psd1' -Recurse | Select-Object -First 1
 			if ($manifestPath) {
 				Write-Host "Bootstrap: Loading bundled module version from: $($_.Name)" -ForegroundColor Green
-				Import-Module -Name $manifestPath.FullName -Force -WarningAction SilentlyContinue
+				Import-Module -Name $manifestPath.FullName -force -WarningAction SilentlyContinue
 			}
 		}
 	}
 	
 	# Then install/update any missing modules
-	Install-RequiredModule -RequiredModulesFile $RequiredModulesPath -Scope CurrentUser -TrustRegisteredRepositories -Import -Quiet
+	& $installCmdPath -RequiredModulesFile $RequiredModulesPath -Scope CurrentUser -TrustRegisteredRepositories -Import -Quiet
 } else {
 	throw "RequiredModules.psd1 not found at: $RequiredModulesPath"
 }

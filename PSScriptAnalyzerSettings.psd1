@@ -69,6 +69,7 @@
 		'Measure-AvoidDoubleQuoteInterpolation',
 		'Measure-AvoidOneLineIfElse',
 		'Measure-AvoidSelfReferentialParameterAlias',
+		'Measure-RequireCamelCaseParameterName',
 		'Measure-RequireProperTypeAcceleratorCasing',
 		'Measure-RequiredCommentBasedHelp',
 		'Measure-EmptyCommentBasedHelpSections',

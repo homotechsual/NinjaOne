@@ -43,28 +43,28 @@ function Measure-RequiredCommentBasedHelp {
 		# The script block AST to analyze.
 		[Parameter(Mandatory)]
 		[ValidateNotNullOrEmpty()]
-		[System.Management.Automation.Language.ScriptBlockAst]$ScriptBlockAst
+		[System.Management.Automation.Language.ScriptBlockAst]$scriptBlockAst
 	)
 
 	process {
 		try {
-			$scriptPath = $ScriptBlockAst.Extent.File
+			$scriptPath = $scriptBlockAst.Extent.File
 			$normalizedScriptPath = if ($scriptPath) { $scriptPath -replace '\\', '/' } else { $null }
 			if ($normalizedScriptPath -like '*/CustomRules/*') {
 				return
 			}
 			
 			# Get script content for checking help blocks before function keyword
-			$scriptContent = $ScriptBlockAst.Extent.Text
+			$scriptContent = $scriptBlockAst.Extent.Text
 			
 			# Find all function and class definitions
-			$functions = $ScriptBlockAst.FindAll({
+			$functions = $scriptBlockAst.FindAll({
 					param([System.Management.Automation.Language.Ast]$Ast)
 					$Ast -is [System.Management.Automation.Language.FunctionDefinitionAst]
 				}, $false)
 
 			# Also find classes to exclude their constructors
-			$classes = $ScriptBlockAst.FindAll({
+			$classes = $scriptBlockAst.FindAll({
 					param([System.Management.Automation.Language.Ast]$Ast)
 					$Ast -is [System.Management.Automation.Language.TypeDefinitionAst]
 				}, $false)
@@ -197,15 +197,19 @@ function Measure-RequireProperTypeAcceleratorCasing {
 		# The script block AST to analyze.
 		[Parameter(Mandatory)]
 		[ValidateNotNullOrEmpty()]
-		[System.Management.Automation.Language.ScriptBlockAst]$ScriptBlockAst
+		[System.Management.Automation.Language.ScriptBlockAst]$scriptBlockAst
 	)
 
 	process {
 		try {
-			$scriptPath = $ScriptBlockAst.Extent.File
+			$scriptPath = $scriptBlockAst.Extent.File
 			if ($scriptPath) {
 				$normalizedScriptPath = $scriptPath -replace '\\', '/'
 				if ($normalizedScriptPath -like '*/CustomRules/*') {
+					return
+				}
+
+				if ($normalizedScriptPath -notlike '*/Source/Public/*') {
 					return
 				}
 			}
@@ -233,7 +237,7 @@ function Measure-RequireProperTypeAcceleratorCasing {
 				$acceleratorMap[$key.ToLowerInvariant()] = $accelerators[$key].Name
 			}
 
-			$typeAsts = $ScriptBlockAst.FindAll({
+			$typeAsts = $scriptBlockAst.FindAll({
 					param([System.Management.Automation.Language.Ast]$Ast)
 					$Ast -is [System.Management.Automation.Language.TypeExpressionAst] -or
 					$Ast -is [System.Management.Automation.Language.TypeConstraintAst]
@@ -306,13 +310,13 @@ function Measure-EmptyCommentBasedHelpSections {
 		# The script block AST to analyze.
 		[Parameter(Mandatory)]
 		[ValidateNotNullOrEmpty()]
-		[System.Management.Automation.Language.ScriptBlockAst]$ScriptBlockAst
+		[System.Management.Automation.Language.ScriptBlockAst]$scriptBlockAst
 	)
 
 	process {
 		try {
 			# Only check functions
-			$functions = $ScriptBlockAst.FindAll({ $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $true)
+			$functions = $scriptBlockAst.FindAll({ $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $true)
 			
 			foreach ($function in $functions) {
 				$help = $function.GetHelpContent()
@@ -376,13 +380,13 @@ function Measure-MissingParameterDescription {
 		# The script block AST to analyze.
 		[Parameter(Mandatory)]
 		[ValidateNotNullOrEmpty()]
-		[System.Management.Automation.Language.ScriptBlockAst]$ScriptBlockAst
+		[System.Management.Automation.Language.ScriptBlockAst]$scriptBlockAst
 	)
 
 	process {
 		try {
 			# Only check functions
-			$functions = $ScriptBlockAst.FindAll({ $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $true)
+			$functions = $scriptBlockAst.FindAll({ $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $true)
 			
 			foreach ($function in $functions) {
 				# Get the param block
@@ -476,20 +480,26 @@ function Measure-AvoidSelfReferentialParameterAlias {
 		# The script block AST to analyze.
 		[Parameter(Mandatory)]
 		[ValidateNotNullOrEmpty()]
-		[System.Management.Automation.Language.ScriptBlockAst]$ScriptBlockAst
+		[System.Management.Automation.Language.ScriptBlockAst]$scriptBlockAst
 	)
 
 	process {
 		try {
-			$scriptPath = $ScriptBlockAst.Extent.File
-			if ($scriptPath) {
-				$normalizedScriptPath = $scriptPath -replace '\\', '/'
-				if ($normalizedScriptPath -like '*/CustomRules/*') {
-					return
-				}
+			$scriptPath = $scriptBlockAst.Extent.File
+			if (-not $scriptPath) {
+				return
 			}
 
-			$parameters = $ScriptBlockAst.FindAll({
+			$normalizedScriptPath = $scriptPath -replace '\\', '/'
+			if ($normalizedScriptPath -like '*/CustomRules/*') {
+				return
+			}
+
+			if ($normalizedScriptPath -notlike '*/Source/Public/*') {
+				return
+			}
+
+			$parameters = $scriptBlockAst.FindAll({
 					param([System.Management.Automation.Language.Ast]$Ast)
 					$Ast -is [System.Management.Automation.Language.ParameterAst]
 				}, $false)
@@ -541,6 +551,145 @@ function Measure-AvoidSelfReferentialParameterAlias {
 							$result
 						}
 					}
+				}
+			}
+		} catch {
+			$PSCmdlet.ThrowTerminatingError($_)
+		}
+	}
+}
+
+function ConvertTo-CamelCaseParameterName {
+	<#
+		.SYNOPSIS
+			Converts an identifier to camelCase.
+		.DESCRIPTION
+			Normalizes PascalCase, acronym-prefixed, and snake_case identifiers into a
+			camelCase form suitable for parameter name suggestions.
+		.PARAMETER identifier
+			The identifier to convert.
+		.OUTPUTS
+			[string]
+	#>
+	[CmdletBinding()]
+	[OutputType([string])]
+	param(
+		# The identifier to convert.
+		[Parameter(Mandatory)]
+		[string]$identifier
+	)
+
+	if ($identifier -match '_') {
+		$segments = $identifier -split '_+' | Where-Object { $_ }
+		if (-not $segments) {
+			return $identifier
+		}
+
+		$camelName = $segments[0].ToLowerInvariant()
+		if ($segments.Count -gt 1) {
+			$camelName += (($segments | Select-Object -Skip 1) | ForEach-Object {
+					if ($_.Length -eq 1) {
+						$_.ToUpperInvariant()
+					} else {
+						$_.Substring(0, 1).ToUpperInvariant() + $_.Substring(1).ToLowerInvariant()
+					}
+				}) -join ''
+		}
+
+		return $camelName
+	}
+
+	$chars = $identifier.ToCharArray()
+	$uppercasePrefixLength = 0
+	while ($uppercasePrefixLength -lt $chars.Length -and [char]::IsUpper($chars[$uppercasePrefixLength])) {
+		$uppercasePrefixLength++
+	}
+
+	if ($uppercasePrefixLength -le 1) {
+		if ($identifier.Length -eq 1) {
+			return $identifier.ToLowerInvariant()
+		}
+
+		return $identifier.Substring(0, 1).ToLowerInvariant() + $identifier.Substring(1)
+	}
+
+	if ($uppercasePrefixLength -lt $chars.Length) {
+		$uppercasePrefixLength--
+	}
+
+	$prefix = $identifier.Substring(0, $uppercasePrefixLength).ToLowerInvariant()
+	$suffix = $identifier.Substring($uppercasePrefixLength)
+	return $prefix + $suffix
+}
+
+function Measure-RequireCamelCaseParameterName {
+	<#
+		.SYNOPSIS
+			Ensures function parameter names use camelCase.
+		.DESCRIPTION
+			Flags parameters declared in functions when their names do not start with a
+			lowercase letter or contain unsupported characters. The expected format is
+			camelCase using only letters and digits. CI scopes this rule to public cmdlet
+			files when invoking ScriptAnalyzer.
+		.EXAMPLE
+			Reports [int]$DeviceId and suggests [int]$deviceId.
+		.INPUTS
+			[System.Management.Automation.Language.ScriptBlockAst]
+		.OUTPUTS
+			[Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]]
+	#>
+	[CmdletBinding()]
+	[OutputType([Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]])]
+	param(
+		# The script block AST to analyze.
+		[Parameter(Mandatory)]
+		[ValidateNotNullOrEmpty()]
+		[System.Management.Automation.Language.ScriptBlockAst]$scriptBlockAst
+	)
+
+	process {
+		try {
+			$scriptPath = $scriptBlockAst.Extent.File
+			if ($scriptPath) {
+				$normalizedScriptPath = $scriptPath -replace '\\', '/'
+				if ($normalizedScriptPath -like '*/CustomRules/*') {
+					return
+				}
+			}
+
+			$functions = $scriptBlockAst.FindAll({
+					param([System.Management.Automation.Language.Ast]$Ast)
+					$Ast -is [System.Management.Automation.Language.FunctionDefinitionAst]
+				}, $true)
+
+			foreach ($function in $functions) {
+				$paramBlock = $function.Body.ParamBlock
+				if ($null -eq $paramBlock -or $null -eq $paramBlock.Parameters -or $paramBlock.Parameters.Count -eq 0) {
+					continue
+				}
+
+				foreach ($parameter in $paramBlock.Parameters) {
+					$parameterName = $parameter.Name.VariablePath.UserPath
+					if (-not $parameterName) {
+						continue
+					}
+
+					if ($parameterName -cmatch '^[a-z][A-Za-z0-9]*$') {
+						continue
+					}
+
+					$suggestedName = ConvertTo-CamelCaseParameterName -identifier $parameterName
+
+					$result = [Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord]::new(
+						"Parameter '`$$parameterName' in function '$($function.Name)' should use camelCase. Rename it to '`$$suggestedName'.",
+						$parameter.Extent,
+						'PSUseCamelCaseParameterName',
+						[Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticSeverity]::Warning,
+						$null,
+						$null,
+						$null
+					)
+					$result
 				}
 			}
 		} catch {

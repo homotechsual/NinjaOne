@@ -7,7 +7,7 @@ function New-NinjaOneCustomField {
 		.FUNCTIONALITY
 			Custom Field
 		.EXAMPLE
-			PS> New-NinjaOneCustomField -CustomField @{ name = 'Department'; type = 'TEXT' }
+			PS> New-NinjaOneCustomField -customField @{ name = 'Department'; type = 'TEXT' }
 
 			Creates a new custom field named 'Department' with type 'TEXT'.
 		.EXAMPLE
@@ -84,7 +84,7 @@ function New-NinjaOneCustomField {
 				apiPermission = "NONE"
 				label = "string"
 			}
-			PS> New-NinjaOneCustomField -CustomField $body
+			PS> New-NinjaOneCustomField -customField $body
 			# FULL REQUEST EXAMPLE (AUTO-GENERATED) - END
 			
 			Full request example (auto-generated).
@@ -104,12 +104,12 @@ function New-NinjaOneCustomField {
 		# Custom field configuration per API schema
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
 		[Alias('body')]
-		[Object]$CustomField
+		[Object]$customField
 	)
 	process {
 		try {
 			$Resource = 'v2/custom-fields'
-			$RequestParams = @{ Resource = $Resource; Body = $CustomField }
+			$RequestParams = @{ Resource = $Resource; Body = $customField }
 			if ($PSCmdlet.ShouldProcess('Custom Fields', 'Create')) {
 				$Result = New-NinjaOnePOSTRequest @RequestParams
 				return $Result

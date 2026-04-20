@@ -5,7 +5,7 @@ function New-NinjaOnePUTRequest {
 		.DESCRIPTION
 			Wrapper function to build web requests for the NinjaOne API.
 		.EXAMPLE
-			PS C:\> New-NinjaOnePUTRequest -Resource "/v2/organizations -Body @{"name"="MyOrg"}
+			PS C:\> New-NinjaOnePUTRequest -resource '/v2/organizations' -body @{ name = 'MyOrg' }
 		.OUTPUTS
 			Outputs an object containing the response from the web request.
 	#>
@@ -15,16 +15,16 @@ function New-NinjaOnePUTRequest {
 	param (
 		# The resource to send the request to.
 		[Parameter(Mandatory = $True)]
-		[String]$Resource,
+		[String]$resource,
 		# A hashtable used to build the query string.
-		[HashTable]$QSCollection,
+		[HashTable]$qSCollection,
 		# A hashtable used to build the body of the request.
 		[Parameter(Mandatory = $True)]
-		[Object]$Body,
+		[Object]$body,
 		# Force body to an array.
-		[Switch]$AsArray,
+		[Switch]$asArray,
 		# Parse date/time values returned in JSON.
-		[Switch]$ParseDateTime
+		[Switch]$parseDateTime
 	)
 	if ($null -eq $Script:NRAPIConnectionInformation) {
 		throw "Missing NinjaOne connection information, please run 'Connect-NinjaOne' first."
@@ -32,22 +32,22 @@ function New-NinjaOnePUTRequest {
 	if ($null -eq $Script:NRAPIAuthenticationInformation) {
 		throw "Missing NinjaOne authentication tokens, please run 'Connect-NinjaOne' first."
 	}
-	Test-NinjaOneEndpointSupport -Method 'PUT' -Resource $Resource -Verbose:$VerbosePreference
+	Test-NinjaOneEndpointSupport -Method 'PUT' -resource $resource -Verbose:$VerbosePreference
 	try {
-		if ($QSCollection) {
-			Write-Verbose "Query string in New-NinjaOnePUTRequest contains: $($QSCollection | Out-String)"
+		if ($qSCollection) {
+			Write-Verbose "Query string in New-NinjaOnePUTRequest contains: $($qSCollection | Out-String)"
 			$QueryStringCollection = [System.Web.HTTPUtility]::ParseQueryString([String]::Empty)
 			Write-Verbose 'Building [HttpQSCollection] for New-NinjaOnePUTRequest'
-			foreach ($Key in $QSCollection.Keys) {
-				$QueryStringCollection.Add($Key, $QSCollection.$Key)
+			foreach ($Key in $qSCollection.Keys) {
+				$QueryStringCollection.Add($Key, $qSCollection.$Key)
 			}
 		} else {
 			Write-Verbose 'Query string collection not present...'
 		}
 		Write-Verbose "URI is $($Script:NRAPIConnectionInformation.URL)"
 		$RequestUri = [System.UriBuilder]"$($Script:NRAPIConnectionInformation.URL)"
-		Write-Verbose "Path is $($Resource)"
-		$RequestUri.Path = $Resource
+		Write-Verbose "Path is $($resource)"
+		$RequestUri.Path = $resource
 		if ($QueryStringCollection) {
 			Write-Verbose "Query string is $($QueryStringCollection | Out-String)"
 			$RequestUri.Query = $QueryStringCollection
@@ -58,17 +58,17 @@ function New-NinjaOnePUTRequest {
 			Method = 'PUT'
 			Uri = $RequestUri.ToString()
 		}
-		if ($ParseDateTime -or $Script:ParseDateTimes) {
+		if ($parseDateTime -or $Script:ParseDateTimes) {
 			$WebRequestParams.ParseDateTime = $true
 		}
-		if ($Body) {
+		if ($body) {
 			Write-Verbose 'Building [HttpBody] for New-NinjaOnePUTRequest'
-			if ($AsArray) {
+			if ($asArray) {
 				Write-Verbose 'Forcing body to array'
-				$WebRequestParams.Body = (ConvertTo-Json -InputObject @($Body) -Depth 100)
+				$WebRequestParams.Body = (ConvertTo-Json -InputObject @($body) -Depth 100)
 			} else {
 				Write-Verbose 'Not forcing body to array'
-				$WebRequestParams.Body = (ConvertTo-Json -InputObject $Body -Depth 100)
+				$WebRequestParams.Body = (ConvertTo-Json -InputObject $body -Depth 100)
 			}
 			Write-Verbose "Raw body is $($WebRequestParams.Body)"
 		} else {
