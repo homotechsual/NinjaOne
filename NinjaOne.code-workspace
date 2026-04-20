@@ -101,6 +101,7 @@
 				"matchCommandLine": true,
 			},
 			"git pull": true,
+			"git fetch": true,
 		},
 		"codeQL.githubDatabase.download": "never",
 		"cSpell.words": ["Analyzer"],

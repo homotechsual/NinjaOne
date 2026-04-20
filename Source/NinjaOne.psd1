@@ -12,316 +12,315 @@
 	RootModule = '.\NinjaOne.psm1'
 
 	# Version number of this module.
-    ModuleVersion = '2.6.0'
+	ModuleVersion = '2.6.0'
 
-# Supported PSEditions
-# CompatiblePSEditions = @()
+	# Supported PSEditions
+	# CompatiblePSEditions = @()
 
-# ID used to uniquely identify this module
-GUID = '2f88e09d-773b-441e-8ca5-5b5eff57bf3c'
+	# ID used to uniquely identify this module
+	GUID = '2f88e09d-773b-441e-8ca5-5b5eff57bf3c'
 
-# Author of this module
-Author = 'Mikey O''Toole'
+	# Author of this module
+	Author = 'Mikey O''Toole'
 
-# Company or vendor of this module
-CompanyName = 'Unknown'
+	# Company or vendor of this module
+	CompanyName = 'Unknown'
 
-# Copyright statement for this module
-Copyright = '(c) 2021 Mikey O''Toole. All rights reserved.'
+	# Copyright statement for this module
+	Copyright = '(c) 2021 Mikey O''Toole. All rights reserved.'
 
-# Description of the functionality provided by this module
-Description = 'This module provides an interface to the NinjaOne API.'
+	# Description of the functionality provided by this module
+	Description = 'This module provides an interface to the NinjaOne API.'
 
-# Minimum version of the PowerShell engine required by this module
-PowerShellVersion = '5.1'
+	# Minimum version of the PowerShell engine required by this module
+	PowerShellVersion = '5.1'
 
-# Name of the PowerShell host required by this module
-# PowerShellHostName = ''
+	# Name of the PowerShell host required by this module
+	# PowerShellHostName = ''
 
-# Minimum version of the PowerShell host required by this module
-# PowerShellHostVersion = ''
+	# Minimum version of the PowerShell host required by this module
+	# PowerShellHostVersion = ''
 
-# Minimum version of Microsoft .NET Framework required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
-# DotNetFrameworkVersion = ''
+	# Minimum version of Microsoft .NET Framework required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
+	# DotNetFrameworkVersion = ''
 
-# Minimum version of the common language runtime (CLR) required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
-# ClrVersion = ''
+	# Minimum version of the common language runtime (CLR) required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
+	# ClrVersion = ''
 
-# Processor architecture (None, X86, Amd64) required by this module
-# ProcessorArchitecture = ''
+	# Processor architecture (None, X86, Amd64) required by this module
+	# ProcessorArchitecture = ''
 
-# Modules that must be imported into the global environment prior to importing this module
-# RequiredModules = @()
+	# Modules that must be imported into the global environment prior to importing this module
+	# RequiredModules = @()
 
-# Assemblies that must be loaded prior to importing this module
-RequiredAssemblies = './Binaries/MetadataAttribute.dll', 
-               './Binaries/ValidateNodeRoleId.dll'
+	# Assemblies that must be loaded prior to importing this module
+	RequiredAssemblies = './Binaries/MetadataAttribute.dll', 
+				'./Binaries/ValidateNodeRoleId.dll'
 
-# Script files (.ps1) that are run in the caller's environment prior to importing this module.
-# ScriptsToProcess = @()
+	# Script files (.ps1) that are run in the caller's environment prior to importing this module.
+	# ScriptsToProcess = @()
 
-# Type files (.ps1xml) to be loaded when importing this module
-# TypesToProcess = @()
+	# Type files (.ps1xml) to be loaded when importing this module
+	# TypesToProcess = @()
 
-# Format files (.ps1xml) to be loaded when importing this module
-# FormatsToProcess = @()
+	# Format files (.ps1xml) to be loaded when importing this module
+	# FormatsToProcess = @()
 
-# Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-# NestedModules = @()
+	# Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
+	# NestedModules = @()
 
-# Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Connect-NinjaOne', 'Find-NinjaOneDevices', 'Get-NinjaOneActivities', 
-               'Get-NinjaOneAlerts', 'Get-NinjaOneAntivirusStatus', 
-               'Get-NinjaOneAntivirusThreats', 'Get-NinjaOneAutomations', 
-               'Get-NinjaOneBillingAccounts', 'Get-NinjaOneBillingAgreements', 
-               'Get-NinjaOneBillingInvoices', 'Get-NinjaOneBillingProducts', 
-               'Get-NinjaOneBillingTicketProducts', 'Get-NinjaOneBackupJobs', 
-               'Get-NinjaOneComputerSystems', 
-               'Get-NinjaOneContacts', 'Get-NinjaOneTicketingContacts', 
-               'Get-NinjaOneSystemContacts', 'Get-NinjaOneContact', 
-               'Get-NinjaOneCustomFields', 'Get-NinjaOneCustomField', 
-               'Get-NinjaOneCustomFieldsSchema', 
-               'Get-NinjaOneCustomFieldSignedURLs', 
-               'Get-NinjaOneCustomFieldsPolicyCondition', 
-               'Get-NinjaOneCustomFieldsPolicyConditions', 
-               'Get-NinjaOneDeviceActivities', 'Get-NinjaOneDeviceAlerts', 
-               'Get-NinjaOneDeviceBackupUsage', 'Get-NinjaOneDeviceCustomFields', 
-               'Get-NinjaOneDeviceDashboardURL', 'Get-NinjaOneDeviceDisks', 
-               'Get-NinjaOneDeviceHealth', 'Get-NinjaOneDeviceJobs', 
-               'Get-NinjaOneDeviceLastLoggedOnUser', 
-               'Get-NinjaOneDeviceNetworkInterfaces', 
-               'Get-NinjaOneDeviceOSPatches', 'Get-NinjaOneDeviceOSPatchInstalls', 
-               'Get-NinjaOneDevicePolicyOverrides', 'Get-NinjaOneDeviceProcessors', 
-               'Get-NinjaOneDevices', 'Get-NinjaOneDeviceScriptingOptions', 
-               'Get-NinjaOneDeviceSoftwareInventory', 
-               'Get-NinjaOneDeviceSoftwarePatches', 
-               'Get-NinjaOneDeviceSoftwarePatchInstalls', 
-               'Get-NinjaOneDeviceVolumes', 'Get-NinjaOneDeviceWindowsServices', 
-               'Get-NinjaOneDisks', 'Get-NinjaOneDocumentTemplates', 
-               'Get-NinjaOneGlobalKnowledgeBaseArticles', 
-               'Get-NinjaOneGroupMembers', 'Get-NinjaOneGroups', 
-               'Get-NinjaOneInstanceCapabilities', 'Get-NinjaOneInstaller', 
-               'Get-NinjaOneIntegrityCheckJobs', 'Get-NinjaOneJobs', 
-               'Get-NinjaOneKnowledgeBaseArticle', 
-               'Get-NinjaOneKnowledgeBaseFolders', 
-               'Get-NinjaOneChecklistTemplates', 
-               'Get-NinjaOneLocationCustomFields', 'Get-NinjaOneLocations', 
-               'Get-NinjaOneLoggedOnUsers', 'Get-NinjaOneNetworkInterfaces', 
-               'Get-NinjaOneNotificationChannels', 'Get-NinjaOneOperatingSystems', 
-               'Get-NinjaOneOrganisationCustomFields', 
-               'Get-NinjaOneOrganisationDevices', 
-               'Get-NinjaOneOrganisationDocuments', 
-               'Get-NinjaOneOrganisationDocumentSignedURLs', 
-               'Get-NinjaOneOrganisationChecklists', 
-               'Get-NinjaOneOrganisationChecklist', 
-               'Get-NinjaOneOrganisationChecklistSignedURLs', 
-               'Get-NinjaOneOrganisationInformation', 
-               'Get-NinjaOneOrganisationKnowledgeBaseArticles', 
-               'Get-NinjaOneOrganisationLocations', 
-               'Get-NinjaOneOrganisationLocationBackupUsage', 
-               'Get-NinjaOneOrganisations', 'Get-NinjaOneOrganisationUsers', 
-               'Get-NinjaOneOSPatches', 'Get-NinjaOneOSPatchInstalls', 
-               'Get-NinjaOnePolicies', 'Get-NinjaOnePolicyOverrides', 
-               'Get-NinjaOneProcessors', 'Get-NinjaOneRAIDControllers', 
-               'Get-NinjaOneRAIDDrives', 'Get-NinjaOneAssetRelationships', 
-               'Get-NinjaOneAssetRelationshipTypes', 
-               'Get-NinjaOneRelatedItemAttachment', 
-               'Get-NinjaOneRelatedItemAttachmentSignedURLs', 
-               'Get-NinjaOneRelatedItems', 'Get-NinjaOneRoles', 'Get-NinjaOneTab', 
-               'Get-NinjaOneTabEndUser', 'Get-NinjaOneTabOrganisation', 
-               'Get-NinjaOneEntityCustomFieldsSignedURLs', 
-               'Get-NinjaOneTabSummaryEndUser', 
-               'Get-NinjaOneTabSummaryOrganisation', 'Get-NinjaOneTabSummaryRole', 
-               'Set-NinjaOneTabEndUserOrder', 'Get-NinjaOneTabRole', 
-               'Remove-NinjaOneTab', 'Set-NinjaOneTabRoleVisibility', 
-               'Set-NinjaOneTabOrganisationOrder', 'Set-NinjaOneTabRoleOrder', 
-               'Get-NinjaOneTags', 'Remove-NinjaOneTag', 
-               'New-NinjaOneUnmanagedDevice', 'Remove-NinjaOneUnmanagedDevice', 
-               'Get-NinjaOneUserRoles', 'Add-NinjaOneUserRoleMembers', 
-               'Remove-NinjaOneUserRoleMembers', 'Set-NinjaOneEndUserCustomFields', 
-               'Set-NinjaOneEndUserDeviceAccess', 
-               'Set-NinjaOneKnowledgeBaseArticles', 'Set-NinjaOneTab', 
-               'Rename-NinjaOneTab', 'New-NinjaOneTab', 
-               'Get-NinjaOneVulnerabilityScanGroups', 
-               'Get-NinjaOneVulnerabilityScanGroup', 
-               'Invoke-NinjaOneVulnerabilityScanGroupUpload', 
-               'Invoke-NinjaOneChecklistArchive', 
-               'Invoke-NinjaOneChecklistRestore', 
-               'Invoke-NinjaOneCustomFieldsBulk', 'New-NinjaOneChecklistTemplate', 
-               'Remove-NinjaOneChecklistTemplates', 
-               'Set-NinjaOneChecklistTemplates', 
-               'Set-NinjaOneOrganisationChecklists', 
-               'Remove-NinjaOneOrganisationChecklists', 
-               'Invoke-NinjaOneOrganisationChecklistsPromote', 
-               'Invoke-NinjaOneOrganisationChecklistsPromoteWithName', 
-               'Invoke-NinjaOneDocumentTemplateArchive', 
-               'Invoke-NinjaOneDocumentTemplateRestore', 
-               'Invoke-NinjaOneDocumentTemplatesArchive', 
-               'Invoke-NinjaOneDocumentTemplatesRestore', 
-               'Invoke-NinjaOneOrganisationDocumentArchive', 
-               'Invoke-NinjaOneOrganisationDocumentRestore', 
-               'Invoke-NinjaOneOrganisationDocumentsArchive', 
-               'Invoke-NinjaOneOrganisationDocumentsRestore', 
-               'Invoke-NinjaOneOrganisationRestore', 
-               'New-NinjaOneOrganisationChecklist', 
-               'New-NinjaOneOrganisationChecklistsFromTemplates', 
-               'Remove-NinjaOneOrganisationChecklist', 
-               'Invoke-NinjaOneOrganisationArchive', 
-               'Invoke-NinjaOneBillingAgreementDeactivate', 
-               'Invoke-NinjaOneBillingInvoicesApprove', 
-               'Invoke-NinjaOneBillingInvoicesArchive', 
-               'Invoke-NinjaOneBillingInvoicesExport', 
-               'Invoke-NinjaOneBillingInvoicesUnarchive', 
-               'Invoke-NinjaOneBillingProductActivate', 
-               'Invoke-NinjaOneBillingProductDeactivate', 
-               'Invoke-NinjaOneBillingTicketProductsDelete', 
-               'New-NinjaOneKnowledgeBaseArticles', 
-               'New-NinjaOneKnowledgeBaseArticlesUpload', 
-               'Invoke-NinjaOneKnowledgeBaseArticlesArchive', 
-               'Invoke-NinjaOneKnowledgeBaseFoldersArchive', 
-               'Remove-NinjaOneKnowledgeBaseArticles', 
-               'Remove-NinjaOneKnowledgeBaseFolders', 
-               'Restore-NinjaOneKnowledgeBaseArticles', 
-               'Restore-NinjaOneKnowledgeBaseFolders', 
-               'Move-NinjaOneKnowledgeBaseItems', 'Get-NinjaOneEndUsers', 
-               'New-NinjaOneEndUser', 'Get-NinjaOneEndUser', 'Set-NinjaOneEndUser', 
-               'Get-NinjaOneEndUserCustomFields', 
-               'Get-NinjaOneOrganisationEndUsers', 'Get-NinjaOneTechnicians', 
-               'New-NinjaOneTechnician', 'Get-NinjaOneTechnician', 
-               'Set-NinjaOneTechnician', 'New-NinjaOneTag', 'New-NinjaOneTagGlobal', 
-               'Set-NinjaOneTag', 'Set-NinjaOneTagBatch', 'Remove-NinjaOneTags', 
-               'Merge-NinjaOneTags', 'Set-NinjaOneAssetTag', 
-               'Set-NinjaOneUnmanagedDevice', 'Set-NinjaOneDeviceOwner', 
-               'Remove-NinjaOneDeviceOwner', 'Get-NinjaOneSoftwareInventory', 
-               'Get-NinjaOneSoftwareLicense', 
-               'Get-NinjaOneSoftwareLicenseAssignments', 
-               'Get-NinjaOneSoftwareLicenses', 'Get-NinjaOneSoftwarePatches', 
-               'Get-NinjaOneSoftwarePatchInstalls', 'Get-NinjaOneSoftwareProducts', 
-               'Get-NinjaOneTasks', 'Get-NinjaOneTicketAttributes', 
-               'Get-NinjaOneTicketBoards', 'Get-NinjaOneTicketForms', 
-               'Get-NinjaOneTicketingUsers', 'Get-NinjaOneTicketLogEntries', 
-               'Get-NinjaOneTickets', 'Get-NinjaOneTicketStatuses', 
-               'Get-NinjaOneUsers', 'Get-NinjaOneVolumes', 
-               'Get-NinjaOneWindowsEventPolicyCondition', 
-               'Get-NinjaOneWindowsEventPolicyConditions', 
-               'Get-NinjaOneWindowsServices', 'Invoke-NinjaOneDeviceScript', 
-               'Invoke-NinjaOneRequest', 'Invoke-NinjaOneWindowsServiceAction', 
-               'New-NinjaOneAttachmentRelation', 'New-NinjaOneCustomFieldObject', 
-               'New-NinjaOneCustomField', 
-               'New-NinjaOneCustomFieldsPolicyCondition', 
-               'New-NinjaOneDocumentTemplate', 
-               'New-NinjaOneDocumentTemplateFieldObject', 
-               'New-NinjaOneTicketBoardFilter', 'New-NinjaOneTicketBoardSort', 
-               'New-NinjaOneEntityRelation', 'New-NinjaOneEntityRelationObject', 
-               'New-NinjaOneEntityRelations', 'New-NinjaOneInstaller', 
-               'New-NinjaOneContact', 'New-NinjaOneBillingAccount', 
-               'New-NinjaOneBillingAgreement', 'New-NinjaOneBillingInvoice', 
-               'New-NinjaOneBillingProduct', 
-               'New-NinjaOneBillingTicketProductAdHoc', 
-               'New-NinjaOneBillingTicketProductCatalog', 
-               'New-NinjaOneAssetRelationship', 
-               'New-NinjaOneAssetRelationshipType', 
-               'New-NinjaOneSoftwareLicense', 'New-NinjaOneIntegrityCheckJob', 
-               'New-NinjaOneLocation', 
-               'New-NinjaOneOrganisation', 'New-NinjaOneOrganisationDocument', 
-               'New-NinjaOneOrganisationDocuments', 'New-NinjaOnePolicy', 
-               'New-NinjaOneSecureRelation', 'New-NinjaOneStagedDevice', 
-               'New-NinjaOneTicket', 'New-NinjaOneTicketComment', 
-               'New-NinjaOneWindowsEventPolicyCondition', 
-               'Remove-NinjaOneDeviceMaintenance', 
-               'Remove-NinjaOneDocumentTemplate', 
-               'Remove-NinjaOneChecklistTemplate', 
-               'Remove-NinjaOneOrganisationDocument', 
-               'Remove-NinjaOnePolicyCondition', 'Remove-NinjaOneRelatedItem', 
-               'Remove-NinjaOneRelatedItems', 'Remove-NinjaOneContact', 
-               'Remove-NinjaOneBillingAccount', 
-               'Remove-NinjaOneAssetRelationship', 
-               'Remove-NinjaOneCustomField', 'Remove-NinjaOneEndUser', 
-               'Remove-NinjaOneTechnician', 'Remove-NinjaOneRematedItems', 
-               'Remove-NinjaOneSoftwareLicense', 'Remove-NinjaOneWebhook', 
-               'Reset-NinjaOneAlert', 'Reset-NinjaOneDevicePolicyOverrides', 
-               'Restart-NinjaOneDevice', 'Invoke-NinjaOneDeviceDecommission', 
-               'Set-NinjaOneDevice', 'Set-NinjaOneDeviceApproval', 
-               'Set-NinjaOneDeviceCustomFields', 'Set-NinjaOneDeviceMaintenance', 
-               'Set-NinjaOneBackupBandwidthThrottle', 'Start-NinjaOneOSPatchScan', 
-               'Start-NinjaOneOSPatchScanJob', 'Start-NinjaOneOSPatchApply', 
-               'Start-NinjaOneSoftwarePatchScan', 
-               'Start-NinjaOneSoftwarePatchApply', 'Set-NinjaOneDocumentTemplate', 
-               'Set-NinjaOneLocation', 'Set-NinjaOneLocationCustomFields', 
-               'Set-NinjaOneOrganisation', 'Set-NinjaOneOrganisationCustomFields', 
-               'Set-NinjaOneOrganisationDocument', 
-               'Set-NinjaOneOrganisationDocuments', 
-               'Set-NinjaOneOrganisationPolicies', 'Set-NinjaOneContact', 
-               'Set-NinjaOneBillingAccount', 'Set-NinjaOneBillingAgreement', 
-               'Set-NinjaOneBillingInvoice', 'Set-NinjaOneBillingInvoiceNote', 
-               'Set-NinjaOneBillingProduct', 
-               'Set-NinjaOneBillingTicketProduct', 
-               'Set-NinjaOneBillingTicketTimeEntry', 
-               'Set-NinjaOneCustomField', 'Set-NinjaOneTicket', 
-               'Set-NinjaOneWindowsServiceConfiguration', 'Get-NinjaOneNodeRoles', 
-               'Invoke-NinjaOneSoftwareLicenseUpsert', 
-               'Invoke-NinjaOneUnmanagedDeviceDecommission', 
-               'Invoke-NinjaOneUnmanagedDeviceDecommissionList', 
-               'Invoke-NinjaOneTempAttachmentUpload', 'New-NinjaOneNodeRoles', 
-               'Remove-NinjaOneNodeRoles', 'Set-NinjaOneSoftwareLicense', 
-               'Set-NinjaOneNodeRoles', 'Update-NinjaOneWebhook'
+	# Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
+	FunctionsToExport = 'Connect-NinjaOne', 'Find-NinjaOneDevices', 'Get-NinjaOneActivities', 
+				'Get-NinjaOneAlerts', 'Get-NinjaOneAntivirusStatus', 
+				'Get-NinjaOneAntivirusThreats', 'Get-NinjaOneAutomations', 
+				'Get-NinjaOneBillingAccounts', 'Get-NinjaOneBillingAgreements', 
+				'Get-NinjaOneBillingInvoices', 'Get-NinjaOneBillingProducts', 
+				'Get-NinjaOneBillingTicketProducts', 'Get-NinjaOneBackupJobs', 
+				'Get-NinjaOneComputerSystems', 
+				'Get-NinjaOneContacts', 'Get-NinjaOneTicketingContacts', 
+				'Get-NinjaOneSystemContacts', 'Get-NinjaOneContact', 
+				'Get-NinjaOneCustomFields', 'Get-NinjaOneCustomField', 
+				'Get-NinjaOneCustomFieldsSchema', 
+				'Get-NinjaOneCustomFieldSignedURLs', 
+				'Get-NinjaOneCustomFieldsPolicyCondition', 
+				'Get-NinjaOneCustomFieldsPolicyConditions', 
+				'Get-NinjaOneDeviceActivities', 'Get-NinjaOneDeviceAlerts', 
+				'Get-NinjaOneDeviceBackupUsage', 'Get-NinjaOneDeviceCustomFields', 
+				'Get-NinjaOneDeviceDashboardURL', 'Get-NinjaOneDeviceDisks', 
+				'Get-NinjaOneDeviceHealth', 'Get-NinjaOneDeviceJobs', 
+				'Get-NinjaOneDeviceLastLoggedOnUser', 
+				'Get-NinjaOneDeviceNetworkInterfaces', 
+				'Get-NinjaOneDeviceOSPatches', 'Get-NinjaOneDeviceOSPatchInstalls', 
+				'Get-NinjaOneDevicePolicyOverrides', 'Get-NinjaOneDeviceProcessors', 
+				'Get-NinjaOneDevices', 'Get-NinjaOneDeviceScriptingOptions', 
+				'Get-NinjaOneDeviceSoftwareInventory', 
+				'Get-NinjaOneDeviceSoftwarePatches', 
+				'Get-NinjaOneDeviceSoftwarePatchInstalls', 
+				'Get-NinjaOneDeviceVolumes', 'Get-NinjaOneDeviceWindowsServices', 
+				'Get-NinjaOneDisks', 'Get-NinjaOneDocumentTemplates', 
+				'Get-NinjaOneGlobalKnowledgeBaseArticles', 
+				'Get-NinjaOneGroupMembers', 'Get-NinjaOneGroups', 
+				'Get-NinjaOneInstanceCapabilities', 'Get-NinjaOneInstaller', 
+				'Get-NinjaOneIntegrityCheckJobs', 'Get-NinjaOneJobs', 
+				'Get-NinjaOneKnowledgeBaseArticle', 
+				'Get-NinjaOneKnowledgeBaseFolders', 
+				'Get-NinjaOneChecklistTemplates', 
+				'Get-NinjaOneLocationCustomFields', 'Get-NinjaOneLocations', 
+				'Get-NinjaOneLoggedOnUsers', 'Get-NinjaOneNetworkInterfaces', 
+				'Get-NinjaOneNotificationChannels', 'Get-NinjaOneOperatingSystems', 
+				'Get-NinjaOneOrganisationCustomFields', 
+				'Get-NinjaOneOrganisationDevices', 
+				'Get-NinjaOneOrganisationDocuments', 
+				'Get-NinjaOneOrganisationDocumentSignedURLs', 
+				'Get-NinjaOneOrganisationChecklists', 
+				'Get-NinjaOneOrganisationChecklist', 
+				'Get-NinjaOneOrganisationChecklistSignedURLs', 
+				'Get-NinjaOneOrganisationInformation', 
+				'Get-NinjaOneOrganisationKnowledgeBaseArticles', 
+				'Get-NinjaOneOrganisationLocations', 
+				'Get-NinjaOneOrganisationLocationBackupUsage', 
+				'Get-NinjaOneOrganisations', 'Get-NinjaOneOrganisationUsers', 
+				'Get-NinjaOneOSPatches', 'Get-NinjaOneOSPatchInstalls', 
+				'Get-NinjaOnePolicies', 'Get-NinjaOnePolicyOverrides', 
+				'Get-NinjaOneProcessors', 'Get-NinjaOneRAIDControllers', 
+				'Get-NinjaOneRAIDDrives', 'Get-NinjaOneAssetRelationships', 
+				'Get-NinjaOneAssetRelationshipTypes', 
+				'Get-NinjaOneRelatedItemAttachment', 
+				'Get-NinjaOneRelatedItemAttachmentSignedURLs', 
+				'Get-NinjaOneRelatedItems', 'Get-NinjaOneRoles', 'Get-NinjaOneTab', 
+				'Get-NinjaOneTabEndUser', 'Get-NinjaOneTabOrganisation', 
+				'Get-NinjaOneEntityCustomFieldsSignedURLs', 
+				'Get-NinjaOneTabSummaryEndUser', 
+				'Get-NinjaOneTabSummaryOrganisation', 'Get-NinjaOneTabSummaryRole', 
+				'Set-NinjaOneTabEndUserOrder', 'Get-NinjaOneTabRole', 
+				'Remove-NinjaOneTab', 'Set-NinjaOneTabRoleVisibility', 
+				'Set-NinjaOneTabOrganisationOrder', 'Set-NinjaOneTabRoleOrder', 
+				'Get-NinjaOneTags', 'Remove-NinjaOneTag', 
+				'New-NinjaOneUnmanagedDevice', 'Remove-NinjaOneUnmanagedDevice', 
+				'Get-NinjaOneUserRoles', 'Add-NinjaOneUserRoleMembers', 
+				'Remove-NinjaOneUserRoleMembers', 'Set-NinjaOneEndUserCustomFields', 
+				'Set-NinjaOneEndUserDeviceAccess', 
+				'Set-NinjaOneKnowledgeBaseArticles', 'Set-NinjaOneTab', 
+				'Rename-NinjaOneTab', 'New-NinjaOneTab', 
+				'Get-NinjaOneVulnerabilityScanGroups', 
+				'Get-NinjaOneVulnerabilityScanGroup', 
+				'Invoke-NinjaOneVulnerabilityScanGroupUpload', 
+				'Invoke-NinjaOneChecklistArchive', 
+				'Invoke-NinjaOneChecklistRestore', 
+				'Invoke-NinjaOneCustomFieldsBulk', 'New-NinjaOneChecklistTemplate', 
+				'Remove-NinjaOneChecklistTemplates', 
+				'Set-NinjaOneChecklistTemplates', 
+				'Set-NinjaOneOrganisationChecklists', 
+				'Remove-NinjaOneOrganisationChecklists', 
+				'Invoke-NinjaOneOrganisationChecklistsPromote', 
+				'Invoke-NinjaOneOrganisationChecklistsPromoteWithName', 
+				'Invoke-NinjaOneDocumentTemplateArchive', 
+				'Invoke-NinjaOneDocumentTemplateRestore', 
+				'Invoke-NinjaOneDocumentTemplatesArchive', 
+				'Invoke-NinjaOneDocumentTemplatesRestore', 
+				'Invoke-NinjaOneOrganisationDocumentArchive', 
+				'Invoke-NinjaOneOrganisationDocumentRestore', 
+				'Invoke-NinjaOneOrganisationDocumentsArchive', 
+				'Invoke-NinjaOneOrganisationDocumentsRestore', 
+				'Invoke-NinjaOneOrganisationRestore', 
+				'New-NinjaOneOrganisationChecklist', 
+				'New-NinjaOneOrganisationChecklistsFromTemplates', 
+				'Remove-NinjaOneOrganisationChecklist', 
+				'Invoke-NinjaOneOrganisationArchive', 
+				'Invoke-NinjaOneBillingAgreementDeactivate', 
+				'Invoke-NinjaOneBillingInvoicesApprove', 
+				'Invoke-NinjaOneBillingInvoicesArchive', 
+				'Invoke-NinjaOneBillingInvoicesExport', 
+				'Invoke-NinjaOneBillingInvoicesUnarchive', 
+				'Invoke-NinjaOneBillingProductActivate', 
+				'Invoke-NinjaOneBillingProductDeactivate', 
+				'Invoke-NinjaOneBillingTicketProductsDelete', 
+				'New-NinjaOneKnowledgeBaseArticles', 
+				'New-NinjaOneKnowledgeBaseArticlesUpload', 
+				'Invoke-NinjaOneKnowledgeBaseArticlesArchive', 
+				'Invoke-NinjaOneKnowledgeBaseFoldersArchive', 
+				'Remove-NinjaOneKnowledgeBaseArticles', 
+				'Remove-NinjaOneKnowledgeBaseFolders', 
+				'Restore-NinjaOneKnowledgeBaseArticles', 
+				'Restore-NinjaOneKnowledgeBaseFolders', 
+				'Move-NinjaOneKnowledgeBaseItems', 'Get-NinjaOneEndUsers', 
+				'New-NinjaOneEndUser', 'Get-NinjaOneEndUser', 'Set-NinjaOneEndUser', 
+				'Get-NinjaOneEndUserCustomFields', 
+				'Get-NinjaOneOrganisationEndUsers', 'Get-NinjaOneTechnicians', 
+				'New-NinjaOneTechnician', 'Get-NinjaOneTechnician', 
+				'Set-NinjaOneTechnician', 'New-NinjaOneTag', 'New-NinjaOneTagGlobal', 
+				'Set-NinjaOneTag', 'Set-NinjaOneTagBatch', 'Remove-NinjaOneTags', 
+				'Merge-NinjaOneTags', 'Set-NinjaOneAssetTag', 
+				'Set-NinjaOneUnmanagedDevice', 'Set-NinjaOneDeviceOwner', 
+				'Remove-NinjaOneDeviceOwner', 'Get-NinjaOneSoftwareInventory', 
+				'Get-NinjaOneSoftwareLicense', 
+				'Get-NinjaOneSoftwareLicenseAssignments', 
+				'Get-NinjaOneSoftwareLicenses', 'Get-NinjaOneSoftwarePatches', 
+				'Get-NinjaOneSoftwarePatchInstalls', 'Get-NinjaOneSoftwareProducts', 
+				'Get-NinjaOneTasks', 'Get-NinjaOneTicketAttributes', 
+				'Get-NinjaOneTicketBoards', 'Get-NinjaOneTicketForms', 
+				'Get-NinjaOneTicketingUsers', 'Get-NinjaOneTicketLogEntries', 
+				'Get-NinjaOneTickets', 'Get-NinjaOneTicketStatuses', 
+				'Get-NinjaOneUsers', 'Get-NinjaOneVolumes', 
+				'Get-NinjaOneWindowsEventPolicyCondition', 
+				'Get-NinjaOneWindowsEventPolicyConditions', 
+				'Get-NinjaOneWindowsServices', 'Invoke-NinjaOneDeviceScript', 
+				'Invoke-NinjaOneRequest', 'Invoke-NinjaOneWindowsServiceAction', 
+				'New-NinjaOneAttachmentRelation', 'New-NinjaOneCustomFieldObject', 
+				'New-NinjaOneCustomField', 
+				'New-NinjaOneCustomFieldsPolicyCondition', 
+				'New-NinjaOneDocumentTemplate', 
+				'New-NinjaOneDocumentTemplateFieldObject', 
+				'New-NinjaOneTicketBoardFilter', 'New-NinjaOneTicketBoardSort', 
+				'New-NinjaOneEntityRelation', 'New-NinjaOneEntityRelationObject', 
+				'New-NinjaOneEntityRelations', 'New-NinjaOneInstaller', 
+				'New-NinjaOneContact', 'New-NinjaOneBillingAccount', 
+				'New-NinjaOneBillingAgreement', 'New-NinjaOneBillingInvoice', 
+				'New-NinjaOneBillingProduct', 
+				'New-NinjaOneBillingTicketProductAdHoc', 
+				'New-NinjaOneBillingTicketProductCatalog', 
+				'New-NinjaOneAssetRelationship', 
+				'New-NinjaOneAssetRelationshipType', 
+				'New-NinjaOneSoftwareLicense', 'New-NinjaOneIntegrityCheckJob', 
+				'New-NinjaOneLocation', 
+				'New-NinjaOneOrganisation', 'New-NinjaOneOrganisationDocument', 
+				'New-NinjaOneOrganisationDocuments', 'New-NinjaOnePolicy', 
+				'New-NinjaOneSecureRelation', 'New-NinjaOneStagedDevice', 
+				'New-NinjaOneTicket', 'New-NinjaOneTicketComment', 
+				'New-NinjaOneWindowsEventPolicyCondition', 
+				'Remove-NinjaOneDeviceMaintenance', 
+				'Remove-NinjaOneDocumentTemplate', 
+				'Remove-NinjaOneChecklistTemplate', 
+				'Remove-NinjaOneOrganisationDocument', 
+				'Remove-NinjaOnePolicyCondition', 'Remove-NinjaOneRelatedItem', 
+				'Remove-NinjaOneRelatedItems', 'Remove-NinjaOneContact', 
+				'Remove-NinjaOneBillingAccount', 
+				'Remove-NinjaOneAssetRelationship', 
+				'Remove-NinjaOneCustomField', 'Remove-NinjaOneEndUser', 
+				'Remove-NinjaOneTechnician', 'Remove-NinjaOneRematedItems', 
+				'Remove-NinjaOneSoftwareLicense', 'Remove-NinjaOneWebhook', 
+				'Reset-NinjaOneAlert', 'Reset-NinjaOneDevicePolicyOverrides', 
+				'Restart-NinjaOneDevice', 'Invoke-NinjaOneDeviceDecommission', 
+				'Set-NinjaOneDevice', 'Set-NinjaOneDeviceApproval', 
+				'Set-NinjaOneDeviceCustomFields', 'Set-NinjaOneDeviceMaintenance', 
+				'Set-NinjaOneBackupBandwidthThrottle', 'Start-NinjaOneOSPatchScan', 
+				'Start-NinjaOneOSPatchScanJob', 'Start-NinjaOneOSPatchApply', 
+				'Start-NinjaOneSoftwarePatchScan', 
+				'Start-NinjaOneSoftwarePatchApply', 'Set-NinjaOneDocumentTemplate', 
+				'Set-NinjaOneLocation', 'Set-NinjaOneLocationCustomFields', 
+				'Set-NinjaOneOrganisation', 'Set-NinjaOneOrganisationCustomFields', 
+				'Set-NinjaOneOrganisationDocument', 
+				'Set-NinjaOneOrganisationDocuments', 
+				'Set-NinjaOneOrganisationPolicies', 'Set-NinjaOneContact', 
+				'Set-NinjaOneBillingAccount', 'Set-NinjaOneBillingAgreement', 
+				'Set-NinjaOneBillingInvoice', 'Set-NinjaOneBillingInvoiceNote', 
+				'Set-NinjaOneBillingProduct', 
+				'Set-NinjaOneBillingTicketProduct', 
+				'Set-NinjaOneBillingTicketTimeEntry', 
+				'Set-NinjaOneCustomField', 'Set-NinjaOneTicket', 
+				'Set-NinjaOneWindowsServiceConfiguration', 'Get-NinjaOneNodeRoles', 
+				'Invoke-NinjaOneSoftwareLicenseUpsert', 
+				'Invoke-NinjaOneUnmanagedDeviceDecommission', 
+				'Invoke-NinjaOneUnmanagedDeviceDecommissionList', 
+				'Invoke-NinjaOneTempAttachmentUpload', 'New-NinjaOneNodeRoles', 
+				'Remove-NinjaOneNodeRoles', 'Set-NinjaOneSoftwareLicense', 
+				'Set-NinjaOneNodeRoles', 'Update-NinjaOneWebhook'
 
-# Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = @()
+	# Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
+	CmdletsToExport = @()
 
-# Variables to export from this module
-VariablesToExport = '*'
+	# Variables to export from this module
+	VariablesToExport = '*'
 
-# Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = @()
+	# Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
+	AliasesToExport = @()
 
-# DSC resources to export from this module
-# DscResourcesToExport = @()
+	# DSC resources to export from this module
+	# DscResourcesToExport = @()
 
-# List of all modules packaged with this module
-# ModuleList = @()
+	# List of all modules packaged with this module
+	# ModuleList = @()
 
-# List of all files packaged with this module
-# FileList = @()
+	# List of all files packaged with this module
+	# FileList = @()
 
-# Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
-PrivateData = @{
+	# Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
+	PrivateData = @{
 
-    PSData = @{
+		PSData = @{
 
-        # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = 'NinjaRMM','NinjaOne','RMM','Ninja','API','REST','MSP','Automation'
+			# Tags applied to this module. These help with module discovery in online galleries.
+			Tags = 'NinjaRMM','NinjaOne','RMM','Ninja','API','REST','MSP','Automation'
 
-        # A URL to the license for this module.
-        LicenseUri = 'https://mit.license.homotechsual.dev/'
+			# A URL to the license for this module.
+			LicenseUri = 'https://mit.license.homotechsual.dev/'
 
-        # A URL to the main website for this project.
-        ProjectUri = 'https://docs.homotechsual.dev/modules/ninjaone'
+			# A URL to the main website for this project.
+			ProjectUri = 'https://docs.homotechsual.dev/modules/ninjaone'
 
-        # A URL to an icon representing this module.
-        IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
+			# A URL to an icon representing this module.
+			IconUri = 'https://pbs.twimg.com/profile_images/1452496768030187521/kIGQii5Y_400x400.jpg'
 
-        # ReleaseNotes of this module
-        ReleaseNotes = '## 2026-04-20'
+			# ReleaseNotes of this module
+			ReleaseNotes = '## 2026-04-20'
 
-        # Prerelease string of this module
-        Prerelease = ''
+			# Prerelease string of this module
+			Prerelease = ''
 
-        # Flag to indicate whether the module requires explicit user acceptance for install/update/save
-        # RequireLicenseAcceptance = $false
+			# Flag to indicate whether the module requires explicit user acceptance for install/update/save
+			# RequireLicenseAcceptance = $false
 
-        # External dependent modules of this module
-        # ExternalModuleDependencies = @()
+			# External dependent modules of this module
+			# ExternalModuleDependencies = @()
 
-    } # End of PSData hashtable
+		} # End of PSData hashtable
 
- } # End of PrivateData hashtable
+	} # End of PrivateData hashtable
 
-# HelpInfo URI of this module
-# HelpInfoURI = ''
+	# HelpInfo URI of this module
+	# HelpInfoURI = ''
 
-# Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
-# DefaultCommandPrefix = ''
+	# Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
+	# DefaultCommandPrefix = ''
 
 }
-

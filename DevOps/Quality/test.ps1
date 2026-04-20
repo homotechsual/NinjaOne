@@ -237,8 +237,8 @@ $combinedResults
 
 if (-not $skipScriptAnalyzer) {
 	Write-Host "`n=== Running PSScriptAnalyzer ===" -ForegroundColor Cyan
-		$scriptAnalyzerScript = Join-Path -Path $repoRoot -ChildPath 'DevOps\Quality\run-pssa.ps1'
-		& $scriptAnalyzerScript
+	$scriptAnalyzerScript = Join-Path -Path $repoRoot -ChildPath 'DevOps\Quality\run-pssa.ps1'
+	& $scriptAnalyzerScript
 }
 Pop-Location
 
