@@ -629,7 +629,8 @@ function Measure-RequireCamelCaseParameterName {
 		.DESCRIPTION
 			Flags parameters declared in functions when their names do not start with a
 			lowercase letter or contain unsupported characters. The expected format is
-			camelCase using only letters and digits.
+			camelCase using only letters and digits. CI scopes this rule to public cmdlet
+			files when invoking ScriptAnalyzer.
 		.EXAMPLE
 			Reports [int]$DeviceId and suggests [int]$deviceId.
 		.INPUTS

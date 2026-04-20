@@ -4,6 +4,19 @@ Please note that backwards compatibility breaks are prefixed with `{"BC"}` (shor
 
 Note: Version 2.3.0 was released in error and will be skipped.
 
+## 2026-04-20 - Version 2.6.0
+
+* Additions:
+  * Add cross-platform smoke tests for macOS and Linux on PowerShell 7 in CI.
+  * Add development styling conventions and troubleshooting documentation.
+
+* Updates:
+  * Sync development docs, filter docs, and the NinjaOne docs landing page to the external documentation repo.
+  * Normalize public parameter casing and align ScriptAnalyzer scope with exported cmdlet conventions.
+
+* Fixes:
+  * Fix bootstrap module installation on macOS and Linux by resolving `Install-RequiredModule` from its installed script path.
+
 ## 2026-04-10 - Version 2.5.1
 
 * Fixes:

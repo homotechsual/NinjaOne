@@ -237,7 +237,8 @@ $combinedResults
 
 if (-not $skipScriptAnalyzer) {
 	Write-Host "`n=== Running PSScriptAnalyzer ===" -ForegroundColor Cyan
-	$null = Invoke-ScriptAnalyzer $ModuleUnderTest.Path -Settings (Join-Path -Path $repoRoot -ChildPath 'PSScriptAnalyzerSettings.psd1')
+		$scriptAnalyzerScript = Join-Path -Path $repoRoot -ChildPath 'DevOps\Quality\run-pssa.ps1'
+		& $scriptAnalyzerScript
 }
 Pop-Location
 
