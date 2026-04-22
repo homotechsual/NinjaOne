@@ -29,7 +29,7 @@ function Get-NinjaOneExpandCompleter {
 	)
 	
 	$KnownExpansions |
-	Where-Object { $_ -like "$wordToComplete*" } |
+	Where-Object { $_ -like ('{0}*' -f $wordToComplete) } |
 	ForEach-Object {
 		[System.Management.Automation.CompletionResult]::new(
 			$_,

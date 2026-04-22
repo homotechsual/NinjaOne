@@ -83,7 +83,7 @@ function Get-NinjaOneDevices {
 			if ($_ -is [string[]]) {
 				foreach ($value in $_) {
 					if ($value -notin $validValues) {
-						throw "Invalid expand value '$value'."
+							throw ('Invalid expand value ''{0}''.' -f $value)
 					}
 				}
 			}

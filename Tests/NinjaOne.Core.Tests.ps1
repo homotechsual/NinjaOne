@@ -31,7 +31,7 @@ Describe ('{0} - Core Tests' -f $ModuleName) -Tags 'Module' {
     }
 
     It 'Root module is correct' {
-        $Script:ModuleInformation.RootModule | Should -Be ".\$($ModuleName).psm1"
+        $Script:ModuleInformation.RootModule | Should -Be ('.\{0}.psm1' -f $ModuleName)
     }
 
     It 'Loads required assemblies from the manifest without script-level using statements' {

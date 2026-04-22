@@ -46,20 +46,20 @@ function New-NinjaOneError {
 			if ($ErrorDetailsIsJson) {
 				Write-Verbose 'ErrorDetails is JSON.'
 				$ErrorDetails = $errorRecord.ErrorDetails | ConvertFrom-Json
-				Write-Verbose "Raw error details: $($ErrorDetails | Out-String)"
+				Write-Verbose ('Raw error details: {0}' -f ($ErrorDetails | Out-String))
 				if ($null -ne $ErrorDetails) {
 					if (($null -ne $ErrorDetails.resultCode) -and ($null -ne $ErrorDetails.errorMessage)) {
 						Write-Verbose 'ErrorDetails contains resultCode and errorMessage.'
-						$ExceptionMessage.Add("The NinjaOne API said $($ErrorDetails.resultCode): $($ErrorDetails.errorMessage).") | Out-Null
+						$ExceptionMessage.Add(('The NinjaOne API said {0}: {1}.' -f $ErrorDetails.resultCode, $ErrorDetails.errorMessage)) | Out-Null
 					} elseif ($null -ne $ErrorDetails.resultCode) {
 						Write-Verbose 'ErrorDetails contains resultCode.'
-						$ExceptionMessage.Add("The NinjaOne API said $($ErrorDetails.resultCode).") | Out-Null
+						$ExceptionMessage.Add(('The NinjaOne API said {0}.' -f $ErrorDetails.resultCode)) | Out-Null
 					} elseif ($null -ne $ErrorDetails.error) {
 						Write-Verbose 'ErrorDetails contains error.'
-						$ExceptionMessage.Add("The NinjaOne API said $($ErrorDetails.error).") | Out-Null
+						$ExceptionMessage.Add(('The NinjaOne API said {0}.' -f $ErrorDetails.error)) | Out-Null
 					} elseif ($null -ne $ErrorDetails) {
 						Write-Verbose 'ErrorDetails is not null.'
-						$ExceptionMessage.Add("The NinjaOne API said $($errorRecord.ErrorDetails).") | Out-Null
+						$ExceptionMessage.Add(('The NinjaOne API said {0}.' -f $errorRecord.ErrorDetails)) | Out-Null
 					} else {
 						Write-Verbose 'ErrorDetails is null.'
 						$ExceptionMessage.Add('The NinjaOne API returned an error.') | Out-Null
@@ -80,9 +80,9 @@ function New-NinjaOneError {
 		}
 		if (($errorRecord.Exception.Response -and $hasResponse) -or $ExceptionMessage -notlike $HTTPResponseMatchString) {
 			$Response = $errorRecord.Exception.Response
-			Write-Verbose "Raw HTTP response: $($Response | Out-String)"
+			Write-Verbose ('Raw HTTP response: {0}' -f ($Response | Out-String))
 			if ($Response.StatusCode.value__ -and $Response.ReasonPhrase) {
-				$ExceptionMessage.Add("The API returned the following HTTP error response: $($Response.StatusCode.value__) $($Response.ReasonPhrase)") | Out-Null
+				$ExceptionMessage.Add(('The API returned the following HTTP error response: {0} {1}' -f $Response.StatusCode.value__, $Response.ReasonPhrase)) | Out-Null
 			} else {
 				$ExceptionMessage.Add('The API returned an HTTP error response but did not provide a status code or reason phrase.')
 			}

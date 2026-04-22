@@ -18,15 +18,15 @@ function Start-OAuthHTTPListener {
 		[Parameter(Mandatory)]
 		[System.UriBuilder]$openURI,
 		[Parameter()]
-		[int] $TimeoutSeconds = 15
+		[int] $timeoutSeconds = 15
 	)
 	Write-Verbose 'Opening browser to authenticate.'
-	Write-Verbose "Authentication URL: $($openURI.ToString())"
+	Write-Verbose ('Authentication URL: {0}' -f $openURI.ToString())
 	$HTTP = [System.Net.HttpListener]::new()
-	$HTTP.Prefixes.Add("http://localhost:$Port/")
+	$HTTP.Prefixes.Add(('http://localhost:{0}/' -f $Port))
 	$HTTP.Start()
 	Start-Process $openURI.ToString()
-	$Timeout = [System.TimeSpan]::FromSeconds($TimeoutSeconds)
+	$Timeout = [System.TimeSpan]::FromSeconds($timeoutSeconds)
 	$ContextTask = $HTTP.GetContextAsync()
 	$Result = @{}
 	while ($ContextTask.AsyncWaitHandle.WaitOne($Timeout)) {
@@ -37,7 +37,7 @@ function Start-OAuthHTTPListener {
 
 		if ($Context.Request.QueryString -and $Context.Request.QueryString['Code']) {
 			$Result.Code = $Context.Request.QueryString['Code']
-			Write-Verbose "Authorisation code received: $($Result.Code)"
+			Write-Verbose ('Authorisation code received: {0}' -f $Result.Code)
 			if ($null -ne $Result.Code) {
 				$Result.GotAuthorisationCode = $True
 			}

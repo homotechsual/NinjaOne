@@ -30,7 +30,7 @@ function New-NinjaOneDELETERequest {
 	Test-NinjaOneEndpointSupport -Method 'DELETE' -resource $resource -Verbose:$VerbosePreference
 	try {
 		if ($QSCollection) {
-			Write-Verbose "Query string in New-NinjaOneDELETERequest contains: $($QSCollection | Out-String)"
+			Write-Verbose ('Query string in New-NinjaOneDELETERequest contains: {0}' -f ($QSCollection | Out-String))
 			$QueryStringCollection = [System.Web.HTTPUtility]::ParseQueryString([String]::Empty)
 			Write-Verbose 'Building [HttpQSCollection] for New-NinjaOneDELETERequest'
 			foreach ($Key in $QSCollection.Keys) {
@@ -39,9 +39,9 @@ function New-NinjaOneDELETERequest {
 		} else {
 			Write-Verbose 'Query string collection not present...'
 		}
-		Write-Verbose "URI is $($Script:NRAPIConnectionInformation.URL)"
-		$RequestUri = [System.UriBuilder]"$($Script:NRAPIConnectionInformation.URL)"
-		Write-Verbose "Path is $($resource)"
+		Write-Verbose ('URI is {0}' -f $Script:NRAPIConnectionInformation.URL)
+		$RequestUri = [System.UriBuilder]$Script:NRAPIConnectionInformation.URL
+		Write-Verbose ('Path is {0}' -f $resource)
 		$RequestUri.Path = $resource
 		$WebRequestParams = @{
 			Method = 'DELETE'
@@ -50,10 +50,10 @@ function New-NinjaOneDELETERequest {
 		if ($parseDateTime -or $Script:ParseDateTimes) {
 			$WebRequestParams.ParseDateTime = $true
 		}
-		Write-Verbose "Building new NinjaOneRequest with params: $($WebRequestParams | Out-String)"
+		Write-Verbose ('Building new NinjaOneRequest with params: {0}' -f ($WebRequestParams | Out-String))
 		try {
 			$Result = Invoke-NinjaOneRequest @WebRequestParams
-			Write-Verbose "NinjaOne request returned $($Result | Out-String)"
+			Write-Verbose ('NinjaOne request returned {0}' -f ($Result | Out-String))
 			if ($Result.results) {
 				return $Result.results
 			} elseif ($Result.result) {

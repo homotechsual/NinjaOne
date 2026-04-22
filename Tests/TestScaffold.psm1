@@ -74,7 +74,7 @@ function Import-ModuleToBeTested {
             $ModulePath = Join-Path -Path $LatestVersion.FullName -ChildPath 'NinjaOne.psd1'
             if (Test-Path -Path $ModulePath) {
                 Import-Module -Name $ModulePath -Force
-                Write-Verbose "Imported module version: $($LatestVersion.Name)"
+                Write-Verbose ('Imported module version: {0}' -f $LatestVersion.Name)
                 return
             }
         }
@@ -158,7 +158,7 @@ function Get-Endpoints {
         
         foreach ($PathMatch in $PathMatches) {
             $Path = $PathMatch.Groups[1].Value
-            $PathIndex = $YamlContent.IndexOf("  $Path`:")
+            $PathIndex = $YamlContent.IndexOf(('  {0}:' -f $Path))
             if ($PathIndex -eq -1) { continue }
             
             $NextPathIndex = $YamlContent.IndexOf("`n  /", $PathIndex + 1)
@@ -178,7 +178,7 @@ function Get-Endpoints {
         
         return @($Endpoints)
     } catch {
-        Write-Warning "Error parsing YAML endpoints: $_"
+        Write-Warning ('Error parsing YAML endpoints: {0}' -f $_)
         return @()
     }
 }
@@ -216,7 +216,7 @@ function Get-AstStringValue {
     if ($Expression -is [System.Management.Automation.Language.BinaryExpressionAst]) {
         $left = Get-AstStringValue -Expression $Expression.Left
         $right = Get-AstStringValue -Expression $Expression.Right
-        return "$left$right"
+        return ('{0}{1}' -f $left, $right)
     }
 
     if ($Expression -is [System.Management.Automation.Language.ArrayExpressionAst]) {

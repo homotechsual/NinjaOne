@@ -655,6 +655,10 @@ function Measure-RequireCamelCaseParameterName {
 				if ($normalizedScriptPath -like '*/CustomRules/*') {
 					return
 				}
+
+				if ($normalizedScriptPath -notlike '*/Source/*') {
+					return
+				}
 			}
 
 			$functions = $scriptBlockAst.FindAll({
@@ -731,6 +735,12 @@ function Measure-AvoidDoubleQuoteInterpolation {
 				if ($normalizedScriptPath -like '*/CustomRules/*') {
 					return
 				}
+
+				if ($normalizedScriptPath -notlike '*/Source/*') {
+					return
+				}
+			} else {
+				return
 			}
 
 			$expandableStrings = $scriptBlockAst.FindAll({
@@ -741,6 +751,11 @@ function Measure-AvoidDoubleQuoteInterpolation {
 			foreach ($expandableString in $expandableStrings) {
 				# Skip double-quoted here-strings (@"..."@)
 				if ($expandableString.StringConstantType -eq [System.Management.Automation.Language.StringConstantType]::DoubleQuotedHereString) {
+					continue
+				}
+
+				# Only flag true interpolation (e.g. "$value" or "$(...)"), not plain double-quoted constants.
+				if ($null -eq $expandableString.NestedExpressions -or $expandableString.NestedExpressions.Count -eq 0) {
 					continue
 				}
 

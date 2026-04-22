@@ -40,9 +40,9 @@ function New-NinjaOnePOSTRequest {
 			.OUTPUTS
 				System.Object[]
 		#>
-		param([Object]$Value)
-		if ($Value -is [System.Collections.IDictionary]) {
-			foreach ($entry in $Value.GetEnumerator()) {
+		param([Object]$value)
+		if ($value -is [System.Collections.IDictionary]) {
+			foreach ($entry in $value.GetEnumerator()) {
 				[pscustomobject]@{
 					Name = [string]$entry.Key
 					Value = $entry.Value
@@ -50,8 +50,8 @@ function New-NinjaOnePOSTRequest {
 			}
 			return
 		}
-		if ($Value -is [pscustomobject]) {
-			foreach ($property in $Value.PSObject.Properties) {
+		if ($value -is [pscustomobject]) {
+			foreach ($property in $value.PSObject.Properties) {
 				[pscustomobject]@{
 					Name = $property.Name
 					Value = $property.Value
@@ -72,18 +72,18 @@ function New-NinjaOnePOSTRequest {
 			.OUTPUTS
 				System.Boolean
 		#>
-		param([Object]$Value)
-		if ($null -eq $Value) { return $false }
-		if ($Value -is [System.Net.Http.HttpContent]) { return $true }
-		if ($Value -is [System.IO.FileInfo]) { return $true }
-		if ($Value -is [string]) { return (Test-Path -Path $Value) }
-		if ($Value -is [array]) {
-			foreach ($item in $Value) {
+		param([Object]$value)
+		if ($null -eq $value) { return $false }
+		if ($value -is [System.Net.Http.HttpContent]) { return $true }
+		if ($value -is [System.IO.FileInfo]) { return $true }
+		if ($value -is [string]) { return (Test-Path -Path $value) }
+		if ($value -is [array]) {
+			foreach ($item in $value) {
 				if (Test-NinjaOneMultipartBody -Value $item) { return $true }
 			}
 		}
-		if (($Value -is [System.Collections.IDictionary]) -or ($Value -is [pscustomobject])) {
-			foreach ($entry in (Get-NinjaOneMultipartEntries -Value $Value)) {
+		if (($value -is [System.Collections.IDictionary]) -or ($value -is [pscustomobject])) {
+			foreach ($entry in (Get-NinjaOneMultipartEntries -Value $value)) {
 				if (Test-NinjaOneMultipartBody -Value $entry.Value) { return $true }
 			}
 			return $true
@@ -103,7 +103,7 @@ function New-NinjaOnePOSTRequest {
 			.OUTPUTS
 				System.Net.Http.MultipartFormDataContent
 		#>
-		param([Object]$Value)
+		param([Object]$value)
 		$multipart = [System.Net.Http.MultipartFormDataContent]::new()
 
 		function Add-FilePart {
@@ -117,11 +117,11 @@ function New-NinjaOnePOSTRequest {
 				.PARAMETER Path
 					The file path to attach.
 			#>
-			param([string]$Name, [string]$Path)
-			$fileStream = [System.IO.FileStream]::new($Path, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read)
+			param([string]$name, [string]$path)
+			$fileStream = [System.IO.FileStream]::new($path, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read)
 			$fileContent = [System.Net.Http.StreamContent]::new($fileStream)
 			$fileContent.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::Parse('application/octet-stream')
-			$multipart.Add($fileContent, $Name, [System.IO.Path]::GetFileName($Path))
+			$multipart.Add($fileContent, $name, [System.IO.Path]::GetFileName($path))
 		}
 
 		function Add-ValuePart {
@@ -135,22 +135,22 @@ function New-NinjaOnePOSTRequest {
 				.PARAMETER PartValue
 					The value to add to the multipart payload.
 			#>
-			param([string]$Name, [Object]$PartValue)
-			if ($null -eq $PartValue) {
+			param([string]$name, [Object]$partValue)
+			if ($null -eq $partValue) {
 				return
 			}
-			if (($PartValue -is [hashtable]) -or ($PartValue -is [System.Collections.Specialized.OrderedDictionary]) -or ($PartValue -is [pscustomobject])) {
-				$json = $PartValue | ConvertTo-Json -Depth 100
+			if (($partValue -is [hashtable]) -or ($partValue -is [System.Collections.Specialized.OrderedDictionary]) -or ($partValue -is [pscustomobject])) {
+				$json = $partValue | ConvertTo-Json -Depth 100
 				$stringContent = [System.Net.Http.StringContent]::new($json, [System.Text.Encoding]::UTF8, 'text/plain')
-				$multipart.Add($stringContent, $Name)
+				$multipart.Add($stringContent, $name)
 				return
 			}
-			$stringContent = [System.Net.Http.StringContent]::new([string]$PartValue, [System.Text.Encoding]::UTF8, 'text/plain')
-			$multipart.Add($stringContent, $Name)
+			$stringContent = [System.Net.Http.StringContent]::new([string]$partValue, [System.Text.Encoding]::UTF8, 'text/plain')
+			$multipart.Add($stringContent, $name)
 		}
 
-		if (($Value -is [System.Collections.IDictionary]) -or ($Value -is [pscustomobject])) {
-			foreach ($prop in (Get-NinjaOneMultipartEntries -Value $Value)) {
+		if (($value -is [System.Collections.IDictionary]) -or ($value -is [pscustomobject])) {
+			foreach ($prop in (Get-NinjaOneMultipartEntries -Value $value)) {
 				$propName = $prop.Name
 				$propValue = $prop.Value
 				if ($propValue -is [array]) {
@@ -206,7 +206,7 @@ function New-NinjaOnePOSTRequest {
 			[Switch]$parseDateTime
 		)
 		if ($content -isnot [System.Net.Http.HttpContent]) {
-			throw "Http content payload must be of type System.Net.Http.HttpContent. Received: $($content.GetType().FullName)"
+			throw ('Http content payload must be of type System.Net.Http.HttpContent. Received: {0}' -f $content.GetType().FullName)
 		}
 		$HttpContent = [System.Net.Http.HttpContent]$content
 		$client = [System.Net.Http.HttpClient]::new()
@@ -219,11 +219,11 @@ function New-NinjaOnePOSTRequest {
 			
 			$request = [System.Net.Http.HttpRequestMessage]::new([System.Net.Http.HttpMethod]::new($method), $uri)
 			$request.Content = $HttpContent
-			Write-Verbose "HttpContent request Content-Type: $($request.Content.Headers.ContentType)"
+			Write-Verbose ('HttpContent request Content-Type: {0}' -f $request.Content.Headers.ContentType)
 			$response = $client.SendAsync($request).GetAwaiter().GetResult()
 			$rawContent = $response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
 			if (-not $response.IsSuccessStatusCode) {
-				throw "Request failed with status code $($response.StatusCode): $rawContent"
+				throw ('Request failed with status code {0}: {1}' -f $response.StatusCode, $rawContent)
 			}
 			if ([string]::IsNullOrWhiteSpace($rawContent)) {
 				return $response.StatusCode
@@ -247,7 +247,7 @@ function New-NinjaOnePOSTRequest {
 	Test-NinjaOneEndpointSupport -method 'POST' -resource $resource -Verbose:$VerbosePreference
 	try {
 		if ($qSCollection) {
-			Write-Verbose "Query string in New-NinjaOnePOSTRequest contains: $($qSCollection | Out-String)"
+			Write-Verbose ('Query string in New-NinjaOnePOSTRequest contains: {0}' -f ($qSCollection | Out-String))
 			$QueryStringCollection = [System.Web.HTTPUtility]::ParseQueryString([String]::Empty)
 			Write-Verbose 'Building [HttpQSCollection] for New-NinjaOnePOSTRequest'
 			foreach ($Key in $qSCollection.Keys) {
@@ -256,12 +256,12 @@ function New-NinjaOnePOSTRequest {
 		} else {
 			Write-Verbose 'Query string collection not present...'
 		}
-		Write-Verbose "URI is $($Script:NRAPIConnectionInformation.URL)"
-		$RequestUri = [System.UriBuilder]"$($Script:NRAPIConnectionInformation.URL)"
-		Write-Verbose "Path is $($resource)"
+		Write-Verbose ('URI is {0}' -f $Script:NRAPIConnectionInformation.URL)
+		$RequestUri = [System.UriBuilder]$Script:NRAPIConnectionInformation.URL
+		Write-Verbose ('Path is {0}' -f $resource)
 		$RequestUri.Path = $resource
 		if ($QueryStringCollection) {
-			Write-Verbose "Query string is $($QueryStringCollection.toString())"
+			Write-Verbose ('Query string is {0}' -f $QueryStringCollection.toString())
 			$RequestUri.Query = $QueryStringCollection.toString()
 		} else {
 			Write-Verbose 'Query string not present...'
@@ -285,11 +285,11 @@ function New-NinjaOnePOSTRequest {
 					$null = $multipartContent
 				} else {
 					$multipartContent = ConvertTo-NinjaOneMultipartContent -Value $body
-					Write-Verbose "Multipart request body: $($body | ConvertTo-Json -Depth 100)"
+					Write-Verbose ('Multipart request body: {0}' -f ($body | ConvertTo-Json -Depth 100))
 				}
-				Write-Verbose "Multipart payload runtime type: $($multipartContent.GetType().FullName)"
+				Write-Verbose ('Multipart payload runtime type: {0}' -f $multipartContent.GetType().FullName)
 				$Result = Invoke-NinjaOneHttpContentRequest -method 'POST' -uri $RequestUri.ToString() -content ([System.Net.Http.HttpContent]$multipartContent) -parseDateTime:$useParseDateTime
-				Write-Verbose "NinjaOne request returned $($Result | Out-String)"
+				Write-Verbose ('NinjaOne request returned {0}' -f ($Result | Out-String))
 				if ($Result['results']) {
 					return $Result.results
 				} elseif ($Result['result']) {
@@ -299,14 +299,14 @@ function New-NinjaOnePOSTRequest {
 				}
 			}
 			$WebRequestParams.Body = (ConvertTo-Json -InputObject $body -Depth 100)
-			Write-Verbose "Raw body is $($WebRequestParams.Body)"
+			Write-Verbose ('Raw body is {0}' -f $WebRequestParams.Body)
 		} else {
 			Write-Verbose 'No body provided for New-NinjaOnePOSTRequest'
 		}
-		Write-Verbose "Building new NinjaOneRequest with params: $($WebRequestParams | Out-String)"
+		Write-Verbose ('Building new NinjaOneRequest with params: {0}' -f ($WebRequestParams | Out-String))
 		try {
 			$Result = Invoke-NinjaOneRequest @WebRequestParams
-			Write-Verbose "NinjaOne request returned $($Result | Out-String)"
+			Write-Verbose ('NinjaOne request returned {0}' -f ($Result | Out-String))
 			if ($Result['results']) {
 				return $Result.results
 			} elseif ($Result['result']) {

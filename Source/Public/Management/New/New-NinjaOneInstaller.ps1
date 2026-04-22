@@ -95,7 +95,7 @@ function New-NinjaOneInstaller {
 						return $InstallerCreate.url
 					}
 				} else {
-					throw "Organisation '$organisationId' or location '$locationId' does not exist."
+					throw ('Organisation ''{0}'' or location ''{1}'' does not exist.' -f $organisationId, $locationId)
 				}
 			} else {
 				# If body provided without validation IDs, proceed without validation
