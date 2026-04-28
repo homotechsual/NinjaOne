@@ -4,6 +4,20 @@ Please note that backwards compatibility breaks are prefixed with `{"BC"}` (shor
 
 Note: Version 2.3.0 was released in error and will be skipped.
 
+## 2026-04-28 - Version 2.7.0
+
+* Additions:
+  * Add functionality-aware Codecov component generation from public cmdlet comment-based help metadata.
+  * Add generated instance endpoint drift development docs with frontmatter for separate dev docs publishing.
+
+* Updates:
+  * Split documentation publishing into commandlet docs and development docs tasks for independent CI job execution.
+  * Expand private helper test coverage for request construction and error handling paths.
+
+* Fixes:
+  * Fix webhook delete coverage by allowing `Remove-NinjaOneWebhook` to target both `/v2/webhook` and `/v2/webhook/{id}` endpoint variants.
+  * Fix public cmdlet functionality metadata specificity to improve coverage categorization and drift diagnostics.
+
 ## 2026-04-20 - Version 2.6.0
 
 * Additions:
