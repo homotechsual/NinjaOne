@@ -706,7 +706,16 @@ Describe 'Get-NinjaOneSecrets' {
 					NinjaOneExpires = '2026-04-28T12:00:00Z'
 				}
 				function Get-Secret {
-					param($Name, $Vault)
+					<#
+					.SYNOPSIS
+						Test stub for secret retrieval.
+					#>
+					param(
+						# Secret name requested by Get-NinjaOneSecrets.
+						$Name,
+						# Vault name requested by Get-NinjaOneSecrets.
+						$Vault
+					)
 					$script:RequestedSecrets.Add($Name)
 					return $script:SecretResponses[$Name]
 				}
@@ -749,7 +758,16 @@ Describe 'Get-NinjaOneSecrets' {
 					CustomParseDateTimes = 'false'
 				}
 				function Get-Secret {
-					param($Name, $Vault)
+					<#
+					.SYNOPSIS
+						Test stub for secret retrieval.
+					#>
+					param(
+						# Secret name requested by Get-NinjaOneSecrets.
+						$Name,
+						# Vault name requested by Get-NinjaOneSecrets.
+						$Vault
+					)
 					$script:RequestedSecrets.Add($Name)
 					return $script:SecretResponses[$Name]
 				}
@@ -783,7 +801,16 @@ Describe 'Get-NinjaOneSecrets' {
 					NinjaOneRefresh = 'refresh-token'
 				}
 				function Get-Secret {
-					param($Name, $Vault)
+					<#
+					.SYNOPSIS
+						Test stub for secret retrieval.
+					#>
+					param(
+						# Secret name requested by Get-NinjaOneSecrets.
+						$Name,
+						# Vault name requested by Get-NinjaOneSecrets.
+						$Vault
+					)
 					$script:RequestedSecrets.Add($Name)
 					return $script:SecretResponses[$Name]
 				}
