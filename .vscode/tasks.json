@@ -54,6 +54,14 @@
       "problemMatcher": []
     },
     {
+      "label": "Generate Codecov Config",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\DevOps\\Quality\\generate-codecov-config.ps1"],
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
       "label": "Generate Help (Orchestrate)",
       "type": "shell",
       "command": "pwsh",

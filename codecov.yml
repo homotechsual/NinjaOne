@@ -10,79 +10,82 @@ flags:
       - Source/Private/**
   backup:
     paths:
-      - Source/Public/Backup/**
+      - 'Source/Public/Backup/**'
+  billing:
+    paths:
+      - 'Source/Public/Billing/**'
   checklist:
     paths:
-      - Source/Public/Checklist/**
+      - 'Source/Public/Checklist/**'
   checklist_templates:
     paths:
       - 'Source/Public/Checklist Templates/**'
   custom_fields:
     paths:
-      - Source/Public/CustomFields/**
+      - 'Source/Public/CustomFields/**'
   devices:
     paths:
-      - Source/Public/Devices/**
+      - 'Source/Public/Devices/**'
   document_templates:
     paths:
       - 'Source/Public/Document Templates/**'
   groups:
     paths:
-      - Source/Public/Groups/**
+      - 'Source/Public/Groups/**'
   itam:
     paths:
-      - Source/Public/ITAM/**
+      - 'Source/Public/ITAM/**'
   knowledge_base_articles:
     paths:
-      - Source/Public/KnowledgeBaseArticles/**
+      - 'Source/Public/KnowledgeBaseArticles/**'
   location:
     paths:
-      - Source/Public/Location/**
+      - 'Source/Public/Location/**'
   management:
     paths:
-      - Source/Public/Management/**
+      - 'Source/Public/Management/**'
   object_helpers:
     paths:
       - 'Source/Public/Object Helpers/**'
   organisation:
     paths:
-      - Source/Public/Organisation/**
+      - 'Source/Public/Organisation/**'
   organisation_checklists:
     paths:
-      - Source/Public/OrganisationChecklists/**
+      - 'Source/Public/OrganisationChecklists/**'
   organisation_documents:
     paths:
-      - Source/Public/OrganisationDocuments/**
+      - 'Source/Public/OrganisationDocuments/**'
   psmodule:
     paths:
-      - Source/Public/PSModule/**
+      - 'Source/Public/PSModule/**'
   queries:
     paths:
-      - Source/Public/Queries/**
+      - 'Source/Public/Queries/**'
   related_items:
     paths:
-      - Source/Public/RelatedItems/**
+      - 'Source/Public/RelatedItems/**'
   system:
     paths:
-      - Source/Public/System/**
+      - 'Source/Public/System/**'
   tabs:
     paths:
-      - Source/Public/Tabs/**
+      - 'Source/Public/Tabs/**'
   tags:
     paths:
-      - Source/Public/Tags/**
+      - 'Source/Public/Tags/**'
   ticketing:
     paths:
-      - Source/Public/Ticketing/**
+      - 'Source/Public/Ticketing/**'
   users:
     paths:
-      - Source/Public/Users/**
+      - 'Source/Public/Users/**'
   vulnerability:
     paths:
-      - Source/Public/Vulnerability/**
+      - 'Source/Public/Vulnerability/**'
   webhooks:
     paths:
-      - Source/Public/Webhooks/**
+      - 'Source/Public/Webhooks/**'
 
 component_management:
   default_rules:
@@ -98,103 +101,1037 @@ component_management:
       name: Private
       paths:
         - Source/Private/**
-    - component_id: backup
-      name: Backup
+    - component_id: folder_backup
+      name: 'Folder: Backup'
       paths:
-        - Source/Public/Backup/**
-    - component_id: checklist
-      name: Checklist
+        - 'Source/Public/Backup/**'
+    - component_id: folder_billing
+      name: 'Folder: Billing'
       paths:
-        - Source/Public/Checklist/**
-    - component_id: checklist_templates
-      name: Checklist Templates
+        - 'Source/Public/Billing/**'
+    - component_id: folder_checklist
+      name: 'Folder: Checklist'
+      paths:
+        - 'Source/Public/Checklist/**'
+    - component_id: folder_checklist_templates
+      name: 'Folder: Checklist Templates'
       paths:
         - 'Source/Public/Checklist Templates/**'
-    - component_id: custom_fields
-      name: Custom Fields
+    - component_id: folder_custom_fields
+      name: 'Folder: CustomFields'
       paths:
-        - Source/Public/CustomFields/**
-    - component_id: devices
-      name: Devices
+        - 'Source/Public/CustomFields/**'
+    - component_id: folder_devices
+      name: 'Folder: Devices'
       paths:
-        - Source/Public/Devices/**
-    - component_id: document_templates
-      name: Document Templates
+        - 'Source/Public/Devices/**'
+    - component_id: folder_document_templates
+      name: 'Folder: Document Templates'
       paths:
         - 'Source/Public/Document Templates/**'
-    - component_id: groups
-      name: Groups
+    - component_id: folder_groups
+      name: 'Folder: Groups'
       paths:
-        - Source/Public/Groups/**
-    - component_id: itam
-      name: ITAM
+        - 'Source/Public/Groups/**'
+    - component_id: folder_itam
+      name: 'Folder: ITAM'
       paths:
-        - Source/Public/ITAM/**
-    - component_id: knowledge_base_articles
-      name: Knowledge Base Articles
+        - 'Source/Public/ITAM/**'
+    - component_id: folder_knowledge_base_articles
+      name: 'Folder: KnowledgeBaseArticles'
       paths:
-        - Source/Public/KnowledgeBaseArticles/**
-    - component_id: location
-      name: Location
+        - 'Source/Public/KnowledgeBaseArticles/**'
+    - component_id: folder_location
+      name: 'Folder: Location'
       paths:
-        - Source/Public/Location/**
-    - component_id: management
-      name: Management
+        - 'Source/Public/Location/**'
+    - component_id: folder_management
+      name: 'Folder: Management'
       paths:
-        - Source/Public/Management/**
-    - component_id: object_helpers
-      name: Object Helpers
+        - 'Source/Public/Management/**'
+    - component_id: folder_object_helpers
+      name: 'Folder: Object Helpers'
       paths:
         - 'Source/Public/Object Helpers/**'
-    - component_id: organisation
-      name: Organisation
+    - component_id: folder_organisation
+      name: 'Folder: Organisation'
       paths:
-        - Source/Public/Organisation/**
-    - component_id: organisation_checklists
-      name: Organisation Checklists
+        - 'Source/Public/Organisation/**'
+    - component_id: folder_organisation_checklists
+      name: 'Folder: OrganisationChecklists'
       paths:
-        - Source/Public/OrganisationChecklists/**
-    - component_id: organisation_documents
-      name: Organisation Documents
+        - 'Source/Public/OrganisationChecklists/**'
+    - component_id: folder_organisation_documents
+      name: 'Folder: OrganisationDocuments'
       paths:
-        - Source/Public/OrganisationDocuments/**
-    - component_id: psmodule
-      name: PSModule
+        - 'Source/Public/OrganisationDocuments/**'
+    - component_id: folder_psmodule
+      name: 'Folder: PSModule'
       paths:
-        - Source/Public/PSModule/**
-    - component_id: queries
-      name: Queries
+        - 'Source/Public/PSModule/**'
+    - component_id: folder_queries
+      name: 'Folder: Queries'
       paths:
-        - Source/Public/Queries/**
-    - component_id: related_items
-      name: Related Items
+        - 'Source/Public/Queries/**'
+    - component_id: folder_related_items
+      name: 'Folder: RelatedItems'
       paths:
-        - Source/Public/RelatedItems/**
-    - component_id: system
-      name: System
+        - 'Source/Public/RelatedItems/**'
+    - component_id: folder_system
+      name: 'Folder: System'
       paths:
-        - Source/Public/System/**
-    - component_id: tabs
-      name: Tabs
+        - 'Source/Public/System/**'
+    - component_id: folder_tabs
+      name: 'Folder: Tabs'
       paths:
-        - Source/Public/Tabs/**
-    - component_id: tags
-      name: Tags
+        - 'Source/Public/Tabs/**'
+    - component_id: folder_tags
+      name: 'Folder: Tags'
       paths:
-        - Source/Public/Tags/**
-    - component_id: ticketing
-      name: Ticketing
+        - 'Source/Public/Tags/**'
+    - component_id: folder_ticketing
+      name: 'Folder: Ticketing'
       paths:
-        - Source/Public/Ticketing/**
-    - component_id: users
-      name: Users
+        - 'Source/Public/Ticketing/**'
+    - component_id: folder_users
+      name: 'Folder: Users'
       paths:
-        - Source/Public/Users/**
-    - component_id: vulnerability
-      name: Vulnerability
+        - 'Source/Public/Users/**'
+    - component_id: folder_vulnerability
+      name: 'Folder: Vulnerability'
       paths:
-        - Source/Public/Vulnerability/**
-    - component_id: webhooks
-      name: Webhooks
+        - 'Source/Public/Vulnerability/**'
+    - component_id: folder_webhooks
+      name: 'Folder: Webhooks'
       paths:
-        - Source/Public/Webhooks/**
+        - 'Source/Public/Webhooks/**'
+    - component_id: func_activities
+      name: 'Functionality: Activities'
+      paths:
+        - Source/Public/System/Get/Get-NinjaOneActivities.ps1
+    - component_id: func_alert
+      name: 'Functionality: Alert'
+      paths:
+        - Source/Public/Management/Reset/Reset-NinjaOneAlert.ps1
+    - component_id: func_alerts
+      name: 'Functionality: Alerts'
+      paths:
+        - Source/Public/System/Get/Get-NinjaOneAlerts.ps1
+    - component_id: func_anti_virus_status_query
+      name: 'Functionality: AntiVirus Status Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneAntivirusStatus.ps1
+    - component_id: func_anti_virus_threats_query
+      name: 'Functionality: AntiVirus Threats Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneAntivirusThreats.ps1
+    - component_id: func_api_request
+      name: 'Functionality: API Request'
+      paths:
+        - Source/Public/PSModule/Invoke/Invoke-NinjaOneRequest.ps1
+    - component_id: func_archive_document_templates
+      name: 'Functionality: Archive Document Templates'
+      paths:
+        - Source/Public/Document Templates/Invoke/Invoke-NinjaOneDocumentTemplatesArchive.ps1
+    - component_id: func_archive_organisation_document
+      name: 'Functionality: Archive Organisation Document'
+      paths:
+        - Source/Public/OrganisationDocuments/Invoke/Invoke-NinjaOneOrganisationDocumentArchive.ps1
+    - component_id: func_archive_organisation_documents
+      name: 'Functionality: Archive Organisation Documents'
+      paths:
+        - Source/Public/OrganisationDocuments/Invoke/Invoke-NinjaOneOrganisationDocumentsArchive.ps1
+    - component_id: func_asset_relationship
+      name: 'Functionality: Asset Relationship'
+      paths:
+        - Source/Public/ITAM/New/New-NinjaOneAssetRelationship.ps1
+        - Source/Public/ITAM/Remove/Remove-NinjaOneAssetRelationship.ps1
+    - component_id: func_asset_relationship_type
+      name: 'Functionality: Asset Relationship Type'
+      paths:
+        - Source/Public/ITAM/New/New-NinjaOneAssetRelationshipType.ps1
+    - component_id: func_asset_relationship_types
+      name: 'Functionality: Asset Relationship Types'
+      paths:
+        - Source/Public/ITAM/Get/Get-NinjaOneAssetRelationshipTypes.ps1
+    - component_id: func_asset_relationships
+      name: 'Functionality: Asset Relationships'
+      paths:
+        - Source/Public/ITAM/Get/Get-NinjaOneAssetRelationships.ps1
+    - component_id: func_asset_tag
+      name: 'Functionality: Asset Tag'
+      paths:
+        - Source/Public/Tags/New/New-NinjaOneTag.ps1
+        - Source/Public/Tags/Remove/Remove-NinjaOneTag.ps1
+        - Source/Public/Tags/Set/Set-NinjaOneTag.ps1
+    - component_id: func_asset_tag_assignment
+      name: 'Functionality: Asset Tag Assignment'
+      paths:
+        - Source/Public/Tags/Set/Set-NinjaOneAssetTag.ps1
+    - component_id: func_asset_tags
+      name: 'Functionality: Asset Tags'
+      paths:
+        - Source/Public/Tags/Get/Get-NinjaOneTags.ps1
+        - Source/Public/Tags/Remove/Remove-NinjaOneTags.ps1
+        - Source/Public/Tags/Set/Merge-NinjaOneTags.ps1
+        - Source/Public/Tags/Set/Set-NinjaOneTagBatch.ps1
+    - component_id: func_attachment_relation
+      name: 'Functionality: Attachment Relation'
+      paths:
+        - Source/Public/RelatedItems/New/New-NinjaOneAttachmentRelation.ps1
+    - component_id: func_automation_scripts
+      name: 'Functionality: Automation Scripts'
+      paths:
+        - Source/Public/System/Get/Get-NinjaOneAutomations.ps1
+    - component_id: func_backup
+      name: 'Functionality: Backup'
+      paths:
+        - Source/Public/Backup/New/Set-NinjaOneBackupBandwidthThrottle.ps1
+    - component_id: func_backup_jobs
+      name: 'Functionality: Backup Jobs'
+      paths:
+        - Source/Public/Backup/Get/Get-NinjaOneBackupJobs.ps1
+    - component_id: func_backup_usage_query
+      name: 'Functionality: Backup Usage Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneDeviceBackupUsage.ps1
+    - component_id: func_billing_account
+      name: 'Functionality: Billing Account'
+      paths:
+        - Source/Public/Billing/New/New-NinjaOneBillingAccount.ps1
+        - Source/Public/Billing/Remove/Remove-NinjaOneBillingAccount.ps1
+        - Source/Public/Billing/Set/Set-NinjaOneBillingAccount.ps1
+    - component_id: func_billing_accounts
+      name: 'Functionality: Billing Accounts'
+      paths:
+        - Source/Public/Billing/Get/Get-NinjaOneBillingAccounts.ps1
+    - component_id: func_billing_agreement
+      name: 'Functionality: Billing Agreement'
+      paths:
+        - Source/Public/Billing/Invoke/Invoke-NinjaOneBillingAgreementDeactivate.ps1
+        - Source/Public/Billing/New/New-NinjaOneBillingAgreement.ps1
+        - Source/Public/Billing/Set/Set-NinjaOneBillingAgreement.ps1
+    - component_id: func_billing_agreements
+      name: 'Functionality: Billing Agreements'
+      paths:
+        - Source/Public/Billing/Get/Get-NinjaOneBillingAgreements.ps1
+    - component_id: func_billing_invoice
+      name: 'Functionality: Billing Invoice'
+      paths:
+        - Source/Public/Billing/New/New-NinjaOneBillingInvoice.ps1
+        - Source/Public/Billing/Set/Set-NinjaOneBillingInvoice.ps1
+    - component_id: func_billing_invoice_note
+      name: 'Functionality: Billing Invoice Note'
+      paths:
+        - Source/Public/Billing/Set/Set-NinjaOneBillingInvoiceNote.ps1
+    - component_id: func_billing_invoices
+      name: 'Functionality: Billing Invoices'
+      paths:
+        - Source/Public/Billing/Get/Get-NinjaOneBillingInvoices.ps1
+    - component_id: func_billing_invoices_approve
+      name: 'Functionality: Billing Invoices Approve'
+      paths:
+        - Source/Public/Billing/Invoke/Invoke-NinjaOneBillingInvoicesApprove.ps1
+    - component_id: func_billing_invoices_archive
+      name: 'Functionality: Billing Invoices Archive'
+      paths:
+        - Source/Public/Billing/Invoke/Invoke-NinjaOneBillingInvoicesArchive.ps1
+    - component_id: func_billing_invoices_export
+      name: 'Functionality: Billing Invoices Export'
+      paths:
+        - Source/Public/Billing/Invoke/Invoke-NinjaOneBillingInvoicesExport.ps1
+    - component_id: func_billing_invoices_unarchive
+      name: 'Functionality: Billing Invoices Unarchive'
+      paths:
+        - Source/Public/Billing/Invoke/Invoke-NinjaOneBillingInvoicesUnarchive.ps1
+    - component_id: func_billing_product
+      name: 'Functionality: Billing Product'
+      paths:
+        - Source/Public/Billing/New/New-NinjaOneBillingProduct.ps1
+        - Source/Public/Billing/Set/Set-NinjaOneBillingProduct.ps1
+    - component_id: func_billing_product_activate
+      name: 'Functionality: Billing Product Activate'
+      paths:
+        - Source/Public/Billing/Invoke/Invoke-NinjaOneBillingProductActivate.ps1
+    - component_id: func_billing_product_deactivate
+      name: 'Functionality: Billing Product Deactivate'
+      paths:
+        - Source/Public/Billing/Invoke/Invoke-NinjaOneBillingProductDeactivate.ps1
+    - component_id: func_billing_products
+      name: 'Functionality: Billing Products'
+      paths:
+        - Source/Public/Billing/Get/Get-NinjaOneBillingProducts.ps1
+    - component_id: func_billing_ticket_product
+      name: 'Functionality: Billing Ticket Product'
+      paths:
+        - Source/Public/Billing/Set/Set-NinjaOneBillingTicketProduct.ps1
+    - component_id: func_billing_ticket_product_ad_hoc
+      name: 'Functionality: Billing Ticket Product Ad Hoc'
+      paths:
+        - Source/Public/Billing/New/New-NinjaOneBillingTicketProductAdHoc.ps1
+    - component_id: func_billing_ticket_product_catalog
+      name: 'Functionality: Billing Ticket Product Catalog'
+      paths:
+        - Source/Public/Billing/New/New-NinjaOneBillingTicketProductCatalog.ps1
+    - component_id: func_billing_ticket_products
+      name: 'Functionality: Billing Ticket Products'
+      paths:
+        - Source/Public/Billing/Get/Get-NinjaOneBillingTicketProducts.ps1
+        - Source/Public/Billing/Invoke/Invoke-NinjaOneBillingTicketProductsDelete.ps1
+    - component_id: func_billing_ticket_time_entry
+      name: 'Functionality: Billing Ticket Time Entry'
+      paths:
+        - Source/Public/Billing/Set/Set-NinjaOneBillingTicketTimeEntry.ps1
+    - component_id: func_checklist_archive
+      name: 'Functionality: Checklist Archive'
+      paths:
+        - Source/Public/Checklist/Invoke/Invoke-NinjaOneChecklistArchive.ps1
+    - component_id: func_checklist_restore
+      name: 'Functionality: Checklist Restore'
+      paths:
+        - Source/Public/Checklist/Invoke/Invoke-NinjaOneChecklistRestore.ps1
+    - component_id: func_checklist_template
+      name: 'Functionality: Checklist Template'
+      paths:
+        - Source/Public/Checklist Templates/Remove/Remove-NinjaOneChecklistTemplate.ps1
+    - component_id: func_checklist_templates
+      name: 'Functionality: Checklist Templates'
+      paths:
+        - Source/Public/Checklist Templates/Get/Get-NinjaOneChecklistTemplates.ps1
+        - Source/Public/Checklist Templates/New/New-NinjaOneChecklistTemplate.ps1
+        - Source/Public/Checklist Templates/Remove/Remove-NinjaOneChecklistTemplates.ps1
+        - Source/Public/Checklist Templates/Set/Set-NinjaOneChecklistTemplates.ps1
+    - component_id: func_computer_systems_query
+      name: 'Functionality: Computer Systems Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneComputerSystems.ps1
+    - component_id: func_contact
+      name: 'Functionality: Contact'
+      paths:
+        - Source/Public/System/Get/Get-NinjaOneContact.ps1
+        - Source/Public/System/New/New-NinjaOneContact.ps1
+        - Source/Public/System/Remove/Remove-NinjaOneContact.ps1
+        - Source/Public/System/Set/Set-NinjaOneContact.ps1
+    - component_id: func_contacts
+      name: 'Functionality: Contacts'
+      paths:
+        - Source/Public/Ticketing/Get/Get-NinjaOneContacts.ps1
+    - component_id: func_custom_field
+      name: 'Functionality: Custom Field'
+      paths:
+        - Source/Public/CustomFields/Get/Get-NinjaOneCustomField.ps1
+        - Source/Public/CustomFields/New/New-NinjaOneCustomField.ps1
+        - Source/Public/CustomFields/Remove/Remove-NinjaOneCustomField.ps1
+        - Source/Public/CustomFields/Set/Set-NinjaOneCustomField.ps1
+    - component_id: func_custom_field_object_helper
+      name: 'Functionality: Custom Field Object Helper'
+      paths:
+        - Source/Public/Object Helpers/New-NinjaOneCustomFieldObject.ps1
+    - component_id: func_custom_field_policy_condition
+      name: 'Functionality: Custom Field Policy Condition'
+      paths:
+        - Source/Public/Management/Get/Get-NinjaOneCustomFieldsPolicyCondition.ps1
+    - component_id: func_custom_field_policy_conditions
+      name: 'Functionality: Custom Field Policy Conditions'
+      paths:
+        - Source/Public/Management/Get/Get-NinjaOneCustomFieldsPolicyConditions.ps1
+    - component_id: func_custom_field_signed_urls
+      name: 'Functionality: Custom Field Signed URLs'
+      paths:
+        - Source/Public/CustomFields/Get/Get-NinjaOneCustomFieldSignedURLs.ps1
+    - component_id: func_custom_fields_bulk
+      name: 'Functionality: Custom Fields Bulk'
+      paths:
+        - Source/Public/CustomFields/Invoke/Invoke-NinjaOneCustomFieldsBulk.ps1
+    - component_id: func_custom_fields_policy_condition
+      name: 'Functionality: Custom Fields Policy Condition'
+      paths:
+        - Source/Public/Management/New/New-NinjaOneCustomFieldsPolicyCondition.ps1
+    - component_id: func_custom_fields_query
+      name: 'Functionality: Custom Fields Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneCustomFields.ps1
+    - component_id: func_custom_fields_schema
+      name: 'Functionality: Custom Fields Schema'
+      paths:
+        - Source/Public/CustomFields/Get/Get-NinjaOneCustomFieldsSchema.ps1
+    - component_id: func_device
+      name: 'Functionality: Device'
+      paths:
+        - Source/Public/Management/Restart/Restart-NinjaOneDevice.ps1
+        - Source/Public/Management/Set/Set-NinjaOneDevice.ps1
+        - Source/Public/System/Find/Find-NinjaOneDevices.ps1
+    - component_id: func_device_activities
+      name: 'Functionality: Device Activities'
+      paths:
+        - Source/Public/Devices/Get/Get-NinjaOneDeviceActivities.ps1
+    - component_id: func_device_alerts
+      name: 'Functionality: Device Alerts'
+      paths:
+        - Source/Public/Devices/Get/Get-NinjaOneDeviceAlerts.ps1
+    - component_id: func_device_approval
+      name: 'Functionality: Device Approval'
+      paths:
+        - Source/Public/Management/Set/Set-NinjaOneDeviceApproval.ps1
+    - component_id: func_device_custom_fields
+      name: 'Functionality: Device Custom Fields'
+      paths:
+        - Source/Public/Devices/Set/Set-NinjaOneDeviceCustomFields.ps1
+        - Source/Public/System/Get/Get-NinjaOneDeviceCustomFields.ps1
+    - component_id: func_device_dashboard_url
+      name: 'Functionality: Device Dashboard URL'
+      paths:
+        - Source/Public/Management/Get/Get-NinjaOneDeviceDashboardURL.ps1
+    - component_id: func_device_disk_drives
+      name: 'Functionality: Device Disk drives'
+      paths:
+        - Source/Public/Devices/Get/Get-NinjaOneDeviceDisks.ps1
+    - component_id: func_device_health_query
+      name: 'Functionality: Device Health Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneDeviceHealth.ps1
+    - component_id: func_device_jobs
+      name: 'Functionality: Device Jobs'
+      paths:
+        - Source/Public/Devices/Get/Get-NinjaOneDeviceJobs.ps1
+    - component_id: func_device_last_logged_on_user
+      name: 'Functionality: Device Last Logged On User'
+      paths:
+        - Source/Public/Devices/Get/Get-NinjaOneDeviceLastLoggedOnUser.ps1
+    - component_id: func_device_maintenance
+      name: 'Functionality: Device Maintenance'
+      paths:
+        - Source/Public/Management/Set/Set-NinjaOneDeviceMaintenance.ps1
+    - component_id: func_device_network_interfaces
+      name: 'Functionality: Device Network Interfaces'
+      paths:
+        - Source/Public/Devices/Get/Get-NinjaOneDeviceNetworkInterfaces.ps1
+    - component_id: func_device_os_patch_apply
+      name: 'Functionality: Device OS Patch Apply'
+      paths:
+        - Source/Public/Devices/Set/Start-NinjaOneOSPatchApply.ps1
+    - component_id: func_device_os_patch_installs
+      name: 'Functionality: Device OS Patch Installs'
+      paths:
+        - Source/Public/Devices/Get/Get-NinjaOneDeviceOSPatchInstalls.ps1
+    - component_id: func_device_os_patch_scan
+      name: 'Functionality: Device OS Patch Scan'
+      paths:
+        - Source/Public/Devices/Set/Start-NinjaOneOSPatchScanJob.ps1
+    - component_id: func_device_os_patches
+      name: 'Functionality: Device OS Patches'
+      paths:
+        - Source/Public/Devices/Get/Get-NinjaOneDeviceOSPatches.ps1
+    - component_id: func_device_owner
+      name: 'Functionality: Device Owner'
+      paths:
+        - Source/Public/Management/Set/Set-NinjaOneDeviceOwner.ps1
+    - component_id: func_device_policy_overrides
+      name: 'Functionality: Device Policy Overrides'
+      paths:
+        - Source/Public/Devices/Get/Get-NinjaOneDevicePolicyOverrides.ps1
+        - Source/Public/Management/Reset/Reset-NinjaOneDevicePolicyOverrides.ps1
+    - component_id: func_device_processors
+      name: 'Functionality: Device Processors'
+      paths:
+        - Source/Public/Devices/Get/Get-NinjaOneDeviceProcessors.ps1
+    - component_id: func_device_roles
+      name: 'Functionality: Device Roles'
+      paths:
+        - Source/Public/System/Get/Get-NinjaOneRoles.ps1
+    - component_id: func_device_scripting_options
+      name: 'Functionality: Device Scripting Options'
+      paths:
+        - Source/Public/Management/Get/Get-NinjaOneDeviceScriptingOptions.ps1
+    - component_id: func_device_software_inventory
+      name: 'Functionality: Device Software Inventory'
+      paths:
+        - Source/Public/Devices/Get/Get-NinjaOneDeviceSoftwareInventory.ps1
+    - component_id: func_device_software_patch_apply
+      name: 'Functionality: Device Software Patch Apply'
+      paths:
+        - Source/Public/Devices/Set/Start-NinjaOneSoftwarePatchApply.ps1
+    - component_id: func_device_software_patch_installs
+      name: 'Functionality: Device Software Patch Installs'
+      paths:
+        - Source/Public/Devices/Get/Get-NinjaOneDeviceSoftwarePatchInstalls.ps1
+    - component_id: func_device_software_patch_scan
+      name: 'Functionality: Device Software Patch Scan'
+      paths:
+        - Source/Public/Devices/Set/Start-NinjaOneSoftwarePatchScan.ps1
+    - component_id: func_device_software_patches
+      name: 'Functionality: Device Software Patches'
+      paths:
+        - Source/Public/Devices/Get/Get-NinjaOneDeviceSoftwarePatches.ps1
+    - component_id: func_device_volumes
+      name: 'Functionality: Device Volumes'
+      paths:
+        - Source/Public/Devices/Get/Get-NinjaOneDeviceVolumes.ps1
+    - component_id: func_device_windows_services
+      name: 'Functionality: Device Windows Services'
+      paths:
+        - Source/Public/Devices/Get/Get-NinjaOneDeviceWindowsServices.ps1
+    - component_id: func_devices
+      name: 'Functionality: Devices'
+      paths:
+        - Source/Public/Devices/Invoke/Invoke-NinjaOneDeviceDecommission.ps1
+        - Source/Public/Devices/New/New-NinjaOneStagedDevice.ps1
+        - Source/Public/Management/Remove/Remove-NinjaOneDeviceOwner.ps1
+        - Source/Public/System/Get/Get-NinjaOneDevices.ps1
+    - component_id: func_disks_query
+      name: 'Functionality: Disks Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneDisks.ps1
+    - component_id: func_document_template
+      name: 'Functionality: Document Template'
+      paths:
+        - Source/Public/Document Templates/New/New-NinjaOneDocumentTemplate.ps1
+        - Source/Public/Document Templates/Remove/Remove-NinjaOneDocumentTemplate.ps1
+        - Source/Public/Document Templates/Set/Set-NinjaOneDocumentTemplate.ps1
+    - component_id: func_document_template_archive
+      name: 'Functionality: Document Template Archive'
+      paths:
+        - Source/Public/Document Templates/Invoke/Invoke-NinjaOneDocumentTemplateArchive.ps1
+    - component_id: func_document_template_field_object_helper
+      name: 'Functionality: Document Template Field Object Helper'
+      paths:
+        - Source/Public/Object Helpers/New-NinjaOneDocumentTemplateFieldObject.ps1
+    - component_id: func_document_template_restore
+      name: 'Functionality: Document Template Restore'
+      paths:
+        - Source/Public/Document Templates/Invoke/Invoke-NinjaOneDocumentTemplateRestore.ps1
+    - component_id: func_document_templates
+      name: 'Functionality: Document Templates'
+      paths:
+        - Source/Public/Document Templates/Get/Get-NinjaOneDocumentTemplates.ps1
+    - component_id: func_end_user
+      name: 'Functionality: End User'
+      paths:
+        - Source/Public/Users/Get/Get-NinjaOneEndUser.ps1
+        - Source/Public/Users/New/New-NinjaOneEndUser.ps1
+        - Source/Public/Users/Remove/Remove-NinjaOneEndUser.ps1
+        - Source/Public/Users/Set/Set-NinjaOneEndUser.ps1
+    - component_id: func_end_user_custom_fields
+      name: 'Functionality: End User Custom Fields'
+      paths:
+        - Source/Public/Users/Get/Get-NinjaOneEndUserCustomFields.ps1
+        - Source/Public/Users/Set/Set-NinjaOneEndUserCustomFields.ps1
+    - component_id: func_end_user_device_access
+      name: 'Functionality: End User Device Access'
+      paths:
+        - Source/Public/Users/Set/Set-NinjaOneEndUserDeviceAccess.ps1
+    - component_id: func_end_users
+      name: 'Functionality: End Users'
+      paths:
+        - Source/Public/Users/Get/Get-NinjaOneEndUsers.ps1
+    - component_id: func_entity_custom_fields_signed_urls
+      name: 'Functionality: Entity Custom Fields Signed URLs'
+      paths:
+        - Source/Public/CustomFields/Get/Get-NinjaOneEntityCustomFieldsSignedURLs.ps1
+    - component_id: func_entity_relation
+      name: 'Functionality: Entity Relation'
+      paths:
+        - Source/Public/RelatedItems/New/New-NinjaOneEntityRelation.ps1
+    - component_id: func_entity_relation_object_helper
+      name: 'Functionality: Entity Relation Object Helper'
+      paths:
+        - Source/Public/Object Helpers/New-NinjaOneEntityRelationObject.ps1
+    - component_id: func_entity_relations
+      name: 'Functionality: Entity Relations'
+      paths:
+        - Source/Public/RelatedItems/New/New-NinjaOneEntityRelations.ps1
+    - component_id: func_global_knowledge_base_articles
+      name: 'Functionality: Global Knowledge Base Articles'
+      paths:
+        - Source/Public/KnowledgeBaseArticles/Get/Get-NinjaOneGlobalKnowledgeBaseArticles.ps1
+    - component_id: func_group_members
+      name: 'Functionality: Group Members'
+      paths:
+        - Source/Public/Groups/Get/Get-NinjaOneGroupMembers.ps1
+    - component_id: func_groups
+      name: 'Functionality: Groups'
+      paths:
+        - Source/Public/System/Get/Get-NinjaOneGroups.ps1
+    - component_id: func_installer
+      name: 'Functionality: Installer'
+      paths:
+        - Source/Public/Management/Get/Get-NinjaOneInstaller.ps1
+        - Source/Public/Management/New/New-NinjaOneInstaller.ps1
+    - component_id: func_integrity_check_job
+      name: 'Functionality: Integrity Check Job'
+      paths:
+        - Source/Public/Backup/New/New-NinjaOneIntegrityCheckJob.ps1
+    - component_id: func_integrity_check_jobs
+      name: 'Functionality: Integrity Check Jobs'
+      paths:
+        - Source/Public/Backup/Get/Get-NinjaOneIntegrityCheckJobs.ps1
+    - component_id: func_jobs
+      name: 'Functionality: Jobs'
+      paths:
+        - Source/Public/System/Get/Get-NinjaOneJobs.ps1
+    - component_id: func_knowledge_base_article
+      name: 'Functionality: Knowledge Base Article'
+      paths:
+        - Source/Public/KnowledgeBaseArticles/Get/Get-NinjaOneKnowledgeBaseArticle.ps1
+        - Source/Public/KnowledgeBaseArticles/Invoke/Invoke-NinjaOneKnowledgeBaseArticlesArchive.ps1
+        - Source/Public/KnowledgeBaseArticles/Remove/Remove-NinjaOneKnowledgeBaseArticles.ps1
+        - Source/Public/KnowledgeBaseArticles/Restore/Restore-NinjaOneKnowledgeBaseArticles.ps1
+        - Source/Public/KnowledgeBaseArticles/Set/Set-NinjaOneKnowledgeBaseArticles.ps1
+    - component_id: func_knowledge_base_articles
+      name: 'Functionality: Knowledge Base Articles'
+      paths:
+        - Source/Public/KnowledgeBaseArticles/New/New-NinjaOneKnowledgeBaseArticles.ps1
+    - component_id: func_knowledge_base_articles_upload
+      name: 'Functionality: Knowledge Base Articles Upload'
+      paths:
+        - Source/Public/KnowledgeBaseArticles/New/New-NinjaOneKnowledgeBaseArticlesUpload.ps1
+    - component_id: func_knowledge_base_folder
+      name: 'Functionality: Knowledge Base Folder'
+      paths:
+        - Source/Public/KnowledgeBaseArticles/Invoke/Invoke-NinjaOneKnowledgeBaseFoldersArchive.ps1
+        - Source/Public/KnowledgeBaseArticles/Remove/Remove-NinjaOneKnowledgeBaseFolders.ps1
+        - Source/Public/KnowledgeBaseArticles/Restore/Restore-NinjaOneKnowledgeBaseFolders.ps1
+    - component_id: func_knowledge_base_folders
+      name: 'Functionality: Knowledge Base Folders'
+      paths:
+        - Source/Public/KnowledgeBaseArticles/Get/Get-NinjaOneKnowledgeBaseFolders.ps1
+    - component_id: func_knowledge_base_item
+      name: 'Functionality: Knowledge Base Item'
+      paths:
+        - Source/Public/KnowledgeBaseArticles/Set/Move-NinjaOneKnowledgeBaseItems.ps1
+    - component_id: func_location
+      name: 'Functionality: Location'
+      paths:
+        - Source/Public/Management/New/New-NinjaOneLocation.ps1
+        - Source/Public/Management/Set/Set-NinjaOneLocation.ps1
+    - component_id: func_location_backup_usage
+      name: 'Functionality: Location Backup Usage'
+      paths:
+        - Source/Public/Organisation/Get/Get-NinjaOneOrganisationLocationBackupUsage.ps1
+    - component_id: func_location_custom_fields
+      name: 'Functionality: Location Custom Fields'
+      paths:
+        - Source/Public/Location/Get/Get-NinjaOneLocationCustomFields.ps1
+        - Source/Public/Location/Set/Set-NinjaOneLocationCustomFields.ps1
+    - component_id: func_locations
+      name: 'Functionality: Locations'
+      paths:
+        - Source/Public/System/Get/Get-NinjaOneLocations.ps1
+    - component_id: func_logged_on_users_query
+      name: 'Functionality: Logged On Users Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneLoggedOnUsers.ps1
+    - component_id: func_maintenance
+      name: 'Functionality: Maintenance'
+      paths:
+        - Source/Public/Management/Remove/Remove-NinjaOneDeviceMaintenance.ps1
+    - component_id: func_network_interfaces_query
+      name: 'Functionality: Network Interfaces Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneNetworkInterfaces.ps1
+    - component_id: func_ninja_one
+      name: 'Functionality: NinjaOne'
+      paths:
+        - Source/Public/PSModule/Connect/Connect-NinjaOne.ps1
+    - component_id: func_node_roles
+      name: 'Functionality: Node Roles'
+      paths:
+        - Source/Public/Management/Get/Get-NinjaOneNodeRoles.ps1
+        - Source/Public/Management/New/New-NinjaOneNodeRoles.ps1
+        - Source/Public/Management/Remove/Remove-NinjaOneNodeRoles.ps1
+        - Source/Public/Management/Set/Set-NinjaOneNodeRoles.ps1
+    - component_id: func_notification_channels
+      name: 'Functionality: Notification Channels'
+      paths:
+        - Source/Public/System/Get/Get-NinjaOneNotificationChannels.ps1
+    - component_id: func_operating_systems_query
+      name: 'Functionality: Operating Systems Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneOperatingSystems.ps1
+    - component_id: func_organisation
+      name: 'Functionality: Organisation'
+      paths:
+        - Source/Public/Management/New/New-NinjaOneOrganisation.ps1
+        - Source/Public/Management/Set/Set-NinjaOneOrganisation.ps1
+        - Source/Public/Organisation/Invoke/Invoke-NinjaOneOrganisationArchive.ps1
+    - component_id: func_organisation_checklist
+      name: 'Functionality: Organisation Checklist'
+      paths:
+        - Source/Public/OrganisationChecklists/Get/Get-NinjaOneOrganisationChecklist.ps1
+        - Source/Public/OrganisationChecklists/New/New-NinjaOneOrganisationChecklist.ps1
+        - Source/Public/OrganisationChecklists/Remove/Remove-NinjaOneOrganisationChecklist.ps1
+    - component_id: func_organisation_checklist_promote
+      name: 'Functionality: Organisation Checklist Promote'
+      paths:
+        - Source/Public/OrganisationChecklists/Invoke/Invoke-NinjaOneOrganisationChecklistsPromote.ps1
+    - component_id: func_organisation_checklist_promote_named
+      name: 'Functionality: Organisation Checklist Promote Named'
+      paths:
+        - Source/Public/OrganisationChecklists/Invoke/Invoke-NinjaOneOrganisationChecklistsPromoteWithName.ps1
+    - component_id: func_organisation_checklist_signed_urls
+      name: 'Functionality: Organisation Checklist Signed URLs'
+      paths:
+        - Source/Public/OrganisationChecklists/Get/Get-NinjaOneOrganisationChecklistSignedURLs.ps1
+    - component_id: func_organisation_checklists
+      name: 'Functionality: Organisation Checklists'
+      paths:
+        - Source/Public/OrganisationChecklists/Get/Get-NinjaOneOrganisationChecklists.ps1
+        - Source/Public/OrganisationChecklists/New/New-NinjaOneOrganisationChecklistsFromTemplates.ps1
+        - Source/Public/OrganisationChecklists/Remove/Remove-NinjaOneOrganisationChecklists.ps1
+        - Source/Public/OrganisationChecklists/Set/Set-NinjaOneOrganisationChecklists.ps1
+    - component_id: func_organisation_custom_fields
+      name: 'Functionality: Organisation Custom Fields'
+      paths:
+        - Source/Public/Organisation/Get/Get-NinjaOneOrganisationCustomFields.ps1
+        - Source/Public/Organisation/Set/Set-NinjaOneOrganisationCustomFields.ps1
+    - component_id: func_organisation_devices
+      name: 'Functionality: Organisation Devices'
+      paths:
+        - Source/Public/Organisation/Get/Get-NinjaOneOrganisationDevices.ps1
+    - component_id: func_organisation_document
+      name: 'Functionality: Organisation Document'
+      paths:
+        - Source/Public/OrganisationDocuments/New/New-NinjaOneOrganisationDocument.ps1
+        - Source/Public/OrganisationDocuments/Remove/Remove-NinjaOneOrganisationDocument.ps1
+        - Source/Public/OrganisationDocuments/Set/Set-NinjaOneOrganisationDocument.ps1
+    - component_id: func_organisation_document_signed_urls
+      name: 'Functionality: Organisation Document Signed URLs'
+      paths:
+        - Source/Public/OrganisationDocuments/Get/Get-NinjaOneOrganisationDocumentSignedURLs.ps1
+    - component_id: func_organisation_documents
+      name: 'Functionality: Organisation Documents'
+      paths:
+        - Source/Public/OrganisationDocuments/Get/Get-NinjaOneOrganisationDocuments.ps1
+        - Source/Public/OrganisationDocuments/New/New-NinjaOneOrganisationDocuments.ps1
+        - Source/Public/OrganisationDocuments/Set/Set-NinjaOneOrganisationDocuments.ps1
+    - component_id: func_organisation_end_users
+      name: 'Functionality: Organisation End Users'
+      paths:
+        - Source/Public/Organisation/Get/Get-NinjaOneOrganisationEndUsers.ps1
+    - component_id: func_organisation_information
+      name: 'Functionality: Organisation Information'
+      paths:
+        - Source/Public/Organisation/Get/Get-NinjaOneOrganisationInformation.ps1
+    - component_id: func_organisation_knowledge_base_articles
+      name: 'Functionality: Organisation Knowledge Base Articles'
+      paths:
+        - Source/Public/KnowledgeBaseArticles/Get/Get-NinjaOneOrganisationKnowledgeBaseArticles.ps1
+    - component_id: func_organisation_locations
+      name: 'Functionality: Organisation Locations'
+      paths:
+        - Source/Public/Organisation/Get/Get-NinjaOneOrganisationLocations.ps1
+    - component_id: func_organisation_locations_backup_usage
+      name: 'Functionality: Organisation Locations Backup Usage'
+      paths:
+        - Source/Public/Organisation/Get/Get-NinjaOneOrganisationLocationsBackupUsage.ps1
+    - component_id: func_organisation_policies
+      name: 'Functionality: Organisation Policies'
+      paths:
+        - Source/Public/Management/Set/Set-NinjaOneOrganisationPolicies.ps1
+    - component_id: func_organisation_users
+      name: 'Functionality: Organisation Users'
+      paths:
+        - Source/Public/Organisation/Get/Get-NinjaOneOrganisationUsers.ps1
+    - component_id: func_organisations
+      name: 'Functionality: Organisations'
+      paths:
+        - Source/Public/System/Get/Get-NinjaOneOrganisations.ps1
+    - component_id: func_os_patch_installs_query
+      name: 'Functionality: OS Patch Installs Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneOSPatchInstalls.ps1
+    - component_id: func_os_patch_scan
+      name: 'Functionality: OS Patch Scan'
+      paths:
+        - Source/Public/Devices/Set/Start-NinjaOneOSPatchScan.ps1
+    - component_id: func_os_patches_query
+      name: 'Functionality: OS Patches Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneOSPatches.ps1
+    - component_id: func_policies
+      name: 'Functionality: Policies'
+      paths:
+        - Source/Public/System/Get/Get-NinjaOnePolicies.ps1
+    - component_id: func_policy
+      name: 'Functionality: Policy'
+      paths:
+        - Source/Public/Management/New/New-NinjaOnePolicy.ps1
+    - component_id: func_policy_condition
+      name: 'Functionality: Policy Condition'
+      paths:
+        - Source/Public/Management/Remove/Remove-NinjaOnePolicyCondition.ps1
+    - component_id: func_policy_overrides_query
+      name: 'Functionality: Policy Overrides Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOnePolicyOverrides.ps1
+    - component_id: func_processors_query
+      name: 'Functionality: Processors Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneProcessors.ps1
+    - component_id: func_raid_controllers_query
+      name: 'Functionality: RAID Controllers Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneRAIDControllers.ps1
+    - component_id: func_raid_drives_query
+      name: 'Functionality: RAID Drives Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneRAIDDrives.ps1
+    - component_id: func_related_item
+      name: 'Functionality: Related Item'
+      paths:
+        - Source/Public/RelatedItems/Remove/Remove-NinjaOneRelatedItem.ps1
+    - component_id: func_related_item_attachment
+      name: 'Functionality: Related Item Attachment'
+      paths:
+        - Source/Public/KnowledgeBaseArticles/Get/Get-NinjaOneRelatedItemAttachment.ps1
+    - component_id: func_related_item_attachment_signed_urls
+      name: 'Functionality: Related Item Attachment Signed URLs'
+      paths:
+        - Source/Public/KnowledgeBaseArticles/Get/Get-NinjaOneRelatedItemAttachmentSignedURLs.ps1
+    - component_id: func_related_items
+      name: 'Functionality: Related Items'
+      paths:
+        - Source/Public/RelatedItems/Get/Get-NinjaOneRelatedItems.ps1
+        - Source/Public/RelatedItems/Remove/Remove-NinjaOneRelatedItems.ps1
+    - component_id: func_restore_document_templates
+      name: 'Functionality: Restore Document Templates'
+      paths:
+        - Source/Public/Document Templates/Invoke/Invoke-NinjaOneDocumentTemplatesRestore.ps1
+    - component_id: func_restore_organisation
+      name: 'Functionality: Restore Organisation'
+      paths:
+        - Source/Public/Organisation/Invoke/Invoke-NinjaOneOrganisationRestore.ps1
+    - component_id: func_restore_organisation_document
+      name: 'Functionality: Restore Organisation Document'
+      paths:
+        - Source/Public/OrganisationDocuments/Invoke/Invoke-NinjaOneOrganisationDocumentRestore.ps1
+    - component_id: func_restore_organisation_documents
+      name: 'Functionality: Restore Organisation Documents'
+      paths:
+        - Source/Public/OrganisationDocuments/Invoke/Invoke-NinjaOneOrganisationDocumentsRestore.ps1
+    - component_id: func_scheduled_tasks
+      name: 'Functionality: Scheduled Tasks'
+      paths:
+        - Source/Public/System/Get/Get-NinjaOneTasks.ps1
+    - component_id: func_script_or_action
+      name: 'Functionality: Script or Action'
+      paths:
+        - Source/Public/Management/Invoke/Invoke-NinjaOneDeviceScript.ps1
+    - component_id: func_secure_value_relation
+      name: 'Functionality: Secure Value Relation'
+      paths:
+        - Source/Public/RelatedItems/New/New-NinjaOneSecureRelation.ps1
+    - component_id: func_software_inventory_query
+      name: 'Functionality: Software Inventory Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneSoftwareInventory.ps1
+    - component_id: func_software_license
+      name: 'Functionality: Software License'
+      paths:
+        - Source/Public/ITAM/Get/Get-NinjaOneSoftwareLicense.ps1
+        - Source/Public/ITAM/Invoke/Invoke-NinjaOneSoftwareLicenseUpsert.ps1
+        - Source/Public/ITAM/New/New-NinjaOneSoftwareLicense.ps1
+        - Source/Public/ITAM/Remove/Remove-NinjaOneSoftwareLicense.ps1
+        - Source/Public/ITAM/Set/Set-NinjaOneSoftwareLicense.ps1
+    - component_id: func_software_license_assignments
+      name: 'Functionality: Software License Assignments'
+      paths:
+        - Source/Public/ITAM/Get/Get-NinjaOneSoftwareLicenseAssignments.ps1
+    - component_id: func_software_licenses
+      name: 'Functionality: Software Licenses'
+      paths:
+        - Source/Public/ITAM/Get/Get-NinjaOneSoftwareLicenses.ps1
+    - component_id: func_software_patch_installs_query
+      name: 'Functionality: Software Patch Installs Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneSoftwarePatchInstalls.ps1
+    - component_id: func_software_patches_query
+      name: 'Functionality: Software Patches Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneSoftwarePatches.ps1
+    - component_id: func_software_products
+      name: 'Functionality: Software Products'
+      paths:
+        - Source/Public/System/Get/Get-NinjaOneSoftwareProducts.ps1
+    - component_id: func_system_contacts
+      name: 'Functionality: System Contacts'
+      paths:
+        - Source/Public/System/Get/Get-NinjaOneSystemContacts.ps1
+    - component_id: func_tab
+      name: 'Functionality: Tab'
+      paths:
+        - Source/Public/Tabs/Get/Get-NinjaOneTab.ps1
+        - Source/Public/Tabs/New/New-NinjaOneTab.ps1
+        - Source/Public/Tabs/Remove/Remove-NinjaOneTab.ps1
+        - Source/Public/Tabs/Rename/Rename-NinjaOneTab.ps1
+        - Source/Public/Tabs/Set/Set-NinjaOneTab.ps1
+    - component_id: func_tab_end_user
+      name: 'Functionality: Tab End User'
+      paths:
+        - Source/Public/Tabs/Get/Get-NinjaOneTabEndUser.ps1
+    - component_id: func_tab_end_user_order
+      name: 'Functionality: Tab End User Order'
+      paths:
+        - Source/Public/Tabs/Set/Set-NinjaOneTabEndUserOrder.ps1
+    - component_id: func_tab_organisation
+      name: 'Functionality: Tab Organisation'
+      paths:
+        - Source/Public/Tabs/Get/Get-NinjaOneTabOrganisation.ps1
+    - component_id: func_tab_organisation_order
+      name: 'Functionality: Tab Organisation Order'
+      paths:
+        - Source/Public/Tabs/Set/Set-NinjaOneTabOrganisationOrder.ps1
+    - component_id: func_tab_role
+      name: 'Functionality: Tab Role'
+      paths:
+        - Source/Public/Tabs/Get/Get-NinjaOneTabRole.ps1
+    - component_id: func_tab_role_order
+      name: 'Functionality: Tab Role Order'
+      paths:
+        - Source/Public/Tabs/Set/Set-NinjaOneTabRoleOrder.ps1
+    - component_id: func_tab_role_visibility
+      name: 'Functionality: Tab Role Visibility'
+      paths:
+        - Source/Public/Tabs/Set/Set-NinjaOneTabRoleVisibility.ps1
+    - component_id: func_tab_summary_end_user
+      name: 'Functionality: Tab Summary End User'
+      paths:
+        - Source/Public/Tabs/Get/Get-NinjaOneTabSummaryEndUser.ps1
+    - component_id: func_tab_summary_organisation
+      name: 'Functionality: Tab Summary Organisation'
+      paths:
+        - Source/Public/Tabs/Get/Get-NinjaOneTabSummaryOrganisation.ps1
+    - component_id: func_tab_summary_role
+      name: 'Functionality: Tab Summary Role'
+      paths:
+        - Source/Public/Tabs/Get/Get-NinjaOneTabSummaryRole.ps1
+    - component_id: func_technician
+      name: 'Functionality: Technician'
+      paths:
+        - Source/Public/Users/Get/Get-NinjaOneTechnician.ps1
+        - Source/Public/Users/New/New-NinjaOneTechnician.ps1
+        - Source/Public/Users/Remove/Remove-NinjaOneTechnician.ps1
+        - Source/Public/Users/Set/Set-NinjaOneTechnician.ps1
+    - component_id: func_technicians
+      name: 'Functionality: Technicians'
+      paths:
+        - Source/Public/Users/Get/Get-NinjaOneTechnicians.ps1
+    - component_id: func_temporary_attachments
+      name: 'Functionality: Temporary Attachments'
+      paths:
+        - Source/Public/KnowledgeBaseArticles/Invoke/Invoke-NinjaOneTempAttachmentUpload.ps1
+    - component_id: func_ticket
+      name: 'Functionality: Ticket'
+      paths:
+        - Source/Public/Ticketing/New/New-NinjaOneTicket.ps1
+        - Source/Public/Ticketing/Set/Set-NinjaOneTicket.ps1
+    - component_id: func_ticket_attributes
+      name: 'Functionality: Ticket Attributes'
+      paths:
+        - Source/Public/Ticketing/Get/Get-NinjaOneTicketAttributes.ps1
+    - component_id: func_ticket_board_sort_object_helper
+      name: 'Functionality: Ticket Board Sort Object Helper'
+      paths:
+        - Source/Public/Object Helpers/New-NinjaOneTicketBoardSort.ps1
+    - component_id: func_ticket_boards
+      name: 'Functionality: Ticket Boards'
+      paths:
+        - Source/Public/Ticketing/Get/Get-NinjaOneTicketBoards.ps1
+    - component_id: func_ticket_comment
+      name: 'Functionality: Ticket Comment'
+      paths:
+        - Source/Public/Ticketing/New/New-NinjaOneTicketComment.ps1
+    - component_id: func_ticket_forms
+      name: 'Functionality: Ticket Forms'
+      paths:
+        - Source/Public/Ticketing/Get/Get-NinjaOneTicketForms.ps1
+    - component_id: func_ticket_log_entries
+      name: 'Functionality: Ticket Log Entries'
+      paths:
+        - Source/Public/Ticketing/Get/Get-NinjaOneTicketLogEntries.ps1
+    - component_id: func_ticket_statuses
+      name: 'Functionality: Ticket Statuses'
+      paths:
+        - Source/Public/Ticketing/Get/Get-NinjaOneTicketStatuses.ps1
+    - component_id: func_ticketing_contacts
+      name: 'Functionality: Ticketing Contacts'
+      paths:
+        - Source/Public/Ticketing/Get/Get-NinjaOneTicketingContacts.ps1
+    - component_id: func_ticketing_users
+      name: 'Functionality: Ticketing Users'
+      paths:
+        - Source/Public/Ticketing/Get/Get-NinjaOneTicketingUsers.ps1
+    - component_id: func_tickets
+      name: 'Functionality: Tickets'
+      paths:
+        - Source/Public/Ticketing/Get/Get-NinjaOneTickets.ps1
+    - component_id: func_tooling
+      name: 'Functionality: Tooling'
+      paths:
+        - Source/Public/PSModule/Get/Get-NinjaOneInstanceCapabilities.ps1
+    - component_id: func_unmanaged_device
+      name: 'Functionality: Unmanaged Device'
+      paths:
+        - Source/Public/ITAM/Invoke/Invoke-NinjaOneUnmanagedDeviceDecommission.ps1
+        - Source/Public/ITAM/New/New-NinjaOneUnmanagedDevice.ps1
+        - Source/Public/ITAM/Remove/Remove-NinjaOneUnmanagedDevice.ps1
+        - Source/Public/ITAM/Set/Set-NinjaOneUnmanagedDevice.ps1
+    - component_id: func_unmanaged_devices
+      name: 'Functionality: Unmanaged Devices'
+      paths:
+        - Source/Public/ITAM/Invoke/Invoke-NinjaOneUnmanagedDeviceDecommissionList.ps1
+    - component_id: func_user_role_members
+      name: 'Functionality: User Role Members'
+      paths:
+        - Source/Public/Users/Add/Add-NinjaOneUserRoleMembers.ps1
+        - Source/Public/Users/Remove/Remove-NinjaOneUserRoleMembers.ps1
+    - component_id: func_user_roles
+      name: 'Functionality: User Roles'
+      paths:
+        - Source/Public/Users/Get/Get-NinjaOneUserRoles.ps1
+    - component_id: func_users
+      name: 'Functionality: Users'
+      paths:
+        - Source/Public/System/Get/Get-NinjaOneUsers.ps1
+    - component_id: func_volumes_query
+      name: 'Functionality: Volumes Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneVolumes.ps1
+    - component_id: func_vulnerability_management
+      name: 'Functionality: Vulnerability Management'
+      paths:
+        - Source/Public/Vulnerability/Invoke/Invoke-NinjaOneVulnerabilityScanGroupUpload.ps1
+    - component_id: func_vulnerability_scan_group
+      name: 'Functionality: Vulnerability Scan Group'
+      paths:
+        - Source/Public/Vulnerability/Get/Get-NinjaOneVulnerabilityScanGroup.ps1
+    - component_id: func_vulnerability_scan_groups
+      name: 'Functionality: Vulnerability Scan Groups'
+      paths:
+        - Source/Public/Vulnerability/Get/Get-NinjaOneVulnerabilityScanGroups.ps1
+    - component_id: func_webhook
+      name: 'Functionality: Webhook'
+      paths:
+        - Source/Public/Webhooks/Remove/Remove-NinjaOneWebhook.ps1
+        - Source/Public/Webhooks/Update/Update-NinjaOneWebhook.ps1
+    - component_id: func_windows_event_policy_condition
+      name: 'Functionality: Windows Event Policy Condition'
+      paths:
+        - Source/Public/Management/Get/Get-NinjaOneWindowsEventPolicyCondition.ps1
+        - Source/Public/Management/New/New-NinjaOneWindowsEventPolicyCondition.ps1
+    - component_id: func_windows_event_policy_conditions
+      name: 'Functionality: Windows Event Policy Conditions'
+      paths:
+        - Source/Public/Management/Get/Get-NinjaOneWindowsEventPolicyConditions.ps1
+    - component_id: func_windows_service_action
+      name: 'Functionality: Windows Service Action'
+      paths:
+        - Source/Public/Management/Invoke/Invoke-NinjaOneWindowsServiceAction.ps1
+    - component_id: func_windows_service_configuration
+      name: 'Functionality: Windows Service Configuration'
+      paths:
+        - Source/Public/Management/Set/Set-NinjaOneWindowsServiceConfiguration.ps1
+    - component_id: func_windows_services_query
+      name: 'Functionality: Windows Services Query'
+      paths:
+        - Source/Public/Queries/Get/Get-NinjaOneWindowsServices.ps1

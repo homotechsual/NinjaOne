@@ -2046,6 +2046,10 @@ Describe 'New-NinjaOnePATCHRequest' {
 		Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
 			[pscustomobject]@{ result = @() }
 		}
+		Mock -CommandName Test-NinjaOneEndpointSupport -ModuleName $ModuleName -MockWith {}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			throw [System.Exception]::new('delegated-patch')
+		}
 	}
 
 	Context 'Parameter acceptance' {
@@ -2062,6 +2066,149 @@ Describe 'New-NinjaOnePATCHRequest' {
 			& $module {
 				{ New-NinjaOnePATCHRequest -Resource '/v2/organizations/1' -Body '' -ErrorAction SilentlyContinue } | Should -Not -Throw
 			}
+		}
+	}
+
+	Context 'Request behavior' {
+		It 'should throw when connection information is missing' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation = $null
+				{ New-NinjaOnePATCHRequest -Resource '/v2/organizations/1' -Body @{ name = 'a' } } | Should -Throw '*Connect-NinjaOne*'
+			}
+		}
+
+		It 'should throw when authentication information is missing' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIAuthenticationInformation = $null
+				{ New-NinjaOnePATCHRequest -Resource '/v2/organizations/1' -Body @{ name = 'a' } } | Should -Throw '*Connect-NinjaOne*'
+			}
+		}
+
+		It 'should call endpoint support with PATCH method' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$null = New-NinjaOnePATCHRequest -Resource '/v2/organizations/1' -Body @{ status = 'active' }
+			}
+
+			Assert-MockCalled -CommandName Test-NinjaOneEndpointSupport -ModuleName $ModuleName -Times 1 -ParameterFilter { $Method -eq 'PATCH' -and $resource -eq '/v2/organizations/1' }
+		}
+
+		It 'should include query string values in the request URI' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				param($Uri)
+				[pscustomobject]@{ result = @($Uri) }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			$result = & $module {
+				New-NinjaOnePATCHRequest -Resource '/v2/organizations' -Body @{ name = 'updated' } -qSCollection @{ pageSize = 10; detailed = 'true' }
+			}
+
+			($result | Out-String) | Should -Match 'pageSize'
+			($result | Out-String) | Should -Match 'detailed'
+		}
+
+		It 'should set ParseDateTime when requested by switch' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				New-NinjaOnePATCHRequest -Resource '/v2/organizations/1' -Body @{ name = 'updated' } -parseDateTime
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $ParseDateTime -eq $true }
+		}
+
+		It 'should set ParseDateTime when script preference is enabled' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:ParseDateTimes = $true
+				try {
+					New-NinjaOnePATCHRequest -Resource '/v2/organizations/1' -Body @{ name = 'updated' }
+				} finally {
+					$script:ParseDateTimes = $false
+				}
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $ParseDateTime -eq $true }
+		}
+
+		It 'should return Result.results when present' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ results = @('a', 'b'); result = @('fallback') }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			$result = & $module {
+				New-NinjaOnePATCHRequest -Resource '/v2/organizations/1' -Body @{ name = 'updated' }
+			}
+
+			$result | Should -Be @('a', 'b')
+		}
+
+		It 'should return Result.result when results is not present' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ result = @('single') }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			$result = & $module {
+				New-NinjaOnePATCHRequest -Resource '/v2/organizations/1' -Body @{ name = 'updated' }
+			}
+
+			$result | Should -Be @('single')
+		}
+
+		It 'should return raw result when neither result nor results exists' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				[pscustomobject]@{ status = 'ok' }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			$result = & $module {
+				New-NinjaOnePATCHRequest -Resource '/v2/organizations/1' -Body @{ name = 'updated' }
+			}
+
+			$result.status | Should -Be 'ok'
+		}
+
+		It 'should delegate non-http request failures to New-NinjaOneError' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('generic failure')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				{ New-NinjaOnePATCHRequest -Resource '/v2/organizations/1' -Body @{ name = 'updated' } } | Should -Throw '*delegated-patch*'
+			}
+
+			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+		}
+
+		It 'should delegate web exceptions from request in current core behavior' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				throw [System.Net.WebException]::new('web failure')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				{ New-NinjaOnePATCHRequest -Resource '/v2/organizations/1' -Body @{ name = 'updated' } } | Should -Throw '*delegated-patch*'
+			}
+
+			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+		}
+
+		It 'should propagate preflight failures before request try-catch' {
+			Mock -CommandName Test-NinjaOneEndpointSupport -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('preflight failure')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				{ New-NinjaOnePATCHRequest -Resource '/v2/organizations/1' -Body @{ name = 'updated' } } | Should -Throw '*preflight failure*'
+			}
+
+			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 0
 		}
 	}
 }
