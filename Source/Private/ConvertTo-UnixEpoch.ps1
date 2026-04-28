@@ -37,6 +37,6 @@ function ConvertTo-UnixEpoch {
 		$UnixEpochTimestamp = [Int64]$UnixEpochTimestamp * 1000
 	}
 
-	Write-Verbose "Converted $dateTime to Unix Epoch timestamp $UnixEpochTimestamp"
+	Write-Verbose ('Converted {0} to Unix Epoch timestamp {1}' -f $dateTime, $UnixEpochTimestamp)
 	return $UnixEpochTimestamp
 }

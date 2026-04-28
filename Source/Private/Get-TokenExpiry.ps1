@@ -20,6 +20,6 @@ function Get-TokenExpiry {
 	)
 	$Now = Get-Date
 	$ExpiryDateTime = $Now.AddSeconds($expiresIn)
-	Write-Verbose "Calculated token expiry as $ExpiryDateTime"
+	Write-Verbose ('Calculated token expiry as {0}' -f $ExpiryDateTime)
 	return $ExpiryDateTime
 }

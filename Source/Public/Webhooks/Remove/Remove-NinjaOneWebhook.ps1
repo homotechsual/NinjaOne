@@ -4,12 +4,17 @@ function Remove-NinjaOneWebhook {
 			Removes webhook configuration for the current application/API client.
 		.DESCRIPTION
 			Removes webhook configuration for the current application/API client using the NinjaOne v2 API.
+			Some instances may expose an id-based delete route; provide -webhookId to target that route.
 		.FUNCTIONALITY
 			Webhook
 		.EXAMPLE
 			PS> Remove-NinjaOneWebhook
 
 			Removes the webhook configuration.
+		.EXAMPLE
+			PS> Remove-NinjaOneWebhook -webhookId '123'
+
+			Removes a specific webhook using the id-based route.
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
@@ -23,10 +28,18 @@ function Remove-NinjaOneWebhook {
 		'delete'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]
-	param()
+	param(
+		# Optional webhook id for instances that require an id-based delete route.
+		[Parameter(ValueFromPipelineByPropertyName)]
+		[Alias('id')]
+		[String]$webhookId
+	)
 	process {
 		try {
 			$Resource = 'v2/webhook'
+			if (-not [string]::IsNullOrWhiteSpace($webhookId)) {
+				$Resource = ('v2/webhook/{0}' -f $webhookId)
+			}
 			$RequestParams = @{
 				Resource = $Resource
 			}

@@ -61,7 +61,7 @@ function Invoke-NinjaOneRequest {
 		}
 		if ($null -ne $Script:NRAPIAuthenticationInformation) {
 			$AuthHeaders = @{
-				Authorization = "$($Script:NRAPIAuthenticationInformation.Type) $($Script:NRAPIAuthenticationInformation.Access)"
+				Authorization = ('{0} {1}' -f $Script:NRAPIAuthenticationInformation.Type, $Script:NRAPIAuthenticationInformation.Access)
 			}
 		} else {
 			$AuthHeaders = $null

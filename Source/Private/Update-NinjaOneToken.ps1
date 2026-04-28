@@ -60,7 +60,7 @@ function Update-NinjaOneToken {
 		}
 		Connect-NinjaOne @ReauthParams
 		Write-Verbose 'Refreshed authentication token information from NinjaOne.'
-		Write-Verbose "Authentication information now set to: $($Script:NRAPIAuthenticationInformation | Out-String -Width 2048)"
+		Write-Verbose ('Authentication information now set to: {0}' -f ($Script:NRAPIAuthenticationInformation | Out-String -Width 2048))
 	} catch {
 		New-NinjaOneError $_
 	}

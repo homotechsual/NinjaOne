@@ -84,7 +84,7 @@ function Set-NinjaOneTicket {
 	process {
 		try {
 			Write-Verbose ('Updating ticket {0}.' -f $ticketId)
-			$Resource = "v2/ticketing/ticket/$ticketId"
+			$Resource = ('v2/ticketing/ticket/{0}' -f $ticketId)
 			$RequestParams = @{
 				Resource = $Resource
 				Body = $ticket

@@ -48,26 +48,26 @@ function New-NinjaOneQuery {
 		[Switch]$commaSeparatedArrays,
 		[Switch]$asString
 	)
-	Write-Verbose "Building parameters for $($commandName). Use '-Debug' with '-Verbose' to see parameter values as they are built."
+	Write-Verbose ('Building parameters for {0}. Use ''-Debug'' with ''-Verbose'' to see parameter values as they are built.' -f $commandName)
 	$QSCollection = [HashTable]@{}
-	Write-Verbose "$($parameters.Values | Out-String)"
+	Write-Verbose ('{0}' -f ($parameters.Values | Out-String))
 	foreach ($Parameter in $parameters.Values) {
 		# Skip system parameters.
 		if (([System.Management.Automation.Cmdlet]::CommonParameters).Contains($Parameter.Name)) {
-			Write-Verbose "Excluding system parameter $($Parameter.Name)."
+			Write-Verbose ('Excluding system parameter {0}.' -f $Parameter.Name)
 			continue
 		}
 		# Skip optional system parameters.
 		if (([System.Management.Automation.Cmdlet]::OptionalCommonParameters).Contains($Parameter.Name)) {
-			Write-Verbose "Excluding optional system parameter $($Parameter.Name)."
+			Write-Verbose ('Excluding optional system parameter {0}.' -f $Parameter.Name)
 			continue
 		}
 		$ParameterVariable = Get-Variable -Name $Parameter.Name -ErrorAction SilentlyContinue
-		Write-Verbose "Parameter variable: $($ParameterVariable | Out-String)"
+		Write-Verbose ('Parameter variable: {0}' -f ($ParameterVariable | Out-String))
 		if (($Parameter.ParameterType.Name -eq 'String') -or ($Parameter.ParameterType.Name -eq 'String[]')) {
-			Write-Verbose "Found String or String Array param $($ParameterVariable.Name) with value $($ParameterVariable.Value)."
+			Write-Verbose ('Found String or String Array param {0} with value {1}.' -f $ParameterVariable.Name, $ParameterVariable.Value)
 			if ([String]::IsNullOrEmpty($ParameterVariable.Value)) {
-				Write-Verbose "Skipping unset param $($ParameterVariable.Name)"
+				Write-Verbose ('Skipping unset param {0}' -f $ParameterVariable.Name)
 				continue
 			} else {
 				if ($Parameter.Aliases) {
@@ -82,22 +82,22 @@ function New-NinjaOneQuery {
 					Write-Verbose 'Building comma separated array string.'
 					$QueryValue = $Value -join ','
 					$QSCollection.Add($Query, $QueryValue)
-					Write-Verbose "Adding parameter $($Query) with value $($QueryValue)"
+					Write-Verbose ('Adding parameter {0} with value {1}' -f $Query, $QueryValue)
 				} elseif (($Value -is [Array]) -and (-not $commaSeparatedArrays)) {
 					foreach ($ArrayValue in $Value) {
 						$QSCollection.Add($Query, $ArrayValue)
-						Write-Verbose "Adding parameter $($Query) with value(s) $($ArrayValue)"
+						Write-Verbose ('Adding parameter {0} with value(s) {1}' -f $Query, $ArrayValue)
 					}
 				} else {
 					$QSCollection.Add($Query, $Value)
-					Write-Verbose "Adding parameter $($Query) with value $($Value)"
+					Write-Verbose ('Adding parameter {0} with value {1}' -f $Query, $Value)
 				}
 			}
 		}
 		if ($Parameter.ParameterType.Name -eq 'SwitchParameter') {
-			Write-Verbose "Found Switch param $($ParameterVariable.Name) with value $($ParameterVariable.Value)."
+			Write-Verbose ('Found Switch param {0} with value {1}.' -f $ParameterVariable.Name, $ParameterVariable.Value)
 			if ($ParameterVariable.Value -eq $False) {
-				Write-Verbose "Skipping unset param $($ParameterVariable.Name)"
+				Write-Verbose ('Skipping unset param {0}' -f $ParameterVariable.Name)
 				continue
 			} else {
 				if ($Parameter.Aliases) {
@@ -109,11 +109,11 @@ function New-NinjaOneQuery {
 				}
 				$Value = ([String]$ParameterVariable.Value).ToLower()
 				$QSCollection.Add($Query, $Value)
-				Write-Verbose "Adding parameter $($Query) with value $($Value)"
+				Write-Verbose ('Adding parameter {0} with value {1}' -f $Query, $Value)
 			}
 		}
 		if ($Parameter.ParameterType.Name -eq 'Boolean') {
-			Write-Verbose "Found Boolean param $($ParameterVariable.Name) with value $($ParameterVariable.Value)."
+			Write-Verbose ('Found Boolean param {0} with value {1}.' -f $ParameterVariable.Name, $ParameterVariable.Value)
 			if ($Parameter.Aliases) {
 				# Use the first alias as the query string name.
 				$Query = ([String]$Parameter.Aliases[0])
@@ -123,12 +123,12 @@ function New-NinjaOneQuery {
 			}
 			$Value = ([String]$ParameterVariable.Value).ToLower()
 			$QSCollection.Add($Query, $Value)
-			Write-Verbose "Adding parameter $($Query) with value $($Value)"
+			Write-Verbose ('Adding parameter {0} with value {1}' -f $Query, $Value)
 		}
 		if (($Parameter.ParameterType.Name -eq 'Int32') -or ($Parameter.ParameterType.Name -eq 'Int64') -or ($Parameter.ParameterType.Name -eq 'Int32[]') -or ($Parameter.ParameterType.Name -eq 'Int64[]')) {
-			Write-Verbose "Found Int or Int Array param $($ParameterVariable.Name) with value $($ParameterVariable.Value)."
+			Write-Verbose ('Found Int or Int Array param {0} with value {1}.' -f $ParameterVariable.Name, $ParameterVariable.Value)
 			if (($ParameterVariable.Value -eq 0) -or ($null -eq $ParameterVariable.Value)) {
-				Write-Verbose "Skipping unset param $($ParameterVariable.Name)"
+				Write-Verbose ('Skipping unset param {0}' -f $ParameterVariable.Name)
 				continue
 			} else {
 				if ($Parameter.Aliases) {
@@ -143,22 +143,22 @@ function New-NinjaOneQuery {
 					Write-Verbose 'Building comma separated array string.'
 					$QueryValue = $Value -join ','
 					$QSCollection.Add($Query, $QueryValue)
-					Write-Verbose "Adding parameter $($Query) with value $($QueryValue)"
+					Write-Verbose ('Adding parameter {0} with value {1}' -f $Query, $QueryValue)
 				} elseif (($Value -is [Array]) -and (-not $commaSeparatedArrays)) {
 					foreach ($ArrayValue in $Value) {
 						$QSCollection.Add($Query, $ArrayValue)
-						Write-Verbose "Adding parameter $($Query) with value $($ArrayValue)"
+						Write-Verbose ('Adding parameter {0} with value {1}' -f $Query, $ArrayValue)
 					}
 				} else {
 					$QSCollection.Add($Query, $Value)
-					Write-Verbose "Adding parameter $($Query) with value $($Value)"
+					Write-Verbose ('Adding parameter {0} with value {1}' -f $Query, $Value)
 				}
 			}
 		}
 		if (($Parameter.ParameterType.Name -eq 'DateTime') -or ($Parameter.ParameterType.Name -eq 'DateTime[]')) {
-			Write-Verbose "Found DateTime or DateTime Array param $($ParameterVariable.Name) with value $($ParameterVariable.Value)."
+			Write-Verbose ('Found DateTime or DateTime Array param {0} with value {1}.' -f $ParameterVariable.Name, $ParameterVariable.Value)
 			if ($null -eq $ParameterVariable.Value) {
-				Write-Verbose "Skipping unset param $($ParameterVariable.Name)"
+				Write-Verbose ('Skipping unset param {0}' -f $ParameterVariable.Name)
 				continue
 			} else {
 				if ($Parameter.Aliases) {
@@ -173,20 +173,20 @@ function New-NinjaOneQuery {
 					Write-Verbose 'Building comma separated array string.'
 					$QueryValue = $Value -join ','
 					$QSCollection.Add($Query, $QueryValue.ToUnixEpoch())
-					Write-Verbose "Adding parameter $($Query) with value $($QueryValue)"
+					Write-Verbose ('Adding parameter {0} with value {1}' -f $Query, $QueryValue)
 				} elseif (($Value -is [Array]) -and (-not $commaSeparatedArrays)) {
 					foreach ($ArrayValue in $Value) {
 						$QSCollection.Add($Query, $ArrayValue)
-						Write-Verbose "Adding parameter $($Query) with value $($ArrayValue)"
+						Write-Verbose ('Adding parameter {0} with value {1}' -f $Query, $ArrayValue)
 					}
 				} else {
 					$QSCollection.Add($Query, $Value)
-					Write-Verbose "Adding parameter $($Query) with value $($Value)"
+					Write-Verbose ('Adding parameter {0} with value {1}' -f $Query, $Value)
 				}
 			}
 		}
 	}
-	Write-Verbose "Query collection contains $($QSCollection | Out-String)"
+	Write-Verbose ('Query collection contains {0}' -f ($QSCollection | Out-String))
 	if ($asString) {
 		$QSBuilder = [System.UriBuilder]::new()
 		$QSBuilder.Query = $QSCollection.ToString()

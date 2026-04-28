@@ -5,7 +5,7 @@ function Remove-NinjaOneDeviceOwner {
 		.DESCRIPTION
 			Removes the owner of the specified device via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Devices
+			Device Owner
 		.EXAMPLE
 			PS> Remove-NinjaOneDeviceOwner -id 1234 -Confirm:$false
 

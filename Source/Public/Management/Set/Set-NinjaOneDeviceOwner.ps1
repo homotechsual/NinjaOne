@@ -37,13 +37,13 @@ function Set-NinjaOneDeviceOwner {
 			$RequestParams = @{
 				Resource = $Resource
 			}
-			if ($PSCmdlet.ShouldProcess("Device ID $deviceId", "Set Owner to $ownerId")) {
+			if ($PSCmdlet.ShouldProcess(('Device ID {0}' -f $deviceId), ('Set Owner to {0}' -f $ownerId))) {
 				$Response = New-NinjaOnePOSTRequest @RequestParams
 				if ($Response -eq 204) {
-					Write-Information "Device owner updated successfully for device ID $deviceId."
+					Write-Information ('Device owner updated successfully for device ID {0}.' -f $deviceId)
 				}
 				else {
-					Write-Warning "Unexpected response: $Response"
+					Write-Warning ('Unexpected response: {0}' -f $Response)
 				}
 			}
 		}

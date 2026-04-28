@@ -86,9 +86,9 @@ function Test-NinjaOneEndpointSupport {
 		$matchedPath = if ($match.MatchedPath) { $match.MatchedPath } else { $path }
 		$matchedMethods = if ($match.Methods) { ($match.Methods -join ', ') } else { 'unknown' }
 		if ($match.MethodUnknown) {
-			Write-Verbose "Endpoint support assumed for '$path' ($methodKey). Matched spec path '$matchedPath' has no methods listed."
+			Write-Verbose ('Endpoint support assumed for ''{0}'' ({1}). Matched spec path ''{2}'' has no methods listed.' -f $path, $methodKey, $matchedPath)
 		} else {
-			Write-Verbose "Endpoint support confirmed for '$path' ($methodKey). Matched spec path '$matchedPath' with methods: $matchedMethods."
+			Write-Verbose ('Endpoint support confirmed for ''{0}'' ({1}). Matched spec path ''{2}'' with methods: {3}.' -f $path, $methodKey, $matchedPath, $matchedMethods)
 		}
 		return $true
 	}
@@ -100,28 +100,28 @@ function Test-NinjaOneEndpointSupport {
 			$matchedPath = if ($refreshedMatch.MatchedPath) { $refreshedMatch.MatchedPath } else { $path }
 			$matchedMethods = if ($refreshedMatch.Methods) { ($refreshedMatch.Methods -join ', ') } else { 'unknown' }
 			if ($refreshedMatch.MethodUnknown) {
-				Write-Verbose "Endpoint support assumed after refresh for '$path' ($methodKey). Matched spec path '$matchedPath' has no methods listed."
+				Write-Verbose ('Endpoint support assumed after refresh for ''{0}'' ({1}). Matched spec path ''{2}'' has no methods listed.' -f $path, $methodKey, $matchedPath)
 			} else {
-				Write-Verbose "Endpoint support confirmed after refresh for '$path' ($methodKey). Matched spec path '$matchedPath' with methods: $matchedMethods."
+				Write-Verbose ('Endpoint support confirmed after refresh for ''{0}'' ({1}). Matched spec path ''{2}'' with methods: {3}.' -f $path, $methodKey, $matchedPath, $matchedMethods)
 			}
 			return $true
 		}
 	}
 
 	$pathsToInspect = if ($refreshed -and $refreshed.Paths) { $refreshed.Paths } else { $paths }
-	Write-Verbose "Entering fallback path-only match. PathsToInspect is null: $($null -eq $pathsToInspect). Count: $($pathsToInspect.Count). Keys count: $($pathsToInspect.Keys.Count). Type: $($pathsToInspect.GetType().Name)"
+	Write-Verbose ('Entering fallback path-only match. PathsToInspect is null: {0}. Count: {1}. Keys count: {2}. Type: {3}' -f ($null -eq $pathsToInspect), $pathsToInspect.Count, $pathsToInspect.Keys.Count, $pathsToInspect.GetType().Name)
 	$specPathKeys = @($pathsToInspect.Keys)
-	Write-Verbose "Extracted $($specPathKeys.Count) keys from pathsToInspect. First 5: $(($specPathKeys | Select-Object -First 5) -join ', ')"
+	Write-Verbose ('Extracted {0} keys from pathsToInspect. First 5: {1}' -f $specPathKeys.Count, (($specPathKeys | Select-Object -First 5) -join ', '))
 	foreach ($openPath in $specPathKeys) {
 		$normalizedOpenPath = if ($openPath.Length -gt 1) { $openPath.TrimEnd('/') } else { $openPath }
 		$pattern = '^' + ($normalizedOpenPath -replace '\{[^}]+\}', '[^/]+') + '$'
-		Write-Verbose "Testing spec path '$openPath' (normalized: '$normalizedOpenPath') with pattern '$pattern' against request path '$path'"
+		Write-Verbose ('Testing spec path ''{0}'' (normalized: ''{1}'') with pattern ''{2}'' against request path ''{3}''' -f $openPath, $normalizedOpenPath, $pattern, $path)
 		if ($path -match $pattern) {
-			Write-Verbose "FALLBACK MATCH: Endpoint path '$path' matches spec path '$openPath', but method '$methodKey' is not listed. Allowing call."
+			Write-Verbose ('FALLBACK MATCH: Endpoint path ''{0}'' matches spec path ''{1}'', but method ''{2}'' is not listed. Allowing call.' -f $path, $openPath, $methodKey)
 			return $true
 		}
 	}
-	Write-Verbose "Fallback path-only match failed. No spec paths matched request path '$path'."
+	Write-Verbose ('Fallback path-only match failed. No spec paths matched request path ''{0}''.' -f $path)
 
 	$instanceHost = $baseUrl
 	try {
@@ -129,7 +129,7 @@ function Test-NinjaOneEndpointSupport {
 	} catch {
 		$instanceHost = $baseUrl
 	}
-	$versionSuffix = if ($capabilities.Version) { " (app version $($capabilities.Version))" } else { '' }
+	$versionSuffix = if ($capabilities.Version) { (' (app version {0})' -f $capabilities.Version) } else { '' }
 	$matchInfo = $null
 	if ($refreshedMatch -and $refreshedMatch.MatchedPath) {
 		$matchInfo = $refreshedMatch
@@ -139,16 +139,16 @@ function Test-NinjaOneEndpointSupport {
 	$methodInfo = ''
 	if ($matchInfo) {
 		if ($matchInfo.Methods -and $matchInfo.Methods.Count -gt 0) {
-			$methodInfo = " Matched spec path '$($matchInfo.MatchedPath)' with methods: $($matchInfo.Methods -join ', ')."
+			$methodInfo = (' Matched spec path ''{0}'' with methods: {1}.' -f $matchInfo.MatchedPath, ($matchInfo.Methods -join ', '))
 		} else {
-			$methodInfo = " Matched spec path '$($matchInfo.MatchedPath)' with no methods listed."
+			$methodInfo = (' Matched spec path ''{0}'' with no methods listed.' -f $matchInfo.MatchedPath)
 		}
 	}
 	$candidatePaths = @($pathsToInspect.Keys | Where-Object { $_ -match '/organization/' -and $_ -match '/custom-fields' })
 	$candidateInfo = ''
 	if ($candidatePaths.Count -gt 0) {
-		$candidateInfo = " Spec paths containing organization custom-fields: $($candidatePaths -join ', ')."
+		$candidateInfo = (' Spec paths containing organization custom-fields: {0}.' -f ($candidatePaths -join ', '))
 	}
-	$pathCountInfo = " Spec path count: $($pathsToInspect.Count)."
-	throw "The endpoint '$path' ($methodKey) is not listed in the NinjaOne API spec for instance '$instanceHost'$versionSuffix.$methodInfo$pathCountInfo$candidateInfo This cmdlet may not be supported on that instance."
+	$pathCountInfo = (' Spec path count: {0}.' -f $pathsToInspect.Count)
+	throw ('The endpoint ''{0}'' ({1}) is not listed in the NinjaOne API spec for instance ''{2}''{3}.{4}{5}{6} This cmdlet may not be supported on that instance.' -f $path, $methodKey, $instanceHost, $versionSuffix, $methodInfo, $pathCountInfo, $candidateInfo)
 }

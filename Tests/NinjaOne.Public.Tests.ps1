@@ -4,7 +4,7 @@ $ModuleName = 'NinjaOne'
 $RepoRoot = (Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\')).Path
 $ModulePath = $env:NINJAONE_MODULE_MANIFEST
 if ([string]::IsNullOrWhiteSpace($ModulePath)) {
-	$ModulePath = Get-ChildItem -Path "$RepoRoot\Output\$ModuleName\*\$ModuleName.psd1" -ErrorAction Stop | Select-Object -Last 1 -ExpandProperty FullName
+	$ModulePath = Get-ChildItem -Path ('{0}\Output\{1}\*\{1}.psd1' -f $RepoRoot, $ModuleName) -ErrorAction Stop | Select-Object -Last 1 -ExpandProperty FullName
 }
 
 Get-Module -Name $ModuleName | Remove-Module -Force -ErrorAction SilentlyContinue

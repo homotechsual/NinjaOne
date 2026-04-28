@@ -5,7 +5,7 @@ function Remove-NinjaOneDeviceMaintenance {
 		.DESCRIPTION
 			Cancels scheduled maintenance for the given device using the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Maintenance
+			Device Maintenance
 		.EXAMPLE
 			PS> Remove-NinjaOneDeviceMaintenance -deviceId 1
 

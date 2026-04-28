@@ -35,7 +35,7 @@ function New-NinjaOnePUTRequest {
 	Test-NinjaOneEndpointSupport -Method 'PUT' -resource $resource -Verbose:$VerbosePreference
 	try {
 		if ($qSCollection) {
-			Write-Verbose "Query string in New-NinjaOnePUTRequest contains: $($qSCollection | Out-String)"
+			Write-Verbose ('Query string in New-NinjaOnePUTRequest contains: {0}' -f ($qSCollection | Out-String))
 			$QueryStringCollection = [System.Web.HTTPUtility]::ParseQueryString([String]::Empty)
 			Write-Verbose 'Building [HttpQSCollection] for New-NinjaOnePUTRequest'
 			foreach ($Key in $qSCollection.Keys) {
@@ -44,12 +44,12 @@ function New-NinjaOnePUTRequest {
 		} else {
 			Write-Verbose 'Query string collection not present...'
 		}
-		Write-Verbose "URI is $($Script:NRAPIConnectionInformation.URL)"
-		$RequestUri = [System.UriBuilder]"$($Script:NRAPIConnectionInformation.URL)"
-		Write-Verbose "Path is $($resource)"
+		Write-Verbose ('URI is {0}' -f $Script:NRAPIConnectionInformation.URL)
+		$RequestUri = [System.UriBuilder]$Script:NRAPIConnectionInformation.URL
+		Write-Verbose ('Path is {0}' -f $resource)
 		$RequestUri.Path = $resource
 		if ($QueryStringCollection) {
-			Write-Verbose "Query string is $($QueryStringCollection | Out-String)"
+			Write-Verbose ('Query string is {0}' -f ($QueryStringCollection | Out-String))
 			$RequestUri.Query = $QueryStringCollection
 		} else {
 			Write-Verbose 'Query string not present...'
@@ -70,14 +70,14 @@ function New-NinjaOnePUTRequest {
 				Write-Verbose 'Not forcing body to array'
 				$WebRequestParams.Body = (ConvertTo-Json -InputObject $body -Depth 100)
 			}
-			Write-Verbose "Raw body is $($WebRequestParams.Body)"
+			Write-Verbose ('Raw body is {0}' -f $WebRequestParams.Body)
 		} else {
 			Write-Verbose 'No body provided for New-NinjaOnePUTRequest'
 		}
-		Write-Verbose "Building new NinjaOneRequest with params: $($WebRequestParams | Out-String)"
+		Write-Verbose ('Building new NinjaOneRequest with params: {0}' -f ($WebRequestParams | Out-String))
 		try {
 			$Result = Invoke-NinjaOneRequest @WebRequestParams
-			Write-Verbose "NinjaOne request returned $($Result | Out-String)"
+			Write-Verbose ('NinjaOne request returned {0}' -f ($Result | Out-String))
 			if ($Result['results']) {
 				return $Result.results
 			} elseif ($Result['result']) {

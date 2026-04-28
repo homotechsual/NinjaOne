@@ -53,7 +53,7 @@ function Set-NinjaOneSecrets {
 		# The refresh token to use for authentication.
 		[String]$refresh,
 		# The prefix to use for the secret names.
-		[String]$SecretPrefix = 'NinjaOne',
+		[String]$secretPrefix = 'NinjaOne',
 		# Whether to automatically parse date/time values.
 		[Boolean]$parseDateTimes
 	)
@@ -71,55 +71,55 @@ function Set-NinjaOneSecrets {
 	# Write the connection information to the secret vault.
 	$Secrets = [Hashtable]@{}
 	if ($null -ne $Script:NRAPIConnectionInformation.AuthMode) {
-		$Secrets.('{0}AuthMode' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.AuthMode
+		$Secrets.('{0}AuthMode' -f $secretPrefix) = $Script:NRAPIConnectionInformation.AuthMode
 	}
 	if ($null -ne $Script:NRAPIConnectionInformation.URL) {
-		$Secrets.('{0}URL' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.URL
+		$Secrets.('{0}URL' -f $secretPrefix) = $Script:NRAPIConnectionInformation.URL
 	}
 	if ($null -ne $Script:NRAPIConnectionInformation.Instance) {
-		$Secrets.('{0}Instance' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.Instance
+		$Secrets.('{0}Instance' -f $secretPrefix) = $Script:NRAPIConnectionInformation.Instance
 	}
 	if ($null -ne $Script:NRAPIConnectionInformation.ClientId) {
-		$Secrets.('{0}ClientId' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.ClientId
+		$Secrets.('{0}ClientId' -f $secretPrefix) = $Script:NRAPIConnectionInformation.ClientId
 	}
 	if ($null -ne $Script:NRAPIConnectionInformation.ClientSecret) {
-		$Secrets.('{0}ClientSecret' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.ClientSecret
+		$Secrets.('{0}ClientSecret' -f $secretPrefix) = $Script:NRAPIConnectionInformation.ClientSecret
 	}
 	if ($null -ne $Script:NRAPIConnectionInformation.AuthScopes) {
-		$Secrets.('{0}AuthScopes' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.AuthScopes
+		$Secrets.('{0}AuthScopes' -f $secretPrefix) = $Script:NRAPIConnectionInformation.AuthScopes
 	}
 	if ($null -ne $Script:NRAPIConnectionInformation.RedirectURI) {
-		$Secrets.('{0}RedirectURI' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.RedirectURI.ToString()
+		$Secrets.('{0}RedirectURI' -f $secretPrefix) = $Script:NRAPIConnectionInformation.RedirectURI.ToString()
 	}
 	if ($null -ne $Script:NRAPIConnectionInformation.AuthListenerPort) {
-		$Secrets.('{0}AuthListenerPort' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.AuthListenerPort.ToString()
+		$Secrets.('{0}AuthListenerPort' -f $secretPrefix) = $Script:NRAPIConnectionInformation.AuthListenerPort.ToString()
 	}
 	if ($null -ne $Script:NRAPIAuthenticationInformation.Type) {
-		$Secrets.('{0}Type' -f $SecretPrefix) = $Script:NRAPIAuthenticationInformation.Type
+		$Secrets.('{0}Type' -f $secretPrefix) = $Script:NRAPIAuthenticationInformation.Type
 	}
 	if ($null -ne $Script:NRAPIAuthenticationInformation.Access) {
-		$Secrets.('{0}Access' -f $SecretPrefix) = $Script:NRAPIAuthenticationInformation.Access
+		$Secrets.('{0}Access' -f $secretPrefix) = $Script:NRAPIAuthenticationInformation.Access
 	}
 	if ($null -ne $Script:NRAPIAuthenticationInformation.Expires) {
-		$Secrets.('{0}Expires' -f $SecretPrefix) = $Script:NRAPIAuthenticationInformation.Expires.ToString()
+		$Secrets.('{0}Expires' -f $secretPrefix) = $Script:NRAPIAuthenticationInformation.Expires.ToString()
 	}
 	if ($null -ne $Script:NRAPIAuthenticationInformation.Refresh) {
-		$Secrets.('{0}Refresh' -f $SecretPrefix) = $Script:NRAPIAuthenticationInformation.Refresh
+		$Secrets.('{0}Refresh' -f $secretPrefix) = $Script:NRAPIAuthenticationInformation.Refresh
 	}
 	if ($null -ne $Script:NRAPIConnectionInformation.UseSecretManagement) {
-		$Secrets.('{0}UseSecretManagement' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.UseSecretManagement.ToString()
+		$Secrets.('{0}UseSecretManagement' -f $secretPrefix) = $Script:NRAPIConnectionInformation.UseSecretManagement.ToString()
 	}
 	if ($null -ne $Script:NRAPIConnectionInformation.WriteToSecretVault) {
-		$Secrets.('{0}WriteToSecretVault' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.WriteToSecretVault.ToString()
+		$Secrets.('{0}WriteToSecretVault' -f $secretPrefix) = $Script:NRAPIConnectionInformation.WriteToSecretVault.ToString()
 	}
 	if ($null -ne $Script:NRAPIConnectionInformation.ReadFromSecretVault) {
-		$Secrets.('{0}ReadFromSecretVault' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.ReadFromSecretVault.ToString()
+		$Secrets.('{0}ReadFromSecretVault' -f $secretPrefix) = $Script:NRAPIConnectionInformation.ReadFromSecretVault.ToString()
 	}
 	if ($null -ne $Script:NRAPIConnectionInformation.VaultName) {
-		$Secrets.('{0}VaultName' -f $SecretPrefix) = $Script:NRAPIConnectionInformation.VaultName
+		$Secrets.('{0}VaultName' -f $secretPrefix) = $Script:NRAPIConnectionInformation.VaultName
 	}
 	if ($null -ne $Script:ParseDateTimes) {
-		$Secrets.('{0}ParseDateTimes' -f $SecretPrefix) = $Script:ParseDateTimes.ToString()
+		$Secrets.('{0}ParseDateTimes' -f $secretPrefix) = $Script:ParseDateTimes.ToString()
 	}
 	foreach ($Secret in $Secrets.GetEnumerator()) {
 		Write-Verbose ('Processing secret {0} for vault storage.' -f $Secret.Key)

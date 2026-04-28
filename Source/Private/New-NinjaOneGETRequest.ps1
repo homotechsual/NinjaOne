@@ -34,7 +34,7 @@ function New-NinjaOneGETRequest {
 	Test-NinjaOneEndpointSupport -Method 'GET' -resource $resource -Verbose:$VerbosePreference
 	try {
 		if ($qSCollection) {
-			Write-Verbose "Query string in New-NinjaOneGETRequest contains: $($qSCollection | Out-String)"
+			Write-Verbose ('Query string in New-NinjaOneGETRequest contains: {0}' -f ($qSCollection | Out-String))
 			$QueryStringCollection = [System.Web.HTTPUtility]::ParseQueryString([String]::Empty)
 			Write-Verbose 'Building [HttpQSCollection] for New-NinjaOneGETRequest'
 			foreach ($Key in $qSCollection.Keys) {
@@ -43,8 +43,8 @@ function New-NinjaOneGETRequest {
 		} else {
 			Write-Verbose 'Query string collection not present...'
 		}
-		Write-Verbose "URI is $($Script:NRAPIConnectionInformation.URL)"
-		$RequestUri = [System.UriBuilder]"$($Script:NRAPIConnectionInformation.URL)"
+		Write-Verbose ('URI is {0}' -f $Script:NRAPIConnectionInformation.URL)
+		$RequestUri = [System.UriBuilder]$Script:NRAPIConnectionInformation.URL
 		$RequestUri.Path = $resource
 		if ($QueryStringCollection) {
 			$RequestUri.Query = $QueryStringCollection.toString()
@@ -63,26 +63,26 @@ function New-NinjaOneGETRequest {
 			Write-Verbose 'Raw switch not present.'
 		}
 		if ($WebRequestParams) {
-			Write-Verbose "WebRequestParams contains: $($WebRequestParams | Out-String)"
+			Write-Verbose ('WebRequestParams contains: {0}' -f ($WebRequestParams | Out-String))
 		} else {
 			Write-Verbose 'WebRequestParams is empty.'
 		}
 		try {
 			$Result = Invoke-NinjaOneRequest @WebRequestParams
 			if ($Result) {
-				Write-Verbose "NinjaOne request returned:: $($Result | Out-String)"
+				Write-Verbose ('NinjaOne request returned:: {0}' -f ($Result | Out-String))
 				$Properties = ($Result | Get-Member -MemberType 'NoteProperty')
 				if ($Properties.name -contains 'results') {
-					Write-Verbose "returning 'results' property.'"
-					Write-Verbose "Result type is $($Result.results.GetType())"
+					Write-Verbose 'returning ''results'' property.'''
+					Write-Verbose ('Result type is {0}' -f $Result.results.GetType())
 					return $Result.results
 				} elseif ($Properties.name -contains 'result') {
-					Write-Verbose "returning 'result' property."
-					Write-Verbose "Result type is $($Result.result.GetType())"
+					Write-Verbose 'returning ''result'' property.'
+					Write-Verbose ('Result type is {0}' -f $Result.result.GetType())
 					return $Result.result
 				} else {
 					Write-Verbose 'returning raw.'
-					Write-Verbose "Result type is $($Result.GetType())"
+					Write-Verbose ('Result type is {0}' -f $Result.GetType())
 					return $Result
 				}
 			} else {

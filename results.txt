@@ -1,0 +1,20 @@
+Remaining total (excluding PSAvoidDoubleQuoteInterpolation): 42
+
+By RuleName:
+
+Name                        Count
+----                        -----
+PSUseCamelCaseParameterName    42
+
+
+
+Top 20 files by remaining count:
+
+Name                        Count
+----                        -----
+New-NinjaOnePOSTRequest.ps1    36
+Get-NinjaOneSecrets.ps1         2
+Set-NinjaOneSecrets.ps1         2
+Start-OAuthHTTPListener.ps1     2
+
+

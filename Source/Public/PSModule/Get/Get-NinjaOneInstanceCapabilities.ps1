@@ -54,7 +54,7 @@ function Get-NinjaOneInstanceCapabilities {
 
 	$capabilities = Get-NinjaOneInstanceCapabilitiesInternal -baseUrl $resolvedBaseUrl -Force:$refresh
 	if ($null -eq $capabilities) {
-		throw "Unable to retrieve OpenAPI spec from '$resolvedBaseUrl'."
+		throw ('Unable to retrieve OpenAPI spec from ''{0}''.' -f $resolvedBaseUrl)
 	}
 
 	$summary = [ordered]@{

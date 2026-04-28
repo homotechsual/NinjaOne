@@ -655,6 +655,10 @@ function Measure-RequireCamelCaseParameterName {
 				if ($normalizedScriptPath -like '*/CustomRules/*') {
 					return
 				}
+
+				if ($normalizedScriptPath -notlike '*/Source/*') {
+					return
+				}
 			}
 
 			$functions = $scriptBlockAst.FindAll({
@@ -691,6 +695,80 @@ function Measure-RequireCamelCaseParameterName {
 					)
 					$result
 				}
+			}
+		} catch {
+			$PSCmdlet.ThrowTerminatingError($_)
+		}
+	}
+}
+
+function Measure-AvoidDoubleQuoteInterpolation {
+	<#
+		.SYNOPSIS
+			Ensures string interpolation uses single-quoted strings with the -f format operator.
+		.DESCRIPTION
+			Flags double-quoted strings that contain variable or sub-expression interpolation.
+			The preferred style in this module is to use single-quoted format strings with the
+			-f operator (e.g., '{0}' -f $variable) rather than double-quoted interpolation
+			(e.g., "$variable"). Here-strings (@"..."@) are excluded from this check.
+		.EXAMPLE
+			Reports "$variableName" and suggests '{0}' -f $variableName.
+		.INPUTS
+			[System.Management.Automation.Language.ScriptBlockAst]
+		.OUTPUTS
+			[Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]]
+	#>
+	[CmdletBinding()]
+	[OutputType([Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]])]
+	param(
+		# The script block AST to analyze.
+		[Parameter(Mandatory)]
+		[ValidateNotNullOrEmpty()]
+		[System.Management.Automation.Language.ScriptBlockAst]$scriptBlockAst
+	)
+
+	process {
+		try {
+			$scriptPath = $scriptBlockAst.Extent.File
+			if ($scriptPath) {
+				$normalizedScriptPath = $scriptPath -replace '\\', '/'
+				if ($normalizedScriptPath -like '*/CustomRules/*') {
+					return
+				}
+
+				if ($normalizedScriptPath -notlike '*/Source/*') {
+					return
+				}
+			} else {
+				return
+			}
+
+			$expandableStrings = $scriptBlockAst.FindAll({
+					param([System.Management.Automation.Language.Ast]$Ast)
+					$Ast -is [System.Management.Automation.Language.ExpandableStringExpressionAst]
+				}, $true)
+
+			foreach ($expandableString in $expandableStrings) {
+				# Skip double-quoted here-strings (@"..."@)
+				if ($expandableString.StringConstantType -eq [System.Management.Automation.Language.StringConstantType]::DoubleQuotedHereString) {
+					continue
+				}
+
+				# Only flag true interpolation (e.g. "$value" or "$(...)"), not plain double-quoted constants.
+				if ($null -eq $expandableString.NestedExpressions -or $expandableString.NestedExpressions.Count -eq 0) {
+					continue
+				}
+
+				$result = [Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord]::new(
+					"Avoid double-quoted string interpolation. Use a single-quoted string with the -f format operator instead (e.g., '{0}' -f `$variable).",
+					$expandableString.Extent,
+					'PSAvoidDoubleQuoteInterpolation',
+					[Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticSeverity]::Warning,
+					$null,
+					$null,
+					$null
+				)
+				$result
 			}
 		} catch {
 			$PSCmdlet.ThrowTerminatingError($_)

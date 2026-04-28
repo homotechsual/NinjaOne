@@ -65,7 +65,7 @@ function Invoke-NinjaOneWindowsServiceAction {
 					action = $action
 				}
 			}
-			if ($PSCmdlet.ShouldProcess("Service $($serviceId) configuration", 'Set')) {
+			if ($PSCmdlet.ShouldProcess(('Service {0} configuration' -f $serviceId), 'Set')) {
 				$ServiceAction = New-NinjaOnePOSTRequest @RequestParams
 				if ($ServiceAction -eq 204) {
 					Write-Information ('Requested {0} on service {1} on device {2} successfully.' -f $action, $serviceId, $deviceId)
