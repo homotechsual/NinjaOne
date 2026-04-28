@@ -1511,6 +1511,135 @@ components:
 	}
 }
 
+Describe 'Test-NinjaOneEndpointSupport' {
+	BeforeEach {
+		$module = Get-Module -Name $ModuleName
+		& $module {
+			$script:NRAPIInstanceCapabilityCheckEnabled = $true
+			$script:NRAPIConnectionInformation = @{
+				URL = 'https://api.ninjarmm.com'
+			}
+		}
+	}
+
+	Context 'Early exit conditions' {
+		It 'should return true when capability checks are disabled' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIInstanceCapabilityCheckEnabled = $false
+				$result = Test-NinjaOneEndpointSupport -Method 'GET' -Resource '/v2/devices'
+				$result | Should -BeTrue
+			}
+		}
+
+		It 'should return true when connection URL is missing' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation = @{}
+				$result = Test-NinjaOneEndpointSupport -Method 'GET' -Resource '/v2/devices'
+				$result | Should -BeTrue
+			}
+		}
+
+		It 'should return true for non NinjaOne hosts' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation = @{ URL = 'https://example.com' }
+				$result = Test-NinjaOneEndpointSupport -Method 'GET' -Resource '/v2/devices'
+				$result | Should -BeTrue
+			}
+		}
+	}
+
+	Context 'Spec path and method matching' {
+		It 'should return true for exact path and method matches' {
+			Mock -CommandName Get-NinjaOneInstanceCapabilitiesInternal -ModuleName $ModuleName -MockWith {
+				$paths = @{}
+				$methods = [System.Collections.Generic.HashSet[string]]::new()
+				$null = $methods.Add('GET')
+				$paths['/v2/devices'] = $methods
+				return [pscustomobject]@{ Paths = $paths; Version = '1.0.0' }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = Test-NinjaOneEndpointSupport -Method 'GET' -Resource '/v2/devices'
+				$result | Should -BeTrue
+			}
+		}
+
+		It 'should match path templates and normalize resource query or trailing slash' {
+			Mock -CommandName Get-NinjaOneInstanceCapabilitiesInternal -ModuleName $ModuleName -MockWith {
+				$paths = @{}
+				$methods = [System.Collections.Generic.HashSet[string]]::new()
+				$null = $methods.Add('GET')
+				$paths['/v2/organizations/{id}/custom-fields'] = $methods
+				return [pscustomobject]@{ Paths = $paths; Version = '1.0.0' }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = Test-NinjaOneEndpointSupport -Method 'GET' -Resource 'v2/organizations/123/custom-fields/?expand=true'
+				$result | Should -BeTrue
+			}
+		}
+
+		It 'should return true when path matches but methods are unknown' {
+			Mock -CommandName Get-NinjaOneInstanceCapabilitiesInternal -ModuleName $ModuleName -MockWith {
+				$paths = @{}
+				$paths['/v2/devices'] = [System.Collections.Generic.HashSet[string]]::new()
+				return [pscustomobject]@{ Paths = $paths; Version = '1.0.0' }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = Test-NinjaOneEndpointSupport -Method 'DELETE' -Resource '/v2/devices'
+				$result | Should -BeTrue
+			}
+		}
+	}
+
+	Context 'Refresh and failure path' {
+		It 'should retry with force refresh and return true when refresh adds support' {
+			Mock -CommandName Get-NinjaOneInstanceCapabilitiesInternal -ModuleName $ModuleName -MockWith {
+				param($BaseUrl, [switch]$Force)
+				$paths = @{}
+				if ($Force) {
+					$methods = [System.Collections.Generic.HashSet[string]]::new()
+					$null = $methods.Add('PATCH')
+					$paths['/v2/devices/{id}'] = $methods
+				}
+				return [pscustomobject]@{ Paths = $paths; Version = '1.0.0' }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = Test-NinjaOneEndpointSupport -Method 'PATCH' -Resource '/v2/devices/abc'
+				$result | Should -BeTrue
+			}
+
+			Assert-MockCalled -CommandName Get-NinjaOneInstanceCapabilitiesInternal -ModuleName $ModuleName -Times 1 -Exactly -ParameterFilter { -not $Force }
+			Assert-MockCalled -CommandName Get-NinjaOneInstanceCapabilitiesInternal -ModuleName $ModuleName -Times 1 -Exactly -ParameterFilter { $Force }
+		}
+
+		It 'should throw when endpoint is not present after refresh' {
+			Mock -CommandName Get-NinjaOneInstanceCapabilitiesInternal -ModuleName $ModuleName -MockWith {
+				param($BaseUrl, [switch]$Force)
+				$paths = @{}
+				$methods = [System.Collections.Generic.HashSet[string]]::new()
+				$null = $methods.Add('GET')
+				$paths['/v2/devices'] = $methods
+				return [pscustomobject]@{ Paths = $paths; Version = '1.0.0' }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				{ Test-NinjaOneEndpointSupport -Method 'POST' -Resource '/v2/not-supported' } | Should -Throw '*not listed in the NinjaOne API spec*'
+			}
+		}
+	}
+}
+
 Describe 'Get-TokenExpiry' {
 	Context 'Token expiry calculation' {
 		It 'should add correct number of seconds' {
