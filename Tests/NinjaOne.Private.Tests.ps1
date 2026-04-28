@@ -1014,50 +1014,156 @@ Describe 'New-NinjaOneQuery' {
 	}
 }
 
-Describe 'Set-NinjaOneSecrets' -Skip:(!$script:HasSecretManagement) {
+Describe 'Set-NinjaOneSecrets' {
 	BeforeEach {
-		Mock -CommandName Get-SecretVault -ModuleName $ModuleName -MockWith { [pscustomobject]@{ Name = 'TestVault' } }
-		Mock -CommandName Set-Secret -ModuleName $ModuleName -MockWith { }
+		$script:CapturedSecretWrites = @()
 	}
-	Context 'Parameter acceptance' {
-		It 'should accept secret storage parameters' {
-			$module = Get-Module -Name $ModuleName
-			& $module {
-				$params = @{
-					UseSecretManagement = $true
-					WriteToSecretVault = $true
-					VaultName = 'TestVault'
-					Instance = 'test.ninjaone.com'
-					ClientId = 'test-id'
-				}
-				{ Set-NinjaOneSecrets @params -ErrorAction SilentlyContinue } | Should -Not -Throw
-			}
-		}
 
-		It 'should accept authentication parameters' {
+	Context 'Secret persistence' {
+		It 'should write connection and authentication secrets to the configured vault' {
 			$module = Get-Module -Name $ModuleName
 			& $module {
-				$params = @{
+				$script:CapturedSecretWrites = @()
+				$script:NRAPIConnectionInformation = @{
+					AuthMode = 'Authorization Code'
+					URL = 'https://api.test.com'
+					Instance = 'test-instance'
+					ClientId = 'client-id'
+					ClientSecret = 'client-secret'
+					AuthScopes = 'monitoring management'
+					RedirectURI = [uri]'http://localhost/callback'
+					AuthListenerPort = 8080
 					UseSecretManagement = $true
 					WriteToSecretVault = $true
+					ReadFromSecretVault = $true
 					VaultName = 'TestVault'
+				}
+				$script:NRAPIAuthenticationInformation = @{
 					Type = 'Bearer'
-					Access = 'test-token'
+					Access = 'access-token'
+					Expires = [datetime]'2026-04-28T12:00:00Z'
+					Refresh = 'refresh-token'
 				}
-				{ Set-NinjaOneSecrets @params -ErrorAction SilentlyContinue } | Should -Not -Throw
-			}
-		}
+				$script:ParseDateTimes = $true
 
-		It 'should accept secret prefix' {
-			$module = Get-Module -Name $ModuleName
-			& $module {
+				function Get-SecretVault {
+					<#
+					.SYNOPSIS
+						Test stub for secret vault lookup.
+					#>
+					param(
+						# Vault name requested by Set-NinjaOneSecrets.
+						$Name
+					)
+					return [pscustomobject]@{ Name = $Name }
+				}
+
+				function Set-Secret {
+					<#
+					.SYNOPSIS
+						Test stub for writing a secret value.
+					#>
+					param(
+						# Target vault for persisted secret.
+						$Vault,
+						# Secret name written by Set-NinjaOneSecrets.
+						$Name,
+						# Secret value written by Set-NinjaOneSecrets.
+						$Secret
+					)
+					$script:CapturedSecretWrites += [pscustomobject]@{
+						Vault = $Vault
+						Name = $Name
+						Secret = $Secret
+					}
+				}
+
 				$params = @{
 					UseSecretManagement = $true
 					WriteToSecretVault = $true
 					VaultName = 'TestVault'
+				}
+				{ Set-NinjaOneSecrets @params -ErrorAction Stop } | Should -Not -Throw
+
+				$script:CapturedSecretWrites.Count | Should -BeGreaterThan 10
+				($script:CapturedSecretWrites | Where-Object { $_.Name -eq 'NinjaOneAuthMode' }).Count | Should -Be 1
+				($script:CapturedSecretWrites | Where-Object { $_.Name -eq 'NinjaOneClientSecret' }).Count | Should -Be 1
+				($script:CapturedSecretWrites | Where-Object { $_.Name -eq 'NinjaOneParseDateTimes' -and $_.Secret -eq 'True' }).Count | Should -Be 1
+				($script:CapturedSecretWrites | Where-Object { $_.Name -eq 'NinjaOneAuthListenerPort' -and $_.Secret -eq '8080' }).Count | Should -Be 1
+			}
+		}
+
+		It 'should use a custom secret prefix and skip null or empty values' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:CapturedSecretWrites = @()
+				$script:NRAPIConnectionInformation = @{
+					AuthMode = 'Token Authentication'
+					URL = 'https://api.test.com'
+					Instance = 'test-instance'
+					ClientId = 'client-id'
+					ClientSecret = 'client-secret'
+					AuthScopes = 'monitoring'
+					RedirectURI = $null
+					AuthListenerPort = $null
+					UseSecretManagement = $true
+					WriteToSecretVault = $true
+					ReadFromSecretVault = $true
+					VaultName = 'TestVault'
+				}
+				$script:NRAPIAuthenticationInformation = @{
+					Type = 'Bearer'
+					Access = ''
+					Expires = $null
+					Refresh = 'refresh-token'
+				}
+				$script:ParseDateTimes = $false
+
+				function Get-SecretVault {
+					<#
+					.SYNOPSIS
+						Test stub for secret vault lookup.
+					#>
+					param(
+						# Vault name requested by Set-NinjaOneSecrets.
+						$Name
+					)
+					return [pscustomobject]@{ Name = $Name }
+				}
+
+				function Set-Secret {
+					<#
+					.SYNOPSIS
+						Test stub for writing a secret value.
+					#>
+					param(
+						# Target vault for persisted secret.
+						$Vault,
+						# Secret name written by Set-NinjaOneSecrets.
+						$Name,
+						# Secret value written by Set-NinjaOneSecrets.
+						$Secret
+					)
+					$script:CapturedSecretWrites += [pscustomobject]@{
+						Vault = $Vault
+						Name = $Name
+						Secret = $Secret
+					}
+				}
+
+				$params = @{
+					UseSecretManagement = $true
+					WriteToSecretVault = $true
+					VaultName = 'CustomVault'
 					SecretPrefix = 'Custom'
 				}
-				{ Set-NinjaOneSecrets @params -ErrorAction SilentlyContinue } | Should -Not -Throw
+				{ Set-NinjaOneSecrets @params -ErrorAction Stop } | Should -Not -Throw
+
+				($script:CapturedSecretWrites | Where-Object { $_.Name -eq 'CustomAuthMode' }).Count | Should -Be 1
+				($script:CapturedSecretWrites | Where-Object { $_.Name -eq 'CustomRefresh' }).Count | Should -Be 1
+				($script:CapturedSecretWrites | Where-Object { $_.Name -eq 'CustomAccess' }).Count | Should -Be 0
+				($script:CapturedSecretWrites | Where-Object { $_.Name -eq 'CustomRedirectURI' }).Count | Should -Be 0
+				($script:CapturedSecretWrites | Where-Object { $_.Name -eq 'NinjaOneAuthMode' }).Count | Should -Be 0
 			}
 		}
 	}
