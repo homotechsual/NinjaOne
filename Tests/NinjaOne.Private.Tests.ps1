@@ -1124,6 +1124,100 @@ Describe 'New-NinjaOnePOSTRequest' {
 			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $ParseDateTime }
 		}
 
+		It 'should include query parameters in the built request uri' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ result = @{} }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$qs = @{ test = 'value'; limit = 10 }
+				$null = New-NinjaOnePOSTRequest -Resource '/v2/organizations' -QSCollection $qs
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+				$Uri -match '/v2/organizations' -and $Uri -match 'test=value' -and $Uri -match 'limit=10'
+			}
+		}
+
+		It 'should serialize object bodies to json' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ result = @{} }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$body = @{ name = 'Contoso'; enabled = $true }
+				$null = New-NinjaOnePOSTRequest -Resource '/v2/organizations' -Body $body
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+				$Body -match '"name"\s*:\s*"Contoso"' -and $Body -match '"enabled"\s*:\s*true'
+			}
+		}
+
+		It 'should delegate invalid multipart payload shapes to New-NinjaOneError' {
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('multipart-delegated')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$body = @(@{ file = 'placeholder.txt' })
+				{ New-NinjaOnePOSTRequest -Resource '/v2/organizations' -Body $body -UseMultipart } | Should -Throw '*multipart-delegated*'
+			}
+
+			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+		}
+
+		It 'should route multipart hashtable bodies through error delegation when HttpContent request fails' {
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('multipart-hashtable-delegated')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation.URL = 'https://127.0.0.1:1'
+				$body = @{ metadata = @{ name = 'contoso' }; tags = @('a', 'b') }
+				{ New-NinjaOnePOSTRequest -Resource '/v2/organizations' -Body $body -UseMultipart } | Should -Throw '*multipart-hashtable-delegated*'
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 0
+			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+		}
+
+		It 'should route multipart HttpContent bodies through error delegation when HttpContent request fails' {
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('multipart-httpcontent-delegated')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation.URL = 'https://127.0.0.1:1'
+				$content = [System.Net.Http.StringContent]::new('{"name":"contoso"}', [System.Text.Encoding]::UTF8, 'application/json')
+				{ New-NinjaOnePOSTRequest -Resource '/v2/organizations' -Body $content -UseMultipart } | Should -Throw '*multipart-httpcontent-delegated*'
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 0
+			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+		}
+
+		It 'should fall back to standard request path when multipart detection returns false' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ result = @{ ok = $true } }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = New-NinjaOnePOSTRequest -Resource '/v2/organizations' -Body 42 -UseMultipart
+				$result.ok | Should -BeTrue
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+				$Body -eq '42'
+			}
+		}
+
 		It 'should delegate non-http request failures to New-NinjaOneError' {
 			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
 				throw [System.Exception]::new('boom')
@@ -1680,6 +1774,120 @@ components:
 }
 
 Describe 'Test-NinjaOneEndpointSupport' {
+	BeforeEach {
+		$module = Get-Module -Name $ModuleName
+		& $module {
+			$script:NRAPIInstanceCapabilities = @{}
+		}
+	}
+
+	Context 'Get-NinjaOneInstanceCapabilitiesInternal' {
+		It 'should return cached capabilities when available and force is not set' {
+			Mock -CommandName Invoke-WebRequest -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('should-not-be-called')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$cached = [pscustomobject]@{
+					BaseUrl = 'https://api.ninjarmm.com'
+					Version = '2.0.0'
+					SpecUrl = 'https://api.ninjarmm.com/apidocs-beta/NinjaRMM-API-v2.yaml'
+					RetrievedAt = Get-Date
+					Paths = @{ '/v2/devices' = @('GET') }
+				}
+				$script:NRAPIInstanceCapabilities['https://api.ninjarmm.com'] = $cached
+
+				$result = Get-NinjaOneInstanceCapabilitiesInternal -BaseUrl 'https://api.ninjarmm.com/'
+				$result | Should -Be $cached
+			}
+
+			Assert-MockCalled -CommandName Invoke-WebRequest -ModuleName $ModuleName -Times 0
+		}
+
+		It 'should refresh when force is set and cache exists' {
+			Mock -CommandName Invoke-WebRequest -ModuleName $ModuleName -MockWith {
+				if ($Uri -like '*/app-version.txt') {
+					return [pscustomobject]@{ Content = '3.1.4' }
+				}
+				$yaml = @'
+openapi: 3.0.1
+paths:
+  /v2/devices:
+    get:
+      summary: List devices
+'@
+				return [pscustomobject]@{ Content = [System.Text.Encoding]::UTF8.GetBytes($yaml) }
+			}
+			Mock -CommandName Get-NinjaOneOpenApiPaths -ModuleName $ModuleName -MockWith {
+				@{ '/v2/devices' = @('GET') }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIInstanceCapabilities['https://api.ninjarmm.com'] = [pscustomobject]@{ Version = 'old' }
+				$result = Get-NinjaOneInstanceCapabilitiesInternal -BaseUrl 'https://api.ninjarmm.com/' -Force
+
+				$result.BaseUrl | Should -Be 'https://api.ninjarmm.com'
+				$result.Version | Should -Be '3.1.4'
+				$result.SpecUrl | Should -Be 'https://api.ninjarmm.com/apidocs-beta/NinjaRMM-API-v2.yaml'
+				$result.Paths.Keys | Should -Contain '/v2/devices'
+			}
+
+			Assert-MockCalled -CommandName Invoke-WebRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $Uri -like '*/app-version.txt' }
+			Assert-MockCalled -CommandName Invoke-WebRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $Uri -like '*/apidocs-beta/NinjaRMM-API-v2.yaml' }
+			Assert-MockCalled -CommandName Get-NinjaOneOpenApiPaths -ModuleName $ModuleName -Times 1
+		}
+
+		It 'should continue when app version retrieval fails and cache capabilities with null version' {
+			Mock -CommandName Invoke-WebRequest -ModuleName $ModuleName -MockWith {
+				if ($Uri -like '*/app-version.txt') {
+					throw [System.Exception]::new('version endpoint unavailable')
+				}
+				$yaml = @'
+openapi: 3.0.1
+paths:
+  /v2/tickets:
+    post:
+      summary: Create ticket
+'@
+				return [pscustomobject]@{ Content = [System.Text.Encoding]::UTF8.GetBytes($yaml) }
+			}
+			Mock -CommandName Get-NinjaOneOpenApiPaths -ModuleName $ModuleName -MockWith {
+				@{ '/v2/tickets' = @('POST') }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = Get-NinjaOneInstanceCapabilitiesInternal -BaseUrl 'https://api.ninjarmm.com/' -Force
+				$result.Version | Should -BeNullOrEmpty
+				$result.Paths.Keys | Should -Contain '/v2/tickets'
+				$script:NRAPIInstanceCapabilities['https://api.ninjarmm.com'] | Should -Not -BeNullOrEmpty
+			}
+		}
+
+		It 'should return null when OpenAPI yaml retrieval fails' {
+			Mock -CommandName Get-NinjaOneOpenApiPaths -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('should-not-parse-openapi-when-yaml-fetch-fails')
+			}
+
+			Mock -CommandName Invoke-WebRequest -ModuleName $ModuleName -MockWith {
+				if ($Uri -like '*/app-version.txt') {
+					return [pscustomobject]@{ Content = '2.9.0' }
+				}
+				throw [System.Exception]::new('spec endpoint unavailable')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = Get-NinjaOneInstanceCapabilitiesInternal -BaseUrl 'https://api.ninjarmm.com/' -Force
+				$result | Should -BeNullOrEmpty
+			}
+
+			Assert-MockCalled -CommandName Get-NinjaOneOpenApiPaths -ModuleName $ModuleName -Times 0
+		}
+	}
+
 	BeforeEach {
 		$module = Get-Module -Name $ModuleName
 		& $module {
