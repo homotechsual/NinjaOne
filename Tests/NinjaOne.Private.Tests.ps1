@@ -941,6 +941,196 @@ Describe 'New-NinjaOneError' {
 			}
 		}
 	}
+
+	Context 'Generated NinjaOne error output' {
+		BeforeAll {
+			if (-not ([System.Management.Automation.PSTypeName]'NinjaOneTestResponseException').Type) {
+				Add-Type -TypeDefinition @'
+public class NinjaOneTestResponseException : System.Exception
+{
+	public object Response { get; set; }
+
+	public NinjaOneTestResponseException(string message) : base(message)
+	{
+	}
+}
+'@
+			}
+		}
+
+		It 'should process JSON resultCode and errorMessage payloads without changing current error-details shape' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$Error.Clear()
+				try {
+					throw [System.Net.WebException]::new('Seed web exception for helper branch detection')
+				} catch {
+					$null = $_
+				}
+
+				$webException = [System.Net.WebException]::new('Remote call failed')
+				$errorRecord = [System.Management.Automation.ErrorRecord]::new(
+					$webException,
+					'WebErrorJsonId',
+					[System.Management.Automation.ErrorCategory]::ConnectionError,
+					$null
+				)
+				$errorRecord.ErrorDetails = [System.Management.Automation.ErrorDetails]::new('{"resultCode":"401","errorMessage":"Unauthorized"}')
+
+				$caught = $null
+				try {
+					New-NinjaOneError -ErrorRecord $errorRecord -ErrorAction Stop
+				} catch {
+					$caught = $_
+				}
+
+				$caught | Should -Not -BeNullOrEmpty
+				$caught.ErrorDetails | Should -Not -BeNullOrEmpty
+				$caught.ErrorDetails.Message | Should -Be '{"resultCode":"401","errorMessage":"Unauthorized"}'
+			}
+		}
+
+		It 'should process JSON resultCode-only and error-only payloads without changing current error-details shape' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$Error.Clear()
+				try {
+					throw [System.Net.WebException]::new('Seed web exception for helper branch detection')
+				} catch {
+					$null = $_
+				}
+
+				$webException = [System.Net.WebException]::new('Remote call failed')
+				$resultCodeOnly = [System.Management.Automation.ErrorRecord]::new(
+					$webException,
+					'WebErrorResultCodeOnlyId',
+					[System.Management.Automation.ErrorCategory]::ConnectionError,
+					$null
+				)
+				$resultCodeOnly.ErrorDetails = [System.Management.Automation.ErrorDetails]::new('{"resultCode":"429"}')
+
+				$firstCatch = $null
+				try {
+					New-NinjaOneError -ErrorRecord $resultCodeOnly -ErrorAction Stop
+				} catch {
+					$firstCatch = $_
+				}
+
+				$firstCatch.ErrorDetails.Message | Should -Be '{"resultCode":"429"}'
+
+				$errorOnly = [System.Management.Automation.ErrorRecord]::new(
+					$webException,
+					'WebErrorOnlyId',
+					[System.Management.Automation.ErrorCategory]::ConnectionError,
+					$null
+				)
+				$errorOnly.ErrorDetails = [System.Management.Automation.ErrorDetails]::new('{"error":"invalid request"}')
+
+				$secondCatch = $null
+				try {
+					New-NinjaOneError -ErrorRecord $errorOnly -ErrorAction Stop
+				} catch {
+					$secondCatch = $_
+				}
+
+				$secondCatch.ErrorDetails.Message | Should -Be '{"error":"invalid request"}'
+			}
+		}
+
+		It 'should split plain text API and HTTP lines into distinct messages' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$Error.Clear()
+				try {
+					throw [System.Net.WebException]::new('Seed web exception for helper branch detection')
+				} catch {
+					$null = $_
+				}
+
+				$webException = [System.Net.WebException]::new('Remote call failed')
+				$errorRecord = [System.Management.Automation.ErrorRecord]::new(
+					$webException,
+					'WebErrorPlainTextId',
+					[System.Management.Automation.ErrorCategory]::ConnectionError,
+					$null
+				)
+				$errorRecord.ErrorDetails = [System.Management.Automation.ErrorDetails]::new("The NinjaOne API said 500: Boom.`r`nThe API returned the following HTTP error response: 500 Internal Server Error")
+
+				$caught = $null
+				try {
+					New-NinjaOneError -ErrorRecord $errorRecord -ErrorAction Stop
+				} catch {
+					$caught = $_
+				}
+
+				$caught.ErrorDetails.Message | Should -Match 'The NinjaOne API said 500: Boom\.'
+				$caught.ErrorDetails.Message | Should -Match 'HTTP error response: 500 Internal Server Error'
+			}
+		}
+
+		It 'should handle missing error details with current null error-details behavior' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$Error.Clear()
+				try {
+					throw [System.Net.WebException]::new('Seed web exception for helper branch detection')
+				} catch {
+					$null = $_
+				}
+
+				$webException = [System.Net.WebException]::new('Remote call failed')
+				$errorRecord = [System.Management.Automation.ErrorRecord]::new(
+					$webException,
+					'WebErrorNoDetailsId',
+					[System.Management.Automation.ErrorCategory]::ConnectionError,
+					$null
+				)
+
+				$caught = $null
+				try {
+					New-NinjaOneError -ErrorRecord $errorRecord -ErrorAction Stop
+				} catch {
+					$caught = $_
+				}
+
+				$caught.ErrorDetails | Should -BeNullOrEmpty
+			}
+		}
+
+		It 'should accept hasResponse with response metadata in current behavior' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$Error.Clear()
+				try {
+					throw [System.Net.WebException]::new('Seed web exception for helper branch detection')
+				} catch {
+					$null = $_
+				}
+
+				$exceptionWithResponse = [NinjaOneTestResponseException]::new('Remote call failed')
+				$exceptionWithResponse.Response = [pscustomobject]@{
+					StatusCode = [pscustomobject]@{ value__ = 503 }
+					ReasonPhrase = 'Service Unavailable'
+				}
+				$errorRecord = [System.Management.Automation.ErrorRecord]::new(
+					$exceptionWithResponse,
+					'WebErrorHasResponseId',
+					[System.Management.Automation.ErrorCategory]::ConnectionError,
+					$null
+				)
+
+				$caught = $null
+				try {
+					New-NinjaOneError -ErrorRecord $errorRecord -HasResponse -ErrorAction Stop
+				} catch {
+					$caught = $_
+				}
+
+				$caught | Should -Not -BeNullOrEmpty
+				$caught.ErrorDetails | Should -BeNullOrEmpty
+			}
+		}
+	}
 }
 
 Describe 'New-NinjaOneGETRequest' {
@@ -1692,6 +1882,151 @@ Describe 'New-NinjaOneDELETERequest' {
 			& $module {
 				{ New-NinjaOneDELETERequest -Resource '/v2/organizations/1' -ErrorAction SilentlyContinue } | Should -Not -Throw
 			}
+		}
+	}
+
+	Context 'Request behavior' {
+		It 'should throw when connection information is missing' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation = $null
+				{ New-NinjaOneDELETERequest -Resource '/v2/organizations/1' } | Should -Throw '*Missing NinjaOne connection information*'
+			}
+		}
+
+		It 'should throw when authentication information is missing' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIAuthenticationInformation = $null
+				{ New-NinjaOneDELETERequest -Resource '/v2/organizations/1' } | Should -Throw '*Missing NinjaOne authentication tokens*'
+			}
+		}
+
+		It 'should return results when results property is present' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ results = @('a', 'b') }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = New-NinjaOneDELETERequest -Resource '/v2/organizations/1'
+				@($result) | Should -Contain 'a'
+				@($result) | Should -Contain 'b'
+			}
+		}
+
+		It 'should return result when result property is present' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ result = @{ ok = $true } }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = New-NinjaOneDELETERequest -Resource '/v2/organizations/1'
+				$result.ok | Should -BeTrue
+			}
+		}
+
+		It 'should return raw object when neither results nor result is present' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ status = 'deleted' }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = New-NinjaOneDELETERequest -Resource '/v2/organizations/1'
+				$result.status | Should -Be 'deleted'
+			}
+		}
+
+		It 'should pass ParseDateTime when explicitly requested' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ result = @{} }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$null = New-NinjaOneDELETERequest -Resource '/v2/organizations/1' -ParseDateTime
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $ParseDateTime }
+		}
+
+		It 'should pass ParseDateTime when script setting is enabled' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ result = @{} }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:ParseDateTimes = $true
+				$null = New-NinjaOneDELETERequest -Resource '/v2/organizations/1'
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $ParseDateTime }
+		}
+
+		It 'should build query collection path when QSCollection exists in scope' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ result = @{} }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:QSCollection = @{ skip = 5; limit = 10 }
+				$null = New-NinjaOneDELETERequest -Resource '/v2/organizations/1'
+				$script:QSCollection = $null
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $Uri -match '/v2/organizations/1' }
+		}
+
+		It 'should delegate web exceptions from Invoke-NinjaOneRequest in current core behavior' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				throw [System.Net.WebException]::new('web failure')
+			}
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('delegated-web')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				{ New-NinjaOneDELETERequest -Resource '/v2/organizations/1' } | Should -Throw '*delegated-web*'
+			}
+
+			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+		}
+
+		It 'should delegate non-http failures from Invoke-NinjaOneRequest to New-NinjaOneError' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('generic failure')
+			}
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('delegated-delete')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				{ New-NinjaOneDELETERequest -Resource '/v2/organizations/1' } | Should -Throw '*delegated-delete*'
+			}
+
+			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+		}
+
+		It 'should propagate preflight failures before request try-catch' {
+			Mock -CommandName Test-NinjaOneEndpointSupport -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('preflight failure')
+			}
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('outer-delete-delegated')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				{ New-NinjaOneDELETERequest -Resource '/v2/organizations/1' } | Should -Throw '*preflight failure*'
+			}
+
+			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 0
 		}
 	}
 }
