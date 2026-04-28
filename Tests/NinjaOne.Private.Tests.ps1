@@ -1274,6 +1274,162 @@ Describe 'New-NinjaOneQuery' {
 			}
 		}
 	}
+
+	Context 'Query construction behavior' {
+		It 'should skip optional common parameters' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$parameters = @{
+					WhatIf = [pscustomobject]@{
+						Name = 'WhatIf'
+						ParameterType = [pscustomobject]@{ Name = 'SwitchParameter' }
+						Aliases = @()
+					}
+				}
+
+				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters
+				$result.Count | Should -Be 0
+			}
+		}
+
+		It 'should use aliases for string and boolean parameters' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$Search = 'alpha'
+				$IncludeArchived = $false
+				$parameters = @{
+					Search = [pscustomobject]@{
+						Name = 'Search'
+						ParameterType = [pscustomobject]@{ Name = 'String' }
+						Aliases = @('q')
+					}
+					IncludeArchived = [pscustomobject]@{
+						Name = 'IncludeArchived'
+						ParameterType = [pscustomobject]@{ Name = 'Boolean' }
+						Aliases = @('archived')
+					}
+				}
+
+				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters
+				$result['q'] | Should -Be 'alpha'
+				$result['archived'] | Should -Be 'false'
+			}
+		}
+
+		It 'should skip empty strings and false switches' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$Filter = ''
+				$IncludeDetails = $false
+				$parameters = @{
+					Filter = [pscustomobject]@{
+						Name = 'Filter'
+						ParameterType = [pscustomobject]@{ Name = 'String' }
+						Aliases = @()
+					}
+					IncludeDetails = [pscustomobject]@{
+						Name = 'IncludeDetails'
+						ParameterType = [pscustomobject]@{ Name = 'SwitchParameter' }
+						Aliases = @('details')
+					}
+				}
+
+				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters
+				$result.ContainsKey('Filter') | Should -BeFalse
+				$result.ContainsKey('details') | Should -BeFalse
+			}
+		}
+
+		It 'should serialize string arrays as comma separated values when requested' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$Tags = @('one', 'two')
+				$parameters = @{
+					Tags = [pscustomobject]@{
+						Name = 'Tags'
+						ParameterType = [pscustomobject]@{ Name = 'String[]' }
+						Aliases = @()
+					}
+				}
+
+				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters -CommaSeparatedArrays
+				$result['Tags'] | Should -Be 'one,two'
+			}
+		}
+
+		It 'should process non-comma array paths for string int and datetime values' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$Tag = @('single')
+				$Ids = @(42)
+				$Created = @([datetime]'2026-01-01T00:00:00Z')
+				$parameters = @{
+					Tag = [pscustomobject]@{
+						Name = 'Tag'
+						ParameterType = [pscustomobject]@{ Name = 'String[]' }
+						Aliases = @('tag')
+					}
+					Ids = [pscustomobject]@{
+						Name = 'Ids'
+						ParameterType = [pscustomobject]@{ Name = 'Int32[]' }
+						Aliases = @('id')
+					}
+					Created = [pscustomobject]@{
+						Name = 'Created'
+						ParameterType = [pscustomobject]@{ Name = 'DateTime[]' }
+						Aliases = @('createdAfter')
+					}
+				}
+
+				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters
+				$result['tag'] | Should -Be 'single'
+				$result['id'] | Should -Be 42
+				$result['createdAfter'] | Should -BeOfType ([datetime])
+			}
+		}
+
+		It 'should skip unset integers and include aliased integer values' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$Limit = 0
+				$Offset = 10
+				$parameters = @{
+					Limit = [pscustomobject]@{
+						Name = 'Limit'
+						ParameterType = [pscustomobject]@{ Name = 'Int32' }
+						Aliases = @()
+					}
+					Offset = [pscustomobject]@{
+						Name = 'Offset'
+						ParameterType = [pscustomobject]@{ Name = 'Int64' }
+						Aliases = @('skip')
+					}
+				}
+
+				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters
+				$result.ContainsKey('Limit') | Should -BeFalse
+				$result['skip'] | Should -Be 10
+			}
+		}
+
+		It 'should return a query string when AsString is specified' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$Name = 'Contoso'
+				$parameters = @{
+					Name = [pscustomobject]@{
+						Name = 'Name'
+						ParameterType = [pscustomobject]@{ Name = 'String' }
+						Aliases = @('name')
+					}
+				}
+
+				$query = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters -AsString
+				$query | Should -BeOfType ([string])
+				$query.StartsWith('?') | Should -BeTrue
+			}
+		}
+	}
 }
 
 Describe 'Set-NinjaOneSecrets' {
