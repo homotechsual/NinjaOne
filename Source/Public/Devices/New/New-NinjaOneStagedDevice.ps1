@@ -5,7 +5,7 @@ function New-NinjaOneStagedDevice {
 		.DESCRIPTION
 			Creates a staged device via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Devices
+			Staged Device
 		.EXAMPLE
 			PS> New-NinjaOneStagedDevice -stagedDevice @{ deviceIdentifier = 'DEVICE-001'; organizationId = 1 }
 

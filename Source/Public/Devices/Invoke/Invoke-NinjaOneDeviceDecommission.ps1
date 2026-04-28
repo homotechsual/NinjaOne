@@ -5,7 +5,7 @@ function Invoke-NinjaOneDeviceDecommission {
 		.DESCRIPTION
 			Decommissions a device via the NinjaOne v2 API.
 		.FUNCTIONALITY
-			Devices
+			Device Decommission
 		.EXAMPLE
 			PS> Invoke-NinjaOneDeviceDecommission -deviceId 1
 

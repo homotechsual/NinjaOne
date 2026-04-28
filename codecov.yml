@@ -482,6 +482,10 @@ component_management:
       name: 'Functionality: Device Dashboard URL'
       paths:
         - Source/Public/Management/Get/Get-NinjaOneDeviceDashboardURL.ps1
+    - component_id: func_device_decommission
+      name: 'Functionality: Device Decommission'
+      paths:
+        - Source/Public/Devices/Invoke/Invoke-NinjaOneDeviceDecommission.ps1
     - component_id: func_device_disk_drives
       name: 'Functionality: Device Disk drives'
       paths:
@@ -501,6 +505,7 @@ component_management:
     - component_id: func_device_maintenance
       name: 'Functionality: Device Maintenance'
       paths:
+        - Source/Public/Management/Remove/Remove-NinjaOneDeviceMaintenance.ps1
         - Source/Public/Management/Set/Set-NinjaOneDeviceMaintenance.ps1
     - component_id: func_device_network_interfaces
       name: 'Functionality: Device Network Interfaces'
@@ -525,6 +530,7 @@ component_management:
     - component_id: func_device_owner
       name: 'Functionality: Device Owner'
       paths:
+        - Source/Public/Management/Remove/Remove-NinjaOneDeviceOwner.ps1
         - Source/Public/Management/Set/Set-NinjaOneDeviceOwner.ps1
     - component_id: func_device_policy_overrides
       name: 'Functionality: Device Policy Overrides'
@@ -574,9 +580,6 @@ component_management:
     - component_id: func_devices
       name: 'Functionality: Devices'
       paths:
-        - Source/Public/Devices/Invoke/Invoke-NinjaOneDeviceDecommission.ps1
-        - Source/Public/Devices/New/New-NinjaOneStagedDevice.ps1
-        - Source/Public/Management/Remove/Remove-NinjaOneDeviceOwner.ps1
         - Source/Public/System/Get/Get-NinjaOneDevices.ps1
     - component_id: func_disks_query
       name: 'Functionality: Disks Query'
@@ -721,10 +724,6 @@ component_management:
       name: 'Functionality: Logged On Users Query'
       paths:
         - Source/Public/Queries/Get/Get-NinjaOneLoggedOnUsers.ps1
-    - component_id: func_maintenance
-      name: 'Functionality: Maintenance'
-      paths:
-        - Source/Public/Management/Remove/Remove-NinjaOneDeviceMaintenance.ps1
     - component_id: func_network_interfaces_query
       name: 'Functionality: Network Interfaces Query'
       paths:
@@ -953,6 +952,10 @@ component_management:
       name: 'Functionality: Software Products'
       paths:
         - Source/Public/System/Get/Get-NinjaOneSoftwareProducts.ps1
+    - component_id: func_staged_device
+      name: 'Functionality: Staged Device'
+      paths:
+        - Source/Public/Devices/New/New-NinjaOneStagedDevice.ps1
     - component_id: func_system_contacts
       name: 'Functionality: System Contacts'
       paths:
