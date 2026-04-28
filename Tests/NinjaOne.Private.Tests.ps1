@@ -671,24 +671,130 @@ Describe 'Get-NinjaOneExpandCompleter' {
 	}
 }
 
-Describe 'Get-NinjaOneSecrets' -Skip:(!$script:HasSecretManagement) {
+Describe 'Get-NinjaOneSecrets' {
 	BeforeEach {
-		Mock -CommandName Get-Secret -ModuleName $ModuleName -MockWith { $null }
+		$script:RequestedSecrets = [System.Collections.Generic.List[string]]::new()
+		$script:NRAPIConnectionInformation = $null
+		$script:NRAPIAuthenticationInformation = $null
+		$script:ParseDateTimes = $false
 	}
-	Context 'Parameter acceptance' {
-		It 'should accept VaultName parameter' {
+
+	Context 'Secret retrieval and conversion' {
+		It 'should populate and convert authorization code secrets from the vault' {
 			$module = Get-Module -Name $ModuleName
 			& $module {
-				# Test that function accepts VaultName parameter
-				{ Get-NinjaOneSecrets -VaultName 'TestVault' -ErrorAction SilentlyContinue } | Should -Not -Throw
+				$script:NRAPIConnectionInformation = $null
+				$script:NRAPIAuthenticationInformation = $null
+				$script:ParseDateTimes = $false
+				$script:RequestedSecrets = [System.Collections.Generic.List[string]]::new()
+				$script:SecretResponses = @{
+					NinjaOneAuthMode = 'Authorization Code'
+					NinjaOneURL = 'https://api.test.com'
+					NinjaOneInstance = 'test-instance'
+					NinjaOneClientId = 'client-id'
+					NinjaOneClientSecret = 'client-secret'
+					NinjaOneAuthScopes = 'monitoring management'
+					NinjaOneRedirectURI = 'http://localhost/callback'
+					NinjaOneAuthListenerPort = '8080'
+					NinjaOneUseSecretManagement = 'false'
+					NinjaOneWriteToSecretVault = 'false'
+					NinjaOneReadFromSecretVault = 'false'
+					NinjaOneVaultName = 'IgnoredByFunction'
+					NinjaOneParseDateTimes = 'true'
+					NinjaOneType = 'Bearer'
+					NinjaOneAccess = 'access-token'
+					NinjaOneExpires = '2026-04-28T12:00:00Z'
+				}
+				function Get-Secret {
+					param($Name, $Vault)
+					$script:RequestedSecrets.Add($Name)
+					return $script:SecretResponses[$Name]
+				}
+
+				Get-NinjaOneSecrets -VaultName 'TestVault'
+
+				$script:NRAPIConnectionInformation.AuthMode | Should -Be 'Authorization Code'
+				$script:NRAPIConnectionInformation.URL | Should -Be 'https://api.test.com'
+				$script:NRAPIConnectionInformation.AuthListenerPort | Should -BeOfType ([int])
+				$script:NRAPIConnectionInformation.AuthListenerPort | Should -Be 8080
+				$script:NRAPIConnectionInformation.UseSecretManagement | Should -BeTrue
+				$script:NRAPIConnectionInformation.WriteToSecretVault | Should -BeTrue
+				$script:NRAPIConnectionInformation.ReadFromSecretVault | Should -BeTrue
+				$script:NRAPIConnectionInformation.VaultName | Should -Be 'TestVault'
+				$script:NRAPIAuthenticationInformation.Expires | Should -BeOfType ([datetime])
+				$script:ParseDateTimes | Should -BeTrue
 			}
 		}
 
-		It 'should accept SecretPrefix parameter' {
+		It 'should use the provided secret prefix and support token authentication' {
 			$module = Get-Module -Name $ModuleName
 			& $module {
-				# Test that function accepts SecretPrefix parameter
-				{ Get-NinjaOneSecrets -VaultName 'TestVault' -SecretPrefix 'Custom' -ErrorAction SilentlyContinue } | Should -Not -Throw
+				$script:NRAPIConnectionInformation = $null
+				$script:NRAPIAuthenticationInformation = $null
+				$script:ParseDateTimes = $false
+				$script:RequestedSecrets = [System.Collections.Generic.List[string]]::new()
+				$script:SecretResponses = @{
+					CustomAuthMode = 'Token Authentication'
+					CustomURL = 'https://api.test.com'
+					CustomInstance = 'test-instance'
+					CustomClientId = 'client-id'
+					CustomClientSecret = 'client-secret'
+					CustomAuthScopes = 'monitoring'
+					CustomType = 'Bearer'
+					CustomAccess = 'access-token'
+					CustomRefresh = 'refresh-token'
+					CustomUseSecretManagement = 'true'
+					CustomWriteToSecretVault = 'true'
+					CustomReadFromSecretVault = 'true'
+					CustomParseDateTimes = 'false'
+				}
+				function Get-Secret {
+					param($Name, $Vault)
+					$script:RequestedSecrets.Add($Name)
+					return $script:SecretResponses[$Name]
+				}
+
+				Get-NinjaOneSecrets -VaultName 'CustomVault' -SecretPrefix 'Custom'
+
+				$script:NRAPIConnectionInformation.AuthMode | Should -Be 'Token Authentication'
+				$script:NRAPIAuthenticationInformation.Refresh | Should -Be 'refresh-token'
+				$script:NRAPIConnectionInformation.VaultName | Should -Be 'CustomVault'
+				$script:ParseDateTimes | Should -BeFalse
+				$script:RequestedSecrets | Should -Contain 'CustomAuthMode'
+				$script:RequestedSecrets | Should -Contain 'CustomRefresh'
+				$script:RequestedSecrets | Should -Not -Contain 'NinjaOneAuthMode'
+			}
+		}
+
+		It 'should skip null secrets while still initializing script scoped stores' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation = $null
+				$script:NRAPIAuthenticationInformation = $null
+				$script:ParseDateTimes = $false
+				$script:RequestedSecrets = [System.Collections.Generic.List[string]]::new()
+				$script:SecretResponses = @{
+					NinjaOneAuthMode = 'Token Authentication'
+					NinjaOneURL = 'https://api.test.com'
+					NinjaOneInstance = 'test-instance'
+					NinjaOneClientId = 'client-id'
+					NinjaOneClientSecret = 'client-secret'
+					NinjaOneAuthScopes = 'monitoring'
+					NinjaOneRefresh = 'refresh-token'
+				}
+				function Get-Secret {
+					param($Name, $Vault)
+					$script:RequestedSecrets.Add($Name)
+					return $script:SecretResponses[$Name]
+				}
+
+				Get-NinjaOneSecrets -VaultName 'TestVault'
+
+				$script:NRAPIConnectionInformation | Should -BeOfType ([hashtable])
+				$script:NRAPIAuthenticationInformation | Should -BeOfType ([hashtable])
+				$script:NRAPIConnectionInformation.ContainsKey('RedirectURI') | Should -BeFalse
+				$script:NRAPIAuthenticationInformation.ContainsKey('Access') | Should -BeFalse
+				$script:NRAPIConnectionInformation.UseSecretManagement | Should -BeTrue
 			}
 		}
 	}
