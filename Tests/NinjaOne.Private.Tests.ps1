@@ -1172,6 +1172,106 @@ Describe 'Invoke-NinjaOnePreFlightCheck' {
 	}
 }
 
+Describe 'Get-NinjaOneOpenApiPaths' {
+	Context 'OpenAPI path parsing' {
+		It 'should extract allowed methods for each path' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$openApiYaml = @'
+openapi: 3.0.1
+paths:
+  /v2/organizations:
+    get:
+      summary: List organizations
+    post:
+      summary: Create organization
+  /v2/devices/{id}:
+    delete:
+      summary: Delete device
+'@
+
+				$result = Get-NinjaOneOpenApiPaths -OpenApiYaml $openApiYaml
+
+				$result.Keys.Count | Should -Be 2
+				$result.Keys | Should -Contain '/v2/organizations'
+				$result.Keys | Should -Contain '/v2/devices/{id}'
+				([string[]]$result['/v2/organizations']) | Should -Contain 'GET'
+				([string[]]$result['/v2/organizations']) | Should -Contain 'POST'
+				([string[]]$result['/v2/devices/{id}']) | Should -Contain 'DELETE'
+			}
+		}
+
+		It 'should ignore unsupported methods and de-duplicate method names' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$openApiYaml = @'
+openapi: 3.0.1
+paths:
+  /v2/tickets:
+    patch:
+      summary: Update ticket
+    PATCH:
+      summary: Duplicate method in different case
+    trace:
+      summary: Unsupported method
+    head:
+      summary: Check ticket headers
+'@
+
+				$result = Get-NinjaOneOpenApiPaths -OpenApiYaml $openApiYaml
+				$methods = [string[]]$result['/v2/tickets']
+
+				$methods.Count | Should -Be 2
+				$methods | Should -Contain 'PATCH'
+				$methods | Should -Contain 'HEAD'
+				$methods | Should -Not -Contain 'TRACE'
+			}
+		}
+
+		It 'should stop parsing when the paths section ends' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$openApiYaml = @'
+openapi: 3.0.1
+paths:
+  /v2/alerts:
+    get:
+      summary: List alerts
+components:
+  schemas:
+    /not-a-path:
+      get:
+        summary: This should not be parsed
+'@
+
+				$result = Get-NinjaOneOpenApiPaths -OpenApiYaml $openApiYaml
+
+				$result.Keys.Count | Should -Be 1
+				$result.Keys | Should -Contain '/v2/alerts'
+				$result.Keys | Should -Not -Contain '/not-a-path'
+			}
+		}
+
+		It 'should return an empty hashtable when no paths section exists' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$openApiYaml = @'
+openapi: 3.0.1
+components:
+  schemas:
+    Ticket:
+      type: object
+'@
+
+				$result = Get-NinjaOneOpenApiPaths -OpenApiYaml $openApiYaml
+
+				$result | Should -BeOfType ([Hashtable])
+				$result.Count | Should -Be 0
+			}
+		}
+	}
+}
+
 Describe 'Get-TokenExpiry' {
 	Context 'Token expiry calculation' {
 		It 'should add correct number of seconds' {
