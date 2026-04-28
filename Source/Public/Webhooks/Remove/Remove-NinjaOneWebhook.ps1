@@ -25,8 +25,6 @@ function Remove-NinjaOneWebhook {
 	[Alias('rnow')]
 	[MetadataAttribute(
 		'/v2/webhook',
-		'delete',
-		'/v2/webhook/{id}',
 		'delete'
 	)]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Uses dynamic parameter parsing.')]

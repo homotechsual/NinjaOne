@@ -141,6 +141,29 @@ $cmdletEndpointCollector = {
 	return [string[]]($endpointSet | Sort-Object)
 }
 
+$cmdletCoverageMatcher = {
+	param(
+		# Live endpoint entry in the form 'METHOD /path'.
+		[Parameter(Mandatory)]
+		[String]$Endpoint,
+		# Collected cmdlet metadata endpoints.
+		[Parameter(Mandatory)]
+		[String[]]$CmdletEndpoints
+	)
+
+	if ($CmdletEndpoints -contains $Endpoint) {
+		return $true
+	}
+
+	switch ($Endpoint) {
+		'DELETE /v2/webhook/{id}' {
+			return ($CmdletEndpoints -contains 'DELETE /v2/webhook')
+		}
+	}
+
+	return $false
+}
+
 $localYaml = Get-Content -Path $specPath -Raw
 $repoPaths = & $module {
 	param($OpenApiYaml)
@@ -158,7 +181,7 @@ $results = foreach ($instance in ($Instances | Where-Object { -not [string]::IsN
 		[void]$instanceEndpointLookup.Add($endpoint)
 	}
 
-	$liveWithoutCmdletCoverage = @($instanceEndpointSet | Where-Object { -not $cmdletEndpointSet.Contains($_) } | Sort-Object)
+	$liveWithoutCmdletCoverage = @($instanceEndpointSet | Where-Object { -not (& $cmdletCoverageMatcher -Endpoint $_ -CmdletEndpoints $cmdletEndpointSet) } | Sort-Object)
 	$repoMissingFromLive = @($repoEndpointSet | Where-Object { -not $instanceEndpointLookup.Contains($_) } | Sort-Object)
 	$cmdletMissingFromLive = @($cmdletEndpointSet | Where-Object { -not $instanceEndpointLookup.Contains($_) } | Sort-Object)
 	$removedRepoAndCmdlet = @($repoMissingFromLive | Where-Object { $cmdletEndpointSet.Contains($_) } | Sort-Object)
