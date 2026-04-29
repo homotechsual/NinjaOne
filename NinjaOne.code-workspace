@@ -111,6 +111,7 @@
 			"New-Object": true,
 			"Add-Member": true,
 			"Out-File": true,
+			"Get-LowCoverage": true,
 		},
 		"codeQL.githubDatabase.download": "never",
 		"cSpell.words": ["Analyzer"],
