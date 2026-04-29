@@ -214,6 +214,74 @@ Describe 'Get-NinjaOneActivities' {
 	}
 }
 
+Describe 'Get-NinjaOneUsers' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			@{}
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@(
+				[pscustomobject]@{
+					id = 1
+					name = 'Test User'
+				}
+			)
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'uses the default users endpoint when organisationId is not supplied' {
+		$module = Get-Module -Name $ModuleName
+		$result = & $module {
+			Get-NinjaOneUsers -includeRoles
+		}
+
+		@($result).Count | Should -Be 1
+		$result[0].id | Should -Be 1
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $Resource -eq 'v2/users' }
+	}
+
+	It 'uses the organisation users endpoint when organisationId is supplied' {
+		$module = Get-Module -Name $ModuleName
+		$result = & $module {
+			Get-NinjaOneUsers -organisationId 7 -userType END_USER
+		}
+
+		@($result).Count | Should -Be 1
+		$result[0].name | Should -Be 'Test User'
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $Resource -eq 'v2/organization/7/end-users' }
+	}
+
+	It 'delegates no-result default-path failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			$null
+		}
+
+		$module = Get-Module -Name $ModuleName
+		& $module {
+			{ Get-NinjaOneUsers } | Should -Throw '*No users found*'
+		}
+
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+
+	It 'delegates no-result organisation-path failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			$null
+		}
+
+		$module = Get-Module -Name $ModuleName
+		& $module {
+			{ Get-NinjaOneUsers -organisationId 12 -userType END_USER } | Should -Throw '*No users found for organisation 12*'
+		}
+
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
 # ============================================================================
 # COMPREHENSIVE PUBLIC QUERY TEST SUITE SUMMARY
 # ============================================================================

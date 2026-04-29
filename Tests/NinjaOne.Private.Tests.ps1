@@ -1234,6 +1234,17 @@ Describe 'New-NinjaOnePOSTRequest' {
 	}
 
 	Context 'Request behavior' {
+		It 'should call endpoint support with POST method' {
+			Mock -CommandName Test-NinjaOneEndpointSupport -ModuleName $ModuleName -MockWith {}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$null = New-NinjaOnePOSTRequest -Resource '/v2/organizations'
+			}
+
+			Assert-MockCalled -CommandName Test-NinjaOneEndpointSupport -ModuleName $ModuleName -Times 1 -ParameterFilter { $Method -eq 'POST' -and $resource -eq '/v2/organizations' }
+		}
+
 		It 'should throw when connection information is missing' {
 			$module = Get-Module -Name $ModuleName
 			& $module {
@@ -1422,6 +1433,22 @@ Describe 'New-NinjaOnePOSTRequest' {
 			}
 
 			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+		}
+
+		It 'should propagate preflight failures before request try-catch' {
+			Mock -CommandName Test-NinjaOneEndpointSupport -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('preflight failure')
+			}
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('outer-post-delegated')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				{ New-NinjaOnePOSTRequest -Resource '/v2/organizations' } | Should -Throw '*preflight failure*'
+			}
+
+			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 0
 		}
 	}
 }
