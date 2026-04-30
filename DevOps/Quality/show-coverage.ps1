@@ -1,5 +1,6 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal dev script does not require parameter descriptions.')]
 param(
+	# One or more suite names: private, public, core, docs
 	[string[]]$Suite = @('private', 'public'),
 	[ValidateSet('Summary', 'Full')]
 	[string]$Detail = 'Summary',
