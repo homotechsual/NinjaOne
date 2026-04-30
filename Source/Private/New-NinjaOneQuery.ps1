@@ -33,7 +33,7 @@ Generated reference help - customize descriptions as needed.
 #>
 function New-NinjaOneQuery {
 	[CmdletBinding()]
-	[OutputType([String], [HashTable])]
+	[OutputType([String], [System.Collections.Specialized.NameValueCollection])]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSMissingParameterInlineComment', '', Justification = 'Internal private function does not require parameter descriptions.')]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Private function - no need to support.')]
 	param (
@@ -49,7 +49,7 @@ function New-NinjaOneQuery {
 		[Switch]$asString
 	)
 	Write-Verbose ('Building parameters for {0}. Use ''-Debug'' with ''-Verbose'' to see parameter values as they are built.' -f $commandName)
-	$QSCollection = [HashTable]@{}
+	$QSCollection = [System.Web.HttpUtility]::ParseQueryString([String]::Empty)
 	Write-Verbose ('{0}' -f ($parameters.Values | Out-String))
 	foreach ($Parameter in $parameters.Values) {
 		# Skip system parameters.
@@ -171,8 +171,8 @@ function New-NinjaOneQuery {
 				$Value = $ParameterVariable.Value
 				if (($Value -is [Array]) -and ($commaSeparatedArrays)) {
 					Write-Verbose 'Building comma separated array string.'
-					$QueryValue = $Value -join ','
-					$QSCollection.Add($Query, $QueryValue.ToUnixEpoch())
+					$QueryValue = ($Value | ForEach-Object { ConvertTo-UnixEpoch -DateTime $_ }) -join ','
+					$QSCollection.Add($Query, $QueryValue)
 					Write-Verbose ('Adding parameter {0} with value {1}' -f $Query, $QueryValue)
 				} elseif (($Value -is [Array]) -and (-not $commaSeparatedArrays)) {
 					foreach ($ArrayValue in $Value) {
@@ -193,6 +193,6 @@ function New-NinjaOneQuery {
 		$Query = $QSBuilder.Query.ToString()
 		return $Query
 	} else {
-		return $QSCollection
+		return , $QSCollection
 	}
 }

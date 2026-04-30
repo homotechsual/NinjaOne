@@ -1228,7 +1228,9 @@ Describe 'New-NinjaOneGETRequest' {
 		It 'should accept query string collection' {
 			$module = Get-Module -Name $ModuleName
 			& $module {
-				$qs = @{ skip = 0; limit = 10 }
+				$qs = [System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+				$qs.Add('skip', '0')
+				$qs.Add('limit', '10')
 				{ New-NinjaOneGETRequest -Resource '/v2/organizations' -QSCollection $qs -ErrorAction SilentlyContinue } | Should -Not -Throw
 			}
 		}
@@ -1250,7 +1252,8 @@ Describe 'New-NinjaOneGETRequest' {
 		It 'should accept multiple parameters together' {
 			$module = Get-Module -Name $ModuleName
 			& $module {
-				$qs = @{ filter = 'name eq "test"' }
+				$qs = [System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+				$qs.Add('filter', 'name eq "test"')
 				{ New-NinjaOneGETRequest -Resource '/v2/organizations' -QSCollection $qs -Raw -ErrorAction SilentlyContinue } | Should -Not -Throw
 			}
 		}
@@ -1293,7 +1296,8 @@ Describe 'New-NinjaOnePOSTRequest' {
 		It 'should accept query string collection' {
 			$module = Get-Module -Name $ModuleName
 			& $module {
-				$qs = @{ test = 'value' }
+				$qs = [System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+				$qs.Add('test', 'value')
 				{ New-NinjaOnePOSTRequest -Resource '/v2/organizations' -QSCollection $qs -ErrorAction SilentlyContinue } | Should -Not -Throw
 			}
 		}
@@ -1398,7 +1402,9 @@ Describe 'New-NinjaOnePOSTRequest' {
 
 			$module = Get-Module -Name $ModuleName
 			& $module {
-				$qs = @{ test = 'value'; limit = 10 }
+				$qs = [System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+				$qs.Add('test', 'value')
+				$qs.Add('limit', '10')
 				$null = New-NinjaOnePOSTRequest -Resource '/v2/organizations' -QSCollection $qs
 			}
 
@@ -1618,8 +1624,8 @@ Describe 'New-NinjaOneQuery' {
 				}
 
 				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters
-				$result.ContainsKey('Filter') | Should -BeFalse
-				$result.ContainsKey('details') | Should -BeFalse
+				$result.AllKeys -contains 'Filter' | Should -BeFalse
+				$result.AllKeys -contains 'details' | Should -BeFalse
 			}
 		}
 
@@ -1691,10 +1697,12 @@ Describe 'New-NinjaOneQuery' {
 			}
 		}
 
-		It 'should add a single datetime array item as a query value when not using comma separated arrays' {
+		It 'should serialize datetime array items to Unix epoch values when using comma separated arrays' {
 			$module = Get-Module -Name $ModuleName
 			& $module {
-				$CreatedAfter = @([datetime]'2026-01-01T00:00:00Z')
+				$dt1 = [datetime]'2026-01-01T00:00:00Z'
+				$dt2 = [datetime]'2026-06-01T00:00:00Z'
+				$CreatedAfter = @($dt1, $dt2)
 				$parameters = @{
 					CreatedAfter = [pscustomobject]@{
 						Name = 'CreatedAfter'
@@ -1703,8 +1711,11 @@ Describe 'New-NinjaOneQuery' {
 					}
 				}
 
-				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters
-				$result['createdAfter'] | Should -Not -BeNullOrEmpty
+				$epoch1 = ConvertTo-UnixEpoch -DateTime $dt1
+				$epoch2 = ConvertTo-UnixEpoch -DateTime $dt2
+				$expected = "$epoch1,$epoch2"
+				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters -CommaSeparatedArrays
+				$result['createdAfter'] | Should -Be $expected
 			}
 		}
 
@@ -1735,7 +1746,7 @@ Describe 'New-NinjaOneQuery' {
 				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters
 				$result['tag'] | Should -Be 'single'
 				$result['id'] | Should -Be 42
-				$result['createdAfter'] | Should -BeOfType ([datetime])
+				$result['createdAfter'] | Should -Not -BeNullOrEmpty
 			}
 		}
 
@@ -1758,7 +1769,7 @@ Describe 'New-NinjaOneQuery' {
 				}
 
 				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters
-				$result.ContainsKey('Limit') | Should -BeFalse
+				$result.AllKeys -contains 'Limit' | Should -BeFalse
 				$result['skip'] | Should -Be 10
 			}
 		}
@@ -1778,6 +1789,7 @@ Describe 'New-NinjaOneQuery' {
 				$query = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters -AsString
 				$query | Should -BeOfType ([string])
 				$query.StartsWith('?') | Should -BeTrue
+				$query | Should -Match 'name=Contoso'
 			}
 		}
 	}
@@ -2264,7 +2276,10 @@ Describe 'New-NinjaOnePATCHRequest' {
 
 			$module = Get-Module -Name $ModuleName
 			$result = & $module {
-				New-NinjaOnePATCHRequest -Resource '/v2/organizations' -Body @{ name = 'updated' } -qSCollection @{ pageSize = 10; detailed = 'true' }
+				$qs = [System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+				$qs.Add('pageSize', '10')
+				$qs.Add('detailed', 'true')
+				New-NinjaOnePATCHRequest -Resource '/v2/organizations' -Body @{ name = 'updated' } -qSCollection $qs
 			}
 
 			($result | Out-String) | Should -Match 'pageSize'

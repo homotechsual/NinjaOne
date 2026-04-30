@@ -18,8 +18,8 @@ function New-NinjaOneGETRequest {
 		# The resource to send the request to.
 		[Parameter( Mandatory = $True )]
 		[String]$resource,
-		# A hashtable used to build the query string.
-		[HashTable]$qSCollection,
+		# A query string collection used to build the query string.
+		[System.Collections.Specialized.NameValueCollection]$qSCollection,
 		# return the raw response.
 		[Switch]$raw,
 		# Parse date/time values returned in JSON.
@@ -35,11 +35,7 @@ function New-NinjaOneGETRequest {
 	try {
 		if ($qSCollection) {
 			Write-Verbose ('Query string in New-NinjaOneGETRequest contains: {0}' -f ($qSCollection | Out-String))
-			$QueryStringCollection = [System.Web.HTTPUtility]::ParseQueryString([String]::Empty)
-			Write-Verbose 'Building [HttpQSCollection] for New-NinjaOneGETRequest'
-			foreach ($Key in $qSCollection.Keys) {
-				$QueryStringCollection.Add($Key, $qSCollection.$Key)
-			}
+			$QueryStringCollection = $qSCollection
 		} else {
 			Write-Verbose 'Query string collection not present...'
 		}
