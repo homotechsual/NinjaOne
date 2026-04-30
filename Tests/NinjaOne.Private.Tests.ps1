@@ -1631,6 +1631,28 @@ Describe 'New-NinjaOnePOSTRequest' {
 			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
 		}
 
+		It 'should process pscustomobject multipart bodies before delegating request failures' {
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('multipart-pscustomobject-delegated')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation.URL = 'https://127.0.0.1:1'
+				$body = [pscustomobject]@{
+					metadata = [pscustomobject]@{
+						name = 'contoso'
+						enabled = $true
+					}
+				}
+				{ New-NinjaOnePOSTRequest -Resource '/v2/organizations' -Body $body -UseMultipart } | Should -Throw '*multipart-pscustomobject-delegated*'
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 0
+			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+		}
+
+
 		It 'should fall back to standard request path when multipart detection returns false' {
 			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
 				@{ result = @{ ok = $true } }
@@ -2438,8 +2460,8 @@ Describe 'New-NinjaOnePATCHRequest' {
 				New-NinjaOnePATCHRequest -Resource '/v2/organizations' -Body @{ name = 'updated' } -qSCollection $qs
 			}
 
-			($result | Out-String) | Should -Match 'pageSize'
-			($result | Out-String) | Should -Match 'detailed'
+			($result | Out-String) | Should -Match 'pageSize=10'
+			($result | Out-String) | Should -Match 'detailed=true'
 		}
 
 		It 'should set ParseDateTime when requested by switch' {
