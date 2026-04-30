@@ -824,6 +824,72 @@ Describe 'Get-NinjaOneSecrets' {
 				$script:NRAPIConnectionInformation.UseSecretManagement | Should -BeTrue
 			}
 		}
+
+		It 'should reuse existing script scoped stores and overwrite stale values from the vault' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation = @{
+					AuthMode = 'stale-auth-mode'
+					URL = 'https://stale.example'
+					Instance = 'stale-instance'
+					ClientId = 'stale-client-id'
+					ClientSecret = 'stale-client-secret'
+					AuthScopes = 'stale-scope'
+					AuthListenerPort = '9999'
+				}
+				$script:NRAPIAuthenticationInformation = @{
+					Type = 'Stale'
+					Access = 'stale-access'
+					Expires = '2001-01-01T00:00:00Z'
+					Refresh = 'stale-refresh'
+				}
+				$script:ParseDateTimes = $true
+				$script:RequestedSecrets = [System.Collections.Generic.List[string]]::new()
+				$script:SecretResponses = @{
+					NinjaOneAuthMode = 'Token Authentication'
+					NinjaOneURL = 'https://api.test.com'
+					NinjaOneInstance = 'test-instance'
+					NinjaOneClientId = 'client-id'
+					NinjaOneClientSecret = 'client-secret'
+					NinjaOneAuthScopes = 'monitoring'
+					NinjaOneUseSecretManagement = 'false'
+					NinjaOneWriteToSecretVault = 'false'
+					NinjaOneReadFromSecretVault = 'false'
+					NinjaOneParseDateTimes = 'false'
+					NinjaOneType = 'Bearer'
+					NinjaOneAccess = 'fresh-access'
+					NinjaOneExpires = '2026-05-01T12:00:00Z'
+					NinjaOneRefresh = 'fresh-refresh'
+				}
+				function Get-Secret {
+					<#
+					.SYNOPSIS
+						Test stub for secret retrieval.
+					#>
+					param(
+						# Secret name requested by Get-NinjaOneSecrets.
+						$Name,
+						# Vault name requested by Get-NinjaOneSecrets.
+						$Vault
+					)
+					$script:RequestedSecrets.Add($Name)
+					return $script:SecretResponses[$Name]
+				}
+
+				Get-NinjaOneSecrets -VaultName 'TestVault'
+
+				$script:NRAPIConnectionInformation.AuthMode | Should -Be 'Token Authentication'
+				$script:NRAPIConnectionInformation.URL | Should -Be 'https://api.test.com'
+				$script:NRAPIConnectionInformation.UseSecretManagement | Should -BeTrue
+				$script:NRAPIConnectionInformation.WriteToSecretVault | Should -BeTrue
+				$script:NRAPIConnectionInformation.ReadFromSecretVault | Should -BeTrue
+				$script:NRAPIConnectionInformation.VaultName | Should -Be 'TestVault'
+				$script:NRAPIAuthenticationInformation.Access | Should -Be 'fresh-access'
+				$script:NRAPIAuthenticationInformation.Refresh | Should -Be 'fresh-refresh'
+				$script:NRAPIAuthenticationInformation.Expires | Should -BeOfType ([datetime])
+				$script:ParseDateTimes | Should -BeFalse
+			}
+		}
 	}
 }
 
@@ -1557,6 +1623,40 @@ Describe 'New-NinjaOneQuery' {
 			}
 		}
 
+		It 'should use the parameter name for switch parameters without aliases' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$IncludeDetails = $true
+				$parameters = @{
+					IncludeDetails = [pscustomobject]@{
+						Name = 'IncludeDetails'
+						ParameterType = [pscustomobject]@{ Name = 'SwitchParameter' }
+						Aliases = @()
+					}
+				}
+
+				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters
+				$result['IncludeDetails'] | Should -Be 'true'
+			}
+		}
+
+		It 'should use the parameter name for boolean parameters without aliases' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$IncludeArchived = $true
+				$parameters = @{
+					IncludeArchived = [pscustomobject]@{
+						Name = 'IncludeArchived'
+						ParameterType = [pscustomobject]@{ Name = 'Boolean' }
+						Aliases = @()
+					}
+				}
+
+				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters
+				$result['IncludeArchived'] | Should -Be 'true'
+			}
+		}
+
 		It 'should serialize string arrays as comma separated values when requested' {
 			$module = Get-Module -Name $ModuleName
 			& $module {
@@ -1571,6 +1671,40 @@ Describe 'New-NinjaOneQuery' {
 
 				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters -CommaSeparatedArrays
 				$result['Tags'] | Should -Be 'one,two'
+			}
+		}
+
+		It 'should serialize integer arrays as comma separated values when requested' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$Ids = @(1, 2, 3)
+				$parameters = @{
+					Ids = [pscustomobject]@{
+						Name = 'Ids'
+						ParameterType = [pscustomobject]@{ Name = 'Int32[]' }
+						Aliases = @('id')
+					}
+				}
+
+				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters -CommaSeparatedArrays
+				$result['id'] | Should -Be '1,2,3'
+			}
+		}
+
+		It 'should add a single datetime array item as a query value when not using comma separated arrays' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$CreatedAfter = @([datetime]'2026-01-01T00:00:00Z')
+				$parameters = @{
+					CreatedAfter = [pscustomobject]@{
+						Name = 'CreatedAfter'
+						ParameterType = [pscustomobject]@{ Name = 'DateTime[]' }
+						Aliases = @('createdAfter')
+					}
+				}
+
+				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters
+				$result['createdAfter'] | Should -Not -BeNullOrEmpty
 			}
 		}
 
