@@ -46,7 +46,7 @@ function New-NinjaOnePUTRequest {
 		$RequestUri.Path = $resource
 		if ($QueryStringCollection) {
 			Write-Verbose ('Query string is {0}' -f ($QueryStringCollection | Out-String))
-			$RequestUri.Query = $QueryStringCollection
+			$RequestUri.Query = $QueryStringCollection.ToString()
 		} else {
 			Write-Verbose 'Query string not present...'
 		}

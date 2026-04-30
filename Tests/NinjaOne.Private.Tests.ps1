@@ -1258,6 +1258,162 @@ Describe 'New-NinjaOneGETRequest' {
 			}
 		}
 	}
+
+	Context 'Request behavior' {
+		It 'should throw when connection information is missing' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation = $null
+				{ New-NinjaOneGETRequest -Resource '/v2/organizations' } | Should -Throw '*Missing NinjaOne connection information*'
+			}
+		}
+
+		It 'should throw when authentication information is missing' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIAuthenticationInformation = $null
+				{ New-NinjaOneGETRequest -Resource '/v2/organizations' } | Should -Throw '*Missing NinjaOne authentication tokens*'
+			}
+		}
+
+		It 'should call endpoint support with GET method' {
+			Mock -CommandName Test-NinjaOneEndpointSupport -ModuleName $ModuleName -MockWith {}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$null = New-NinjaOneGETRequest -Resource '/v2/organizations'
+			}
+
+			Assert-MockCalled -CommandName Test-NinjaOneEndpointSupport -ModuleName $ModuleName -Times 1 -ParameterFilter { $Method -eq 'GET' -and $resource -eq '/v2/organizations' }
+		}
+
+		It 'should return the results property when present' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				[pscustomobject]@{ results = @('a', 'b') }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = New-NinjaOneGETRequest -Resource '/v2/organizations'
+				@($result) | Should -Contain 'a'
+				@($result) | Should -Contain 'b'
+			}
+		}
+
+		It 'should return the result property when present and results is absent' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				[pscustomobject]@{ result = [pscustomobject]@{ id = 42 } }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = New-NinjaOneGETRequest -Resource '/v2/organizations'
+				$result.id | Should -Be 42
+			}
+		}
+
+		It 'should return raw response when neither results nor result exists' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				[pscustomobject]@{ status = 'ok' }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = New-NinjaOneGETRequest -Resource '/v2/organizations'
+				$result.status | Should -Be 'ok'
+			}
+		}
+
+		It 'should pass Raw when the raw switch is set' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				[pscustomobject]@{ result = @{} }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$null = New-NinjaOneGETRequest -Resource '/v2/organizations' -Raw
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $Raw }
+		}
+
+		It 'should pass ParseDateTime when explicitly requested' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				[pscustomobject]@{ result = @{} }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$null = New-NinjaOneGETRequest -Resource '/v2/organizations' -ParseDateTime
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $ParseDateTime }
+		}
+
+		It 'should pass ParseDateTime when script setting is enabled' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				[pscustomobject]@{ result = @{} }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:ParseDateTimes = $true
+				$null = New-NinjaOneGETRequest -Resource '/v2/organizations'
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $ParseDateTime }
+		}
+
+		It 'should include query parameters in the built request URI' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				[pscustomobject]@{ result = @{} }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$qs = [System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+				$qs.Add('pageIndex', '0')
+				$qs.Add('pageSize', '50')
+				$null = New-NinjaOneGETRequest -Resource '/v2/organizations' -QSCollection $qs
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+				$Uri -match '/v2/organizations' -and $Uri -match 'pageIndex=0' -and $Uri -match 'pageSize=50'
+			}
+		}
+
+		It 'should delegate non-http request failures to New-NinjaOneError' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('boom')
+			}
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('delegated')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				{ New-NinjaOneGETRequest -Resource '/v2/organizations' } | Should -Throw '*delegated*'
+			}
+
+			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+		}
+
+		It 'should propagate preflight failures before request try-catch' {
+			Mock -CommandName Test-NinjaOneEndpointSupport -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('preflight failure')
+			}
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('outer-get-delegated')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				{ New-NinjaOneGETRequest -Resource '/v2/organizations' } | Should -Throw '*preflight failure*'
+			}
+
+			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 0
+		}
+	}
 }
 
 Describe 'New-NinjaOnePOSTRequest' {
@@ -2400,6 +2556,7 @@ Describe 'New-NinjaOnePUTRequest' {
 			$script:NRAPIAuthenticationInformation = @{
 				access_token = 'test-token'
 			}
+			$script:ParseDateTimes = $false
 		}
 		Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
 			[pscustomobject]@{ result = @() }
@@ -2420,6 +2577,180 @@ Describe 'New-NinjaOnePUTRequest' {
 			& $module {
 				{ New-NinjaOnePUTRequest -Resource '/v2/organizations/1' -Body '' -ErrorAction SilentlyContinue } | Should -Not -Throw
 			}
+		}
+	}
+
+	Context 'Request behavior' {
+		It 'should throw when connection information is missing' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation = $null
+				{ New-NinjaOnePUTRequest -Resource '/v2/organizations/1' -Body @{ name = 'test' } } | Should -Throw '*Missing NinjaOne connection information*'
+			}
+		}
+
+		It 'should throw when authentication information is missing' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIAuthenticationInformation = $null
+				{ New-NinjaOnePUTRequest -Resource '/v2/organizations/1' -Body @{ name = 'test' } } | Should -Throw '*Missing NinjaOne authentication tokens*'
+			}
+		}
+
+		It 'should call endpoint support with PUT method' {
+			Mock -CommandName Test-NinjaOneEndpointSupport -ModuleName $ModuleName -MockWith {}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$null = New-NinjaOnePUTRequest -Resource '/v2/organizations/1' -Body @{ name = 'test' }
+			}
+
+			Assert-MockCalled -CommandName Test-NinjaOneEndpointSupport -ModuleName $ModuleName -Times 1 -ParameterFilter { $Method -eq 'PUT' -and $resource -eq '/v2/organizations/1' }
+		}
+
+		It 'should return the results property when present' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ results = @('a', 'b') }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = New-NinjaOnePUTRequest -Resource '/v2/organizations/1' -Body @{ name = 'test' }
+				@($result) | Should -Contain 'a'
+				@($result) | Should -Contain 'b'
+			}
+		}
+
+		It 'should return the result property when present and results is absent' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ result = @{ id = 99 } }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = New-NinjaOnePUTRequest -Resource '/v2/organizations/1' -Body @{ name = 'test' }
+				$result.id | Should -Be 99
+			}
+		}
+
+		It 'should return raw response when neither results nor result exists' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ status = 'ok' }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = New-NinjaOnePUTRequest -Resource '/v2/organizations/1' -Body @{ name = 'test' }
+				$result.status | Should -Be 'ok'
+			}
+		}
+
+		It 'should serialize object body to JSON' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ result = @{} }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$body = @{ name = 'Contoso'; enabled = $true }
+				$null = New-NinjaOnePUTRequest -Resource '/v2/organizations/1' -Body $body
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+				$Body -match '"name"\s*:\s*"Contoso"' -and $Body -match '"enabled"\s*:\s*true'
+			}
+		}
+
+		It 'should force body to array when AsArray is set' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ result = @{} }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$body = @{ name = 'Contoso' }
+				$null = New-NinjaOnePUTRequest -Resource '/v2/organizations/1' -Body $body -AsArray
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+				$Body -match '^\s*\['
+			}
+		}
+
+		It 'should pass ParseDateTime when explicitly requested' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ result = @{} }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$null = New-NinjaOnePUTRequest -Resource '/v2/organizations/1' -Body @{ name = 'test' } -ParseDateTime
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $ParseDateTime }
+		}
+
+		It 'should pass ParseDateTime when script setting is enabled' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ result = @{} }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:ParseDateTimes = $true
+				$null = New-NinjaOnePUTRequest -Resource '/v2/organizations/1' -Body @{ name = 'test' }
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $ParseDateTime }
+		}
+
+		It 'should include query parameters in the built request URI' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				@{ result = @{} }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$qs = [System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+				$qs.Add('expand', 'devices')
+				$null = New-NinjaOnePUTRequest -Resource '/v2/organizations/1' -Body @{ name = 'test' } -QSCollection $qs
+			}
+
+			Assert-MockCalled -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+				$Uri -match '/v2/organizations/1' -and $Uri -match 'expand=devices'
+			}
+		}
+
+		It 'should delegate non-http request failures to New-NinjaOneError' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('boom')
+			}
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('delegated')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				{ New-NinjaOnePUTRequest -Resource '/v2/organizations/1' -Body @{ name = 'test' } } | Should -Throw '*delegated*'
+			}
+
+			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+		}
+
+		It 'should propagate preflight failures before request try-catch' {
+			Mock -CommandName Test-NinjaOneEndpointSupport -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('preflight failure')
+			}
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('outer-put-delegated')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				{ New-NinjaOnePUTRequest -Resource '/v2/organizations/1' -Body @{ name = 'test' } } | Should -Throw '*preflight failure*'
+			}
+
+			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 0
 		}
 	}
 }
