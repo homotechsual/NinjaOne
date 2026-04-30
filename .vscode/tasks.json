@@ -54,6 +54,29 @@
       "problemMatcher": []
     },
     {
+      "label": "Show Coverage Summary",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\DevOps\\Quality\\show-coverage.ps1"],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Show Coverage Detail",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-File",
+        ".\\DevOps\\Quality\\show-coverage.ps1",
+        "-Detail",
+        "Full"
+      ],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
       "label": "Generate Codecov Config",
       "type": "shell",
       "command": "pwsh",
