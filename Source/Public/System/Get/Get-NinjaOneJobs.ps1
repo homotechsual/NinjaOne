@@ -82,7 +82,6 @@ function Get-NinjaOneJobs {
 			$RequestParams = @{
 				Resource = $Resource
 				QSCollection = $QSCollection
-				NoDrill = $True
 			}
 			if ($parseDateTime) {
 				$RequestParams.ParseDateTime = $parseDateTime

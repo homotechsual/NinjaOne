@@ -314,3 +314,213 @@ Describe 'Get-NinjaOneUsers' {
 # - Test error scenarios comprehensively across all functions
 # - Implement performance benchmarking for large dataset handling
 #
+
+Describe 'Get-NinjaOneAlerts' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@(
+				[pscustomobject]@{ uid = 'alert-1'; message = 'CPU high' }
+			)
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'uses the global alerts endpoint when deviceId is not supplied' {
+		$result = Get-NinjaOneAlerts
+
+		@($result).Count | Should -Be 1
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/alerts'
+		}
+	}
+
+	It 'uses the device alerts endpoint when deviceId is supplied' {
+		$result = Get-NinjaOneAlerts -deviceId 42
+
+		@($result).Count | Should -Be 1
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/device/42/alerts'
+		}
+	}
+
+	It 'passes sourceType as a query string parameter' {
+		Get-NinjaOneAlerts -sourceType 'CONDITION_CUSTOM_FIELD'
+
+		Assert-MockCalled -CommandName New-NinjaOneQuery -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Parameters.ContainsKey('sourceType')
+		}
+	}
+
+	It 'passes parseDateTime through to the GET request' {
+		Get-NinjaOneAlerts -parseDateTime
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$ParseDateTime -eq $true
+		}
+	}
+
+	It 'delegates no-result global failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { throw 'Not found' }
+
+		{ Get-NinjaOneAlerts } | Should -Throw '*No alerts found*'
+
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+
+	It 'delegates no-result device failures to New-NinjaOneError with device id' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { throw 'Not found' }
+
+		{ Get-NinjaOneAlerts -deviceId 7 } | Should -Throw '*No alerts found for device 7*'
+
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Get-NinjaOneJobs' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@(
+				[pscustomobject]@{ id = 1001; type = 'SOFTWARE_PATCH_MANAGEMENT'; status = 'COMPLETED' }
+			)
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'uses the global jobs endpoint when deviceId is not supplied' {
+		$result = Get-NinjaOneJobs
+
+		@($result).Count | Should -Be 1
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/jobs'
+		}
+	}
+
+	It 'uses the device jobs endpoint when deviceId is supplied' {
+		$result = Get-NinjaOneJobs -deviceId 5
+
+		@($result).Count | Should -Be 1
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/device/5/jobs'
+		}
+	}
+
+	It 'passes jobType as a query string parameter' {
+		Get-NinjaOneJobs -jobType 'SOFTWARE_PATCH_MANAGEMENT'
+
+		Assert-MockCalled -CommandName New-NinjaOneQuery -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Parameters.ContainsKey('jobType')
+		}
+	}
+
+	It 'passes parseDateTime through to the GET request' {
+		Get-NinjaOneJobs -parseDateTime
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$ParseDateTime -eq $true
+		}
+	}
+
+	It 'delegates no-result global failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneJobs } | Should -Throw '*No jobs found*'
+
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+
+	It 'delegates no-result device failures to New-NinjaOneError with device id' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneJobs -deviceId 5 } | Should -Throw '*No jobs found for device 5*'
+
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Get-NinjaOneSoftwareInventory' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@(
+				[pscustomobject]@{ id = 1; name = 'Microsoft Teams'; version = '1.6.0' }
+			)
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'always uses the software query endpoint' {
+		$result = Get-NinjaOneSoftwareInventory
+
+		@($result).Count | Should -Be 1
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/queries/software'
+		}
+	}
+
+	It 'passes deviceFilter as a query string parameter' {
+		Get-NinjaOneSoftwareInventory -deviceFilter 'org = 1'
+
+		Assert-MockCalled -CommandName New-NinjaOneQuery -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Parameters.ContainsKey('deviceFilter')
+		}
+	}
+
+	It 'converts installedBefore DateTime to Unix epoch before querying' {
+		$dt = [datetime]'2024-05-01T00:00:00Z'
+		Get-NinjaOneSoftwareInventory -installedBefore $dt
+
+		Assert-MockCalled -CommandName New-NinjaOneQuery -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Parameters.ContainsKey('installedBefore')
+		}
+	}
+
+	It 'converts installedAfter DateTime to Unix epoch before querying' {
+		$dt = [datetime]'2024-01-01T00:00:00Z'
+		Get-NinjaOneSoftwareInventory -installedAfter $dt
+
+		Assert-MockCalled -CommandName New-NinjaOneQuery -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Parameters.ContainsKey('installedAfter')
+		}
+	}
+
+	It 'removes installedBeforeUnixEpoch from parameters and promotes to installedBefore' {
+		Get-NinjaOneSoftwareInventory -installedBeforeUnixEpoch 1619712000
+
+		Assert-MockCalled -CommandName New-NinjaOneQuery -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			(-not $Parameters.ContainsKey('installedBeforeUnixEpoch')) -and $Parameters.ContainsKey('installedBefore')
+		}
+	}
+
+	It 'removes installedAfterUnixEpoch from parameters and promotes to installedAfter' {
+		Get-NinjaOneSoftwareInventory -installedAfterUnixEpoch 1619712000
+
+		Assert-MockCalled -CommandName New-NinjaOneQuery -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			(-not $Parameters.ContainsKey('installedAfterUnixEpoch')) -and $Parameters.ContainsKey('installedAfter')
+		}
+	}
+
+	It 'delegates no-result failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneSoftwareInventory } | Should -Throw '*No software inventory found*'
+
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
