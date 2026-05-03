@@ -1652,7 +1652,6 @@ Describe 'New-NinjaOnePOSTRequest' {
 			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
 		}
 
-
 		It 'should fall back to standard request path when multipart detection returns false' {
 			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
 				@{ result = @{ ok = $true } }
@@ -1970,6 +1969,57 @@ Describe 'New-NinjaOneQuery' {
 				$query | Should -Match 'name=Contoso'
 			}
 		}
+
+		It 'should use the parameter name for integer parameters without aliases' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$PageSize = 25
+				$parameters = @{
+					PageSize = [pscustomobject]@{
+						Name = 'PageSize'
+						ParameterType = [pscustomobject]@{ Name = 'Int32' }
+						Aliases = @()
+					}
+				}
+
+				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters
+				$result['PageSize'] | Should -Be 25
+			}
+		}
+
+		It 'should add a single DateTime value directly to the query string' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$Since = [datetime]'2026-03-15T00:00:00Z'
+				$parameters = @{
+					Since = [pscustomobject]@{
+						Name = 'Since'
+						ParameterType = [pscustomobject]@{ Name = 'DateTime' }
+						Aliases = @('since')
+					}
+				}
+
+				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters
+				$result['since'] | Should -Not -BeNullOrEmpty
+			}
+		}
+
+		It 'should use the alias for switch parameters with aliases when set to true' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$IncludeDetails = $true
+				$parameters = @{
+					IncludeDetails = [pscustomobject]@{
+						Name = 'IncludeDetails'
+						ParameterType = [pscustomobject]@{ Name = 'SwitchParameter' }
+						Aliases = @('details')
+					}
+				}
+
+				$result = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters
+				$result['details'] | Should -Be 'true'
+			}
+		}
 	}
 }
 
@@ -2198,6 +2248,14 @@ Describe 'Update-NinjaOneToken' {
 				$script:NRAPIAuthenticationInformation | Should -Not -BeNullOrEmpty
 				$script:NRAPIConnectionInformation.VaultName = 'TestVault'
 				{ Update-NinjaOneToken -ErrorAction SilentlyContinue } | Should -Not -Throw
+			}
+		}
+
+		It 'should throw when neither client credentials nor refresh token is available' {
+			InModuleScope $ModuleName {
+				$script:NRAPIConnectionInformation.AuthMode = 'OAuth'
+				$script:NRAPIAuthenticationInformation.Refresh = $null
+				{ Update-NinjaOneToken } | Should -Throw
 			}
 		}
 	}
@@ -2837,6 +2895,15 @@ Describe 'Invoke-NinjaOnePreFlightCheck' {
 				{ Invoke-NinjaOnePreFlightCheck } | Should -Throw
 			}
 		}
+
+		It 'should skip connection checks when skipConnectionChecks is set' {
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation = $null
+				$script:NRAPIAuthToken = $null
+				{ Invoke-NinjaOnePreFlightCheck -SkipConnectionChecks } | Should -Not -Throw
+			}
+		}
 	}
 }
 
@@ -3092,6 +3159,16 @@ paths:
 				$result | Should -BeTrue
 			}
 		}
+
+		It 'should return true when instance capabilities cannot be retrieved' {
+			Mock -CommandName Get-NinjaOneInstanceCapabilitiesInternal -ModuleName $ModuleName -MockWith { $null }
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = Test-NinjaOneEndpointSupport -Method 'GET' -Resource '/v2/devices'
+				$result | Should -BeTrue
+			}
+		}
 	}
 
 	Context 'Spec path and method matching' {
@@ -3172,6 +3249,97 @@ paths:
 				$methods = [System.Collections.Generic.HashSet[string]]::new()
 				$null = $methods.Add('GET')
 				$paths['/v2/devices'] = $methods
+				return [pscustomobject]@{ Paths = $paths; Version = '1.0.0' }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				{ Test-NinjaOneEndpointSupport -Method 'POST' -Resource '/v2/not-supported' } | Should -Throw '*not listed in the NinjaOne API spec*'
+			}
+		}
+
+		It 'should throw with matched path info when method is not supported on a known path and refresh removes the path' {
+			Mock -CommandName Get-NinjaOneInstanceCapabilitiesInternal -ModuleName $ModuleName -MockWith {
+				param($BaseUrl, [switch]$Force)
+				$paths = @{}
+				if ($Force) {
+					# Refresh returns a different path entirely — /v2/devices is gone
+					$methods = [System.Collections.Generic.HashSet[string]]::new()
+					$null = $methods.Add('GET')
+					$paths['/v2/tickets'] = $methods
+				} else {
+					# Initial call has /v2/devices with only GET
+					$methods = [System.Collections.Generic.HashSet[string]]::new()
+					$null = $methods.Add('GET')
+					$paths['/v2/devices'] = $methods
+				}
+				return [pscustomobject]@{ Paths = $paths; Version = '1.0.0' }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				{ Test-NinjaOneEndpointSupport -Method 'DELETE' -Resource '/v2/devices' } | Should -Throw '*not listed in the NinjaOne API spec*'
+			}
+		}
+
+		It 'should return true after refresh when refreshed path has unknown methods' {
+			Mock -CommandName Get-NinjaOneInstanceCapabilitiesInternal -ModuleName $ModuleName -MockWith {
+				param($BaseUrl, [switch]$Force)
+				$paths = @{}
+				if ($Force) {
+					# Refresh returns path with empty methods (unknown)
+					$paths['/v2/devices/{id}'] = [System.Collections.Generic.HashSet[string]]::new()
+				}
+				# Initial call returns no paths
+				return [pscustomobject]@{ Paths = $paths; Version = '1.0.0' }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = Test-NinjaOneEndpointSupport -Method 'PATCH' -Resource '/v2/devices/42'
+				$result | Should -BeTrue
+			}
+		}
+		It 'should return true via fallback when method not confirmed but path matches spec' {
+			Mock -CommandName Get-NinjaOneInstanceCapabilitiesInternal -ModuleName $ModuleName -MockWith {
+				$paths = @{}
+				$methods = [System.Collections.Generic.HashSet[string]]::new()
+				$null = $methods.Add('DELETE')
+				$null = $methods.Add('PATCH')
+				$paths['/v2/devices/{id}'] = $methods
+				return [pscustomobject]@{ Paths = $paths; Version = '1.0.0' }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = Test-NinjaOneEndpointSupport -Method 'GET' -Resource '/v2/devices/42'
+				$result | Should -BeTrue
+			}
+		}
+
+		It 'should throw using the raw base URL as instance host when base URL is not a valid URI' {
+			Mock -CommandName Get-NinjaOneInstanceCapabilitiesInternal -ModuleName $ModuleName -MockWith {
+				$paths = @{}
+				$methods = [System.Collections.Generic.HashSet[string]]::new()
+				$null = $methods.Add('GET')
+				$paths['/v2/devices'] = $methods
+				return [pscustomobject]@{ Paths = $paths; Version = '1.0.0' }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation = @{ URL = 'https://ninjarmm.com:abc/' }
+				{ Test-NinjaOneEndpointSupport -Method 'POST' -Resource '/v2/not-supported' } | Should -Throw '*not listed in the NinjaOne API spec*'
+			}
+		}
+
+		It 'should include organization custom-fields candidate paths in the throw message' {
+			Mock -CommandName Get-NinjaOneInstanceCapabilitiesInternal -ModuleName $ModuleName -MockWith {
+				$paths = @{}
+				$methods = [System.Collections.Generic.HashSet[string]]::new()
+				$null = $methods.Add('GET')
+				$paths['/v2/organization/{id}/custom-fields'] = $methods
+				$paths['/v2/tickets'] = $methods
 				return [pscustomobject]@{ Paths = $paths; Version = '1.0.0' }
 			}
 
