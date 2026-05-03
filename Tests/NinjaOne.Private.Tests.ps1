@@ -1699,6 +1699,166 @@ Describe 'New-NinjaOnePOSTRequest' {
 
 			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 0
 		}
+
+		It 'should propagate HttpResponseException from inner try without delegation' {
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				$ex = [Microsoft.PowerShell.Commands.HttpResponseException]::new('http error', [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]::BadRequest))
+				throw $ex
+			}
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				{ New-NinjaOnePOSTRequest -Resource '/v2/organizations' } | Should -Throw '*http error*'
+			}
+
+			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 0
+		}
+
+		It 'should propagate outer HttpResponseException without delegation' {
+			Mock -CommandName Test-NinjaOneEndpointSupport -ModuleName $ModuleName -MockWith {
+				$ex = [Microsoft.PowerShell.Commands.HttpResponseException]::new('outer http error', [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]::Unauthorized))
+				throw $ex
+			}
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				{ New-NinjaOnePOSTRequest -Resource '/v2/organizations' } | Should -Throw '*outer http error*'
+			}
+
+			Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 0
+		}
+	}
+
+	Context 'Multipart file handling' {
+		It 'should cover Add-FilePart via string file path body property' {
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('file-path-delegated')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation.URL = 'https://127.0.0.1:1'
+				$tmpFile = [System.IO.Path]::GetTempFileName()
+				try {
+					$body = @{ attachment = $tmpFile }
+					{ New-NinjaOnePOSTRequest -Resource '/v2/organizations' -Body $body -UseMultipart } | Should -Throw '*file-path-delegated*'
+				} finally {
+					Remove-Item $tmpFile -Force -ErrorAction SilentlyContinue
+				}
+			}
+		}
+
+		It 'should cover Add-FilePart via FileInfo body property' {
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('fileinfo-prop-delegated')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation.URL = 'https://127.0.0.1:1'
+				$tmpFile = [System.IO.Path]::GetTempFileName()
+				try {
+					$fileItem = [System.IO.FileInfo]::new($tmpFile)
+					$body = @{ attachment = $fileItem }
+					{ New-NinjaOnePOSTRequest -Resource '/v2/organizations' -Body $body -UseMultipart } | Should -Throw '*fileinfo-prop-delegated*'
+				} finally {
+					Remove-Item $tmpFile -Force -ErrorAction SilentlyContinue
+				}
+			}
+		}
+
+		It 'should cover Add-FilePart via FileInfo item in array property' {
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('fileinfo-array-delegated')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation.URL = 'https://127.0.0.1:1'
+				$tmpFile = [System.IO.Path]::GetTempFileName()
+				try {
+					$fileItem = [System.IO.FileInfo]::new($tmpFile)
+					$body = @{ files = @($fileItem) }
+					{ New-NinjaOnePOSTRequest -Resource '/v2/organizations' -Body $body -UseMultipart } | Should -Throw '*fileinfo-array-delegated*'
+				} finally {
+					Remove-Item $tmpFile -Force -ErrorAction SilentlyContinue
+				}
+			}
+		}
+
+		It 'should cover Add-FilePart via string file path item in array property' {
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('filepath-array-delegated')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation.URL = 'https://127.0.0.1:1'
+				$tmpFile = [System.IO.Path]::GetTempFileName()
+				try {
+					$body = @{ files = @($tmpFile) }
+					{ New-NinjaOnePOSTRequest -Resource '/v2/organizations' -Body $body -UseMultipart } | Should -Throw '*filepath-array-delegated*'
+				} finally {
+					Remove-Item $tmpFile -Force -ErrorAction SilentlyContinue
+				}
+			}
+		}
+
+		It 'should cover null recursive detection in Test-NinjaOneMultipartBody via null array item' {
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('null-item-delegated')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation.URL = 'https://127.0.0.1:1'
+				$tmpFile = [System.IO.Path]::GetTempFileName()
+				try {
+					# Array with null item first: recursive Test-NinjaOneMultipartBody hits null-check (line 76)
+					$body = @{ files = @($null, $tmpFile) }
+					{ New-NinjaOnePOSTRequest -Resource '/v2/organizations' -Body $body -UseMultipart } | Should -Throw '*null-item-delegated*'
+				} finally {
+					Remove-Item $tmpFile -Force -ErrorAction SilentlyContinue
+				}
+			}
+		}
+
+		It 'should cover HttpContent recursive detection in Test-NinjaOneMultipartBody' {
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('httpcontent-recursive-delegated')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation.URL = 'https://127.0.0.1:1'
+				# Array item is HttpContent: recursive call hits HttpContent check (line 77)
+				$contentItem = [System.Net.Http.StringContent]::new('data', [System.Text.Encoding]::UTF8, 'text/plain')
+				$body = @{ files = @($contentItem) }
+				{ New-NinjaOnePOSTRequest -Resource '/v2/organizations' -Body $body -UseMultipart } | Should -Throw '*httpcontent-recursive-delegated*'
+			}
+		}
+
+		It 'should cover FileInfo recursive detection in Test-NinjaOneMultipartBody' {
+			Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+				throw [System.Exception]::new('fileinfo-recursive-delegated')
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$script:NRAPIConnectionInformation.URL = 'https://127.0.0.1:1'
+				$tmpFile = [System.IO.Path]::GetTempFileName()
+				try {
+					# Array item is FileInfo: recursive call hits FileInfo check (line 78)
+					$fileItem = [System.IO.FileInfo]::new($tmpFile)
+					$body = @{ files = @($fileItem) }
+					{ New-NinjaOnePOSTRequest -Resource '/v2/organizations' -Body $body -UseMultipart } | Should -Throw '*fileinfo-recursive-delegated*'
+				} finally {
+					Remove-Item $tmpFile -Force -ErrorAction SilentlyContinue
+				}
+			}
+		}
 	}
 }
 
