@@ -1003,3 +1003,100 @@ Describe 'Get-NinjaOnePolicies' {
 		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
 	}
 }
+
+Describe 'Get-NinjaOneRoles' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ id = 1; name = 'Server' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'uses the roles endpoint' {
+		$null = Get-NinjaOneRoles
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/roles'
+		}
+	}
+
+	It 'delegates no-result failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneRoles } | Should -Throw '*No roles found*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Get-NinjaOneTasks' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ id = 1; name = 'Daily Health Check' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'uses the tasks endpoint' {
+		$null = Get-NinjaOneTasks
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/tasks'
+		}
+	}
+
+	It 'delegates no-result failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneTasks } | Should -Throw '*No tasks found*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Get-NinjaOneNotificationChannels' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ id = 1; name = 'Email' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'uses the notification channels endpoint by default' {
+		$null = Get-NinjaOneNotificationChannels
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/notification-channels'
+		}
+	}
+
+	It 'uses the enabled notification channels endpoint when -enabled is supplied' {
+		$null = Get-NinjaOneNotificationChannels -enabled
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/notification-channels/enabled'
+		}
+	}
+
+	It 'delegates upstream request failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			throw 'notification-request-failed'
+		}
+
+		{ Get-NinjaOneNotificationChannels } | Should -Throw '*No notification channels found*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
