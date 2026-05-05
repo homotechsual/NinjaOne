@@ -10,7 +10,7 @@ param(
 	[hashtable]$MinimumLineCoverageBySuite = @{
 		core = 3
 		private = 15
-		public = 10
+		public = 15
 		docs = 0
 	},
 	[ValidateSet('Detailed', 'Normal', 'Minimal', 'None')]
