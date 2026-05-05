@@ -123,6 +123,96 @@ Describe 'Public Query Functions - Contract Matrix' {
 			ExpectedRemovedQueryKey = $null
 			ExpectedError = 'No backup usage found.'
 		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneComputerSystems endpoint and timestamp unix promotion'
+			InvokeSuccess = { Get-NinjaOneComputerSystems }
+			InvokeQuery = { Get-NinjaOneComputerSystems -timeStampUnixEpoch 1619712000 }
+			ExpectedResource = 'v2/queries/computer-systems'
+			ExpectedQueryKey = 'timeStamp'
+			ExpectedRemovedQueryKey = 'timeStampUnixEpoch'
+			ExpectedError = 'No computer systems found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneDeviceHealth endpoint and health query'
+			InvokeSuccess = { Get-NinjaOneDeviceHealth }
+			InvokeQuery = { Get-NinjaOneDeviceHealth -health 'UNHEALTHY' }
+			ExpectedResource = 'v2/queries/device-health'
+			ExpectedQueryKey = 'health'
+			ExpectedRemovedQueryKey = $null
+			ExpectedError = 'No device health found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneDisks endpoint and timestamp unix promotion'
+			InvokeSuccess = { Get-NinjaOneDisks }
+			InvokeQuery = { Get-NinjaOneDisks -timeStampUnixEpoch 1619712000 }
+			ExpectedResource = 'v2/queries/disks'
+			ExpectedQueryKey = 'timeStamp'
+			ExpectedRemovedQueryKey = 'timeStampUnixEpoch'
+			ExpectedError = 'No disks found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneLoggedOnUsers endpoint and deviceFilter query'
+			InvokeSuccess = { Get-NinjaOneLoggedOnUsers }
+			InvokeQuery = { Get-NinjaOneLoggedOnUsers -deviceFilter 'org = 1' }
+			ExpectedResource = 'v2/queries/logged-on-users'
+			ExpectedQueryKey = 'deviceFilter'
+			ExpectedRemovedQueryKey = $null
+			ExpectedError = 'No logged on users found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneNetworkInterfaces endpoint and deviceFilter query'
+			InvokeSuccess = { Get-NinjaOneNetworkInterfaces }
+			InvokeQuery = { Get-NinjaOneNetworkInterfaces -deviceFilter 'org = 1' }
+			ExpectedResource = 'v2/queries/network-interfaces'
+			ExpectedQueryKey = 'deviceFilter'
+			ExpectedRemovedQueryKey = $null
+			ExpectedError = 'No network interfaces found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneOperatingSystems endpoint and timestamp unix promotion'
+			InvokeSuccess = { Get-NinjaOneOperatingSystems }
+			InvokeQuery = { Get-NinjaOneOperatingSystems -timeStampUnixEpoch 1619712000 }
+			ExpectedResource = 'v2/queries/operating-systems'
+			ExpectedQueryKey = 'timeStamp'
+			ExpectedRemovedQueryKey = 'timeStampUnixEpoch'
+			ExpectedError = 'No operating systems found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneProcessors endpoint and timestamp unix promotion'
+			InvokeSuccess = { Get-NinjaOneProcessors }
+			InvokeQuery = { Get-NinjaOneProcessors -timeStampUnixEpoch 1619712000 }
+			ExpectedResource = 'v2/queries/processors'
+			ExpectedQueryKey = 'timeStamp'
+			ExpectedRemovedQueryKey = 'timeStampUnixEpoch'
+			ExpectedError = 'No processors found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneVolumes endpoint and timestamp unix promotion'
+			InvokeSuccess = { Get-NinjaOneVolumes }
+			InvokeQuery = { Get-NinjaOneVolumes -timeStampUnixEpoch 1619712000 }
+			ExpectedResource = 'v2/queries/volumes'
+			ExpectedQueryKey = 'timeStamp'
+			ExpectedRemovedQueryKey = 'timeStampUnixEpoch'
+			ExpectedError = 'No volumes found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneRAIDControllers endpoint and timestamp unix promotion'
+			InvokeSuccess = { Get-NinjaOneRAIDControllers }
+			InvokeQuery = { Get-NinjaOneRAIDControllers -timeStampUnixEpoch 1619712000 }
+			ExpectedResource = 'v2/queries/raid-controllers'
+			ExpectedQueryKey = 'timeStamp'
+			ExpectedRemovedQueryKey = 'timeStampUnixEpoch'
+			ExpectedError = 'No RAID controllers found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneRAIDDrives endpoint and timestamp unix promotion'
+			InvokeSuccess = { Get-NinjaOneRAIDDrives }
+			InvokeQuery = { Get-NinjaOneRAIDDrives -timeStampUnixEpoch 1619712000 }
+			ExpectedResource = 'v2/queries/raid-drives'
+			ExpectedQueryKey = 'timeStamp'
+			ExpectedRemovedQueryKey = 'timeStampUnixEpoch'
+			ExpectedError = 'No RAID drives found.'
+		}
 	)
 
 	It 'returns data and calls expected resource for <Name>' -ForEach $ContractCases {
