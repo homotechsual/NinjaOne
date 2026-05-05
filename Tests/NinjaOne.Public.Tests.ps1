@@ -59,6 +59,105 @@ Describe 'Public Query Functions - Existence Tests' {
 	}
 }
 
+Describe 'Public Query Functions - Contract Matrix' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@(
+				[pscustomobject]@{
+					id = 1
+				}
+			)
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	$ContractCases = @(
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneCustomFields default endpoint and fields query'
+			InvokeSuccess = { Get-NinjaOneCustomFields }
+			InvokeQuery = { Get-NinjaOneCustomFields -fields @('hasBatteries', 'autopilotHwid') }
+			ExpectedResource = 'v2/queries/custom-fields'
+			ExpectedQueryKey = 'fields'
+			ExpectedRemovedQueryKey = $null
+			ExpectedError = 'No custom fields found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneCustomFields scoped detailed endpoint and scopes query'
+			InvokeSuccess = { Get-NinjaOneCustomFields -scopes 'NODE' -detailed }
+			InvokeQuery = { Get-NinjaOneCustomFields -scopes 'NODE' -detailed }
+			ExpectedResource = 'v2/queries/scoped-custom-fields-detailed'
+			ExpectedQueryKey = 'scopes'
+			ExpectedRemovedQueryKey = 'detailed'
+			ExpectedError = 'No custom fields found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneAntivirusStatus endpoint and timestamp unix promotion'
+			InvokeSuccess = { Get-NinjaOneAntivirusStatus }
+			InvokeQuery = { Get-NinjaOneAntivirusStatus -timeStampUnixEpoch 1619712000 }
+			ExpectedResource = 'v2/queries/antivirus-status'
+			ExpectedQueryKey = 'timeStamp'
+			ExpectedRemovedQueryKey = 'timeStampUnixEpoch'
+			ExpectedError = 'No antivirus status found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneAntivirusThreats endpoint and timestamp unix promotion'
+			InvokeSuccess = { Get-NinjaOneAntivirusThreats }
+			InvokeQuery = { Get-NinjaOneAntivirusThreats -timeStampUnixEpoch 1619712000 }
+			ExpectedResource = 'v2/queries/antivirus-threats'
+			ExpectedQueryKey = 'timeStamp'
+			ExpectedRemovedQueryKey = 'timeStampUnixEpoch'
+			ExpectedError = 'No antivirus threats found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneDeviceBackupUsage endpoint and includeDeleted query'
+			InvokeSuccess = { Get-NinjaOneDeviceBackupUsage }
+			InvokeQuery = { Get-NinjaOneDeviceBackupUsage -includeDeleted }
+			ExpectedResource = 'v2/queries/backup/usage'
+			ExpectedQueryKey = 'includeDeleted'
+			ExpectedRemovedQueryKey = $null
+			ExpectedError = 'No backup usage found.'
+		}
+	)
+
+	It 'returns data and calls expected resource for <Name>' -ForEach $ContractCases {
+		$result = & $PSItem.InvokeSuccess
+
+		@($result).Count | Should -Be 1
+		$result[0].id | Should -Be 1
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq $PSItem.ExpectedResource
+		}
+	}
+
+	It 'builds expected query keys for <Name>' -ForEach $ContractCases {
+		$null = & $PSItem.InvokeQuery
+
+		Assert-MockCalled -CommandName New-NinjaOneQuery -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$HasExpected = $Parameters.ContainsKey($PSItem.ExpectedQueryKey)
+			if ([string]::IsNullOrWhiteSpace($PSItem.ExpectedRemovedQueryKey)) {
+				return $HasExpected
+			}
+
+			return $HasExpected -and (-not $Parameters.ContainsKey($PSItem.ExpectedRemovedQueryKey))
+		}
+	}
+
+	It 'delegates no-result errors for <Name>' -ForEach $ContractCases {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			$null
+		}
+
+		{ & $PSItem.InvokeSuccess } | Should -Throw ('*{0}*' -f $PSItem.ExpectedError)
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
 Describe 'New-NinjaOneTicketComment' {
 	It 'wraps a simple comment object in a multipart envelope' {
 		$module = Get-Module -Name 'NinjaOne' | Select-Object -First 1
