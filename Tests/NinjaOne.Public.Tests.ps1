@@ -213,6 +213,60 @@ Describe 'Public Query Functions - Contract Matrix' {
 			ExpectedRemovedQueryKey = 'timeStampUnixEpoch'
 			ExpectedError = 'No RAID drives found.'
 		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneOSPatches endpoint and timestamp unix promotion'
+			InvokeSuccess = { Get-NinjaOneOSPatches }
+			InvokeQuery = { Get-NinjaOneOSPatches -timeStampUnixEpoch 1619712000 }
+			ExpectedResource = 'v2/queries/os-patches'
+			ExpectedQueryKey = 'timeStamp'
+			ExpectedRemovedQueryKey = 'timeStampUnixEpoch'
+			ExpectedError = 'No OS patches found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneOSPatchInstalls endpoint and installedBefore unix promotion'
+			InvokeSuccess = { Get-NinjaOneOSPatchInstalls }
+			InvokeQuery = { Get-NinjaOneOSPatchInstalls -installedBeforeUnixEpoch 1619712000 }
+			ExpectedResource = 'v2/queries/os-patch-installs'
+			ExpectedQueryKey = 'installedBefore'
+			ExpectedRemovedQueryKey = 'installedBeforeUnixEpoch'
+			ExpectedError = 'No OS patch installs found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOnePolicyOverrides endpoint and deviceFilter query'
+			InvokeSuccess = { Get-NinjaOnePolicyOverrides }
+			InvokeQuery = { Get-NinjaOnePolicyOverrides -deviceFilter 'org = 1' }
+			ExpectedResource = 'v2/queries/policy-overrides'
+			ExpectedQueryKey = 'deviceFilter'
+			ExpectedRemovedQueryKey = $null
+			ExpectedError = 'No policy overrides found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneSoftwarePatches endpoint and timestamp unix promotion'
+			InvokeSuccess = { Get-NinjaOneSoftwarePatches }
+			InvokeQuery = { Get-NinjaOneSoftwarePatches -timeStampUnixEpoch 1619712000 }
+			ExpectedResource = 'v2/queries/software-patches'
+			ExpectedQueryKey = 'timeStamp'
+			ExpectedRemovedQueryKey = 'timeStampUnixEpoch'
+			ExpectedError = 'No software patches found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneSoftwarePatchInstalls endpoint and installedAfter unix promotion'
+			InvokeSuccess = { Get-NinjaOneSoftwarePatchInstalls }
+			InvokeQuery = { Get-NinjaOneSoftwarePatchInstalls -installedAfterUnixEpoch 1619712000 }
+			ExpectedResource = 'v2/queries/software-patch-installs'
+			ExpectedQueryKey = 'installedAfter'
+			ExpectedRemovedQueryKey = 'installedAfterUnixEpoch'
+			ExpectedError = 'No software patch installs found.'
+		}
+		[pscustomobject]@{
+			Name = 'Get-NinjaOneWindowsServices endpoint and state query'
+			InvokeSuccess = { Get-NinjaOneWindowsServices }
+			InvokeQuery = { Get-NinjaOneWindowsServices -state 'RUNNING' }
+			ExpectedResource = 'v2/queries/windows-services'
+			ExpectedQueryKey = 'state'
+			ExpectedRemovedQueryKey = $null
+			ExpectedError = 'No windows services found.'
+		}
 	)
 
 	It 'returns data and calls expected resource for <Name>' -ForEach $ContractCases {
@@ -244,6 +298,15 @@ Describe 'Public Query Functions - Contract Matrix' {
 		}
 
 		{ & $PSItem.InvokeSuccess } | Should -Throw ('*{0}*' -f $PSItem.ExpectedError)
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+
+	It 'delegates upstream API exceptions for <Name>' -ForEach $ContractCases {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			throw [System.InvalidOperationException]::new('upstream-api-failure')
+		}
+
+		{ & $PSItem.InvokeSuccess } | Should -Throw '*upstream-api-failure*'
 		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
 	}
 }
