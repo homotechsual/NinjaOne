@@ -1277,3 +1277,71 @@ Describe 'Get-NinjaOneSystemContacts' {
 		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
 	}
 }
+
+Describe 'New-NinjaOneContact' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith {
+			param($Resource, $Body)
+			[pscustomobject]@{
+				resource = $Resource
+				body = $Body
+			}
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'posts contact payload to the contacts endpoint when confirmed' {
+		$payload = @{ firstName = 'Jane'; lastName = 'Doe'; email = 'jane@example.com' }
+		$result = New-NinjaOneContact -contact $payload -Confirm:$false
+
+		$result.resource | Should -Be 'v2/contacts'
+		$result.body.firstName | Should -Be 'Jane'
+		Assert-MockCalled -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/contacts'
+		}
+	}
+
+	It 'delegates POST failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { throw 'create-contact-failed' }
+
+		{ New-NinjaOneContact -contact @{ firstName = 'Jane' } -Confirm:$false } | Should -Throw '*create-contact-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Set-NinjaOneContact' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -MockWith {
+			param($Resource, $Body)
+			[pscustomobject]@{
+				resource = $Resource
+				body = $Body
+			}
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'patches contact payload to the specific contact endpoint when confirmed' {
+		$payload = @{ phone = '+3100000000' }
+		$result = Set-NinjaOneContact -id 123 -contact $payload -Confirm:$false
+
+		$result.resource | Should -Be 'v2/contact/123'
+		$result.body.phone | Should -Be '+3100000000'
+		Assert-MockCalled -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/contact/123'
+		}
+	}
+
+	It 'delegates PATCH failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -MockWith { throw 'update-contact-failed' }
+
+		{ Set-NinjaOneContact -id 123 -contact @{ phone = '+3100000000' } -Confirm:$false } | Should -Throw '*update-contact-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}

@@ -167,6 +167,7 @@ foreach ($testSuite in $selectedSuites) {
 }
 
 $coverageThresholdFailures = @()
+$coverageReadiness = @()
 foreach ($testSuite in $selectedSuites) {
 	if (-not $MinimumLineCoverageBySuite.ContainsKey($testSuite.Name)) {
 		continue
@@ -204,8 +205,21 @@ foreach ($testSuite in $selectedSuites) {
 		0
 	}
 	$minimum = [double]$MinimumLineCoverageBySuite[$testSuite.Name]
+	$nextTarget = [double](([math]::Floor($linePct / 5) * 5) + 5)
+	$toNextTarget = [math]::Round([math]::Max($nextTarget - $linePct, 0), 2)
+	$gateHeadroom = [math]::Round($linePct - $minimum, 2)
 
 	Write-Host ('Coverage gate [{0}] line coverage {1}% (minimum {2}%)' -f $testSuite.Name, $linePct, $minimum) -ForegroundColor Cyan
+	Write-Host ('Coverage readiness [{0}] next 5% target {1}% (needs +{2}%, gate headroom {3}%)' -f $testSuite.Name, $nextTarget, $toNextTarget, $gateHeadroom) -ForegroundColor DarkCyan
+
+	$coverageReadiness += [pscustomobject]@{
+		Suite = $testSuite.Name
+		'Line %' = $linePct
+		Minimum = $minimum
+		'Next 5% Target' = $nextTarget
+		'To Next %' = $toNextTarget
+		'Gate Headroom %' = $gateHeadroom
+	}
 
 	if ($linePct -lt $minimum) {
 		$coverageThresholdFailures += [pscustomobject]@{
@@ -221,6 +235,11 @@ if ($coverageThresholdFailures.Count -gt 0) {
 	Write-Host "`n=== Coverage Gate Failures ===" -ForegroundColor Red
 	$coverageThresholdFailures | Format-Table -AutoSize | Out-String | Write-Host
 	throw ('Coverage thresholds failed for suite(s): {0}' -f (($coverageThresholdFailures.Suite | Sort-Object -Unique) -join ', '))
+}
+
+if ($coverageReadiness.Count -gt 0) {
+	Write-Host "`n=== Coverage Readiness (Next 5% Targets) ===" -ForegroundColor Cyan
+	$coverageReadiness | Sort-Object Suite | Format-Table -AutoSize | Out-String | Write-Host
 }
 
 Write-Host "`n=== Test Results Summary ===" -ForegroundColor Cyan
