@@ -7,6 +7,257 @@ if ([string]::IsNullOrWhiteSpace($ModulePath)) {
 	$ModulePath = Get-ChildItem -Path ('{0}\Output\{1}\*\{1}.psd1' -f $RepoRoot, $ModuleName) -ErrorAction Stop | Select-Object -Last 1 -ExpandProperty FullName
 }
 
+Describe 'Set-NinjaOneOrganisation' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -MockWith { return 204 }
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls PATCH /v2/organization/{id} with the supplied body' {
+		Set-NinjaOneOrganisation -organisationId 7 -organisationInformation @{ name = 'Acme' } -Confirm:$false
+		Assert-MockCalled -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/organization/7'
+		}
+	}
+
+	It 'writes an information message on 204' {
+		{ Set-NinjaOneOrganisation -organisationId 7 -organisationInformation @{ name = 'Acme' } -Confirm:$false } | Should -Not -Throw
+	}
+
+	It 'delegates PATCH failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -MockWith { throw 'org-patch-failed' }
+		{ Set-NinjaOneOrganisation -organisationId 7 -organisationInformation @{ name = 'X' } -Confirm:$false } | Should -Throw '*org-patch-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Set-NinjaOneLocation' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -MockWith { return 204 }
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls PATCH /v2/organization/{id}/locations/{locationId} with the supplied body' {
+		Set-NinjaOneLocation -organisationId 3 -locationId 9 -locationInformation @{ name = 'HQ' } -Confirm:$false
+		Assert-MockCalled -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/organization/3/locations/9'
+		}
+	}
+
+	It 'writes an information message on 204' {
+		{ Set-NinjaOneLocation -organisationId 3 -locationId 9 -locationInformation @{ name = 'HQ' } -Confirm:$false } | Should -Not -Throw
+	}
+
+	It 'delegates PATCH failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -MockWith { throw 'location-patch-failed' }
+		{ Set-NinjaOneLocation -organisationId 3 -locationId 9 -locationInformation @{ name = 'X' } -Confirm:$false } | Should -Throw '*location-patch-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Set-NinjaOneDevice' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -MockWith { return 204 }
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls PATCH /v2/device/{id} with the supplied body' {
+		Set-NinjaOneDevice -deviceId 42 -deviceInformation @{ displayName = 'WebServer01' } -Confirm:$false
+		Assert-MockCalled -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/device/42'
+		}
+	}
+
+	It 'writes an information message on 204' {
+		{ Set-NinjaOneDevice -deviceId 42 -deviceInformation @{ displayName = 'WebServer01' } -Confirm:$false } | Should -Not -Throw
+	}
+
+	It 'delegates PATCH failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -MockWith { throw 'device-patch-failed' }
+		{ Set-NinjaOneDevice -deviceId 42 -deviceInformation @{ displayName = 'X' } -Confirm:$false } | Should -Throw '*device-patch-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Set-NinjaOneOrganisationCustomFields' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -MockWith { return 204 }
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls PATCH /v2/organization/{id}/custom-fields with the supplied body' {
+		Set-NinjaOneOrganisationCustomFields -organisationId 5 -organisationCustomFields @{ field1 = 'val1' } -Confirm:$false
+		Assert-MockCalled -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/organization/5/custom-fields'
+		}
+	}
+
+	It 'writes an information message on 204' {
+		{ Set-NinjaOneOrganisationCustomFields -organisationId 5 -organisationCustomFields @{ f = 'v' } -Confirm:$false } | Should -Not -Throw
+	}
+
+	It 'delegates PATCH failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -MockWith { throw 'orgcf-patch-failed' }
+		{ Set-NinjaOneOrganisationCustomFields -organisationId 5 -organisationCustomFields @{ f = 'v' } -Confirm:$false } | Should -Throw '*orgcf-patch-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Set-NinjaOneDeviceCustomFields' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -MockWith { return 204 }
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls PATCH /v2/device/{id}/custom-fields with the supplied body' {
+		Set-NinjaOneDeviceCustomFields -deviceId 11 -deviceCustomFields @{ field1 = 'val1' } -Confirm:$false
+		Assert-MockCalled -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/device/11/custom-fields'
+		}
+	}
+
+	It 'writes an information message on 204' {
+		{ Set-NinjaOneDeviceCustomFields -deviceId 11 -deviceCustomFields @{ f = 'v' } -Confirm:$false } | Should -Not -Throw
+	}
+
+	It 'delegates PATCH failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -MockWith { throw 'devcf-patch-failed' }
+		{ Set-NinjaOneDeviceCustomFields -deviceId 11 -deviceCustomFields @{ f = 'v' } -Confirm:$false } | Should -Throw '*devcf-patch-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'New-NinjaOneTicket' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { return [PSCustomObject]@{ id = 99; subject = 'Test ticket' } }
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls POST /v2/ticketing/ticket with the ticket body' {
+		New-NinjaOneTicket -ticket @{ subject = 'Test' } -Confirm:$false
+		Assert-MockCalled -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/ticketing/ticket'
+		}
+	}
+
+	It 'returns the created ticket when -show is specified' {
+		$result = New-NinjaOneTicket -ticket @{ subject = 'Test' } -show -Confirm:$false
+		$result.id | Should -Be 99
+	}
+
+	It 'delegates POST failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { throw 'ticket-post-failed' }
+		{ New-NinjaOneTicket -ticket @{ subject = 'Test' } -Confirm:$false } | Should -Throw '*ticket-post-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Set-NinjaOneTicket' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOnePUTRequest -ModuleName $ModuleName -MockWith { return 204 }
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls PUT /v2/ticketing/ticket/{ticketId} with the ticket body' {
+		Set-NinjaOneTicket -ticketId 50 -ticket @{ subject = 'Updated' } -Confirm:$false
+		Assert-MockCalled -CommandName New-NinjaOnePUTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/ticketing/ticket/50'
+		}
+	}
+
+	It 'writes an information message on 204' {
+		{ Set-NinjaOneTicket -ticketId 50 -ticket @{ subject = 'Updated' } -Confirm:$false } | Should -Not -Throw
+	}
+
+	It 'delegates PUT failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePUTRequest -ModuleName $ModuleName -MockWith { throw 'ticket-put-failed' }
+		{ Set-NinjaOneTicket -ticketId 50 -ticket @{ subject = 'X' } -Confirm:$false } | Should -Throw '*ticket-put-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Set-NinjaOneDeviceApproval' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { return 204 }
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls POST /v2/devices/approval/APPROVE with the device id list' {
+		Set-NinjaOneDeviceApproval -mode 'APPROVE' -deviceIds @(1, 2) -Confirm:$false
+		Assert-MockCalled -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/devices/approval/APPROVE'
+		}
+	}
+
+	It 'calls POST /v2/devices/approval/REJECT for reject mode' {
+		Set-NinjaOneDeviceApproval -mode 'REJECT' -deviceIds @(3) -Confirm:$false
+		Assert-MockCalled -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/devices/approval/REJECT'
+		}
+	}
+
+	It 'delegates POST failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { throw 'approval-post-failed' }
+		{ Set-NinjaOneDeviceApproval -mode 'APPROVE' -deviceIds @(1) -Confirm:$false } | Should -Throw '*approval-post-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Set-NinjaOneOrganisationPolicies' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOnePUTRequest -ModuleName $ModuleName -MockWith { return 204 }
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls PUT /v2/organization/{id}/policies for Single parameter set' {
+		Set-NinjaOneOrganisationPolicies -organisationId 4 -nodeRoleId 10 -policyId 20 -Confirm:$false
+		Assert-MockCalled -CommandName New-NinjaOnePUTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/organization/4/policies'
+		}
+	}
+
+	It 'calls PUT /v2/organization/{id}/policies for Multiple parameter set' {
+		$assignments = @(@{ nodeRoleId = 10; policyId = 20 }, @{ nodeRoleId = 11; policyId = 21 })
+		Set-NinjaOneOrganisationPolicies -organisationId 4 -policyAssignments $assignments -Confirm:$false
+		Assert-MockCalled -CommandName New-NinjaOnePUTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/organization/4/policies'
+		}
+	}
+
+	It 'delegates PUT failures to New-NinjaOneError for Single parameter set' {
+		Mock -CommandName New-NinjaOnePUTRequest -ModuleName $ModuleName -MockWith { throw 'policies-put-failed' }
+		{ Set-NinjaOneOrganisationPolicies -organisationId 4 -nodeRoleId 10 -policyId 20 -Confirm:$false } | Should -Throw '*policies-put-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
 Get-Module -Name $ModuleName | Remove-Module -Force -ErrorAction SilentlyContinue
 Import-Module $ModulePath -Force
 
