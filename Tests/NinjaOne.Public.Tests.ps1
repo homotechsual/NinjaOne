@@ -821,6 +821,153 @@ Describe 'Get-NinjaOneDeviceSoftwarePatchInstalls' {
 	}
 }
 
+Describe 'New-NinjaOneDocumentTemplate' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith {
+			[pscustomobject]@{ id = 500; name = 'Template A' }
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls POST v2/document-templates with the expected body' {
+		$field = [pscustomobject]@{
+			fieldName = 'Hostname'
+			fieldType = 'TEXT'
+		}
+		$field.PSObject.TypeNames.Insert(0, 'DocumentTemplateField')
+		$fields = @($field)
+
+		$null = New-NinjaOneDocumentTemplate -Name 'Template A' -fields $fields -description 'desc' -allowMultiple -mandatory -availableToAllTechnicians -allowedTechnicianRoles @(1, 2) -Confirm:$false
+
+		Assert-MockCalled -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/document-templates' -and
+			$Body.name -eq 'Template A' -and
+			$Body.description -eq 'desc' -and
+			$Body.allowMultiple -eq $true -and
+			$Body.mandatory -eq $true -and
+			$Body.availableToAllTechnicians -eq $true -and
+			$Body.allowedTechnicianRoles.Count -eq 2 -and
+			$Body.fields.Count -eq 1
+		}
+	}
+
+	It 'returns created template when -show is supplied' {
+		$field = [pscustomobject]@{
+			fieldName = 'Hostname'
+			fieldType = 'TEXT'
+		}
+		$field.PSObject.TypeNames.Insert(0, 'DocumentTemplateField')
+		$fields = @($field)
+
+		$result = New-NinjaOneDocumentTemplate -Name 'Template A' -fields $fields -show -Confirm:$false
+
+		$result.id | Should -Be 500
+		$result.name | Should -Be 'Template A'
+	}
+
+	It 'delegates POST failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { throw 'doc-template-create-failed' }
+		$field = [pscustomobject]@{
+			fieldName = 'Hostname'
+			fieldType = 'TEXT'
+		}
+		$field.PSObject.TypeNames.Insert(0, 'DocumentTemplateField')
+		$fields = @($field)
+
+		{ New-NinjaOneDocumentTemplate -Name 'Template A' -fields $fields -Confirm:$false } | Should -Throw '*doc-template-create-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Set-NinjaOneDocumentTemplate' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { 204 }
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls POST v2/document-templates/{id} with updated properties' {
+		$fields = @(
+			@{
+				fieldName = 'Hostname'
+				fieldType = 'TEXT'
+			}
+		)
+
+		$null = Set-NinjaOneDocumentTemplate -documentTemplateId 5 -Name 'Template B' -description 'updated' -allowMultiple -mandatory -fields $fields -availableToAllTechnicians -allowedTechnicianRoles @(1) -Confirm:$false
+
+		Assert-MockCalled -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/document-templates/5' -and
+			$Body.name -eq 'Template B' -and
+			$Body.description -eq 'updated' -and
+			$Body.allowMultiple -eq $true -and
+			$Body.mandatory -eq $true -and
+			$Body.availableToAllTechnicians -eq $true -and
+			$Body.allowedTechnicianRoles.Count -eq 1 -and
+			$Body.fields.Count -eq 1
+		}
+	}
+
+	It 'returns update response when -show is supplied' {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith {
+			[pscustomobject]@{ id = 5; name = 'Template B' }
+		}
+		$fields = @(
+			@{
+				fieldName = 'Hostname'
+				fieldType = 'TEXT'
+			}
+		)
+
+		$result = Set-NinjaOneDocumentTemplate -documentTemplateId 5 -Name 'Template B' -fields $fields -show -Confirm:$false
+
+		$result.id | Should -Be 5
+	}
+
+	It 'throws validation error when DROPDOWN field has no fieldContent' {
+		$fields = @(
+			@{
+				fieldName = 'Choice'
+				fieldType = 'DROPDOWN'
+			}
+		)
+
+		{ Set-NinjaOneDocumentTemplate -documentTemplateId 5 -Name 'Template B' -fields $fields -Confirm:$false } | Should -Throw '*Field content must be specified*'
+	}
+
+	It 'throws validation error when DROPDOWN fieldContent has no values' {
+		$fields = @(
+			@{
+				fieldName = 'Choice'
+				fieldType = 'DROPDOWN'
+				fieldContent = [pscustomobject]@{
+					required = $true
+				}
+			}
+		)
+
+		{ Set-NinjaOneDocumentTemplate -documentTemplateId 5 -Name 'Template B' -fields $fields -Confirm:$false } | Should -Throw '*Field content values must be specified*'
+	}
+
+	It 'delegates request failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { throw 'doc-template-update-failed' }
+		$fields = @(
+			@{
+				fieldName = 'Hostname'
+				fieldType = 'TEXT'
+			}
+		)
+
+		{ Set-NinjaOneDocumentTemplate -documentTemplateId 5 -Name 'Template B' -fields $fields -Confirm:$false } | Should -Throw '*doc-template-update-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
 Get-Module -Name $ModuleName | Remove-Module -Force -ErrorAction SilentlyContinue
 Import-Module $ModulePath -Force
 
