@@ -1107,6 +1107,165 @@ Describe 'Set-NinjaOneCustomField' {
 	}
 }
 
+Describe 'Invoke-NinjaOneDeviceScript' {
+	BeforeEach {
+		Mock -CommandName Get-NinjaOneDevice -ModuleName $ModuleName -MockWith {
+			[pscustomobject]@{ id = 44; SystemName = 'WS-44' }
+		}
+		Mock -CommandName Get-NinjaOneDeviceScriptingOptions -ModuleName $ModuleName -MockWith {
+			@(
+				[pscustomobject]@{ id = 12; uid = [guid]'11111111-1111-1111-1111-111111111111'; type = 'SCRIPT'; Name = 'Collect Logs' },
+				[pscustomobject]@{ id = 99; uid = [guid]'22222222-2222-2222-2222-222222222222'; type = 'ACTION'; Name = 'Restart Service' }
+			)
+		}
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { 204 }
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'posts script run requests to v2/device/{id}/script/run with script id' {
+		$null = Invoke-NinjaOneDeviceScript -deviceId 44 -type 'SCRIPT' -scriptId 12 -runAs 'system' -parameters 'mode=quick'
+
+		Assert-MockCalled -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/device/44/script/run' -and
+			$Body.type -eq 'SCRIPT' -and
+			$Body.id -eq 12 -and
+			$Body.runAs -eq 'system' -and
+			$Body.parameters -eq 'mode=quick'
+		}
+	}
+
+	It 'posts action run requests with action uid' {
+		$actionUId = [guid]'22222222-2222-2222-2222-222222222222'
+		$null = Invoke-NinjaOneDeviceScript -deviceId 44 -type 'ACTION' -actionUId $actionUId -runAs 'loggedonuser'
+
+		Assert-MockCalled -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/device/44/script/run' -and
+			$Body.type -eq 'ACTION' -and
+			$Body.uid -eq $actionUId -and
+			$Body.runAs -eq 'loggedonuser' -and
+			-not $Body.ContainsKey('id')
+		}
+	}
+
+	It 'returns 204 when -show is supplied' {
+		$result = Invoke-NinjaOneDeviceScript -deviceId 44 -type 'SCRIPT' -scriptId 12 -runAs 'system' -show
+
+		$result | Should -Be 204
+	}
+
+	It 'delegates not-found script failures to New-NinjaOneError' {
+		Mock -CommandName Get-NinjaOneDeviceScriptingOptions -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ id = 1; type = 'SCRIPT'; Name = 'Different script' })
+		}
+
+		{ Invoke-NinjaOneDeviceScript -deviceId 44 -type 'SCRIPT' -scriptId 12 -runAs 'system' } | Should -Throw '*Script with id 12 not found*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'New-NinjaOneInstaller' {
+	BeforeEach {
+		Mock -CommandName Get-NinjaOneOrganisations -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ id = 7; name = 'Contoso' })
+		}
+		Mock -CommandName Get-NinjaOneLocations -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ id = 17; name = 'HQ' })
+		}
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith {
+			[pscustomobject]@{ url = 'https://example.test/installer' }
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'creates an installer from individual parameters and returns the URL' {
+		$result = New-NinjaOneInstaller -organisationId 7 -locationId 17 -installerType 'WINDOWS_MSI' -Confirm:$false
+
+		$result | Should -Be 'https://example.test/installer'
+		Assert-MockCalled -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/organization/generate-installer' -and
+			$Body.organization_id -eq 7 -and
+			$Body.location_id -eq 17 -and
+			$Body.installer_type -eq 'WINDOWS_MSI'
+		}
+	}
+
+	It 'creates an installer from body parameter set and returns the URL' {
+		$installer = @{
+			organizationId = 7
+			locationId = 17
+			installer_type = 'WINDOWS_MSI'
+			content = @{ nodeRoleId = 'auto' }
+		}
+
+		$result = New-NinjaOneInstaller -installer $installer -Confirm:$false
+
+		$result | Should -Be 'https://example.test/installer'
+		Assert-MockCalled -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/organization/generate-installer'
+		}
+	}
+
+	It 'delegates validation failures to New-NinjaOneError when organisation/location do not exist' {
+		Mock -CommandName Get-NinjaOneLocations -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ id = 99; name = 'Other' })
+		}
+
+		{ New-NinjaOneInstaller -organisationId 7 -locationId 17 -installerType 'WINDOWS_MSI' -Confirm:$false } | Should -Throw '*does not exist*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+
+	It 'delegates POST failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { throw 'installer-create-failed' }
+
+		{ New-NinjaOneInstaller -organisationId 7 -locationId 17 -installerType 'WINDOWS_MSI' -Confirm:$false } | Should -Throw '*installer-create-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Get-NinjaOneSoftwarePatches' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ id = 1; status = 'APPROVED' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls the software patches query endpoint' {
+		$null = Get-NinjaOneSoftwarePatches
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/queries/software-patches'
+		}
+	}
+
+	It 'promotes timeStampUnixEpoch to timeStamp in query parameters' {
+		$null = Get-NinjaOneSoftwarePatches -timeStampUnixEpoch 1619712000
+
+		Assert-MockCalled -CommandName New-NinjaOneQuery -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Parameters.ContainsKey('timeStamp') -and -not $Parameters.ContainsKey('timeStampUnixEpoch')
+		}
+	}
+
+	It 'delegates no-result failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneSoftwarePatches } | Should -Throw '*No software patches found*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
 Get-Module -Name $ModuleName | Remove-Module -Force -ErrorAction SilentlyContinue
 Import-Module $ModulePath -Force
 
