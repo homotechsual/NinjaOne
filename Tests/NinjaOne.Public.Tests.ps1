@@ -416,6 +416,411 @@ Describe 'Get-NinjaOneTicketBoards' {
 	}
 }
 
+Describe 'Get-NinjaOneBackupJobs' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ id = 1; status = 'COMPLETED' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls the backup jobs endpoint' {
+		$null = Get-NinjaOneBackupJobs
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq '/v2/backup/jobs'
+		}
+	}
+
+	It 'preprocesses single status into a statusFilter and calls the endpoint' {
+		$null = Get-NinjaOneBackupJobs -status 'RUNNING'
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq '/v2/backup/jobs'
+		}
+	}
+
+
+	It 'preprocesses startTimeAfter into a startTimeFilter and calls the endpoint' {
+		$null = Get-NinjaOneBackupJobs -startTimeAfter (Get-Date '2024-01-01')
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq '/v2/backup/jobs'
+		}
+	}
+
+	It 'preprocesses startTimeBetween into a startTimeFilter and calls the endpoint' {
+		$null = Get-NinjaOneBackupJobs -startTimeBetween @((Get-Date '2024-01-01'), (Get-Date '2024-01-02'))
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq '/v2/backup/jobs'
+		}
+	}
+
+	It 'delegates GET failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { throw 'backup-jobs-failed' }
+
+		{ Get-NinjaOneBackupJobs } | Should -Throw '*backup-jobs-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Get-NinjaOneIntegrityCheckJobs' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ id = 1; status = 'COMPLETED' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls the integrity check jobs endpoint' {
+		$null = Get-NinjaOneIntegrityCheckJobs
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq '/v2/backup/integrity-check-jobs'
+		}
+	}
+
+	It 'preprocesses single status into a statusFilter and calls the endpoint' {
+		$null = Get-NinjaOneIntegrityCheckJobs -status 'RUNNING'
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq '/v2/backup/integrity-check-jobs'
+		}
+	}
+
+	It 'preprocesses startTimeAfter into a startTimeFilter and calls the endpoint' {
+		$null = Get-NinjaOneIntegrityCheckJobs -startTimeAfter (Get-Date '2024-01-01')
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq '/v2/backup/integrity-check-jobs'
+		}
+	}
+
+	It 'preprocesses startTimeBetween into a startTimeFilter and calls the endpoint' {
+		$null = Get-NinjaOneIntegrityCheckJobs -startTimeBetween @((Get-Date '2024-01-01'), (Get-Date '2024-01-02'))
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq '/v2/backup/integrity-check-jobs'
+		}
+	}
+
+	It 'delegates GET failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { throw 'integrity-jobs-failed' }
+
+		{ Get-NinjaOneIntegrityCheckJobs } | Should -Throw '*integrity-jobs-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Get-NinjaOneTickets' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			[pscustomobject]@{ id = 1; subject = 'Test ticket' }
+		}
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith {
+			[pscustomobject]@{ data = @([pscustomobject]@{ id = 1; subject = 'Test ticket' }); metadata = [pscustomobject]@{ total = 1 } }
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'uses GET to the single ticket endpoint for the Single parameter set' {
+		$null = Get-NinjaOneTickets -ticketId 7
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/ticketing/ticket/7'
+		}
+	}
+
+	It 'uses POST to the board run endpoint for the Board parameter set' {
+		$null = Get-NinjaOneTickets -boardId 'board-1'
+
+		Assert-MockCalled -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/ticketing/trigger/board/board-1/run'
+		}
+	}
+
+	It 'builds board request body fields and parseDateTime when board options are supplied' {
+		$null = Get-NinjaOneTickets -boardId 'board-1' -pageSize 25 -searchCriteria 'router' -includeColumns @('subject') -lastCursorId 'cursor-1' -parseDateTime
+
+		Assert-MockCalled -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/ticketing/trigger/board/board-1/run' -and
+			$Body.pageSize -eq 25 -and
+			$Body.searchCriteria -eq 'router' -and
+			$Body.includeColumns[0] -eq 'subject' -and
+			$Body.lastCursorId -eq 'cursor-1' -and
+			$ParseDateTime
+		}
+	}
+
+	It 'returns only the data property from Board response when includeMetadata is not set' {
+		$result = Get-NinjaOneTickets -boardId 'board-1'
+
+		$result | Should -Not -BeNullOrEmpty
+		# result should be the .data array, not the full response object
+		$result[0].id | Should -Be 1
+	}
+
+	It 'returns the full response from Board when includeMetadata is set' {
+		$result = Get-NinjaOneTickets -boardId 'board-1' -includeMetadata
+
+		$result.data | Should -Not -BeNullOrEmpty
+		$result.metadata | Should -Not -BeNullOrEmpty
+	}
+
+	It 'delegates no-result failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneTickets -ticketId 7 } | Should -Throw '*No tickets found*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Get-NinjaOneRelatedItems' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ id = 1; type = 'DOCUMENT' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls v2/related-items for the all parameter set' {
+		$null = Get-NinjaOneRelatedItems -all
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/related-items'
+		}
+	}
+
+	It 'calls the entity-type route when relatedTo is used with entityType only' {
+		$null = Get-NinjaOneRelatedItems -relatedTo -entityType 'ORGANIZATION'
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/related-items/with-entity-type/ORGANIZATION'
+		}
+	}
+
+	It 'calls the entity route when relatedTo is used with entityType and entityId' {
+		$null = Get-NinjaOneRelatedItems -relatedTo -entityType 'ORGANIZATION' -entityId 5
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/related-items/with-entity/ORGANIZATION/5'
+		}
+	}
+
+	It 'calls the related-entity-type route when relatedFrom is used with entityType only' {
+		$null = Get-NinjaOneRelatedItems -relatedFrom -entityType 'ORGANIZATION'
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/related-items/with-related-entity-type/ORGANIZATION'
+		}
+	}
+
+	It 'calls the related-entity route when relatedFrom is used with entityType and entityId' {
+		$null = Get-NinjaOneRelatedItems -relatedFrom -entityType 'ORGANIZATION' -entityId 5
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/related-items/with-related-entity/ORGANIZATION/5'
+		}
+	}
+
+	It 'delegates no-result failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneRelatedItems -all } | Should -Throw '*No related items found*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Get-NinjaOneOrganisationDocuments' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ id = 1; name = 'Doc 1' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls the single-organisation documents endpoint when organisationId is supplied' {
+		$null = Get-NinjaOneOrganisationDocuments -organisationId 12
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/organization/12/documents'
+		}
+	}
+
+	It 'calls the all-organisations documents endpoint when no organisationId is supplied' {
+		$null = Get-NinjaOneOrganisationDocuments
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/organization/documents'
+		}
+	}
+
+	It 'delegates no-result failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneOrganisationDocuments -organisationId 12 } | Should -Throw '*No documents found*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Get-NinjaOneTicketingUsers' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ id = 1; name = 'Alice Tech' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls the ticketing users endpoint' {
+		$null = Get-NinjaOneTicketingUsers
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/ticketing/app-user-contact'
+		}
+	}
+
+	It 'passes userType as a query parameter' {
+		$null = Get-NinjaOneTicketingUsers -userType 'TECHNICIAN'
+
+		Assert-MockCalled -CommandName New-NinjaOneQuery -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Parameters.ContainsKey('userType')
+		}
+	}
+
+	It 'delegates no-result failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneTicketingUsers } | Should -Throw '*No ticketing users found*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Get-NinjaOneDeviceOSPatchInstalls' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ patchId = 42; status = 'INSTALLED' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls the device OS patch installs endpoint for the supplied device id' {
+		$null = Get-NinjaOneDeviceOSPatchInstalls -deviceId 77
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/device/77/os-patch-installs'
+		}
+	}
+
+	It 'converts installedAfter DateTime to epoch and calls the endpoint' {
+		$null = Get-NinjaOneDeviceOSPatchInstalls -deviceId 77 -installedAfter (Get-Date '2024-01-01')
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/device/77/os-patch-installs'
+		}
+	}
+
+	It 'accepts installedAfterUnixEpoch and calls the endpoint' {
+		$null = Get-NinjaOneDeviceOSPatchInstalls -deviceId 77 -installedAfterUnixEpoch 1704067200
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/device/77/os-patch-installs'
+		}
+	}
+
+	It 'delegates GET failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { throw 'os-patch-installs-failed' }
+
+		{ Get-NinjaOneDeviceOSPatchInstalls -deviceId 77 } | Should -Throw '*os-patch-installs-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Get-NinjaOneDeviceSoftwarePatchInstalls' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ patchId = 99; status = 'INSTALLED' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls the device software patch installs endpoint for the supplied device id' {
+		$null = Get-NinjaOneDeviceSoftwarePatchInstalls -deviceId 33
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/device/33/software-patch-installs'
+		}
+	}
+
+	It 'converts installedAfter DateTime to epoch and calls the endpoint' {
+		$null = Get-NinjaOneDeviceSoftwarePatchInstalls -deviceId 33 -installedAfter (Get-Date '2024-01-01')
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/device/33/software-patch-installs'
+		}
+	}
+
+	It 'accepts installedBeforeUnixEpoch and calls the endpoint' {
+		$null = Get-NinjaOneDeviceSoftwarePatchInstalls -deviceId 33 -installedBeforeUnixEpoch 1704153600
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/device/33/software-patch-installs'
+		}
+	}
+
+	It 'delegates GET failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { throw 'sw-patch-installs-failed' }
+
+		{ Get-NinjaOneDeviceSoftwarePatchInstalls -deviceId 33 } | Should -Throw '*sw-patch-installs-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
 Get-Module -Name $ModuleName | Remove-Module -Force -ErrorAction SilentlyContinue
 Import-Module $ModulePath -Force
 
