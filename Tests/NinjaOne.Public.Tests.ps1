@@ -968,6 +968,145 @@ Describe 'Set-NinjaOneDocumentTemplate' {
 	}
 }
 
+Describe 'Get-NinjaOneSoftwarePatchInstalls' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ id = 1; status = 'INSTALLED' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls the software patch installs query endpoint' {
+		$null = Get-NinjaOneSoftwarePatchInstalls
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/queries/software-patch-installs'
+		}
+	}
+
+	It 'promotes installedBeforeUnixEpoch to installedBefore in query parameters' {
+		$null = Get-NinjaOneSoftwarePatchInstalls -installedBeforeUnixEpoch 1619712000
+
+		Assert-MockCalled -CommandName New-NinjaOneQuery -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Parameters.ContainsKey('installedBefore') -and -not $Parameters.ContainsKey('installedBeforeUnixEpoch')
+		}
+	}
+
+	It 'promotes timeStampUnixEpoch to timeStamp in query parameters' {
+		$null = Get-NinjaOneSoftwarePatchInstalls -timeStampUnixEpoch 1619712000
+
+		Assert-MockCalled -CommandName New-NinjaOneQuery -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Parameters.ContainsKey('timeStamp') -and -not $Parameters.ContainsKey('timeStampUnixEpoch')
+		}
+	}
+
+	It 'delegates no-result failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneSoftwarePatchInstalls } | Should -Throw '*No software patch installs found*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Get-NinjaOneOSPatchInstalls' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ id = 1; status = 'INSTALLED' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls the OS patch installs query endpoint' {
+		$null = Get-NinjaOneOSPatchInstalls
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/queries/os-patch-installs'
+		}
+	}
+
+	It 'promotes installedAfterUnixEpoch to installedAfter in query parameters' {
+		$null = Get-NinjaOneOSPatchInstalls -installedAfterUnixEpoch 1619712000
+
+		Assert-MockCalled -CommandName New-NinjaOneQuery -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Parameters.ContainsKey('installedAfter') -and -not $Parameters.ContainsKey('installedAfterUnixEpoch')
+		}
+	}
+
+	It 'promotes timeStampUnixEpoch to timeStamp in query parameters' {
+		$null = Get-NinjaOneOSPatchInstalls -timeStampUnixEpoch 1619712000
+
+		Assert-MockCalled -CommandName New-NinjaOneQuery -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Parameters.ContainsKey('timeStamp') -and -not $Parameters.ContainsKey('timeStampUnixEpoch')
+		}
+	}
+
+	It 'delegates no-result failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneOSPatchInstalls } | Should -Throw '*No OS patch installs found*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Set-NinjaOneCustomField' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOnePUTRequest -ModuleName $ModuleName -MockWith {
+			[pscustomobject]@{ fieldName = 'department'; updated = $true }
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls PUT v2/custom-fields/field-name/{fieldName} with the supplied body' {
+		$body = @{ description = 'Department of the user' }
+
+		$null = Set-NinjaOneCustomField -fieldName 'department' -customField $body -Confirm:$false
+
+		Assert-MockCalled -CommandName New-NinjaOnePUTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/custom-fields/field-name/department' -and
+			$Body.description -eq 'Department of the user'
+		}
+	}
+
+	It 'returns the PUT response' {
+		$body = @{ description = 'Department of the user' }
+
+		$result = Set-NinjaOneCustomField -fieldName 'department' -customField $body -Confirm:$false
+
+		$result.updated | Should -Be $true
+	}
+
+	It 'does not call PUT when -WhatIf is used' {
+		$body = @{ description = 'Department of the user' }
+
+		$null = Set-NinjaOneCustomField -fieldName 'department' -customField $body -WhatIf
+
+		Assert-MockCalled -CommandName New-NinjaOnePUTRequest -ModuleName $ModuleName -Times 0
+	}
+
+	It 'delegates request failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePUTRequest -ModuleName $ModuleName -MockWith { throw 'custom-field-update-failed' }
+		$body = @{ description = 'Department of the user' }
+
+		{ Set-NinjaOneCustomField -fieldName 'department' -customField $body -Confirm:$false } | Should -Throw '*custom-field-update-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
 Get-Module -Name $ModuleName | Remove-Module -Force -ErrorAction SilentlyContinue
 Import-Module $ModulePath -Force
 
