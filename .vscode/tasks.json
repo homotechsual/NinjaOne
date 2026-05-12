@@ -77,6 +77,28 @@
       "group": "test"
     },
     {
+      "label": "Run Public Suite Tail",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-File",
+        ".\\DevOps\\Quality\\run-public-suite-tail.ps1",
+        "-Last",
+        "45"
+      ],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Check Instance Capabilities",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\DevOps\\Quality\\check-instance-capabilities.ps1"],
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
       "label": "Generate Codecov Config",
       "type": "shell",
       "command": "pwsh",

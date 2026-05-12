@@ -1704,6 +1704,14 @@ Describe 'New-NinjaOnePolicy' {
 		{ New-NinjaOnePolicy -mode 'COPY' -policy $policy } | Should -Throw '*template policy id*'
 	}
 
+	It 'allows COPY mode when templatePolicyId is provided' {
+		$policy = [PSCustomObject]@{ name = 'CopyPolicy'; nodeClass = 'WINDOWS_SERVER' }
+
+		New-NinjaOnePolicy -mode 'COPY' -policy $policy -templatePolicyId 10
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 1 -Exactly
+	}
+
 	It 'skips POST when WhatIf is used' {
 		$policy = [PSCustomObject]@{ name = 'TestPolicy'; nodeClass = 'WINDOWS_SERVER'; enabled = $true }
 		New-NinjaOnePolicy -mode 'NEW' -policy $policy -WhatIf
@@ -1798,6 +1806,280 @@ Describe 'New-NinjaOneWindowsEventPolicyCondition' {
 		$condition = [PSCustomObject]@{ displayName = 'TestCondition'; enabled = $true }
 
 		{ New-NinjaOneWindowsEventPolicyCondition -policyId 15 -windowsEventPolicyCondition $condition } | Should -Throw
+	}
+}
+
+Describe 'Reset-NinjaOneAlert' {
+	BeforeAll {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { 204 }
+		Mock -CommandName New-NinjaOneDELETERequest -ModuleName $ModuleName -MockWith { 204 }
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith { param($ErrorRecord); throw $ErrorRecord.Exception }
+	}
+
+	It 'uses POST reset endpoint when activityData is provided' {
+		$activityData = [PSCustomObject]@{ reason = 'manual reset' }
+
+		Reset-NinjaOneAlert -uid '15' -activityData $activityData
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -ParameterFilter {
+			$Resource -eq 'v2/alert/15/reset' -and
+			$Body.reason -eq 'manual reset'
+		} -Times 1 -Exactly
+	}
+
+	It 'uses DELETE endpoint when activityData is not provided' {
+		Reset-NinjaOneAlert -uid '20'
+
+		Should -Invoke -CommandName New-NinjaOneDELETERequest -ModuleName $ModuleName -ParameterFilter {
+			$Resource -eq 'v2/alert/20'
+		} -Times 1 -Exactly
+	}
+
+	It 'skips POST when WhatIf is used' {
+		$activityData = [PSCustomObject]@{ reason = 'manual reset' }
+
+		Reset-NinjaOneAlert -uid '30' -activityData $activityData -WhatIf
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 0 -Exactly
+	}
+
+	It 'skips DELETE when WhatIf is used' {
+		Reset-NinjaOneAlert -uid '31' -WhatIf
+
+		Should -Invoke -CommandName New-NinjaOneDELETERequest -ModuleName $ModuleName -Times 0 -Exactly
+	}
+
+	It 'surfaces API errors through New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneDELETERequest -ModuleName $ModuleName -MockWith { throw 'API failure' }
+
+		{ Reset-NinjaOneAlert -uid '99' } | Should -Throw
+	}
+}
+
+Describe 'Get-NinjaOneTicketLogEntries' {
+	BeforeAll {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith { [System.Web.HttpUtility]::ParseQueryString([String]::Empty) }
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([PSCustomObject]@{ id = 1; type = 'DESCRIPTION'; message = 'entry' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith { param($ErrorRecord); throw $ErrorRecord.Exception }
+	}
+
+	It 'calls the expected ticket log endpoint' {
+		Get-NinjaOneTicketLogEntries -ticketId '7'
+
+		Should -Invoke -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -ParameterFilter {
+			$Resource -eq 'v2/ticketing/ticket/7/log-entry'
+		} -Times 1 -Exactly
+	}
+
+	It 'passes ParseDateTime when switch is set' {
+		Get-NinjaOneTicketLogEntries -ticketId '8' -parseDateTime
+
+		Should -Invoke -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -ParameterFilter {
+			$Resource -eq 'v2/ticketing/ticket/8/log-entry' -and
+			$ParseDateTime
+		} -Times 1 -Exactly
+	}
+
+	It 'returns ticket log results' {
+		$result = Get-NinjaOneTicketLogEntries -ticketId '9'
+
+		$result | Should -Not -BeNullOrEmpty
+		$result[0].type | Should -Be 'DESCRIPTION'
+	}
+
+	It 'throws specific message when no results and type is provided' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneTicketLogEntries -ticketId '10' -type 'DESCRIPTION' } | Should -Throw '*with type DESCRIPTION*'
+	}
+
+	It 'throws specific message when no results and type is not provided' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneTicketLogEntries -ticketId '11' } | Should -Throw '*No ticket log entries found for ticket 11*'
+	}
+}
+
+Describe 'New-NinjaOneDocumentTemplateFieldObject' {
+	It 'creates a Field object with required properties and type name' {
+		$result = New-NinjaOneDocumentTemplateFieldObject -label 'Field A' -Name 'fieldA' -type 'TEXT'
+
+		$result.fieldLabel | Should -Be 'Field A'
+		$result.fieldName | Should -Be 'fieldA'
+		$result.fieldType | Should -Be 'TEXT'
+		$result.PSObject.TypeNames[0] | Should -Be 'DocumentTemplateField'
+	}
+
+	It 'adds optional Field properties when specified' {
+		$options = @('Option1', 'Option2')
+		$result = New-NinjaOneDocumentTemplateFieldObject -label 'Field B' -Name 'fieldB' -description 'desc' -type 'DROPDOWN' -defaultValue 'Option1' -options $options
+
+		$result.fieldDescription | Should -Be 'desc'
+		$result.fieldDefaultValue | Should -Be 'Option1'
+		$result.fieldContent.Count | Should -Be 2
+	}
+
+	It 'creates a UI element object with required properties and type name' {
+		$result = New-NinjaOneDocumentTemplateFieldObject -elementName 'Heading' -elementType 'TITLE' -elementValue 'Welcome'
+
+		$result.uiElementName | Should -Be 'Heading'
+		$result.uiElementType | Should -Be 'TITLE'
+		$result.uiElementValue | Should -Be 'Welcome'
+		$result.PSObject.TypeNames[0] | Should -Be 'DocumentTemplateField'
+	}
+
+	It 'omits UI element value when not provided' {
+		$result = New-NinjaOneDocumentTemplateFieldObject -elementName 'Rule' -elementType 'SEPARATOR'
+
+		$result.PSObject.Properties.Name -contains 'uiElementValue' | Should -BeFalse
+	}
+}
+
+Describe 'Get-NinjaOneTicketForms' {
+	BeforeAll {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith { [System.Web.HttpUtility]::ParseQueryString([String]::Empty) }
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([PSCustomObject]@{ id = 1; name = 'Default Form' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith { param($ErrorRecord); throw $ErrorRecord.Exception }
+	}
+
+	It 'calls list endpoint when ticketFormId is not provided' {
+		Get-NinjaOneTicketForms
+
+		Should -Invoke -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -ParameterFilter {
+			$Resource -eq '/v2/ticketing/ticket-form'
+		} -Times 1 -Exactly
+	}
+
+	It 'calls single-item endpoint when ticketFormId is provided' {
+		Get-NinjaOneTicketForms -ticketFormId 8
+
+		Should -Invoke -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -ParameterFilter {
+			$Resource -eq '/v2/ticketing/ticket-form/8'
+		} -Times 1 -Exactly
+	}
+
+	It 'returns ticket forms' {
+		$result = Get-NinjaOneTicketForms
+
+		$result[0].name | Should -Be 'Default Form'
+	}
+
+	It 'throws when no ticket forms are found' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneTicketForms } | Should -Throw '*No ticket forms found*'
+	}
+}
+
+Describe 'Get-NinjaOneTicketingContacts' {
+	BeforeAll {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith { [System.Web.HttpUtility]::ParseQueryString([String]::Empty) }
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([PSCustomObject]@{ id = 1; name = 'Contact 1' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith { param($ErrorRecord); throw $ErrorRecord.Exception }
+	}
+
+	It 'calls the expected ticketing contacts endpoint' {
+		Get-NinjaOneTicketingContacts
+
+		Should -Invoke -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -ParameterFilter {
+			$Resource -eq 'v2/ticketing/contact/contacts'
+		} -Times 1 -Exactly
+	}
+
+	It 'returns contacts when present' {
+		$result = Get-NinjaOneTicketingContacts
+
+		$result | Should -Not -BeNullOrEmpty
+		$result[0].name | Should -Be 'Contact 1'
+	}
+
+	It 'throws when no contacts are found' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneTicketingContacts } | Should -Throw '*No ticketing contacts found*'
+	}
+}
+
+Describe 'New-NinjaOneEntityRelation' {
+	BeforeAll {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith {
+			[PSCustomObject]@{ id = 100; relEntityType = 'NODE'; relEntityId = 50 }
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith { param($ErrorRecord); throw $ErrorRecord.Exception }
+	}
+
+	It 'posts to the expected relation endpoint' {
+		New-NinjaOneEntityRelation -entityType 'ORGANIZATION' -entityId 1 -relatedEntityType 'NODE' -relatedEntityId 50
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -ParameterFilter {
+			$Resource -eq 'v2/related-items/entity/ORGANIZATION/1/relation' -and
+			$Body.relEntityType -eq 'NODE' -and
+			$Body.relEntityId -eq 50
+		} -Times 1 -Exactly
+	}
+
+	It 'returns result when -show is used' {
+		$result = New-NinjaOneEntityRelation -entityType 'ORGANIZATION' -entityId 1 -relatedEntityType 'NODE' -relatedEntityId 50 -show
+
+		$result.relEntityId | Should -Be 50
+	}
+
+	It 'skips POST when WhatIf is used' {
+		New-NinjaOneEntityRelation -entityType 'ORGANIZATION' -entityId 1 -relatedEntityType 'NODE' -relatedEntityId 50 -WhatIf
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 0 -Exactly
+	}
+
+	It 'surfaces API errors through New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { throw 'API failure' }
+
+		{ New-NinjaOneEntityRelation -entityType 'ORGANIZATION' -entityId 1 -relatedEntityType 'NODE' -relatedEntityId 50 } | Should -Throw
+	}
+}
+
+Describe 'New-NinjaOneEntityRelations' {
+	BeforeAll {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith {
+			@([PSCustomObject]@{ relEntityType = 'NODE'; relEntityId = 51 })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith { param($ErrorRecord); throw $ErrorRecord.Exception }
+	}
+
+	It 'posts relation array to the expected endpoint' {
+		$relations = @([PSCustomObject]@{ relEntityType = 'NODE'; relEntityId = 51 })
+		New-NinjaOneEntityRelations -entityType 'ORGANIZATION' -entityId 1 -entityRelations $relations
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -ParameterFilter {
+			$Resource -eq 'v2/related-items/entity/ORGANIZATION/1/relations' -and
+			$Body[0].relEntityId -eq 51
+		} -Times 1 -Exactly
+	}
+
+	It 'returns created relations when -show is used' {
+		$relations = @([PSCustomObject]@{ relEntityType = 'NODE'; relEntityId = 51 })
+		$result = New-NinjaOneEntityRelations -entityType 'ORGANIZATION' -entityId 1 -entityRelations $relations -show
+
+		$result[0].relEntityId | Should -Be 51
+	}
+
+	It 'skips POST when WhatIf is used' {
+		$relations = @([PSCustomObject]@{ relEntityType = 'NODE'; relEntityId = 51 })
+		New-NinjaOneEntityRelations -entityType 'ORGANIZATION' -entityId 1 -entityRelations $relations -WhatIf
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 0 -Exactly
+	}
+
+	It 'surfaces API errors through New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { throw 'API failure' }
+		$relations = @([PSCustomObject]@{ relEntityType = 'NODE'; relEntityId = 51 })
+
+		{ New-NinjaOneEntityRelations -entityType 'ORGANIZATION' -entityId 1 -entityRelations $relations } | Should -Throw
 	}
 }
 

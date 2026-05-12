@@ -18,6 +18,16 @@ This repository is a PowerShell module for the NinjaOne API with supporting C# h
   * `Build NinjaOne (build only)`
   * `Test NinjaOne`
   * `Run PSScriptAnalyzer`
+* For coverage reporting, always use repository scripts/tasks as the source of truth:
+  * `Show Coverage Summary` (`DevOps/Quality/show-coverage.ps1`)
+  * `Show Coverage Detail` (`DevOps/Quality/show-coverage.ps1 -Detail Full`)
+  * `DevOps/Quality/test.ps1` for suite coverage gate enforcement
+* For approval-friendly terminal runs in VS Code, prefer a stable workspace task first:
+  * `Run Public Suite Tail`
+  * If a terminal command is needed, use `pwsh -File .\DevOps\Quality\run-public-suite-tail.ps1 -Last 45`
+  * Avoid ad-hoc inline pipelines like `... | Select-Object -Last N` when command approval consistency matters.
+* For endpoint drift / endpoint coverage reporting, use `DevOps/Quality/check-instance-capabilities.ps1` or the `Check Instance Capabilities` task.
+* Do not use ad-hoc coverage parsing as the reported source of truth.
 * Treat CI/workflow changes carefully and keep them minimal.
 * Prefer assertions that are robust across Windows and Linux path differences.
 
