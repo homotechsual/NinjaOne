@@ -19,8 +19,8 @@ function New-NinjaOnePOSTRequest {
 		# The resource to send the request to.
 		[Parameter(Mandatory = $True)]
 		[String]$resource,
-		# A hashtable used to build the query string.
-		[Hashtable]$qSCollection,
+		# A query string collection used to build the query string.
+		[System.Collections.Specialized.NameValueCollection]$qSCollection,
 		# A hashtable used to build the body of the request.
 		[Object]$body,
 		# Parse date/time values returned in JSON.
@@ -248,11 +248,7 @@ function New-NinjaOnePOSTRequest {
 	try {
 		if ($qSCollection) {
 			Write-Verbose ('Query string in New-NinjaOnePOSTRequest contains: {0}' -f ($qSCollection | Out-String))
-			$QueryStringCollection = [System.Web.HTTPUtility]::ParseQueryString([String]::Empty)
-			Write-Verbose 'Building [HttpQSCollection] for New-NinjaOnePOSTRequest'
-			foreach ($Key in $qSCollection.Keys) {
-				$QueryStringCollection.Add($Key, $qSCollection.$Key)
-			}
+			$QueryStringCollection = $qSCollection
 		} else {
 			Write-Verbose 'Query string collection not present...'
 		}

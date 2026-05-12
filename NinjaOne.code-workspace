@@ -111,6 +111,11 @@
 			"New-Object": true,
 			"Add-Member": true,
 			"Out-File": true,
+			"Get-LowCoverage": true,
+			"/^pwsh -File \\.\\\\DevOps\\\\Quality\\\\test\\.ps1 -Suite public -SkipScriptAnalyzer -Verbosity Normal 2>&1 \\| Select-Object -Last 50$/": {
+				"approve": true,
+				"matchCommandLine": true,
+			},
 		},
 		"codeQL.githubDatabase.download": "never",
 		"cSpell.words": ["Analyzer"],

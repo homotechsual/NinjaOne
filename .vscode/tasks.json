@@ -54,6 +54,51 @@
       "problemMatcher": []
     },
     {
+      "label": "Show Coverage Summary",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\DevOps\\Quality\\show-coverage.ps1"],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Show Coverage Detail",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-File",
+        ".\\DevOps\\Quality\\show-coverage.ps1",
+        "-Detail",
+        "Full"
+      ],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Run Public Suite Tail",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-File",
+        ".\\DevOps\\Quality\\run-public-suite-tail.ps1",
+        "-Last",
+        "45"
+      ],
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Check Instance Capabilities",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["-File", ".\\DevOps\\Quality\\check-instance-capabilities.ps1"],
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
       "label": "Generate Codecov Config",
       "type": "shell",
       "command": "pwsh",

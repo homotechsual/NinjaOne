@@ -20,13 +20,21 @@ Describe ('<ModuleName> - Schema Completeness') -Tags 'Module' {
 	Context 'Function <_.Name>' -ForEach $FunctionList {
 		$AST = $_.ScriptBlock.Ast
 		$MetadataElement = Get-MetadataElement -AST $AST
-	$HasMetadata = $MetadataElement -and @($MetadataElement).Count -gt 0
+		$HasMetadata = $MetadataElement -and @($MetadataElement).Count -gt 0
 		$PositionalArguments = @()
 		$Metadata = @()
 		
 		if ($HasMetadata) {
 			$PositionalArguments = @(Get-PositionalArguments -MetadataElement $MetadataElement)
 			$Metadata = @(Get-Metadata -PositionalArguments $PositionalArguments)
+		}
+
+		It ('should not contain duplicate metadata pairs') -Skip:($Metadata.Count -eq 0) {
+			$DuplicatePairs = $Metadata |
+			Group-Object -Property { '{0}:{1}' -f $_.Method, $_.Endpoint } |
+			Where-Object Count -GT 1
+
+			$DuplicatePairs | Should -BeNullOrEmpty -Because 'Duplicate metadata pairs can hide endpoint drift and make endpoint ownership ambiguous.'
 		}
 		
 		Context 'Metadata Attribute <_>' -ForEach $MetadataElement -Skip:(-not $HasMetadata) {
@@ -57,10 +65,25 @@ Describe ('<ModuleName> - Schema Completeness') -Tags 'Module' {
 		}
 		
 		Context 'Metadata Pair <Method>: <Endpoint>' -ForEach $Metadata -Skip:($Metadata.Count -eq 0) {
+			It ('should use a supported HTTP method') {
+				$PSItem.Method | Should -BeIn @('get', 'post', 'patch', 'put', 'delete', 'options', 'head')
+			}
+
 			It ('should match an endpoint') {
 				$MetadataItem = $_
 				$MatchedEndpoint = $Endpoints | Where-Object { $_.Path -eq $MetadataItem.Endpoint -and $_.Method -eq $MetadataItem.Method }
 				$MatchedEndpoint | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match an endpoint' -f $MetadataItem.Method, $MetadataItem.Endpoint)
+			}
+
+			It ('should match an endpoint template ignoring placeholder names') {
+				$MetadataItem = $_
+				$MetadataTemplate = [regex]::Replace([string]$MetadataItem.Endpoint, '\{[^/]+\}', '{}')
+				$MatchedEndpoint = $Endpoints | Where-Object {
+					$EndpointTemplate = [regex]::Replace([string]$PSItem.Path, '\{[^/]+\}', '{}')
+					$EndpointTemplate -eq $MetadataTemplate -and $PSItem.Method -eq $MetadataItem.Method
+				}
+
+				$MatchedEndpoint | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match an endpoint template after placeholder normalization' -f $MetadataItem.Method, $MetadataItem.Endpoint)
 			}
 		}
 	}
@@ -75,6 +98,17 @@ Describe ('<ModuleName> - Schema Completeness') -Tags 'Module' {
 			$CurrentEndpoint = $_
 			$MetadataPair = $AllMetadata | Where-Object { $_.Endpoint -eq $CurrentEndpoint.Path -and $_.Method -eq $CurrentEndpoint.Method } 
 			$MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path)
+		}
+
+		It ('should match a metadata attribute template ignoring placeholder names') {
+			$CurrentEndpoint = $_
+			$EndpointTemplate = [regex]::Replace([string]$CurrentEndpoint.Path, '\{[^/]+\}', '{}')
+			$MetadataPair = $AllMetadata | Where-Object {
+				$MetadataTemplate = [regex]::Replace([string]$PSItem.Endpoint, '\{[^/]+\}', '{}')
+				$MetadataTemplate -eq $EndpointTemplate -and $PSItem.Method -eq $CurrentEndpoint.Method
+			}
+
+			$MetadataPair | Should -Not -BeNullOrEmpty -Because ('{0}: {1} should match a metadata attribute template after placeholder normalization' -f $CurrentEndpoint.Method, $CurrentEndpoint.Path)
 		}
 	}
 }

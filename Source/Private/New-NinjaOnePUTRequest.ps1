@@ -16,8 +16,8 @@ function New-NinjaOnePUTRequest {
 		# The resource to send the request to.
 		[Parameter(Mandatory = $True)]
 		[String]$resource,
-		# A hashtable used to build the query string.
-		[HashTable]$qSCollection,
+		# A query string collection used to build the query string.
+		[System.Collections.Specialized.NameValueCollection]$qSCollection,
 		# A hashtable used to build the body of the request.
 		[Parameter(Mandatory = $True)]
 		[Object]$body,
@@ -36,11 +36,7 @@ function New-NinjaOnePUTRequest {
 	try {
 		if ($qSCollection) {
 			Write-Verbose ('Query string in New-NinjaOnePUTRequest contains: {0}' -f ($qSCollection | Out-String))
-			$QueryStringCollection = [System.Web.HTTPUtility]::ParseQueryString([String]::Empty)
-			Write-Verbose 'Building [HttpQSCollection] for New-NinjaOnePUTRequest'
-			foreach ($Key in $qSCollection.Keys) {
-				$QueryStringCollection.Add($Key, $qSCollection.$Key)
-			}
+			$QueryStringCollection = $qSCollection
 		} else {
 			Write-Verbose 'Query string collection not present...'
 		}
@@ -50,7 +46,7 @@ function New-NinjaOnePUTRequest {
 		$RequestUri.Path = $resource
 		if ($QueryStringCollection) {
 			Write-Verbose ('Query string is {0}' -f ($QueryStringCollection | Out-String))
-			$RequestUri.Query = $QueryStringCollection
+			$RequestUri.Query = $QueryStringCollection.ToString()
 		} else {
 			Write-Verbose 'Query string not present...'
 		}

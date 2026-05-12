@@ -359,7 +359,7 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          & "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'generateShortNamesMapping', 'updateHelp', 'publishDocs'
+          & "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'generateShortNamesMapping', 'updateHelp', 'publishDocs', 'publishDevDocs'
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v6

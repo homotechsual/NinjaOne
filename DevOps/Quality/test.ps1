@@ -7,6 +7,12 @@ param(
 	[switch]$includeVSCodeMarker,
 	[switch]$useBuiltModule,
 	[string[]]$Suite = @('core', 'private', 'public', 'docs'),
+	[hashtable]$MinimumLineCoverageBySuite = @{
+		core = 3
+		private = 15
+		public = 30
+		docs = 0
+	},
 	[ValidateSet('Detailed', 'Normal', 'Minimal', 'None')]
 	[string]$Verbosity = 'Detailed'
 )
@@ -158,6 +164,82 @@ foreach ($testSuite in $selectedSuites) {
 
 	Write-Host ("`n=== Running {0} test suite ===" -f $testSuite.Name) -ForegroundColor Cyan
 	$null = Invoke-Pester -Configuration $PesterConfiguration
+}
+
+$coverageThresholdFailures = @()
+$coverageReadiness = @()
+foreach ($testSuite in $selectedSuites) {
+	if (-not $MinimumLineCoverageBySuite.ContainsKey($testSuite.Name)) {
+		continue
+	}
+
+	$coverageFile = Join-Path -Path $artifactsPath -ChildPath ('CodeCoverage.{0}.xml' -f $testSuite.Name)
+	if (-not (Test-Path -Path $coverageFile)) {
+		$coverageThresholdFailures += [pscustomobject]@{
+			Suite = $testSuite.Name
+			Actual = 'n/a'
+			Minimum = [double]$MinimumLineCoverageBySuite[$testSuite.Name]
+			Reason = 'Coverage file is missing.'
+		}
+		continue
+	}
+
+	[xml]$coverageXml = Get-Content -Path $coverageFile -Raw
+	$lineCounter = $coverageXml.report.counter | Where-Object { $_.type -eq 'LINE' } | Select-Object -First 1
+	if (-not $lineCounter) {
+		$coverageThresholdFailures += [pscustomobject]@{
+			Suite = $testSuite.Name
+			Actual = 'n/a'
+			Minimum = [double]$MinimumLineCoverageBySuite[$testSuite.Name]
+			Reason = 'LINE counter missing from coverage report.'
+		}
+		continue
+	}
+
+	$covered = [double]$lineCounter.covered
+	$missed = [double]$lineCounter.missed
+	$total = $covered + $missed
+	$linePct = if ($total -gt 0) {
+		[math]::Round(($covered / $total) * 100, 2)
+	} else {
+		0
+	}
+	$minimum = [double]$MinimumLineCoverageBySuite[$testSuite.Name]
+	$nextTarget = [double](([math]::Floor($linePct / 5) * 5) + 5)
+	$toNextTarget = [math]::Round([math]::Max($nextTarget - $linePct, 0), 2)
+	$gateHeadroom = [math]::Round($linePct - $minimum, 2)
+
+	Write-Host ('Coverage gate [{0}] line coverage {1}% (minimum {2}%)' -f $testSuite.Name, $linePct, $minimum) -ForegroundColor Cyan
+	Write-Host ('Coverage readiness [{0}] next 5% target {1}% (needs +{2}%, gate headroom {3}%)' -f $testSuite.Name, $nextTarget, $toNextTarget, $gateHeadroom) -ForegroundColor DarkCyan
+
+	$coverageReadiness += [pscustomobject]@{
+		Suite = $testSuite.Name
+		'Line %' = $linePct
+		Minimum = $minimum
+		'Next 5% Target' = $nextTarget
+		'To Next %' = $toNextTarget
+		'Gate Headroom %' = $gateHeadroom
+	}
+
+	if ($linePct -lt $minimum) {
+		$coverageThresholdFailures += [pscustomobject]@{
+			Suite = $testSuite.Name
+			Actual = $linePct
+			Minimum = $minimum
+			Reason = 'Line coverage is below the configured minimum.'
+		}
+	}
+}
+
+if ($coverageThresholdFailures.Count -gt 0) {
+	Write-Host "`n=== Coverage Gate Failures ===" -ForegroundColor Red
+	$coverageThresholdFailures | Format-Table -AutoSize | Out-String | Write-Host
+	throw ('Coverage thresholds failed for suite(s): {0}' -f (($coverageThresholdFailures.Suite | Sort-Object -Unique) -join ', '))
+}
+
+if ($coverageReadiness.Count -gt 0) {
+	Write-Host "`n=== Coverage Readiness (Next 5% Targets) ===" -ForegroundColor Cyan
+	$coverageReadiness | Sort-Object Suite | Format-Table -AutoSize | Out-String | Write-Host
 }
 
 Write-Host "`n=== Test Results Summary ===" -ForegroundColor Cyan

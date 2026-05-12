@@ -50,7 +50,7 @@ function New-NinjaOnePolicy {
 	begin {
 		if ($mode -eq 'CHILD' -and $null -eq $policy.parentPolicyId) {
 			throw 'The policy must have a parent policy id if using "CHILD" mode.'
-		} elseif ($mode -eq 'COPY' -and $null -eq $templatePolicyId) {
+		} elseif ($mode -eq 'COPY' -and -not $templatePolicyId) {
 			throw 'The policy must have a template policy id if using "COPY" mode.'
 		}
 		$CommandName = $MyInvocation.InvocationName

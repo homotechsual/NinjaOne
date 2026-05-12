@@ -23,10 +23,13 @@ jobs:
       github.event.workflow_run.event == 'push' &&
       github.event.workflow_run.head_branch == 'develop'
     steps:
-      - name: Checkout NinjaOne repository
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+      - name: Download development docs artifact
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          gh run download ${{ github.event.workflow_run.id }} --name module-docs --dir docs-artifact
 
       - name: Clone and update homotechsualdocs
         shell: pwsh
@@ -36,9 +39,16 @@ jobs:
           $ErrorActionPreference = 'Stop'
           $PSNativeCommandUseErrorActionPreference = $true
 
-          $sourceDevelopmentPath = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath 'docs\NinjaOne\development'
+          $sourceDevelopmentPath = Get-ChildItem -Path 'docs-artifact' -Directory -Recurse |
+            Where-Object {
+              $_.Name -eq 'development' -and
+              $_.Parent -and
+              $_.Parent.Name -ieq 'ninjaone'
+            } |
+            Select-Object -First 1 -ExpandProperty FullName
+
           if (-not (Test-Path -Path $sourceDevelopmentPath -PathType Container)) {
-            Write-Error "Source development docs path not found: $sourceDevelopmentPath"
+            Write-Error 'Documentation artifact does not contain a docs/ninjaone/development directory.'
             exit 1
           }
 

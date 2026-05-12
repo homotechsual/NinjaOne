@@ -1,0 +1,81 @@
+---
+title: Test Coverage Enhancement Plan
+sidebar_position: 8
+---
+
+This page tracks the current incremental test-coverage plan, ordered by impact and risk.
+
+## Goals
+
+- Increase line and branch coverage without broad refactors.
+- Prioritize high-reuse private helpers before adding many public wrappers.
+- Keep tests deterministic and cross-platform safe.
+
+## Current Priority Order
+
+1. Private request and error helpers
+2. Public cmdlet endpoint/resource mapping tests
+3. Low-risk class constructor/property coverage
+4. Broader folder-by-folder public coverage expansion
+
+## Batch 1 (Started)
+
+Focus:
+- `New-NinjaOnePOSTRequest`
+- `New-NinjaOneError`
+- `Get-NinjaOneUsers`
+
+Implemented in this batch:
+- Added additional `New-NinjaOnePOSTRequest` tests for endpoint preflight behavior.
+- Added `Get-NinjaOneUsers` tests for default/organisation resource routing and no-result error delegation.
+
+## Next Batches
+
+### Batch 2
+
+Targets:
+- `Source/Private/New-NinjaOneQuery.ps1`
+- `Source/Private/Get-NinjaOneSecrets.ps1`
+
+Test themes:
+- query-string composition edge cases
+- secret fallback and incomplete secret set handling
+
+### Batch 3
+
+Targets:
+- `Source/Public/System/Get/Get-NinjaOneAlerts.ps1`
+- `Source/Public/System/Get/Get-NinjaOneJobs.ps1`
+- `Source/Public/Queries/Get/Get-NinjaOneSoftwareInventory.ps1`
+
+Test themes:
+- resource selection
+- query propagation
+- null/empty result handling through `New-NinjaOneError`
+
+### Batch 4
+
+Targets:
+- `Source/Classes/06-NinjaOneTicketBoardSort.Object.Class.ps1`
+
+Test themes:
+- constructor defaults
+- expected property mapping
+
+## Validation Workflow Per Batch
+
+Run these checks after each test batch:
+
+```powershell
+pwsh -File .\DevOps\Quality\test.ps1 -Suite private,public -skipScriptAnalyzer
+pwsh -File .\DevOps\Quality\run-pssa.ps1
+```
+
+Then review updated coverage artifacts under `.artifacts`:
+- `CodeCoverage.private.xml`
+- `CodeCoverage.public.xml`
+
+## Notes
+
+- Prefer deterministic mocks over network/listener behavior in private tests.
+- Add behavior assertions (resource path, query/body shape, error delegation) before adding broad existence-only tests.

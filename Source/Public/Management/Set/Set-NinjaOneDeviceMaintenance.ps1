@@ -68,13 +68,11 @@ function Set-NinjaOneDeviceMaintenance {
 			if ($start) {
 				[Int]$start = ConvertTo-UnixEpoch -DateTime $start
 			} elseif ($unixStart) {
-				$Parameters.Remove('unixStart') | Out-Null
 				[Int]$start = $unixStart
 			}
 			if ($end) {
 				[Int]$end = ConvertTo-UnixEpoch -DateTime $end
 			} elseif ($unixEnd) {
-				$Parameters.Remove('unixEnd') | Out-Null
 				[Int]$end = $unixEnd
 			} else {
 				throw 'An end date/time must be specified.'

@@ -159,7 +159,7 @@ function Set-NinjaOneDocumentTemplate {
 	process {
 		try {
 			Write-Verbose ('Setting document template {0}.' -f $DocumentTemplate.Name)
-			$Resource = ('v2/document-templates/{1}' -f $documentTemplateId)
+			$Resource = ('v2/document-templates/{0}' -f $documentTemplateId)
 			$UpdatedDocumentTemplate = @{}
 			if ($name) {
 				$UpdatedDocumentTemplate.Add('name', $name)
