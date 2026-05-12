@@ -1541,6 +1541,266 @@ Describe 'Get-NinjaOneInstanceCapabilities' {
 	}
 }
 
+Describe 'New-NinjaOneSecureRelation' {
+	BeforeAll {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith {
+			[PSCustomObject]@{ id = 42; name = 'TestSecret'; entityType = 'ORGANIZATION'; entityId = 1 }
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith { param($ErrorRecord); throw $ErrorRecord.Exception }
+	}
+
+	It 'posts to the correct resource endpoint' {
+		New-NinjaOneSecureRelation -entityType 'ORGANIZATION' -entityId 1 -secureValueName 'TestSecret'
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -ParameterFilter {
+			$Resource -eq 'v2/related-items/entity/ORGANIZATION/1/secure'
+		} -Times 1 -Exactly
+	}
+
+	It 'returns result when -show is used' {
+		$result = New-NinjaOneSecureRelation -entityType 'ORGANIZATION' -entityId 1 -secureValueName 'TestSecret' -show
+
+		$result.name | Should -Be 'TestSecret'
+	}
+
+	It 'includes optional body fields when provided' {
+		New-NinjaOneSecureRelation -entityType 'NODE' -entityId 5 -secureValueName 'S' -secureValueURL 'https://example.com' -secureValueUsername 'admin' -secureValuePassword 'pass' -secureValueNotes 'notes'
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -ParameterFilter {
+			$Resource -eq 'v2/related-items/entity/NODE/5/secure' -and
+			$Body.url -eq 'https://example.com' -and
+			$Body.username -eq 'admin' -and
+			$Body.notes -eq 'notes'
+		} -Times 1 -Exactly
+	}
+
+	It 'skips POST when WhatIf is used' {
+		New-NinjaOneSecureRelation -entityType 'ORGANIZATION' -entityId 1 -secureValueName 'S' -WhatIf
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 0 -Exactly
+	}
+
+	It 'surfaces errors via New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { throw 'API error' }
+
+		{ New-NinjaOneSecureRelation -entityType 'ORGANIZATION' -entityId 1 -secureValueName 'S' } | Should -Throw
+	}
+}
+
+Describe 'New-NinjaOneOrganisationDocument' {
+	BeforeAll {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith { [System.Web.HttpUtility]::ParseQueryString([String]::Empty) }
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith {
+			[PSCustomObject]@{ id = 10; documentName = 'Doc1'; organizationId = 3 }
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith { param($ErrorRecord); throw $ErrorRecord.Exception }
+	}
+
+	It 'posts to the correct resource endpoint' {
+		$doc = [PSCustomObject]@{ documentName = 'Doc1'; fields = @{} }
+		New-NinjaOneOrganisationDocument -organisationId '3' -documentTemplateId '7' -organisationDocument $doc
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -ParameterFilter {
+			$Resource -eq 'v2/organization/3/template/7/document'
+		} -Times 1 -Exactly
+	}
+
+	It 'returns result when -show is used' {
+		$doc = [PSCustomObject]@{ documentName = 'Doc1'; fields = @{} }
+		$result = New-NinjaOneOrganisationDocument -organisationId '3' -documentTemplateId '7' -organisationDocument $doc -show
+
+		$result.documentName | Should -Be 'Doc1'
+	}
+
+	It 'skips POST when WhatIf is used' {
+		$doc = [PSCustomObject]@{ documentName = 'Doc1'; fields = @{} }
+		New-NinjaOneOrganisationDocument -organisationId '3' -documentTemplateId '7' -organisationDocument $doc -WhatIf
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 0 -Exactly
+	}
+
+	It 'surfaces errors via New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { throw 'API error' }
+		$doc = [PSCustomObject]@{ documentName = 'Doc1'; fields = @{} }
+
+		{ New-NinjaOneOrganisationDocument -organisationId '3' -documentTemplateId '7' -organisationDocument $doc } | Should -Throw
+	}
+}
+
+Describe 'New-NinjaOneOrganisationDocuments' {
+	BeforeAll {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith { [System.Web.HttpUtility]::ParseQueryString([String]::Empty) }
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith {
+			@([PSCustomObject]@{ id = 11; organizationId = 4 }, [PSCustomObject]@{ id = 12; organizationId = 5 })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith { param($ErrorRecord); throw $ErrorRecord.Exception }
+	}
+
+	It 'posts to the correct resource endpoint' {
+		$docs = @([PSCustomObject]@{ documentName = 'D1'; organizationId = 4 })
+		New-NinjaOneOrganisationDocuments -organisationDocuments $docs
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -ParameterFilter {
+			$Resource -eq 'v2/organization/documents'
+		} -Times 1 -Exactly
+	}
+
+	It 'returns result when -show is used' {
+		$docs = @([PSCustomObject]@{ documentName = 'D1'; organizationId = 4 })
+		$result = New-NinjaOneOrganisationDocuments -organisationDocuments $docs -show
+
+		$result | Should -Not -BeNullOrEmpty
+	}
+
+	It 'skips POST when WhatIf is used' {
+		$docs = @([PSCustomObject]@{ documentName = 'D1'; organizationId = 4 })
+		New-NinjaOneOrganisationDocuments -organisationDocuments $docs -WhatIf
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 0 -Exactly
+	}
+
+	It 'surfaces errors via New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { throw 'API error' }
+		$docs = @([PSCustomObject]@{ documentName = 'D1'; organizationId = 4 })
+
+		{ New-NinjaOneOrganisationDocuments -organisationDocuments $docs } | Should -Throw
+	}
+}
+
+Describe 'New-NinjaOnePolicy' {
+	BeforeAll {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith { [System.Web.HttpUtility]::ParseQueryString([String]::Empty) }
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith {
+			[PSCustomObject]@{ id = 20; name = 'TestPolicy'; nodeClass = 'WINDOWS_SERVER' }
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith { param($ErrorRecord); throw $ErrorRecord.Exception }
+	}
+
+	It 'posts to the correct resource endpoint' {
+		$policy = [PSCustomObject]@{ name = 'TestPolicy'; nodeClass = 'WINDOWS_SERVER'; enabled = $true }
+		New-NinjaOnePolicy -mode 'NEW' -policy $policy
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -ParameterFilter {
+			$Resource -eq 'v2/policies'
+		} -Times 1 -Exactly
+	}
+
+	It 'returns result when -show is used' {
+		$policy = [PSCustomObject]@{ name = 'TestPolicy'; nodeClass = 'WINDOWS_SERVER'; enabled = $true }
+		$result = New-NinjaOnePolicy -mode 'NEW' -policy $policy -show
+
+		$result.name | Should -Be 'TestPolicy'
+	}
+
+	It 'throws in begin block when CHILD mode has no parentPolicyId' {
+		$policy = [PSCustomObject]@{ name = 'ChildPolicy'; nodeClass = 'WINDOWS_SERVER' }
+
+		{ New-NinjaOnePolicy -mode 'CHILD' -policy $policy } | Should -Throw '*parent policy id*'
+	}
+
+	It 'throws in begin block when COPY mode has no templatePolicyId' {
+		$policy = [PSCustomObject]@{ name = 'CopyPolicy'; nodeClass = 'WINDOWS_SERVER' }
+
+		{ New-NinjaOnePolicy -mode 'COPY' -policy $policy } | Should -Throw '*template policy id*'
+	}
+
+	It 'skips POST when WhatIf is used' {
+		$policy = [PSCustomObject]@{ name = 'TestPolicy'; nodeClass = 'WINDOWS_SERVER'; enabled = $true }
+		New-NinjaOnePolicy -mode 'NEW' -policy $policy -WhatIf
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 0 -Exactly
+	}
+
+	It 'surfaces errors via New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { throw 'API error' }
+		$policy = [PSCustomObject]@{ name = 'TestPolicy'; nodeClass = 'WINDOWS_SERVER'; enabled = $true }
+
+		{ New-NinjaOnePolicy -mode 'NEW' -policy $policy } | Should -Throw
+	}
+}
+
+Describe 'Get-NinjaOneAntiVirusStatus' {
+	BeforeAll {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith { [System.Web.HttpUtility]::ParseQueryString([String]::Empty) }
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([PSCustomObject]@{ deviceId = 1; productName = 'Defender'; productState = 'ON' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith { param($ErrorRecord); throw $ErrorRecord.Exception }
+	}
+
+	It 'calls the correct endpoint' {
+		Get-NinjaOneAntiVirusStatus
+
+		Should -Invoke -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -ParameterFilter {
+			$Resource -eq 'v2/queries/antivirus-status'
+		} -Times 1 -Exactly
+	}
+
+	It 'returns results' {
+		$result = Get-NinjaOneAntiVirusStatus
+
+		$result | Should -Not -BeNullOrEmpty
+		$result[0].productName | Should -Be 'Defender'
+	}
+
+	It 'applies deviceFilter parameter' {
+		Get-NinjaOneAntiVirusStatus -deviceFilter 'org = 1'
+
+		Should -Invoke -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -Exactly
+	}
+
+	It 'converts timeStampUnixEpoch to timeStamp' {
+		Get-NinjaOneAntiVirusStatus -timeStampUnixEpoch 1619712000
+
+		Should -Invoke -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -Exactly
+	}
+
+	It 'throws when no results returned' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneAntiVirusStatus } | Should -Throw
+	}
+}
+
+Describe 'New-NinjaOneWindowsEventPolicyCondition' {
+	BeforeAll {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith {
+			[PSCustomObject]@{ id = 99; displayName = 'TestCondition'; policyId = 15 }
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith { param($ErrorRecord); throw $ErrorRecord.Exception }
+	}
+
+	It 'posts to the correct resource endpoint' {
+		$condition = [PSCustomObject]@{ displayName = 'TestCondition'; enabled = $true }
+		New-NinjaOneWindowsEventPolicyCondition -policyId 15 -windowsEventPolicyCondition $condition
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -ParameterFilter {
+			$Resource -eq 'v2/policies/15/condition/windows-event'
+		} -Times 1 -Exactly
+	}
+
+	It 'returns result when -show is used' {
+		$condition = [PSCustomObject]@{ displayName = 'TestCondition'; enabled = $true }
+		$result = New-NinjaOneWindowsEventPolicyCondition -policyId 15 -windowsEventPolicyCondition $condition -show
+
+		$result.displayName | Should -Be 'TestCondition'
+	}
+
+	It 'skips POST when WhatIf is used' {
+		$condition = [PSCustomObject]@{ displayName = 'TestCondition'; enabled = $true }
+		New-NinjaOneWindowsEventPolicyCondition -policyId 15 -windowsEventPolicyCondition $condition -WhatIf
+
+		Should -Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 0 -Exactly
+	}
+
+	It 'surfaces errors via New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { throw 'API error' }
+		$condition = [PSCustomObject]@{ displayName = 'TestCondition'; enabled = $true }
+
+		{ New-NinjaOneWindowsEventPolicyCondition -policyId 15 -windowsEventPolicyCondition $condition } | Should -Throw
+	}
+}
+
 Get-Module -Name $ModuleName | Remove-Module -Force -ErrorAction SilentlyContinue
 Import-Module $ModulePath -Force
 

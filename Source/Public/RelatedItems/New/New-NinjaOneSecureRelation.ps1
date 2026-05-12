@@ -94,7 +94,7 @@ function New-NinjaOneSecureRelation {
 				if ($show) {
 					return $SecureRelationCreate
 				} else {
-					Write-Information ('Secure relation between {0} and {2} with id {3} created.' -f $entityType, $entityId, $secureValueName)
+					Write-Information ('Secure relation between {0} with id {1} and {2} created.' -f $entityType, $entityId, $secureValueName)
 				}
 			}
 		} catch {
