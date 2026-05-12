@@ -1266,6 +1266,281 @@ Describe 'Get-NinjaOneSoftwarePatches' {
 	}
 }
 
+Describe 'New-NinjaOneCustomField' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith {
+			[pscustomobject]@{ fieldName = 'department'; type = 'TEXT' }
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls POST v2/custom-fields with the supplied body' {
+		$body = @{ fieldName = 'department'; type = 'TEXT' }
+
+		$null = New-NinjaOneCustomField -customField $body -Confirm:$false
+
+		Assert-MockCalled -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/custom-fields' -and
+			$Body.fieldName -eq 'department' -and
+			$Body.type -eq 'TEXT'
+		}
+	}
+
+	It 'returns the created custom field' {
+		$body = @{ fieldName = 'department'; type = 'TEXT' }
+
+		$result = New-NinjaOneCustomField -customField $body -Confirm:$false
+
+		$result.fieldName | Should -Be 'department'
+	}
+
+	It 'does not call POST when -WhatIf is supplied' {
+		$body = @{ fieldName = 'department'; type = 'TEXT' }
+
+		$null = New-NinjaOneCustomField -customField $body -WhatIf
+
+		Assert-MockCalled -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 0
+	}
+
+	It 'delegates request failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { throw 'custom-field-create-failed' }
+		$body = @{ fieldName = 'department'; type = 'TEXT' }
+
+		{ New-NinjaOneCustomField -customField $body -Confirm:$false } | Should -Throw '*custom-field-create-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Set-NinjaOneDeviceMaintenance' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOnePUTRequest -ModuleName $ModuleName -MockWith { 204 }
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls PUT v2/device/{id}/maintenance with DateTime values converted to Unix epoch' {
+		$start = [datetime]'2024-01-01T00:00:00Z'
+		$end = [datetime]'2024-01-01T01:00:00Z'
+
+		$null = Set-NinjaOneDeviceMaintenance -deviceId 81 -disabledFeatures @('ALERTS') -start $start -end $end -Confirm:$false
+
+		Assert-MockCalled -CommandName New-NinjaOnePUTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/device/81/maintenance' -and
+			$Body.disabledFeatures[0] -eq 'ALERTS' -and
+			$Body.start -is [int] -and
+			$Body.end -is [int]
+		}
+	}
+
+	It 'calls PUT with unixStart and unixEnd values' {
+		$null = Set-NinjaOneDeviceMaintenance -deviceId 81 -disabledFeatures @('PATCHING') -unixStart 1704067200 -unixEnd 1704070800 -Confirm:$false
+
+		Assert-MockCalled -CommandName New-NinjaOnePUTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/device/81/maintenance' -and
+			$Body.start -eq 1704067200 -and
+			$Body.end -eq 1704070800
+		}
+	}
+
+	It 'throws when no end or unixEnd is specified' {
+		{ Set-NinjaOneDeviceMaintenance -deviceId 81 -disabledFeatures @('ALERTS') -start ([datetime]'2024-01-01T00:00:00Z') -Confirm:$false } | Should -Throw '*An end date/time must be specified*'
+	}
+
+	It 'delegates PUT failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePUTRequest -ModuleName $ModuleName -MockWith { throw 'maintenance-update-failed' }
+
+		{ Set-NinjaOneDeviceMaintenance -deviceId 81 -disabledFeatures @('ALERTS') -unixStart 1704067200 -unixEnd 1704070800 -Confirm:$false } | Should -Throw '*maintenance-update-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'New-NinjaOneOrganisation' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith {
+			[pscustomobject]@{ id = 501; name = 'Contoso Ltd' }
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'calls POST v2/organizations with organisation body and optional template query' {
+		$body = @{ name = 'Contoso Ltd'; description = 'Test org' }
+
+		$null = New-NinjaOneOrganisation -templateOrganisationId '12' -organisation $body -Confirm:$false
+
+		Assert-MockCalled -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/organizations' -and
+			$Body.name -eq 'Contoso Ltd'
+		}
+		Assert-MockCalled -CommandName New-NinjaOneQuery -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Parameters.ContainsKey('templateOrganisationId') -and -not $Parameters.ContainsKey('organisation')
+		}
+	}
+
+	It 'returns created organisation when -show is supplied' {
+		$body = @{ name = 'Contoso Ltd' }
+
+		$result = New-NinjaOneOrganisation -organisation $body -show -Confirm:$false
+
+		$result.id | Should -Be 501
+	}
+
+	It 'delegates POST failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -MockWith { throw 'organisation-create-failed' }
+		$body = @{ name = 'Contoso Ltd' }
+
+		{ New-NinjaOneOrganisation -organisation $body -Confirm:$false } | Should -Throw '*organisation-create-failed*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Get-NinjaOneCustomFields' {
+	BeforeEach {
+		Mock -CommandName New-NinjaOneQuery -ModuleName $ModuleName -MockWith {
+			[System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+		}
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			@([pscustomobject]@{ id = 1; field = 'department' })
+		}
+		Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	It 'uses v2/queries/custom-fields for default parameter set' {
+		$null = Get-NinjaOneCustomFields
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/queries/custom-fields'
+		}
+	}
+
+	It 'uses v2/queries/custom-fields-detailed when -detailed is supplied in default set' {
+		$null = Get-NinjaOneCustomFields -detailed
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/queries/custom-fields-detailed'
+		}
+		Assert-MockCalled -CommandName New-NinjaOneQuery -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			-not $Parameters.ContainsKey('detailed')
+		}
+	}
+
+	It 'uses v2/queries/scoped-custom-fields for scoped parameter set' {
+		$null = Get-NinjaOneCustomFields -scopes @('NODE')
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/queries/scoped-custom-fields'
+		}
+	}
+
+	It 'uses v2/queries/scoped-custom-fields-detailed when scoped and detailed are supplied' {
+		$null = Get-NinjaOneCustomFields -scopes @('NODE') -detailed
+
+		Assert-MockCalled -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/queries/scoped-custom-fields-detailed'
+		}
+	}
+
+	It 'promotes updatedAfterUnixEpoch to updatedAfter in query parameters' {
+		$null = Get-NinjaOneCustomFields -updatedAfterUnixEpoch 1619712000000
+
+		Assert-MockCalled -CommandName New-NinjaOneQuery -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Parameters.ContainsKey('updatedAfter') -and -not $Parameters.ContainsKey('updatedAfterUnixEpoch')
+		}
+	}
+
+	It 'delegates no-result failures to New-NinjaOneError' {
+		Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneCustomFields } | Should -Throw '*No custom fields found*'
+		Assert-MockCalled -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+}
+
+Describe 'Get-NinjaOneInstanceCapabilities' {
+	BeforeEach {
+		Mock -CommandName Get-NinjaOneInstanceCapabilitiesInternal -ModuleName $ModuleName -MockWith {
+			param($baseUrl, $Force)
+			[pscustomobject]@{
+				BaseUrl = $baseUrl
+				Version = '1.2.3'
+				SpecUrl = ($baseUrl.TrimEnd('/') + '/api/docs-2.0/openapi.json')
+				RetrievedAt = [datetime]'2024-01-01T00:00:00Z'
+				Paths = @{
+					'/v2/devices' = @('GET')
+					'/v2/organizations' = @('GET', 'POST')
+				}
+			}
+		}
+	}
+
+	It 'returns summary fields when baseUrl is provided' {
+		$result = Get-NinjaOneInstanceCapabilities -baseUrl 'https://fed.ninjarmm.com'
+
+		$result.BaseUrl | Should -Be 'https://fed.ninjarmm.com'
+		$result.AppVersion | Should -Be '1.2.3'
+		$result.PathCount | Should -Be 2
+		Assert-MockCalled -CommandName Get-NinjaOneInstanceCapabilitiesInternal -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$baseUrl -eq 'https://fed.ninjarmm.com' -and -not $Force
+		}
+	}
+
+	It 'passes refresh switch through as Force to internal loader' {
+		$null = Get-NinjaOneInstanceCapabilities -baseUrl 'https://fed.ninjarmm.com' -refresh
+
+		Assert-MockCalled -CommandName Get-NinjaOneInstanceCapabilitiesInternal -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$baseUrl -eq 'https://fed.ninjarmm.com' -and $Force
+		}
+	}
+
+	It 'includes paths when includePaths is supplied' {
+		$result = Get-NinjaOneInstanceCapabilities -baseUrl 'https://fed.ninjarmm.com' -includePaths
+
+		$result.Paths.Keys.Count | Should -Be 2
+	}
+
+	It 'classifies cmdlets as unknown when metadata is absent with includeCmdlets' {
+		Mock -CommandName Get-Module -ModuleName $ModuleName -MockWith {
+			[pscustomobject]@{
+				ExportedFunctions = @{
+					'Get-FakeOne' = $null
+					'Set-FakeTwo' = $null
+				}
+			}
+		}
+		Mock -CommandName Get-Command -ModuleName $ModuleName -MockWith {
+			@(
+				[pscustomobject]@{ Name = 'Get-FakeOne'; ScriptBlock = [scriptblock]::Create('param()') },
+				[pscustomobject]@{ Name = 'Set-FakeTwo'; ScriptBlock = [scriptblock]::Create('param()') }
+			)
+		}
+
+		$result = Get-NinjaOneInstanceCapabilities -baseUrl 'https://fed.ninjarmm.com' -includeCmdlets
+
+		$result.UnknownCmdletCount | Should -Be 2
+		$result.SupportedCmdletCount | Should -Be 0
+		$result.UnsupportedCmdletCount | Should -Be 0
+	}
+
+	It 'throws when internal loader returns null capabilities' {
+		Mock -CommandName Get-NinjaOneInstanceCapabilitiesInternal -ModuleName $ModuleName -MockWith { $null }
+
+		{ Get-NinjaOneInstanceCapabilities -baseUrl 'https://fed.ninjarmm.com' } | Should -Throw '*Unable to retrieve OpenAPI spec*'
+	}
+}
+
 Get-Module -Name $ModuleName | Remove-Module -Force -ErrorAction SilentlyContinue
 Import-Module $ModulePath -Force
 
