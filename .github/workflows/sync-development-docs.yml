@@ -29,7 +29,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           $ErrorActionPreference = 'Stop'
-          gh run download ${{ github.event.workflow_run.id }} --name module-docs --dir docs-artifact
+          gh run download ${{ github.event.workflow_run.id }} --name module-docs --dir docs-artifact --repo homotechsual/NinjaOne
 
       - name: Clone and update homotechsualdocs
         shell: pwsh
