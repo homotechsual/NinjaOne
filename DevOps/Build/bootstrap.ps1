@@ -68,6 +68,12 @@ if (-not $installCmdPath) {
 	throw 'Install-RequiredModule script not found. Ensure it is installed and available to the current user.'
 }
 
+if (-not (Get-Module -Name 'Configuration' -ListAvailable)) {
+	Write-Host 'Bootstrap: Installing Configuration module (required by ModuleBuilder)' -ForegroundColor Yellow
+	Install-Module -Name 'Configuration' -Scope CurrentUser -Force -AllowClobber -Repository PSGallery
+}
+Import-Module -Name 'Configuration' -Force -ErrorAction Stop
+
 # Install required modules from RequiredModules.psd1
 $RequiredModulesPath = Join-Path -Path $BuildToolsRoot -ChildPath 'RequiredModules.psd1'
 if (Test-Path -Path $RequiredModulesPath) {

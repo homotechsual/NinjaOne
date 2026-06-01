@@ -4,6 +4,7 @@
 	PSScriptAnalyzer = '1.*'
 	'PowerShell-Yaml' = '0.4.2'
 	YAYAML = '0.2.1'
+	Configuration = '1.*'
 	Metadata = '1.*'
 	ModuleBuilder = '3.*'
 	'Alt3.Docusaurus.PowerShell' = '1.*'
