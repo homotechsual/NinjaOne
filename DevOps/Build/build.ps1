@@ -91,6 +91,11 @@ if (-not $installCmdPath) {
 	throw 'Install-RequiredModule script not found. Ensure it is installed and on PATH.'
 }
 
+if (-not (Get-Module -Name 'Configuration' -ListAvailable)) {
+	Install-Module -Name 'Configuration' -Scope CurrentUser -Force -AllowClobber -Repository PSGallery
+}
+Import-Module -Name 'Configuration' -Force -ErrorAction Stop
+
 & $installCmdPath -RequiredModulesFile ('{0}\RequiredModules.psd1' -f $BuildToolsRoot) -Scope CurrentUser -TrustRegisteredRepositories -Import -Quiet
 # Alt3.Docusaurus.PowerShell is imported via the RequiredModules script above
 # Use strict mode when building.
