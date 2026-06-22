@@ -32,31 +32,32 @@ function Update-NinjaOneToken {
 	param()
 	try {
 		# Using our refresh token let's get a new auth token by re-running Connect-NinjaOne.
+		$ReauthParams = @{
+			Instance = $Script:NRAPIConnectionInformation.Instance
+			ClientId = $Script:NRAPIConnectionInformation.ClientId
+			ClientSecret = $Script:NRAPIConnectionInformation.ClientSecret
+			ShowTokens = $Script:NRAPIConnectionInformation.ShowTokens
+		}
 		if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
-			$ReauthParams = @{
-				Instance = $Script:NRAPIConnectionInformation.Instance
-				ClientId = $Script:NRAPIConnectionInformation.ClientId
-				ClientSecret = $Script:NRAPIConnectionInformation.ClientSecret
-				UseClientAuth = $True
-				ShowTokens = $Script:NRAPIConnectionInformation.ShowTokens
-				UseSecretManagement = $Script:NRAPIConnectionInformation.UseSecretManagement
-				VaultName = $Script:NRAPIConnectionInformation.VaultName
-				WriteToSecretVault = $Script:NRAPIConnectionInformation.WriteToSecretVault
-			}
+			$ReauthParams.UseClientAuth = $True
 		} elseif ($null -ne $Script:NRAPIAuthenticationInformation.Refresh) {
-			$ReauthParams = @{
-				Instance = $Script:NRAPIConnectionInformation.Instance
-				ClientId = $Script:NRAPIConnectionInformation.ClientId
-				ClientSecret = $Script:NRAPIConnectionInformation.ClientSecret
-				RefreshToken = $Script:NRAPIAuthenticationInformation.Refresh
-				UseTokenAuth = $True
-				ShowTokens = $Script:NRAPIConnectionInformation.ShowTokens
-				UseSecretManagement = $Script:NRAPIConnectionInformation.UseSecretManagement
-				VaultName = $Script:NRAPIConnectionInformation.VaultName
-				WriteToSecretVault = $Script:NRAPIConnectionInformation.WriteToSecretVault
-			}
+			$ReauthParams.RefreshToken = $Script:NRAPIAuthenticationInformation.Refresh
+			$ReauthParams.UseTokenAuth = $True
 		} else {
 			throw 'Unable to refresh authentication token information. Not using client credentials and/or refresh token is missing.'
+		}
+		if ($Script:NRAPIConnectionInformation.UseSecretManagement) {
+			if ([String]::IsNullOrWhiteSpace($Script:NRAPIConnectionInformation.VaultName)) {
+				Write-Verbose 'Secret management is enabled, but no secret vault name is configured. Refreshing without secret vault updates.'
+			} else {
+				$ReauthParams.UseSecretManagement = $True
+				$ReauthParams.VaultName = $Script:NRAPIConnectionInformation.VaultName
+				$ReauthParams.WriteToSecretVault = $Script:NRAPIConnectionInformation.WriteToSecretVault
+				$ReauthParams.ReadFromSecretVault = $Script:NRAPIConnectionInformation.ReadFromSecretVault
+				if (-not [String]::IsNullOrWhiteSpace($Script:NRAPIConnectionInformation.SecretPrefix)) {
+					$ReauthParams.SecretPrefix = $Script:NRAPIConnectionInformation.SecretPrefix
+				}
+			}
 		}
 		Connect-NinjaOne @ReauthParams
 		Write-Verbose 'Refreshed authentication token information from NinjaOne.'

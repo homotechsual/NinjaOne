@@ -777,6 +777,7 @@ Describe 'Get-NinjaOneSecrets' {
 				$script:NRAPIConnectionInformation.AuthMode | Should -Be 'Token Authentication'
 				$script:NRAPIAuthenticationInformation.Refresh | Should -Be 'refresh-token'
 				$script:NRAPIConnectionInformation.VaultName | Should -Be 'CustomVault'
+				$script:NRAPIConnectionInformation.SecretPrefix | Should -Be 'Custom'
 				$script:ParseDateTimes | Should -BeFalse
 				$script:RequestedSecrets | Should -Contain 'CustomAuthMode'
 				$script:RequestedSecrets | Should -Contain 'CustomRefresh'
@@ -2379,6 +2380,7 @@ Describe 'Update-NinjaOneToken' {
 		}
 		InModuleScope $ModuleName {
 			Mock -CommandName Connect-NinjaOne -MockWith {
+				$script:CapturedReauthParams = $PSBoundParameters
 				$script:NRAPIAuthenticationInformation.Type = 'Bearer'
 				$script:NRAPIAuthenticationInformation.Access = 'test-access-token-refreshed'
 			}
@@ -2408,6 +2410,40 @@ Describe 'Update-NinjaOneToken' {
 				$script:NRAPIAuthenticationInformation | Should -Not -BeNullOrEmpty
 				$script:NRAPIConnectionInformation.VaultName = 'TestVault'
 				{ Update-NinjaOneToken -ErrorAction SilentlyContinue } | Should -Not -Throw
+			}
+		}
+
+		It 'should not pass secret management parameters when secret management is disabled' {
+			InModuleScope $ModuleName {
+				$script:CapturedReauthParams = $null
+				{ Update-NinjaOneToken -ErrorAction SilentlyContinue } | Should -Not -Throw
+				$script:CapturedReauthParams.ContainsKey('UseSecretManagement') | Should -BeFalse
+				$script:CapturedReauthParams.ContainsKey('VaultName') | Should -BeFalse
+				$script:CapturedReauthParams.ContainsKey('WriteToSecretVault') | Should -BeFalse
+			}
+		}
+
+		It 'should preserve the secret prefix when secret management is enabled' {
+			InModuleScope $ModuleName {
+				$script:NRAPIConnectionInformation.UseSecretManagement = $true
+				$script:NRAPIConnectionInformation.WriteToSecretVault = $true
+				$script:NRAPIConnectionInformation.ReadFromSecretVault = $true
+				$script:NRAPIConnectionInformation.SecretPrefix = 'Custom'
+				$script:CapturedReauthParams = $null
+				{ Update-NinjaOneToken -ErrorAction SilentlyContinue } | Should -Not -Throw
+				$script:CapturedReauthParams.SecretPrefix | Should -Be 'Custom'
+				$script:CapturedReauthParams.ReadFromSecretVault | Should -BeTrue
+			}
+		}
+
+		It 'should continue refresh when secret management has no vault name' {
+			InModuleScope $ModuleName {
+				$script:NRAPIConnectionInformation.UseSecretManagement = $true
+				$script:NRAPIConnectionInformation.VaultName = $null
+				$script:CapturedReauthParams = $null
+				{ Update-NinjaOneToken -ErrorAction SilentlyContinue } | Should -Not -Throw
+				$script:CapturedReauthParams.ContainsKey('UseSecretManagement') | Should -BeFalse
+				$script:CapturedReauthParams.ContainsKey('VaultName') | Should -BeFalse
 			}
 		}
 

@@ -133,4 +133,5 @@ function Get-NinjaOneSecrets {
 	$Script:NRAPIConnectionInformation.WriteToSecretVault = $true
 	$Script:NRAPIConnectionInformation.VaultName = $vaultName
 	$Script:NRAPIConnectionInformation.ReadFromSecretVault = $true
+	$Script:NRAPIConnectionInformation.SecretPrefix = $secretPrefix
 }
