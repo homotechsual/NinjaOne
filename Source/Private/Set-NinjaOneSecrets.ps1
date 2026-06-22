@@ -58,6 +58,10 @@ function Set-NinjaOneSecrets {
 		[Boolean]$parseDateTimes
 	)
 	# Check if the secret vault exists.
+	if ([String]::IsNullOrWhiteSpace($vaultName)) {
+		Write-Error 'Secret vault name is not set.'
+		exit 1
+	}
 	$SecretVault = Get-SecretVault -Name $vaultName -ErrorAction SilentlyContinue
 	if ($null -eq $SecretVault) {
 		Write-Error ('Secret vault {0} does not exist.' -f $vaultName)

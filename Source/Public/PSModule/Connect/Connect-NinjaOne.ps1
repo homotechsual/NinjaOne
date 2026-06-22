@@ -142,7 +142,7 @@ function Connect-NinjaOne {
 			}
 			if ($readFromSecretVault -or $Script:NRAPIConnectionInformation.ReadFromSecretVault) {
 				Write-Verbose 'Reading authentication information from secret vault.'
-				Get-NinjaOneSecrets -vaultName $vaultName
+				Get-NinjaOneSecrets -vaultName $vaultName -secretPrefix $secretPrefix
 			}
 		}
 		# Set the default scopes if they're not passed.

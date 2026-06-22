@@ -147,10 +147,10 @@ jobs:
           }
 
           $issueBody = $bodyLines -join "`n"
-          $existingIssue = gh issue list --state open --search "$title in:title" --json number,title | ConvertFrom-Json | Select-Object -First 1
+          $existingIssue = gh issue list --state open --search "$title in:title" --json number,title | ConvertFrom-Json | Where-Object { $_.title -eq $title } | Select-Object -First 1
 
           if ($existingIssue) {
-            gh issue comment $existingIssue.number --body $issueBody
+            gh issue edit $existingIssue.number --body $issueBody
             Write-Host "Updated existing issue #$($existingIssue.number)" -ForegroundColor Yellow
           } else {
             gh issue create --title $title --body $issueBody
