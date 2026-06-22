@@ -4,6 +4,13 @@ Please note that backwards compatibility breaks are prefixed with `{"BC"}` (shor
 
 Note: Version 2.3.0 was released in error and will be skipped.
 
+## 2026-06-22 - Version 2.7.1
+
+* Fixes:
+  * Fix token refresh to gracefully handle missing secret vault configuration instead of throwing terminating error (issue #84).
+  * Fix secret prefix preservation during token refresh to ensure correct secrets are read from vault on re-authentication.
+  * Fix monthly instance capability check workflow issue matching to use exact title filtering instead of fuzzy first-match.
+
 ## 2026-04-28 - Version 2.7.0
 
 * Additions:
