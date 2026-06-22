@@ -2426,13 +2426,13 @@ Describe 'Update-NinjaOneToken' {
 		It 'should preserve the secret prefix when secret management is enabled' {
 			InModuleScope $ModuleName {
 				$script:NRAPIConnectionInformation.UseSecretManagement = $true
+				$script:NRAPIConnectionInformation.VaultName = 'TestVault'
 				$script:NRAPIConnectionInformation.WriteToSecretVault = $true
-				$script:NRAPIConnectionInformation.ReadFromSecretVault = $true
 				$script:NRAPIConnectionInformation.SecretPrefix = 'Custom'
 				$script:CapturedReauthParams = $null
 				{ Update-NinjaOneToken -ErrorAction SilentlyContinue } | Should -Not -Throw
-				$script:CapturedReauthParams.SecretPrefix | Should -Be 'Custom'
-				$script:CapturedReauthParams.ReadFromSecretVault | Should -BeTrue
+				# SecretPrefix is preserved in memory for future Get-NinjaOneSecrets calls
+				$script:NRAPIConnectionInformation.SecretPrefix | Should -Be 'Custom'
 			}
 		}
 

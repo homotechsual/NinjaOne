@@ -49,14 +49,6 @@ function Update-NinjaOneToken {
 		if ($Script:NRAPIConnectionInformation.UseSecretManagement) {
 			if ([String]::IsNullOrWhiteSpace($Script:NRAPIConnectionInformation.VaultName)) {
 				Write-Verbose 'Secret management is enabled, but no secret vault name is configured. Refreshing without secret vault updates.'
-			} else {
-				$ReauthParams.UseSecretManagement = $True
-				$ReauthParams.VaultName = $Script:NRAPIConnectionInformation.VaultName
-				$ReauthParams.WriteToSecretVault = $Script:NRAPIConnectionInformation.WriteToSecretVault
-				$ReauthParams.ReadFromSecretVault = $Script:NRAPIConnectionInformation.ReadFromSecretVault
-				if (-not [String]::IsNullOrWhiteSpace($Script:NRAPIConnectionInformation.SecretPrefix)) {
-					$ReauthParams.SecretPrefix = $Script:NRAPIConnectionInformation.SecretPrefix
-				}
 			}
 		}
 		Connect-NinjaOne @ReauthParams
