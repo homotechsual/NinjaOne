@@ -310,8 +310,6 @@ function New-NinjaOnePOSTRequest {
 			} else {
 				return $Result
 			}
-				return $Result
-			}
 		} catch {
 			$ExceptionType = if ($IsCoreCLR) {
 				[Microsoft.PowerShell.Commands.HttpResponseException]

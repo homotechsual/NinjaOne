@@ -70,9 +70,6 @@ function New-NinjaOnePATCHRequest {
 			} else {
 				return $Result
 			}
-			} else {
-				return $Result
-			}
 		} catch {
 			$ExceptionType = if ($IsCoreCLR) {
 				[Microsoft.PowerShell.Commands.HttpResponseException]
