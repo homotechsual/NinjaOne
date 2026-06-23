@@ -32,7 +32,7 @@ function New-NinjaOnePUTRequest {
 	if ($null -eq $Script:NRAPIAuthenticationInformation) {
 		throw "Missing NinjaOne authentication tokens, please run 'Connect-NinjaOne' first."
 	}
-	Test-NinjaOneEndpointSupport -Method 'PUT' -resource $resource -Verbose:$VerbosePreference
+	Test-NinjaOneEndpointSupport -Method 'PUT' -resource $resource -Verbose:$VerbosePreference | Out-Null
 	try {
 		if ($qSCollection) {
 			Write-Verbose ('Query string in New-NinjaOnePUTRequest contains: {0}' -f ($qSCollection | Out-String))

@@ -4,6 +4,11 @@ Please note that backwards compatibility breaks are prefixed with `{"BC"}` (shor
 
 Note: Version 2.3.0 was released in error and will be skipped.
 
+## 2026-06-22 - Version 2.7.2
+
+* Fixes:
+  * Fix request wrapper functions leaking boolean return value from endpoint support checks into the output pipeline, causing cmdlets to return arrays with spurious `$true` as the first element.
+
 ## 2026-06-22 - Version 2.7.1
 
 * Fixes:

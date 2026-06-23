@@ -27,7 +27,7 @@ function New-NinjaOneDELETERequest {
 	if ($null -eq $Script:NRAPIAuthenticationInformation) {
 		throw "Missing NinjaOne authentication tokens, please run 'Connect-NinjaOne' first."
 	}
-	Test-NinjaOneEndpointSupport -Method 'DELETE' -resource $resource -Verbose:$VerbosePreference
+	Test-NinjaOneEndpointSupport -Method 'DELETE' -resource $resource -Verbose:$VerbosePreference | Out-Null
 	try {
 		if ($QSCollection) {
 			Write-Verbose ('Query string in New-NinjaOneDELETERequest contains: {0}' -f ($QSCollection | Out-String))
@@ -54,9 +54,10 @@ function New-NinjaOneDELETERequest {
 		try {
 			$Result = Invoke-NinjaOneRequest @WebRequestParams
 			Write-Verbose ('NinjaOne request returned {0}' -f ($Result | Out-String))
-			if ($Result.results) {
+			# Only process object properties if Result is a PSObject or hashtable, not a scalar boolean
+			if (($Result -is [System.Management.Automation.PSCustomObject] -or $Result -is [hashtable]) -and $Result.results) {
 				return $Result.results
-			} elseif ($Result.result) {
+			} elseif (($Result -is [System.Management.Automation.PSCustomObject] -or $Result -is [hashtable]) -and $Result.result) {
 				return $Result.result
 			} else {
 				return $Result
