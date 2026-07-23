@@ -69,7 +69,7 @@ function New-NinjaOneWindowsEventPolicyCondition {
 	param(
 		# The policy id to create the windows event policy condition for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-		[Alias('id')]
+		[Alias('id', 'policy_id')]
 		[Int]$policyId,
 		# An object containing the windows event policy condition to create.
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
