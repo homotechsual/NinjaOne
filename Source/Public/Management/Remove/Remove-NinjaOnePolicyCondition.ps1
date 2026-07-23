@@ -26,10 +26,11 @@ function Remove-NinjaOnePolicyCondition {
 	param(
 		# The policy id to remove the condition from.
 		[Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-		[Alias('id')]
+		[Alias('id', 'policy_id')]
 		[Int]$policyId,
 		# The condition id to remove.
 		[Parameter(Mandatory, Position = 1, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+		[Alias('condition_id')]
 		[GUID]$conditionId
 	)
 	process {

@@ -68,6 +68,14 @@ jobs:
           $ErrorActionPreference = 'Stop'
           & "$env:GITHUB_WORKSPACE\DevOps\Build\build.ps1" -TaskNames 'clean', 'build'
 
+      - name: Run cmdlet/spec contract audit
+        id: contract_audit
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & "$env:GITHUB_WORKSPACE\DevOps\Quality\audit-cmdlet-spec-contract.ps1"
+
       - name: Run monthly instance capability check
         id: capability_check
         shell: pwsh
@@ -166,13 +174,26 @@ jobs:
             .artifacts/instance-capability-report.json
             .artifacts/instance-capability-report.md
 
+      - name: Upload cmdlet/spec contract audit
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: cmdlet-spec-contract-audit
+          path: |
+            .artifacts/cmdlet-spec-contract-issues.json
+            .artifacts/cmdlet-spec-contract-issues.md
+
       - name: Fail if endpoint drift was detected
         if: always()
         shell: pwsh
         run: |
-          if ('${{ steps.capability_check.outcome }}' -ne 'success') {
+          if ('${{ steps.capability_check.outcome }}' -ne 'success' -or '${{ steps.contract_audit.outcome }}' -ne 'success') {
             if ('${{ steps.capability_check.outputs.drift_detected }}' -eq 'true') {
               throw 'Endpoint drift was detected. Review the uploaded report artifact and any created issue.'
+            }
+
+            if ('${{ steps.contract_audit.outcome }}' -ne 'success') {
+              throw 'Cmdlet/spec contract drift was detected. Review the uploaded audit artifact.'
             }
 
             throw 'The instance capability check failed before drift analysis completed. Review the workflow logs for the underlying execution error.'

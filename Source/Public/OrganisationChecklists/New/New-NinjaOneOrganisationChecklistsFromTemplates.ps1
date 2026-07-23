@@ -25,7 +25,7 @@ function New-NinjaOneOrganisationChecklistsFromTemplates {
 	param(
 		# The organisation Id to create checklists for.
 		[Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
-		[Alias('id')]
+		[Alias('id', 'organizationId')]
 		[Int]$organisationId,
 		# Request payload per API schema
 		[Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]

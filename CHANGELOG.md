@@ -4,6 +4,15 @@ Please note that backwards compatibility breaks are prefixed with `{"BC"}` (shor
 
 Note: Version 2.3.0 was released in error and will be skipped.
 
+## 2026-07-23 - Version 2.8.0
+
+* Updates:
+  * Add a permanent cmdlet/spec contract audit to catch endpoint, path, and request-body drift in CI.
+  * Align `Set-NinjaOneEndUserDeviceAccess` with the API surface for end-user device access updates.
+
+* Fixes:
+  * Keep the monthly instance capability workflow running alongside the new contract audit and artifact reporting.
+
 ## 2026-06-22 - Version 2.7.2
 
 * Fixes:

@@ -116,6 +116,18 @@
 				"approve": true,
 				"matchCommandLine": true,
 			},
+			"/^pwsh -NoProfile -File \\.\\\\DevOps\\\\Quality\\\\check-instance-capabilities\\.ps1$/": {
+				"approve": true,
+				"matchCommandLine": true,
+			},
+			"/^pwsh -NoProfile -Command \"\\$ErrorActionPreference='Stop'; \\$files = Get-ChildItem -Path \\.\\\\Source -Recurse -File -Include \\*\\.ps1,\\*\\.psm1; foreach \\(\\$f in \\$files\\) \\{ \\$tokens=\\$null; \\$errors=\\$null; \\[System\\.Management\\.Automation\\.Language\\.Parser\\]::ParseFile\\(\\$f\\.FullName,\\[ref\\]\\$tokens,\\[ref\\]\\$errors\\) \\| Out-Null; if \\(\\$errors -and \\$errors\\.Count -gt 0\\) \\{ foreach \\(\\$e in \\$errors\\) \\{ '\\{0\\}:\\{1\\}:\\{2\\} \\{3\\}' -f \\$f\\.FullName,\\$e\\.Extent\\.StartLineNumber,\\$e\\.Extent\\.StartColumnNumber,\\$e\\.Message \\} \\} \\}\"$/": {
+				"approve": true,
+				"matchCommandLine": true,
+			},
+			"/^pwsh -NoProfile -Command \"Import-Module \\.\\\\Output\\\\NinjaOne\\\\2\\.7\\.1\\\\NinjaOne\\.psd1 -Force -Verbose\"$/": {
+				"approve": true,
+				"matchCommandLine": true,
+			},
 		},
 		"codeQL.githubDatabase.download": "never",
 		"cSpell.words": ["Analyzer"],

@@ -12,7 +12,7 @@
 	RootModule = '.\NinjaOne.psm1'
 
 	# Version number of this module.
-	ModuleVersion = '2.7.2'
+	ModuleVersion = '2.8.0'
 
 	# Supported PSEditions
 	# CompatiblePSEditions = @()
@@ -131,14 +131,18 @@
 				'Get-NinjaOneTabEndUser', 'Get-NinjaOneTabOrganisation', 
 				'Get-NinjaOneEntityCustomFieldsSignedURLs', 
 				'Get-NinjaOneTabSummaryEndUser', 
+				'Get-NinjaOneTabSummaryGlobal', 
 				'Get-NinjaOneTabSummaryOrganisation', 'Get-NinjaOneTabSummaryRole', 
 				'Set-NinjaOneTabEndUserOrder', 'Get-NinjaOneTabRole', 
 				'Remove-NinjaOneTab', 'Set-NinjaOneTabRoleVisibility', 
-				'Set-NinjaOneTabOrganisationOrder', 'Set-NinjaOneTabRoleOrder', 
+				'Set-NinjaOneTabGlobalOrder', 'Set-NinjaOneTabOrganisationOrder', 
+				'Set-NinjaOneTabRoleOrder', 
 				'Get-NinjaOneTags', 'Remove-NinjaOneTag', 
 				'New-NinjaOneUnmanagedDevice', 'Remove-NinjaOneUnmanagedDevice', 
 				'Get-NinjaOneUserRoles', 'Add-NinjaOneUserRoleMembers', 
-				'Remove-NinjaOneUserRoleMembers', 'Set-NinjaOneEndUserCustomFields', 
+				'Remove-NinjaOneUserRoleMembers', 
+				'Set-NinjaOneUserRoleOrganizationPermissions', 
+				'Set-NinjaOneEndUserCustomFields', 
 				'Set-NinjaOneEndUserDeviceAccess', 
 				'Set-NinjaOneKnowledgeBaseArticles', 'Set-NinjaOneTab', 
 				'Rename-NinjaOneTab', 'New-NinjaOneTab', 
@@ -195,7 +199,9 @@
 				'Remove-NinjaOneDeviceOwner', 'Get-NinjaOneSoftwareInventory', 
 				'Get-NinjaOneSoftwareLicense', 
 				'Get-NinjaOneSoftwareLicenseAssignments', 
-				'Get-NinjaOneSoftwareLicenses', 'Get-NinjaOneSoftwarePatches', 
+				'Get-NinjaOneSoftwareLicenses', 
+				'Set-NinjaOneSoftwareLicenseAssignmentsLastUsage', 
+				'Get-NinjaOneSoftwarePatches', 
 				'Get-NinjaOneSoftwarePatchInstalls', 'Get-NinjaOneSoftwareProducts', 
 				'Get-NinjaOneTasks', 'Get-NinjaOneTicketAttributes', 
 				'Get-NinjaOneTicketBoards', 'Get-NinjaOneTicketForms', 
