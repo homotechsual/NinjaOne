@@ -1288,6 +1288,20 @@ Describe 'New-NinjaOneGETRequest' {
 			Assert-MockCalled -CommandName Test-NinjaOneEndpointSupport -ModuleName $ModuleName -Times 1 -ParameterFilter { $Method -eq 'GET' -and $resource -eq '/v2/organizations' }
 		}
 
+		It 'should not leak endpoint support output into the request result' {
+			Mock -CommandName Test-NinjaOneEndpointSupport -ModuleName $ModuleName -MockWith { $true }
+			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+				[pscustomobject]@{ result = [pscustomobject]@{ id = 42 } }
+			}
+
+			$module = Get-Module -Name $ModuleName
+			& $module {
+				$result = @(New-NinjaOneGETRequest -Resource '/v2/organizations')
+				$result.Count | Should -Be 1
+				$result[0].id | Should -Be 42
+			}
+		}
+
 		It 'should return the results property when present' {
 			Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
 				[pscustomobject]@{ results = @('a', 'b') }
