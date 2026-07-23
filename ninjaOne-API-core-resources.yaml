@@ -3481,6 +3481,24 @@ paths:
           description: default response
           content:
             application/json: {}
+  /v2/software-license/assignments/last-usage:
+    put:
+      tags:
+        - Software Licenses
+      summary: Update software license assignment last usage
+      description: Updates last-usage data for software license assignments
+      operationId: updateSoftwareLicenseAssignmentLastUsage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
   /v2/software-license/licenses:
     get:
       tags:
@@ -4029,6 +4047,16 @@ paths:
             \ role, and the role hierarchy (used for sorting, if desired)"
         "404":
           description: The RoleId could not be found
+  /v2/tab/summary/global:
+    get:
+      tags:
+        - Custom Tabs
+      summary: Retrieve all custom tabs available globally
+      description: Retrieve a summary of globally available custom tabs
+      operationId: getTabSummaryForGlobal
+      responses:
+        "200":
+          description: Returns a list of globally available custom tabs
   /v2/tab/rename:
     patch:
       tags:
@@ -4094,6 +4122,24 @@ paths:
         "200":
           description: Returns a list of the affected tabs (as CustomTabLabelPublicApiDTO)
             with updated order data
+  /v2/tab/global/order:
+    patch:
+      tags:
+        - Custom Tabs
+      summary: Update the order of custom tabs globally
+      description: Update the order of globally available custom tabs
+      operationId: updateGlobalCustomTabsOrder
+      requestBody:
+        description: Payload specifying the tab ordering
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/CustomTabsOrderPublicApiDTO"
+      responses:
+        "200":
+          description: Returns a list of globally affected tabs with updated order data
   /v2/tab/organization/order:
     patch:
       tags:
@@ -8094,6 +8140,40 @@ paths:
           description: Forbidden
         "404":
           description: Role or members not found
+  /v2/user/role/{roleId}/permissions/organizations:
+    patch:
+      tags:
+        - management
+      summary: Update user role organization permissions
+      description: Updates organization permissions for the specified user role
+      operationId: updateUserRoleOrganizationPermissions
+      parameters:
+        - name: roleId
+          in: path
+          description: Role identifier
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          description: User role organization permissions updated
+          content:
+            application/json: {}
+        "400":
+          description: Several possible validation errors
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Role not found
   /v2/user/roles:
     get:
       tags:
