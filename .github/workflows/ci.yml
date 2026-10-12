@@ -7,10 +7,24 @@ on:
   push:
     branches:
       - develop
+    paths-ignore:
+      - 'Docs/**'
+      - 'docs/**'
+      - '*.md'
+      - '**/*.md'
+      - '*.mdx'
+      - '**/*.mdx'
   pull_request:
     branches:
       - develop
       - main
+    paths-ignore:
+      - 'Docs/**'
+      - 'docs/**'
+      - '*.md'
+      - '**/*.md'
+      - '*.mdx'
+      - '**/*.mdx'
   workflow_dispatch:
 
 jobs:
