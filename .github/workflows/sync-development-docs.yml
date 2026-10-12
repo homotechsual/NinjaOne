@@ -6,7 +6,15 @@ env:
 on:
   workflow_run:
     workflows: ['CI']
-    types: [completed]
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Skip the git push to homotechsualdocs (test mode)
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   actions: read
@@ -19,17 +27,17 @@ jobs:
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     if: >-
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'push' &&
-      github.event.workflow_run.head_branch == 'develop'
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.event == 'push' &&
+        github.event.workflow_run.head_branch == 'develop'
+      )
     steps:
-      - name: Download development docs artifact
-        shell: pwsh
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          $ErrorActionPreference = 'Stop'
-          gh run download ${{ github.event.workflow_run.id }} --name module-docs --dir docs-artifact --repo homotechsual/NinjaOne
+      - name: Checkout NinjaOne repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Clone and update homotechsualdocs
         shell: pwsh
@@ -39,20 +47,25 @@ jobs:
           $ErrorActionPreference = 'Stop'
           $PSNativeCommandUseErrorActionPreference = $true
 
-          $sourceDevelopmentPath = Get-ChildItem -Path 'docs-artifact' -Directory -Recurse |
-            Where-Object {
-              $_.Name -eq 'development' -and
-              $_.Parent -and
-              $_.Parent.Name -ieq 'ninjaone'
-            } |
-            Select-Object -First 1 -ExpandProperty FullName
+          $sourceDevelopmentPath = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath 'docs\NinjaOne\development'
+          $sourceIndexPath = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath 'docs\NinjaOne\index.mdx'
+          $sourceImagePath = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath 'docs\NinjaOne\img'
 
           if (-not (Test-Path -Path $sourceDevelopmentPath -PathType Container)) {
-            Write-Error 'Documentation artifact does not contain a docs/ninjaone/development directory.'
+            Write-Error "Source development docs path not found: $sourceDevelopmentPath"
             exit 1
           }
 
+          $hasIndex = Test-Path -Path $sourceIndexPath -PathType Leaf
+          $hasImages = Test-Path -Path $sourceImagePath -PathType Container
+
           Write-Host "Using development documentation from: $sourceDevelopmentPath" -ForegroundColor Cyan
+          if ($hasIndex) {
+            Write-Host "Using index doc from: $sourceIndexPath" -ForegroundColor Cyan
+          }
+          if ($hasImages) {
+            Write-Host "Using image assets from: $sourceImagePath" -ForegroundColor Cyan
+          }
 
           git -c core.autocrlf=false clone https://x-access-token:$env:GH_TOKEN@github.com/homotechsual/homotechsualdocs.git docs-repo
 
@@ -81,24 +94,46 @@ jobs:
               Remove-Item -Path 'docs/ninjaone/development' -Recurse -Force
             }
             New-Item -Path 'docs/ninjaone/development' -ItemType Directory -Force | Out-Null
-
             Copy-Item -Path (Join-Path -Path $sourceDevelopmentPath -ChildPath '*') -Destination 'docs/ninjaone/development' -Recurse -Force
+
+            if ($hasIndex) {
+              Copy-Item -Path $sourceIndexPath -Destination 'docs/ninjaone/index.mdx' -Force
+              if (Test-Path 'docs/ninjaone/index.md') {
+                Remove-Item -Path 'docs/ninjaone/index.md' -Force
+              }
+            }
+
+            if ($hasImages) {
+              if (Test-Path 'docs/ninjaone/img') {
+                Remove-Item -Path 'docs/ninjaone/img' -Recurse -Force
+              }
+              Copy-Item -Path $sourceImagePath -Destination 'docs/ninjaone/img' -Recurse -Force
+            }
 
             git config user.email 'action@github.com'
             git config user.name 'GitHub Action'
 
             $changes = git status --porcelain
             if (-not $changes) {
-              Write-Host 'No development documentation changes to commit.' -ForegroundColor Yellow
+              Write-Host 'No documentation changes to commit.' -ForegroundColor Yellow
               exit 0
             }
 
-            git add docs/ninjaone/development
-            $commitMsg = 'Sync NinjaOne development docs from develop'
-            git commit -m $commitMsg
-            git push origin "HEAD:$targetBranch"
+            $pathsToAdd = @('docs/ninjaone/development')
+            if ($hasIndex) {
+              $pathsToAdd += 'docs/ninjaone/index.mdx'
+            }
+            if ($hasImages) {
+              $pathsToAdd += 'docs/ninjaone/img'
+            }
 
-            Write-Host '✓ Development documentation published to homotechsualdocs' -ForegroundColor Green
+            git add -- $pathsToAdd
+            git commit -m 'Sync NinjaOne documentation from develop'
+            if ('${{ inputs.dry_run }}' -eq 'true') {
+              Write-Host 'Dry run: skipping git push.' -ForegroundColor Yellow
+            } else {
+              git push origin "HEAD:$targetBranch"
+            }
           } finally {
             Pop-Location
           }

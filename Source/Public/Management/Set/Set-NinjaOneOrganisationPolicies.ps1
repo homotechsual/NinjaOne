@@ -21,7 +21,7 @@ function Set-NinjaOneOrganisationPolicies {
 		.OUTPUTS
 			A powershell object containing the response.
 		.LINK
-			https://docs.homotechsual.dev/modules/ninjaone/commandlets/set/organisationpolicies
+			https://docs.homotechsual.dev/modules/ninjaone/commandlets/Set/organisationpolicies
 	
 	.EXAMPLE
 		PS> Set-NinjaOneOrganisationPolicies -Identity 123 -Property 'Value'

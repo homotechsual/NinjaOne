@@ -50,7 +50,11 @@ The cross-platform smoke job runs a lightweight `core,private` Pester subset on 
 
 The Windows test job also bootstraps dependencies, builds the C# helper projects, uploads Pester results, and publishes coverage artifacts to Codecov.
 
-After a successful `push` run on `develop`, `sync-development-docs.yml` publishes `docs/NinjaOne/development` to `homotechsualdocs` at `docs/ninjaone/development`.
+After a successful `push` run on `develop`, `sync-development-docs.yml` publishes documentation from `develop` to `homotechsualdocs` at:
+
+* `docs/NinjaOne/development` to `docs/ninjaone/development`
+* `docs/NinjaOne/index.mdx` to `docs/ninjaone/index.mdx`
+* `docs/NinjaOne/img` to `docs/ninjaone/img`
 
 ## Stable release flow
 
