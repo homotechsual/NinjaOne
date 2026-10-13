@@ -220,7 +220,12 @@ foreach ($result in $results) {
 	} else {
 		$result.Instance
 	}
-	$summary.Add(('| {0} | {1} | {2} | {3} | {4} | {5} | {6} |' -f $instanceLabel, $result.AppVersion, $result.PathCount, $result.LiveEndpointWithoutCmdletCoverageCount, $result.RemovedRepoAndCmdletCount, $result.RemovedRepoOnlyCount, $result.RemovedCmdletOnlyCount)) | Out-Null
+	$versionLabel = if ([string]::IsNullOrWhiteSpace($result.AppVersion)) {
+		'unavailable'
+	} else {
+		$result.AppVersion
+	}
+	$summary.Add(('| {0} | {1} | {2} | {3} | {4} | {5} | {6} |' -f $instanceLabel, $versionLabel, $result.PathCount, $result.LiveEndpointWithoutCmdletCoverageCount, $result.RemovedRepoAndCmdletCount, $result.RemovedRepoOnlyCount, $result.RemovedCmdletOnlyCount)) | Out-Null
 }
 
 $coverageResults = @($results | Where-Object { $_.LiveEndpointWithoutCmdletCoverageCount -gt 0 })
