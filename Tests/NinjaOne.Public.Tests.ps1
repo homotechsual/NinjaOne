@@ -1,4 +1,4 @@
-#Requires -Modules @{ ModuleName = 'Pester'; RequiredVersion = '6.1.0' }
+#Requires -Modules @{ ModuleName = 'Pester'; ModuleVersion = '6.1.0'; MaximumVersion = '6.999' }
 
 $ModuleName = 'NinjaOne'
 $RepoRoot = (Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\')).Path
