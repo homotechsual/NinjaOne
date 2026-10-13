@@ -16,6 +16,22 @@
 
 Use the [docs website](https://docs.homotechsual.dev/modules/ninjaone) for the most up-to-date information and a full automatically generated commandlet reference.
 
+## Additional endpoint coverage
+
+- `Get-NinjaOneDeviceGeolocationHistory` retrieves a page of mobile device geolocation history.
+  `-after` and `-before` accept epoch seconds (including fractions); the window is limited
+  to seven days. Use `-pageSize` (10-500) and `-cursor` for pagination.
+- `Get-NinjaOneKnowledgeBaseArticle -articleId 1 -details` retrieves the article object.
+  Without `-details`, the existing download behavior is unchanged; `-signedUrls` remains available.
+- `Get-NinjaOneGlobalKnowledgeBaseArticle -articleId 1` retrieves a global article object.
+- `Get-NinjaOneGlobalCustomFields` and `Set-NinjaOneGlobalCustomFields -globalCustomFields @{ region = 'Europe' }`
+  retrieve and update global custom field **values**, not field definitions.
+  Updates support `-WhatIf` and `-Confirm`.
+
+Instance capability discovery warns and returns a null `AppVersion` when the version endpoint
+returns HTML, another invalid response, or cannot be reached. Endpoint discovery still proceeds
+using the OpenAPI specification; invalid version content is not cached or included in reports.
+
 ## Tooling locations
 
 Common dev and build tooling lives under DevOps:

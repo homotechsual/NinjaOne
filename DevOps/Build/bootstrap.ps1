@@ -21,7 +21,7 @@ Write-Host 'Bootstrap: Setting up build environment for NinjaOne module' -Foregr
 $BundledModulesPath = Join-Path -Path $RepoRoot -ChildPath 'Modules'
 if (Test-Path -Path $BundledModulesPath) {
 	Write-Host 'Bootstrap: Adding bundled modules to PSModulePath' -ForegroundColor Cyan
-	$env:PSModulePath = "$BundledModulesPath;$($env:PSModulePath)"
+	$env:PSModulePath = "$BundledModulesPath$([System.IO.Path]::PathSeparator)$($env:PSModulePath)"
 	Write-Host "Bootstrap: PSModulePath updated to prioritize: $BundledModulesPath" -ForegroundColor Cyan
 }
 

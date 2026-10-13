@@ -23,13 +23,27 @@ function Get-NinjaOneInstanceCapabilitiesInternal {
 	$version = $null
 	$yaml = $null
 	try {
-		$version = (Invoke-WebRequest -Uri ("{0}/app-version.txt" -f $cacheKey) -UseBasicParsing -ErrorAction Stop).Content.Trim()
+		$versionContent = (Invoke-WebRequest -Uri ("{0}/app-version.txt" -f $cacheKey) -UseBasicParsing -ErrorAction Stop).Content
+		if ($versionContent -is [byte[]]) {
+			$versionContent = [System.Text.Encoding]::UTF8.GetString($versionContent)
+		}
+		$versionText = ([string]$versionContent).Trim()
+		if ($versionText -match '^\d+(?:\.\d+){1,3}(?:[-+][0-9A-Za-z][0-9A-Za-z.+-]*)?$') {
+			$version = $versionText
+		} else {
+			Write-Warning ('Instance {0} returned an invalid app version response; app version is unavailable.' -f $cacheKey)
+		}
 	} catch {
-		$version = $null
+		Write-Warning ('Unable to retrieve app version from {0}: {1}' -f $cacheKey, $_.Exception.Message)
 	}
 
 	try {
-		$yaml = [System.Text.Encoding]::UTF8.GetString((Invoke-WebRequest -Uri ("{0}/apidocs-beta/NinjaRMM-API-v2.yaml" -f $cacheKey) -UseBasicParsing -ErrorAction Stop).Content)
+		$yamlContent = (Invoke-WebRequest -Uri ("{0}/apidocs-beta/NinjaRMM-API-v2.yaml" -f $cacheKey) -UseBasicParsing -ErrorAction Stop).Content
+		$yaml = if ($yamlContent -is [byte[]]) {
+			[System.Text.Encoding]::UTF8.GetString($yamlContent)
+		} else {
+			[string]$yamlContent
+		}
 	} catch {
 		return $null
 	}

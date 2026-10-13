@@ -8240,8 +8240,154 @@ paths:
           description: Forbidden
         "404":
           description: Role or members not found
+  /v2/device/{id}/geolocation/history:
+    get:
+      tags:
+        - Geolocation
+      summary: Device geolocation history
+      description: Returns paginated geolocation history for a mobile device. Defaults
+        to the last 7 days; the time window cannot exceed 7 days.
+      operationId: getDeviceGeolocationHistory
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: after
+          in: query
+          description: Include records on or after this timestamp (epoch seconds).
+          schema:
+            type: number
+            format: double
+        - name: before
+          in: query
+          description: Include records on or before this timestamp (epoch seconds).
+          schema:
+            type: number
+            format: double
+        - name: pageSize
+          in: query
+          schema:
+            maximum: 500
+            minimum: 10
+            type: integer
+            format: int32
+            default: 100
+        - name: cursor
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Geolocation history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeolocationHistoryResponse"
+  /v2/knowledgebase/article/{articleId}:
+    get:
+      tags:
+        - Knowledge Base Articles
+      summary: Get knowledge base article
+      description: Retrieves a specific knowledge base article by id
+      operationId: getClientKnowledgeBaseArticleById
+      parameters:
+        - name: articleId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Knowledge base article found by id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KnowledgeBaseArticlePublicApiDTO"
+        "404":
+          description: Knowledge base article not found
+  /v2/knowledgebase/global/article/{articleId}:
+    get:
+      tags:
+        - Knowledge Base Articles
+      summary: Get global knowledge base article
+      description: Retrieves a specific global knowledge base article by id
+      operationId: getGlobalKnowledgeBaseArticleById
+      parameters:
+        - name: articleId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Global knowledge base article found by id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KnowledgeBaseArticlePublicApiDTO"
+        "404":
+          description: Global knowledge base article not found
+  /v2/system/custom-fields:
+    get:
+      tags:
+        - system
+      summary: Global custom fields
+      description: Returns global custom field values
+      operationId: getGlobalCustomFields
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+    patch:
+      tags:
+        - system
+      summary: Update global custom field values
+      description: Update global custom field values
+      operationId: updateGlobalCustomFields
+      requestBody:
+        description: Custom field values keyed by field name.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "204":
+          description: No Content
 components:
   schemas:
+    GeolocationHistoryResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          description: Geolocation records
+          items:
+            $ref: "#/components/schemas/GeolocationRecord"
+        cursor:
+          $ref: "#/components/schemas/Cursor"
+    GeolocationRecord:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        timestamp:
+          type: number
+          description: Location timestamp, epoch seconds with millisecond precision
+          format: double
     Contact:
       type: object
       properties:
