@@ -2913,6 +2913,44 @@ Describe 'Connect-NinjaOne' {
 			}
 		}
 
+		It 'should preserve the active connection when the OAuth listener fails' {
+			Pester\InModuleScope $ModuleName {
+				$connection = @{
+					AuthMode = 'Client Credentials'
+					Instance = 'us'
+					ClientId = 'existing-client-id'
+					ClientSecret = 'existing-client-secret'
+					ParseDateTimes = $true
+				}
+				$authentication = @{
+					Type = 'Bearer'
+					Access = 'existing-access-token'
+					Expires = [DateTime]::UtcNow.AddHours(1)
+					Refresh = 'existing-refresh-token'
+				}
+				$script:NRAPIConnectionInformation = $connection
+				$script:NRAPIAuthenticationInformation = $authentication
+				$script:ParseDateTimes = $true
+
+				Pester\Mock -CommandName Invoke-NinjaOnePreFlightCheck -MockWith {}
+				Pester\Mock -CommandName Start-OAuthHTTPListener -MockWith {
+					throw 'Callback port is occupied.'
+				}
+				Pester\Mock -CommandName Invoke-WebRequest -MockWith {}
+
+				{
+					Connect-NinjaOne -Instance 'us' -ClientId 'new-client-id' -ClientSecret 'new-client-secret' -UseWebAuth
+				} | Pester\Should -Throw
+
+				[object]::ReferenceEquals($script:NRAPIConnectionInformation, $connection) | Pester\Should -BeTrue
+				[object]::ReferenceEquals($script:NRAPIAuthenticationInformation, $authentication) | Pester\Should -BeTrue
+				$script:NRAPIAuthenticationInformation.Access | Pester\Should -Be 'existing-access-token'
+				$script:ParseDateTimes | Pester\Should -BeTrue
+				Pester\Should-Invoke -CommandName Start-OAuthHTTPListener -Times 1 -Exactly
+				Pester\Should-Invoke -CommandName Invoke-WebRequest -Times 0 -Exactly
+			}
+		}
+
 		It 'should preserve the active connection when token acquisition fails' {
 			$module = Get-Module -Name $ModuleName
 			Pester\InModuleScope $ModuleName {

@@ -268,6 +268,9 @@ function Connect-NinjaOne {
 				$OAuthListenerResponse = Start-OAuthHTTPListener @OAuthListenerParams
 				$Script:NRAPIAuthenticationInformation.Code = $OAuthListenerResponse.Code
 			} catch {
+				$Script:NRAPIConnectionInformation = $PreviousConnectionInformation
+				$Script:NRAPIAuthenticationInformation = $PreviousAuthenticationInformation
+				$Script:ParseDateTimes = $PreviousParseDateTimes
 				New-NinjaOneError -ErrorRecord $_
 			}
 		}
