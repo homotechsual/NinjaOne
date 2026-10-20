@@ -1,5 +1,5 @@
 @{
-	Pester = '6.1.0'
+	Pester = '6.*'
 	PlatyPS = '0.14.2'
 	PSScriptAnalyzer = '1.*'
 	'PowerShell-Yaml' = '0.4.12'

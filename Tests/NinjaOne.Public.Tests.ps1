@@ -1,10 +1,128 @@
-#Requires -Modules @{ ModuleName = 'Pester'; RequiredVersion = '6.1.0' }
+#Requires -Modules @{ ModuleName = 'Pester'; ModuleVersion = '6.1.0'; MaximumVersion = '6.999' }
 
 $ModuleName = 'NinjaOne'
 $RepoRoot = (Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '..\')).Path
 $ModulePath = $env:NINJAONE_MODULE_MANIFEST
 if ([string]::IsNullOrWhiteSpace($ModulePath)) {
 	$ModulePath = Get-ChildItem -Path ('{0}\Output\{1}\*\{1}.psd1' -f $RepoRoot, $ModuleName) -ErrorAction Stop | Select-Object -Last 1 -ExpandProperty FullName
+}
+
+Describe 'Monthly endpoint coverage additions' {
+	BeforeEach {
+		Pester\Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith {
+			param($Resource, $QSCollection)
+			[pscustomobject]@{ resource = $Resource; query = $QSCollection }
+		}
+		Pester\Mock -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -MockWith { return 204 }
+		Pester\Mock -CommandName New-NinjaOneError -ModuleName $ModuleName -MockWith {
+			param($ErrorRecord)
+			throw $ErrorRecord.Exception
+		}
+	}
+
+	$ReadCases = @(
+		@{ Name = 'article details'; Invoke = { Get-NinjaOneKnowledgeBaseArticle -articleId 63 -details }; Resource = 'v2/knowledgebase/article/63' }
+		@{ Name = 'global article'; Invoke = { Get-NinjaOneGlobalKnowledgeBaseArticle -articleId 64 }; Resource = 'v2/knowledgebase/global/article/64' }
+		@{ Name = 'global custom fields'; Invoke = { Get-NinjaOneGlobalCustomFields }; Resource = 'v2/system/custom-fields' }
+		@{ Name = 'geolocation history'; Invoke = { Get-NinjaOneDeviceGeolocationHistory -deviceId 65 }; Resource = 'v2/device/65/geolocation/history' }
+	)
+
+	It 'routes <Name> to the documented endpoint' -ForEach $ReadCases {
+		$result = & $Invoke
+		$result.resource | Pester\Should -Be $Resource
+		if ($null -ne $result.query) {
+			$result.query.Count | Pester\Should -Be 0
+		}
+	}
+
+	It 'delegates <Name> API errors' -ForEach $ReadCases {
+		Pester\Mock -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -MockWith { throw 'endpoint-api-failed' }
+		{ & $Invoke } | Pester\Should -Throw '*endpoint-api-failed*'
+		Pester\Should-Invoke -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+
+	It 'keeps article download and signed URL behavior without leaking routing switches' {
+		$download = Get-NinjaOneKnowledgeBaseArticle -articleId 63
+		$signed = Get-NinjaOneKnowledgeBaseArticle -articleId 63 -signedUrls
+		$download.resource | Pester\Should -Be 'v2/knowledgebase/article/63/download'
+		$signed.resource | Pester\Should -Be 'v2/knowledgebase/article/63/signed-urls'
+		$signed.query.Count | Pester\Should -Be 0
+		{ Get-NinjaOneKnowledgeBaseArticle -articleId 63 -details -signedUrls } | Pester\Should -Throw
+	}
+
+	It 'accepts article and device ids from the pipeline' {
+		$articles = @(@{ id = 64 }, @{ id = 65 }) | ForEach-Object { [pscustomobject]$_ } | Get-NinjaOneGlobalKnowledgeBaseArticle
+		$articles.resource | Pester\Should -Be @('v2/knowledgebase/global/article/64', 'v2/knowledgebase/global/article/65')
+		$history = 65, 66 | Get-NinjaOneDeviceGeolocationHistory
+		$history.resource | Pester\Should -Be @('v2/device/65/geolocation/history', 'v2/device/66/geolocation/history')
+	}
+
+	It 'sends fractional epoch seconds, zero, page size and cursor using invariant formatting' {
+		$previousCulture = [System.Threading.Thread]::CurrentThread.CurrentCulture
+		try {
+			[System.Threading.Thread]::CurrentThread.CurrentCulture = [System.Globalization.CultureInfo]::GetCultureInfo('de-DE')
+			$result = Get-NinjaOneDeviceGeolocationHistory -deviceId 65 -after 0 -before 604799.125 -pageSize 500 -cursor 'next page'
+			$result.query['after'] | Pester\Should -Be '0'
+			$result.query['before'] | Pester\Should -Be '604799.125'
+			$result.query['pageSize'] | Pester\Should -Be '500'
+			$result.query['cursor'] | Pester\Should -Be 'next page'
+			$result.query['id'] | Pester\Should -BeNullOrEmpty
+			$result.query['deviceId'] | Pester\Should -BeNullOrEmpty
+		} finally {
+			[System.Threading.Thread]::CurrentThread.CurrentCulture = $previousCulture
+		}
+	}
+
+	It 'accepts the exact seven day time window and minimum page size' {
+		$result = Get-NinjaOneDeviceGeolocationHistory -deviceId 65 -after 0 -before 604800 -pageSize 10
+		$result.query['before'] | Pester\Should -Be '604800'
+		$result.query['pageSize'] | Pester\Should -Be '10'
+	}
+
+	It 'rejects invalid geolocation bounds before issuing a request' {
+		{ Get-NinjaOneDeviceGeolocationHistory -deviceId 65 -after 0 -before 604800.001 } | Pester\Should -Throw '*seven days*'
+		{ Get-NinjaOneDeviceGeolocationHistory -deviceId 65 -after 2 -before 1 } | Pester\Should -Throw '*ordered*'
+		{ Get-NinjaOneDeviceGeolocationHistory -deviceId 65 -pageSize 9 } | Pester\Should -Throw
+		{ Get-NinjaOneDeviceGeolocationHistory -deviceId 65 -pageSize 501 } | Pester\Should -Throw
+		{ Get-NinjaOneDeviceGeolocationHistory -deviceId 65 -after -1 } | Pester\Should -Throw
+		Pester\Should-Invoke -CommandName New-NinjaOneGETRequest -ModuleName $ModuleName -Times 0
+	}
+
+	It 'updates global custom fields with the supplied body and reports success' {
+		$body = @{ region = 'Europe'; locations = @{ entityIds = @(1, 2); type = 'CLIENT_LOCATION' } }
+		Set-NinjaOneGlobalCustomFields -globalCustomFields $body -Confirm:$false -InformationVariable info
+		Pester\Should-Invoke -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -Times 1 -ParameterFilter {
+			$Resource -eq 'v2/system/custom-fields' -and $Body.region -eq 'Europe' -and $Body.locations.entityIds.Count -eq 2
+		}
+		$info.MessageData | Pester\Should -Contain 'Global custom fields updated successfully.'
+	}
+
+	It 'does not update global custom fields with WhatIf' {
+		Set-NinjaOneGlobalCustomFields -globalCustomFields @{ region = 'Europe' } -WhatIf
+		Pester\Should-Invoke -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -Times 0
+	}
+
+	It 'delegates global custom field update errors' {
+		Pester\Mock -CommandName New-NinjaOnePATCHRequest -ModuleName $ModuleName -MockWith { throw 'global-fields-failed' }
+		{ Set-NinjaOneGlobalCustomFields -globalCustomFields @{ region = 'Europe' } -Confirm:$false } | Pester\Should -Throw '*global-fields-failed*'
+		Pester\Should-Invoke -CommandName New-NinjaOneError -ModuleName $ModuleName -Times 1
+	}
+
+	It 'exports metadata for all five missing operations' {
+		$expected = @{
+			'Get-NinjaOneDeviceGeolocationHistory' = @('/v2/device/{id}/geolocation/history', 'get')
+			'Get-NinjaOneKnowledgeBaseArticle' = @('/v2/knowledgebase/article/{articleId}', 'get')
+			'Get-NinjaOneGlobalKnowledgeBaseArticle' = @('/v2/knowledgebase/global/article/{articleId}', 'get')
+			'Get-NinjaOneGlobalCustomFields' = @('/v2/system/custom-fields', 'get')
+			'Set-NinjaOneGlobalCustomFields' = @('/v2/system/custom-fields', 'patch')
+		}
+		foreach ($name in $expected.Keys) {
+			$command = Get-Command -Name $name -Module $ModuleName -ErrorAction Stop
+			$tags = @($command.ScriptBlock.Attributes | Where-Object { $_ -is [MetadataAttribute] } | ForEach-Object { $_.GetTags() })
+			$tags | Pester\Should -Contain $expected[$name][0]
+			$tags | Pester\Should -Contain $expected[$name][1]
+		}
+	}
 }
 
 Describe 'Set-NinjaOneOrganisation' {
