@@ -2308,6 +2308,25 @@ Describe 'New-NinjaOneQuery' {
 				{ New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters -AsString -ErrorAction SilentlyContinue } | Pester\Should -Not -Throw
 			}
 		}
+
+		It 'should omit parameter values from verbose output' {
+			$module = Get-Module -name $ModuleName
+			Pester\InModuleScope $ModuleName {
+				$Filter = 'sensitive-filter-value'
+				$parameters = @{
+					Filter = [pscustomobject]@{
+						Name = 'Filter'
+						ParameterType = [pscustomobject]@{ Name = 'String' }
+						Aliases = @()
+					}
+				}
+				$VerbosePreference = 'Continue'
+				$verboseOutput = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters -Verbose 4>&1 |
+					Where-Object { $_ -is [System.Management.Automation.VerboseRecord] } |
+					Out-String
+				$verboseOutput | Pester\Should -Not -Match 'sensitive-filter-value'
+			}
+		}
 	}
 
 	Context 'Query construction branches' {
@@ -2754,7 +2773,11 @@ Describe 'Set-NinjaOneSecrets' {
 					WriteToSecretVault = $true
 					VaultName = 'TestVault'
 				}
-				{ Set-NinjaOneSecrets @params -ErrorAction Stop } | Pester\Should -Not -Throw
+				$DebugPreference = 'Continue'
+				$debugOutput = Set-NinjaOneSecrets @params -ErrorAction Stop 5>&1 |
+					Where-Object { $_ -is [System.Management.Automation.DebugRecord] } |
+					Out-String
+				$debugOutput | Pester\Should -Not -Match 'client-secret|access-token|refresh-token'
 
 				$script:CapturedSecretWrites.Count | Pester\Should -BeGreaterThan 10
 				($script:CapturedSecretWrites | Where-Object { $_.Name -eq 'NinjaOneAuthMode' }).Count | Pester\Should -Be 1

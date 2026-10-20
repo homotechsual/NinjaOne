@@ -205,7 +205,7 @@ function Connect-NinjaOne {
 			$Script:ParseDateTimes = $true
 			Write-Verbose 'Automatic date/time parsing enabled.'
 		}
-		Write-Verbose ('Connection information set to: {0}' -f ($Script:NRAPIConnectionInformation | Format-List | Out-String))
+		Write-Verbose ('Connection information set with properties: {0}' -f (@($Script:NRAPIConnectionInformation.Keys) -join ', '))
 		if ($null -eq $Script:NRAPIAuthenticationInformation) {
 			$AuthenticationInformation = [HashTable]@{}
 			# Set a script-scoped variable to hold authentication information.
@@ -242,7 +242,7 @@ function Connect-NinjaOne {
 			$AuthRequestURI = [System.UriBuilder]$URL
 			$AuthRequestURI.Path = 'ws/oauth/authorize'
 			$AuthRequestURI.Query = $AuthRequestQuery.ToString()
-			Write-Verbose ('Authentication request query string is {0}' -f $AuthRequestQuery.ToString())
+			Write-Verbose ('Authentication request query contains parameters: {0}' -f (@($AuthRequestParams.Keys) -join ', '))
 			try {
 				$OAuthListenerParams = @{
 					OpenURI = $AuthRequestURI
@@ -291,11 +291,11 @@ function Connect-NinjaOne {
 						scope = $Script:NRAPIConnectionInformation.AuthScopes
 					}
 				}
-				Write-Verbose ('Token request body is {0}' -f ($TokenRequestBody | Format-List | Out-String))
+				Write-Verbose ('Token request body contains parameters: {0}' -f (@($TokenRequestBody.Keys) -join ', '))
 				# Using our authorisation code or refresh token let's get an auth token.
 				$TokenRequestUri = [System.UriBuilder]$URL
 				$TokenRequestUri.Path = 'ws/oauth/token'
-				Write-Verbose ('Making token request to {0}' -f $TokenRequestUri.ToString())
+				Write-Verbose 'Making token request to the configured NinjaOne endpoint.'
 				$TokenRequestParams = @{
 					Uri = $TokenRequestUri.ToString()
 					Method = 'POST'
@@ -307,14 +307,14 @@ function Connect-NinjaOne {
 				}
 				$TokenResult = Invoke-WebRequest @TokenRequestParams
 				$TokenPayload = $TokenResult.Content | ConvertFrom-Json
-				Write-Verbose ('Token payload is {0}' -f ($TokenPayload | Format-List | Out-String))
+				Write-Verbose ('Token payload received with properties: {0}' -f (@($TokenPayload.PSObject.Properties.Name) -join ', '))
 				# Update our script-scoped NRAPIAuthenticationInformation variable with the token.
 				$Script:NRAPIAuthenticationInformation.Type = $TokenPayload.token_type
 				$Script:NRAPIAuthenticationInformation.Access = $TokenPayload.access_token
 				$Script:NRAPIAuthenticationInformation.Expires = Get-TokenExpiry -ExpiresIn $TokenPayload.expires_in
 				$Script:NRAPIAuthenticationInformation.Refresh = $TokenPayload.refresh_token
 				Write-Verbose 'Got authentication token information from NinjaOne.'
-				Write-Verbose ('Authentication information set to: {0}' -f ($Script:NRAPIAuthenticationInformation | Format-List | Out-String))
+				Write-Verbose ('Authentication information set with properties: {0}' -f (@($Script:NRAPIAuthenticationInformation.Keys) -join ', '))
 				if ($showTokens) {
 					Write-Output '================ Auth Tokens ================'
 					Write-Output $($Script:NRAPIAuthenticationInformation | Format-Table -AutoSize)

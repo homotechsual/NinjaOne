@@ -21,7 +21,7 @@ function Start-OAuthHTTPListener {
 		[int] $timeoutSeconds = 15
 	)
 	Write-Verbose 'Opening browser to authenticate.'
-	Write-Verbose ('Authentication URL: {0}' -f $openURI.ToString())
+	Write-Verbose 'Authentication URL prepared; query values omitted.'
 	$HTTP = [System.Net.HttpListener]::new()
 	$HTTP.Prefixes.Add(('http://localhost:{0}/' -f $Port))
 	$HTTP.Start()
@@ -37,7 +37,7 @@ function Start-OAuthHTTPListener {
 
 		if ($Context.Request.QueryString -and $Context.Request.QueryString['Code']) {
 			$Result.Code = $Context.Request.QueryString['Code']
-			Write-Verbose ('Authorisation code received: {0}' -f $Result.Code)
+			Write-Verbose 'Authorisation code received; value omitted.'
 			if ($null -ne $Result.Code) {
 				$Result.GotAuthorisationCode = $True
 			}

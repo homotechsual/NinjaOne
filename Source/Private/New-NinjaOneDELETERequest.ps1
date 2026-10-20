@@ -32,7 +32,7 @@ function New-NinjaOneDELETERequest {
 	Test-NinjaOneEndpointSupport -Method 'DELETE' -resource $resource -Verbose:$VerbosePreference | Out-Null
 	try {
 		if ($QSCollection) {
-			Write-Verbose ('Query string in New-NinjaOneDELETERequest contains: {0}' -f ($QSCollection | Out-String))
+			Write-Verbose ('Query string parameter names: {0}' -f (@($QSCollection.Keys) -join ', '))
 			if ($QSCollection -is [System.Collections.Specialized.NameValueCollection]) {
 				$QueryStringCollection = $QSCollection
 			} else {
@@ -45,7 +45,7 @@ function New-NinjaOneDELETERequest {
 		} else {
 			Write-Verbose 'Query string collection not present...'
 		}
-		Write-Verbose ('URI is {0}' -f $Script:NRAPIConnectionInformation.URL)
+		Write-Verbose 'Using the configured NinjaOne API URL.'
 		$RequestUri = [System.UriBuilder]$Script:NRAPIConnectionInformation.URL
 		Write-Verbose ('Path is {0}' -f $resource)
 		$RequestUri.Path = $resource
@@ -59,10 +59,10 @@ function New-NinjaOneDELETERequest {
 		if ($parseDateTime -or $Script:ParseDateTimes) {
 			$WebRequestParams.ParseDateTime = $true
 		}
-		Write-Verbose ('Building new NinjaOneRequest with params: {0}' -f ($WebRequestParams | Out-String))
+		Write-Verbose ('Building {0} request.' -f $WebRequestParams.Method)
 		try {
 			$Result = Invoke-NinjaOneRequest @WebRequestParams
-			Write-Verbose ('NinjaOne request returned {0}' -f ($Result | Out-String))
+			Write-Verbose 'NinjaOne request returned a response.'
 			# Only process object properties if Result is a PSObject or hashtable, not a scalar boolean
 			if (($Result -is [System.Management.Automation.PSCustomObject] -or $Result -is [hashtable]) -and $Result.results) {
 				return $Result.results
