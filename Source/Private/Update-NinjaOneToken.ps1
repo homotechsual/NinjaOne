@@ -40,11 +40,14 @@ function Update-NinjaOneToken {
 		if ($Script:NRAPIConnectionInformation.AuthScopes) {
 			$ReauthParams.Scopes = @($Script:NRAPIConnectionInformation.AuthScopes -split '\s+')
 		}
-		if ($Script:NRAPIConnectionInformation.UseSecretManagement -and -not [String]::IsNullOrWhiteSpace($Script:NRAPIConnectionInformation.VaultName)) {
+		if ($Script:NRAPIConnectionInformation.UseSecretManagement -and -not [String]::IsNullOrWhiteSpace($Script:NRAPIConnectionInformation.VaultName)) {
+
 			$ReauthParams.UseSecretManagement = $true
 			$ReauthParams.VaultName = $Script:NRAPIConnectionInformation.VaultName
-			if ($Script:NRAPIConnectionInformation.WriteToSecretVault) {
-				$ReauthParams.WriteToSecretVault = $true
+			if ($Script:NRAPIConnectionInformation.WriteToSecretVault) {
+
+				$ReauthParams.WriteToSecretVault = $true
+
 				if ($Script:NRAPIConnectionInformation.SecretPrefix) {
 					$ReauthParams.SecretPrefix = $Script:NRAPIConnectionInformation.SecretPrefix
 				}
@@ -53,7 +56,7 @@ function Update-NinjaOneToken {
 				}
 				if ($Script:NRAPIConnectionInformation.AuthListenerPort) {
 					$ReauthParams.Port = $Script:NRAPIConnectionInformation.AuthListenerPort
-				}
+		if ($Script:ParseDateTimes) {
 			}
 		}
 		if ($Script:NRAPIConnectionInformation.ParseDateTimes) {
