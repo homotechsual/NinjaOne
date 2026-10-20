@@ -36,7 +36,32 @@ function Update-NinjaOneToken {
 			Instance = $Script:NRAPIConnectionInformation.Instance
 			ClientId = $Script:NRAPIConnectionInformation.ClientId
 			ClientSecret = $Script:NRAPIConnectionInformation.ClientSecret
-			ShowTokens = $Script:NRAPIConnectionInformation.ShowTokens
+		}
+		if ($Script:NRAPIConnectionInformation.AuthScopes) {
+			$ReauthParams.Scopes = @($Script:NRAPIConnectionInformation.AuthScopes -split '\s+')
+		}
+		if ($Script:NRAPIConnectionInformation.UseSecretManagement) {
+			$ReauthParams.UseSecretManagement = $true
+		}
+		if ($Script:NRAPIConnectionInformation.VaultName) {
+			$ReauthParams.VaultName = $Script:NRAPIConnectionInformation.VaultName
+		}
+		if ($Script:NRAPIConnectionInformation.WriteToSecretVault) {
+			$ReauthParams.WriteToSecretVault = $true
+			if ($Script:NRAPIConnectionInformation.UseSecretManagement) {
+				if ($Script:NRAPIConnectionInformation.SecretPrefix) {
+					$ReauthParams.SecretPrefix = $Script:NRAPIConnectionInformation.SecretPrefix
+				}
+				if ($Script:NRAPIConnectionInformation.RedirectURI) {
+					$ReauthParams.RedirectURL = $Script:NRAPIConnectionInformation.RedirectURI.ToString()
+				}
+				if ($Script:NRAPIConnectionInformation.AuthListenerPort) {
+					$ReauthParams.Port = $Script:NRAPIConnectionInformation.AuthListenerPort
+				}
+			}
+		}
+		if ($Script:NRAPIConnectionInformation.ParseDateTimes) {
+			$ReauthParams.ParseDateTimes = $true
 		}
 		if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
 			$ReauthParams.UseClientAuth = $True

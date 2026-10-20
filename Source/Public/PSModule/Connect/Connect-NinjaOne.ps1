@@ -67,7 +67,7 @@ function Connect-NinjaOne {
 		[Parameter( Mandatory, ParameterSetName = 'Client Credentials' )]
 		[Parameter( Mandatory, ParameterSetName = 'Secret Vault Write' )]
 		[String]$clientSecret,
-		# The API scopes to request, if this isn't passed the scope is assumed to be "all". Pass a string or array of strings. Limited by the scopes granted to the application in NinjaOne.
+		# The API scopes to request. If omitted, defaults are selected for the authentication flow. Pass a string or array of strings, limited by the scopes granted to the application in NinjaOne.
 		[Parameter( ParameterSetName = 'Authorisation Code' )]
 		[Parameter( ParameterSetName = 'Token Authentication' )]
 		[Parameter( ParameterSetName = 'Client Credentials' )]
@@ -131,7 +131,7 @@ function Connect-NinjaOne {
 		# Run the pre-flight check.
 		Invoke-NinjaOnePreFlightCheck -SkipConnectionChecks
 		# Test for secret management module.
-		if ($useSecretManagement -or $Script:NRAPIConnectionInformation.UseSecretManagement) {
+		if ($useSecretManagement) {
 			if (-not (Get-Module -Name 'Microsoft.PowerShell.SecretManagement' -ListAvailable)) {
 				Write-Error 'Secret management module not installed, please install the module and try again.'
 				exit 1
@@ -140,7 +140,7 @@ function Connect-NinjaOne {
 				Write-Error 'No secret vaults found, please create a secret vault and try again.'
 				exit 1
 			}
-			if ($readFromSecretVault -or $Script:NRAPIConnectionInformation.ReadFromSecretVault) {
+			if ($readFromSecretVault) {
 				Write-Verbose 'Reading authentication information from secret vault.'
 				Get-NinjaOneSecrets -vaultName $vaultName -secretPrefix $secretPrefix
 			}
@@ -183,7 +183,7 @@ function Connect-NinjaOne {
 			$AuthMode = 'Client Credentials'
 		}
 		# Build a script-scoped variable to hold the connection information.
-		if ($null -eq $Script:NRAPIConnectionInformation) {
+		if ($PSBoundParameters.ContainsKey('clientId') -or $null -eq $Script:NRAPIConnectionInformation) {
 			$ConnectionInformation = @{
 				AuthMode = $AuthMode
 				URL = $URL
@@ -196,9 +196,15 @@ function Connect-NinjaOne {
 				UseSecretManagement = $useSecretManagement
 				VaultName = $vaultName
 				WriteToSecretVault = $writeToSecretVault
+				ReadFromSecretVault = $readFromSecretVault
 				SecretPrefix = $secretPrefix
+				ParseDateTimes = [bool]$parseDateTimes
 			}
 			Set-Variable -Name 'NRAPIConnectionInformation' -Value $ConnectionInformation -Visibility Private -Scope Script -Force
+			if ($PSBoundParameters.ContainsKey('clientId')) {
+				Set-Variable -Name 'NRAPIAuthenticationInformation' -Value @{} -Visibility Private -Scope Script -Force
+				$Script:ParseDateTimes = [bool]$parseDateTimes
+			}
 		}
 		if ($PSBoundParameters.ContainsKey('scopes')) {
 			$Script:NRAPIConnectionInformation.AuthScopes = $AuthScopes

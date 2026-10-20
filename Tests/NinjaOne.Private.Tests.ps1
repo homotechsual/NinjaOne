@@ -2884,35 +2884,32 @@ Describe 'Start-OAuthHTTPListener' -Skip:(!$script:CanStartOAuthListener) {
 }
 
 Describe 'Connect-NinjaOne' {
-	Context 'Scope handling' {
-		It 'should use explicitly supplied scopes when reconnecting' {
+	Context 'Connection switching' {
+		It 'should replace the active connection when reconnecting with different credentials and scopes' {
 			$module = Get-Module -Name $ModuleName
 			Pester\InModuleScope $ModuleName {
-				$script:NRAPIConnectionInformation = @{
-					AuthMode = 'Client Credentials'
-					URL = 'https://app.ninjarmm.com'
-					Instance = 'us'
-					ClientId = 'old-client-id'
-					ClientSecret = 'old-client-secret'
-					AuthScopes = 'monitoring management control'
-					RedirectURI = [System.UriBuilder]::new('http://localhost:9090')
-					UseSecretManagement = $false
-				}
-				$script:NRAPIAuthenticationInformation = @{}
-				$script:CapturedTokenRequestBody = $null
+				$script:NRAPIConnectionInformation = $null
+				$script:NRAPIAuthenticationInformation = $null
+				$script:CapturedTokenRequestBodies = @()
 
 				Pester\Mock -CommandName Invoke-NinjaOnePreFlightCheck -MockWith {}
 				Pester\Mock -CommandName Invoke-WebRequest -MockWith {
-					$script:CapturedTokenRequestBody = $Body
+					$script:CapturedTokenRequestBodies += $Body
 					[pscustomobject]@{
 						Content = '{"token_type":"Bearer","access_token":"test-access-token","expires_in":3600,"refresh_token":"test-refresh-token"}'
 					}
 				}
 
+				Connect-NinjaOne -Instance 'us' -ClientId 'first-client-id' -ClientSecret 'first-client-secret' -UseClientAuth -Scopes @('monitoring', 'management')
 				Connect-NinjaOne -Instance 'us' -ClientId 'new-client-id' -ClientSecret 'new-client-secret' -UseClientAuth -Scopes @('monitoring', 'offline_access')
 
+				$script:NRAPIConnectionInformation.ClientId | Pester\Should -Be 'new-client-id'
+				$script:NRAPIConnectionInformation.ClientSecret | Pester\Should -Be 'new-client-secret'
 				$script:NRAPIConnectionInformation.AuthScopes | Pester\Should -Be 'monitoring offline_access'
-				$script:CapturedTokenRequestBody.scope | Pester\Should -Be 'monitoring offline_access'
+				$script:CapturedTokenRequestBodies.Count | Pester\Should -Be 2
+				$script:CapturedTokenRequestBodies[1].client_id | Pester\Should -Be 'new-client-id'
+				$script:CapturedTokenRequestBodies[1].client_secret | Pester\Should -Be 'new-client-secret'
+				$script:CapturedTokenRequestBodies[1].scope | Pester\Should -Be 'monitoring offline_access'
 			}
 		}
 	}
@@ -2927,6 +2924,7 @@ Describe 'Update-NinjaOneToken' {
 				Instance = 'us'
 				ClientId = 'test-id'
 				ClientSecret = 'test-secret'
+				AuthScopes = 'monitoring offline_access'
 				UseSecretManagement = $false
 				WriteToSecretVault = $false
 				VaultName = 'TestVault'
@@ -2979,6 +2977,9 @@ Describe 'Update-NinjaOneToken' {
 				$script:CapturedReauthParams.ContainsKey('UseSecretManagement') | Pester\Should -BeFalse
 				$script:CapturedReauthParams.ContainsKey('VaultName') | Pester\Should -BeFalse
 				$script:CapturedReauthParams.ContainsKey('WriteToSecretVault') | Pester\Should -BeFalse
+			}
+			Pester\Should-Invoke -CommandName Connect-NinjaOne -ModuleName $ModuleName -Times 1 -ParameterFilter {
+				($Scopes -join ' ') -eq 'monitoring offline_access'
 			}
 		}
 
