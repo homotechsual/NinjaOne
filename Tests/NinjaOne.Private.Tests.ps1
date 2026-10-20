@@ -2912,6 +2912,43 @@ Describe 'Connect-NinjaOne' {
 				$script:CapturedTokenRequestBodies[1].scope | Pester\Should -Be 'monitoring offline_access'
 			}
 		}
+
+		It 'should preserve the active connection when token acquisition fails' {
+			$module = Get-Module -Name $ModuleName
+			Pester\InModuleScope $ModuleName {
+				$script:NRAPIConnectionInformation = @{
+					AuthMode = 'Client Credentials'
+					Instance = 'us'
+					ClientId = 'existing-client-id'
+					ClientSecret = 'existing-client-secret'
+					ParseDateTimes = $true
+				}
+				$script:NRAPIAuthenticationInformation = @{
+					Type = 'Bearer'
+					Access = 'existing-access-token'
+					Expires = [DateTime]::UtcNow.AddHours(1)
+					Refresh = 'existing-refresh-token'
+				}
+				$script:ParseDateTimes = $true
+
+				Pester\Mock -CommandName Invoke-NinjaOnePreFlightCheck -MockWith {}
+				Pester\Mock -CommandName Invoke-WebRequest -MockWith {
+					throw 'Token request failed.'
+				}
+
+				{
+					Connect-NinjaOne -Instance 'us' -ClientId 'new-client-id' -ClientSecret 'new-client-secret' -UseClientAuth
+				} | Pester\Should -Throw
+
+				$script:NRAPIConnectionInformation.ClientId | Pester\Should -Be 'existing-client-id'
+				$script:NRAPIConnectionInformation.ClientSecret | Pester\Should -Be 'existing-client-secret'
+				$script:NRAPIConnectionInformation.ParseDateTimes | Pester\Should -BeTrue
+				$script:NRAPIAuthenticationInformation.Access | Pester\Should -Be 'existing-access-token'
+				$script:NRAPIAuthenticationInformation.Expires | Pester\Should -BeGreaterThan ([DateTime]::UtcNow)
+				$script:NRAPIAuthenticationInformation.Refresh | Pester\Should -Be 'existing-refresh-token'
+				$script:ParseDateTimes | Pester\Should -BeTrue
+			}
+		}
 	}
 }
 

@@ -130,6 +130,9 @@ function Connect-NinjaOne {
 	process {
 		# Run the pre-flight check.
 		Invoke-NinjaOnePreFlightCheck -SkipConnectionChecks
+		$PreviousConnectionInformation = $Script:NRAPIConnectionInformation
+		$PreviousAuthenticationInformation = $Script:NRAPIAuthenticationInformation
+		$PreviousParseDateTimes = $Script:ParseDateTimes
 		# Test for secret management module.
 		if ($useSecretManagement) {
 			if (-not (Get-Module -Name 'Microsoft.PowerShell.SecretManagement' -ListAvailable)) {
@@ -330,6 +333,9 @@ function Connect-NinjaOne {
 					Write-Output '       SAVE THESE IN A SECURE LOCATION       '
 				}
 			} catch {
+				$Script:NRAPIConnectionInformation = $PreviousConnectionInformation
+				$Script:NRAPIAuthenticationInformation = $PreviousAuthenticationInformation
+				$Script:ParseDateTimes = $PreviousParseDateTimes
 				throw
 			}
 		}
