@@ -128,7 +128,7 @@ function Set-NinjaOneSecrets {
 	foreach ($Secret in $Secrets.GetEnumerator()) {
 		Write-Verbose ('Processing secret {0} for vault storage.' -f $Secret.Key)
 		Write-Debug ('Secret {0} has type {1}.' -f $Secret.Key, $Secret.Value.GetType().Name)
-		Write-Debug ('Secret {0} has value {1}.' -f $Secret.Key, $Secret.Value.ToString())
+		Write-Debug ('Secret {0} value omitted.' -f $Secret.Key)
 		$SecretName = $Secret.Key
 		$SecretValue = $Secret.Value
 		if ([String]::IsNullOrEmpty($SecretValue) -or ($null -eq $SecretValue)) {

@@ -110,7 +110,7 @@ function Invoke-NinjaOneDeviceScript {
 				}
 				if ($ScriptOrAction.Count -gt 1) {
 					Write-Warning ('More than one {0} matched for device {1}.' -f $prettyAction, $Device.SystemName)
-					Write-Verbose ('Raw {0} options: {1}' -f $prettyAction, ($ScriptOrAction | Out-String))
+					Write-Verbose ('Multiple {0} options matched; option values omitted.' -f $prettyAction)
 				}
 				if ($ScriptOrAction) {
 					Write-Verbose ('Running {0} {1} on device {2}.' -f $prettyAction, $ScriptOrAction.Name, $Device.SystemName)
@@ -128,7 +128,7 @@ function Invoke-NinjaOneDeviceScript {
 					if ($parameters) {
 						$RunRequest.parameters = $parameters
 					}
-					Write-Verbose ('Raw run request: {0}' -f ($RunRequest | Out-String))
+					Write-Verbose 'Run request values omitted.'
 				} else {
 					if ($scriptId) {
 						throw ('Script with id {0} not found for device {1}.' -f $scriptId, $Device.SystemName)
@@ -155,7 +155,6 @@ function Invoke-NinjaOneDeviceScript {
 		}
 	}
 }
-
 
 
 

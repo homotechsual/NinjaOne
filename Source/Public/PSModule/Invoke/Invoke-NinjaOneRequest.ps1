@@ -70,7 +70,7 @@ function Invoke-NinjaOneRequest {
 				Uri = $uri
 			}
 			if ($body) {
-				Write-Verbose ('Body is {0}' -f ($body | Out-String))
+				Write-Verbose 'Request body values omitted.'
 				$WebRequestParams.Add('Body', $body)
 			} else {
 				Write-Verbose 'No body present.'
@@ -78,7 +78,7 @@ function Invoke-NinjaOneRequest {
 			if ($PSVersionTable.PSVersion.Major -eq 5) {
 				$WebRequestParams.UseBasicParsing = $true
 			}
-			Write-Verbose ('Making a {0} request to {1}' -f $WebRequestParams.Method, $WebRequestParams.Uri)
+			Write-Verbose ('Making a {0} request.' -f $WebRequestParams.Method)
 			$Attempt = 0
 			$Response = $null
 			do {
@@ -104,15 +104,8 @@ function Invoke-NinjaOneRequest {
 				throw ('NinjaOne API returned an HTML response for the {0} request: {1}' -f $method, $ResponsePreview)
 			}
 			Write-Verbose ('Response status code: {0}' -f $Response.StatusCode)
-			Write-Verbose ('Response headers: {0}' -f ($Response.Headers | Out-String))
-			Write-Verbose ('Raw response: {0}' -f ($Response | Out-String))
 			if ($Response.Content) {
-				$ResponseContent = $Response.Content
-			} else {
-				$ResponseContent = 'No content'
-			}
-			if ($Response.Content) {
-				Write-Verbose ('Response content: {0}' -f ($ResponseContent | Out-String))
+				Write-Verbose 'Response content received; values omitted.'
 			} else {
 				Write-Verbose 'No response content.'
 			}
