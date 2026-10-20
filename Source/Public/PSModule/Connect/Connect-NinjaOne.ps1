@@ -200,6 +200,9 @@ function Connect-NinjaOne {
 			}
 			Set-Variable -Name 'NRAPIConnectionInformation' -Value $ConnectionInformation -Visibility Private -Scope Script -Force
 		}
+		if ($PSBoundParameters.ContainsKey('scopes')) {
+			$Script:NRAPIConnectionInformation.AuthScopes = $AuthScopes
+		}
 		# Set the ParseDateTimes module variable based on the parameter
 		if ($parseDateTimes) {
 			$Script:ParseDateTimes = $true

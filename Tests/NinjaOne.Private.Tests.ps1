@@ -2883,6 +2883,41 @@ Describe 'Start-OAuthHTTPListener' -Skip:(!$script:CanStartOAuthListener) {
 	}
 }
 
+Describe 'Connect-NinjaOne' {
+	Context 'Scope handling' {
+		It 'should use explicitly supplied scopes when reconnecting' {
+			$module = Get-Module -Name $ModuleName
+			Pester\InModuleScope $ModuleName {
+				$script:NRAPIConnectionInformation = @{
+					AuthMode = 'Client Credentials'
+					URL = 'https://app.ninjarmm.com'
+					Instance = 'us'
+					ClientId = 'old-client-id'
+					ClientSecret = 'old-client-secret'
+					AuthScopes = 'monitoring management control'
+					RedirectURI = [System.UriBuilder]::new('http://localhost:9090')
+					UseSecretManagement = $false
+				}
+				$script:NRAPIAuthenticationInformation = @{}
+				$script:CapturedTokenRequestBody = $null
+
+				Pester\Mock -CommandName Invoke-NinjaOnePreFlightCheck -MockWith {}
+				Pester\Mock -CommandName Invoke-WebRequest -MockWith {
+					$script:CapturedTokenRequestBody = $Body
+					[pscustomobject]@{
+						Content = '{"token_type":"Bearer","access_token":"test-access-token","expires_in":3600,"refresh_token":"test-refresh-token"}'
+					}
+				}
+
+				Connect-NinjaOne -Instance 'us' -ClientId 'new-client-id' -ClientSecret 'new-client-secret' -UseClientAuth -Scopes @('monitoring', 'offline_access')
+
+				$script:NRAPIConnectionInformation.AuthScopes | Pester\Should -Be 'monitoring offline_access'
+				$script:CapturedTokenRequestBody.scope | Pester\Should -Be 'monitoring offline_access'
+			}
+		}
+	}
+}
+
 Describe 'Update-NinjaOneToken' {
 	BeforeEach {
 		$module = Get-Module -Name $ModuleName
