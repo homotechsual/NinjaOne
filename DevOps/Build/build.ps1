@@ -496,17 +496,13 @@ function UpdateManifest {
 		Updates the PowerShell module manifest file with version information and release notes
 		extracted from the CHANGELOG.md file.
 	.NOTES
-		Requires PlatyPS module for parsing changelog versions.
 		Throws an error if no new version is found in CHANGELOG.md.
 	#>
-	# Import PlatyPS. Needed for parsing the versions in the Changelog.
-	Import-Module -Name PlatyPS
-	# Find Latest Version in Change log.
-	$CHANGELOG = Get-Content -Path "$($RepoRoot)\CHANGELOG.md"
-	$MarkdownObject = [Markdown.MAML.Parser.MarkdownParser]::new()
-	[regex]$Regex = '\d\.\d\.\d'
-	$Versions = $Regex.Matches($MarkdownObject.ParseString($CHANGELOG).Children.Spans.Text) | ForEach-Object { $_.Value }
-	$ChangeLogVersion = ($Versions | Measure-Object -Maximum).Maximum
+	# Find the latest release heading in the changelog using semantic version ordering.
+	$CHANGELOG = Get-Content -Path "$($RepoRoot)\CHANGELOG.md" -Raw
+	[regex]$Regex = '(?m)^## \d{4}-\d{2}-\d{2} - Version (?<version>\d+\.\d+\.\d+)\s*$'
+	$Versions = $Regex.Matches($CHANGELOG) | ForEach-Object { [System.Version]::Parse($_.Groups['version'].Value) }
+	$ChangeLogVersion = $Versions | Sort-Object -Descending | Select-Object -First 1
 	$ManifestPath = Join-Path -Path $RepoRoot -ChildPath (Join-Path -Path 'Source' -ChildPath "$Script:ModuleName.psd1")
 	# Read the manifest as a hashtable to determine the current version
 	$Manifest = Import-PowerShellDataFile -Path $ManifestPath
@@ -517,10 +513,12 @@ function UpdateManifest {
 	}
 	Write-Output -InputObject ("Current Module Version: $($Version)")
 	Write-Output -InputObject ("New Module version: $($ChangeLogVersion)")
-	# Update Manifest file with Release Notes
-	$CHANGELOG = Get-Content -Path "$($RepoRoot)\CHANGELOG.md"
-	$MarkdownObject = [Markdown.MAML.Parser.MarkdownParser]::new()
-	$ReleaseNotes = ((($MarkdownObject.ParseString($CHANGELOG).Children.Spans.Text) -match '\d\.\d\.\d') -split ' - ')[1]
+	# Extract the latest changelog section for the module release notes.
+	$ReleaseNotesMatch = [regex]::Match($CHANGELOG, '(?ms)^## \d{4}-\d{2}-\d{2} - Version \d+\.\d+\.\d+.*?(?=^## |\z)')
+	if (-not $ReleaseNotesMatch.Success) {
+		throw 'Could not extract release notes from CHANGELOG.md.'
+	}
+	$ReleaseNotes = $ReleaseNotesMatch.Value.Trim()
 	
 	# Save original Prerelease value before Update-ModuleManifest clears it
 	$OriginalPrerelease = $Manifest.PrivateData.PSData.Prerelease

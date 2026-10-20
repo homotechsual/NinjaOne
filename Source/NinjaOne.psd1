@@ -12,7 +12,7 @@
 	RootModule = '.\NinjaOne.psm1'
 
 	# Version number of this module.
-	ModuleVersion = '2.9.0'
+	ModuleVersion = '2.10.0'
 
 	# Supported PSEditions
 	# CompatiblePSEditions = @()
@@ -312,15 +312,15 @@
 
 			# ReleaseNotes of this module
 			ReleaseNotes = @'
-## 2026-08-21 - Version 2.9.0
+## 2026-10-20 - Version 2.10.0
 
 * Additions:
-  * Add automatic pagination to `New-NinjaOneGETRequest` for `results`/`cursor` shaped responses (most `v2/queries/*` endpoints) and `activities`/`id` shaped responses (`Get-NinjaOneActivities`), so a single call now returns the full result set across multiple pages instead of stopping after the first page.
-  * Add graceful handling of NinjaOne's HTML rate-limit response (it doesn't return a `429`) in `Invoke-NinjaOneRequest`: detect the HTML payload and retry with exponential backoff before failing.
+  * Add `Get-NinjaOneDeviceGeolocationHistory`, `Get-NinjaOneGlobalKnowledgeBaseArticle`, and the `Get-NinjaOneGlobalCustomFields`/`Set-NinjaOneGlobalCustomFields` cmdlets; extend `Get-NinjaOneKnowledgeBaseArticle` to support article downloads.
 
 * Fixes:
-  * Respect an explicitly supplied `-pageSize` as an opt-out of auto-pagination, returning only the requested single page.
-  * Fix the `Get-NinjaOneActivities` pagination cursor to use the last returned activity's own `id` instead of the account-wide `lastActivityId` field, which never changes between pages and previously caused pagination to stop early.
+  * Switch accounts cleanly when `Connect-NinjaOne` is called again with new credentials, and use the requested scopes for authentication and token refresh.
+  * Omit credentials, tokens, request and response content, and other potentially sensitive values from diagnostic output.
+  * Reject HTML responses from instance version checks instead of treating them as version data.
 '@
 
 			# Prerelease string of this module
