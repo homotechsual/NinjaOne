@@ -56,7 +56,7 @@ function Update-NinjaOneToken {
 				}
 				if ($Script:NRAPIConnectionInformation.AuthListenerPort) {
 					$ReauthParams.Port = $Script:NRAPIConnectionInformation.AuthListenerPort
-		if ($Script:ParseDateTimes) {
+				}
 			}
 		}
 		if ($Script:NRAPIConnectionInformation.ParseDateTimes) {
