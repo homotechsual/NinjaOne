@@ -4,7 +4,7 @@ Please note that backwards compatibility breaks are prefixed with `{"BC"}` (shor
 
 Note: Version 2.3.0 was released in error and will be skipped.
 
-## Unreleased
+## 2026-10-22 - Version 2.10.1
 
 * Fixes:
   * {"BC"} Keep automatic GET pagination enabled when `-pageSize` is supplied; it now controls each request rather than requesting a single page.
