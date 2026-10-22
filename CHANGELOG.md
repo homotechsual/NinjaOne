@@ -10,6 +10,16 @@ Note: Version 2.3.0 was released in error and will be skipped.
   * {"BC"} Keep automatic GET pagination enabled when `-pageSize` is supplied; it now controls each request rather than requesting a single page.
   * Cap requested page sizes above 1000 at 1000 with a warning, including ticket board requests.
 
+## 2026-10-20 - Version 2.10.0
+
+* Additions:
+  * Add `Get-NinjaOneDeviceGeolocationHistory`, `Get-NinjaOneGlobalKnowledgeBaseArticle`, and the `Get-NinjaOneGlobalCustomFields`/`Set-NinjaOneGlobalCustomFields` cmdlets; extend `Get-NinjaOneKnowledgeBaseArticle` to support article downloads.
+
+* Fixes:
+  * Switch accounts cleanly when `Connect-NinjaOne` is called again with new credentials, and use the requested scopes for authentication and token refresh.
+  * Omit credentials, tokens, request and response content, and other potentially sensitive values from diagnostic output.
+  * Reject HTML responses from instance version checks instead of treating them as version data.
+
 ## 2026-08-21 - Version 2.9.0
 
 * Additions:

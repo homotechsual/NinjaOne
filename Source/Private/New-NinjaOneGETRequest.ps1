@@ -40,7 +40,7 @@ function New-NinjaOneGETRequest {
 	try {
 		$QueryStringCollection = [System.Collections.Specialized.NameValueCollection]::new()
 		if ($qSCollection) {
-			Write-Verbose ('Query string in New-NinjaOneGETRequest contains: {0}' -f ($qSCollection | Out-String))
+			Write-Verbose ('Query string parameter names: {0}' -f (@($qSCollection.Keys) -join ', '))
 			foreach ($Key in $qSCollection.Keys) {
 				$Values = @($qSCollection.GetValues($Key))
 				foreach ($Value in $Values) {
@@ -101,7 +101,7 @@ function New-NinjaOneGETRequest {
 					}
 				}
 				$RequestQueryString = if ($QueryStringPairs.Count -gt 0) { ($QueryStringPairs -join '&') } else { [String]::Empty }
-				Write-Verbose ('URI is {0}' -f $Script:NRAPIConnectionInformation.URL)
+				Write-Verbose 'Using the configured NinjaOne API URL.'
 				$RequestUri = [System.UriBuilder]$Script:NRAPIConnectionInformation.URL
 				$RequestUri.Path = $resource
 				if ($RequestQueryString) {
@@ -121,7 +121,7 @@ function New-NinjaOneGETRequest {
 					Write-Verbose 'Raw switch not present.'
 				}
 				if ($WebRequestParams) {
-					Write-Verbose ('WebRequestParams contains: {0}' -f ($WebRequestParams | Out-String))
+					Write-Verbose ('Building {0} request.' -f $WebRequestParams.Method)
 				} else {
 					Write-Verbose 'WebRequestParams is empty.'
 				}
@@ -131,7 +131,7 @@ function New-NinjaOneGETRequest {
 					$FetchNextPage = $false
 					break
 				}
-				Write-Verbose ('NinjaOne request returned:: {0}' -f ($Result | Out-String))
+				Write-Verbose 'NinjaOne request returned a response.'
 				if ($raw) {
 					# Raw responses are returned as-is, on the first page, without pagination.
 					return $Result

@@ -2400,6 +2400,25 @@ Describe 'New-NinjaOneQuery' {
 				{ New-NinjaOneQuery -CommandName $CommandName -Parameters $Parameters -AsString -ErrorAction SilentlyContinue } | Pester\Should -Not -Throw
 			}
 		}
+
+		It 'should omit parameter values from verbose output' {
+			$module = Get-Module -name $ModuleName
+			Pester\InModuleScope $ModuleName {
+				$Filter = 'sensitive-filter-value'
+				$parameters = @{
+					Filter = [pscustomobject]@{
+						Name = 'Filter'
+						ParameterType = [pscustomobject]@{ Name = 'String' }
+						Aliases = @()
+					}
+				}
+				$VerbosePreference = 'Continue'
+				$verboseOutput = New-NinjaOneQuery -CommandName 'Get-Test' -Parameters $parameters -Verbose 4>&1 |
+					Where-Object { $_ -is [System.Management.Automation.VerboseRecord] } |
+					Out-String
+				$verboseOutput | Pester\Should -Not -Match 'sensitive-filter-value'
+			}
+		}
 	}
 
 	Context 'Query construction branches' {
@@ -2846,7 +2865,11 @@ Describe 'Set-NinjaOneSecrets' {
 					WriteToSecretVault = $true
 					VaultName = 'TestVault'
 				}
-				{ Set-NinjaOneSecrets @params -ErrorAction Stop } | Pester\Should -Not -Throw
+				$DebugPreference = 'Continue'
+				$debugOutput = Set-NinjaOneSecrets @params -ErrorAction Stop 5>&1 |
+					Where-Object { $_ -is [System.Management.Automation.DebugRecord] } |
+					Out-String
+				$debugOutput | Pester\Should -Not -Match 'client-secret|access-token|refresh-token'
 
 				$script:CapturedSecretWrites.Count | Pester\Should -BeGreaterThan 10
 				($script:CapturedSecretWrites | Where-Object { $_.Name -eq 'NinjaOneAuthMode' }).Count | Pester\Should -Be 1
@@ -2952,6 +2975,113 @@ Describe 'Start-OAuthHTTPListener' -Skip:(!$script:CanStartOAuthListener) {
 	}
 }
 
+Describe 'Connect-NinjaOne' {
+	Context 'Connection switching' {
+		It 'should replace the active connection when reconnecting with different credentials and scopes' {
+			$module = Get-Module -Name $ModuleName
+			Pester\InModuleScope $ModuleName {
+				$script:NRAPIConnectionInformation = $null
+				$script:NRAPIAuthenticationInformation = $null
+				$script:CapturedTokenRequestBodies = @()
+
+				Pester\Mock -CommandName Invoke-NinjaOnePreFlightCheck -MockWith {}
+				Pester\Mock -CommandName Invoke-WebRequest -MockWith {
+					$script:CapturedTokenRequestBodies += $Body
+					[pscustomobject]@{
+						Content = '{"token_type":"Bearer","access_token":"test-access-token","expires_in":3600,"refresh_token":"test-refresh-token"}'
+					}
+				}
+
+				Connect-NinjaOne -Instance 'us' -ClientId 'first-client-id' -ClientSecret 'first-client-secret' -UseClientAuth -Scopes @('monitoring', 'management')
+				Connect-NinjaOne -Instance 'us' -ClientId 'new-client-id' -ClientSecret 'new-client-secret' -UseClientAuth -Scopes @('monitoring', 'offline_access')
+
+				$script:NRAPIConnectionInformation.ClientId | Pester\Should -Be 'new-client-id'
+				$script:NRAPIConnectionInformation.ClientSecret | Pester\Should -Be 'new-client-secret'
+				$script:NRAPIConnectionInformation.AuthScopes | Pester\Should -Be 'monitoring offline_access'
+				$script:CapturedTokenRequestBodies.Count | Pester\Should -Be 2
+				$script:CapturedTokenRequestBodies[1].client_id | Pester\Should -Be 'new-client-id'
+				$script:CapturedTokenRequestBodies[1].client_secret | Pester\Should -Be 'new-client-secret'
+				$script:CapturedTokenRequestBodies[1].scope | Pester\Should -Be 'monitoring offline_access'
+			}
+		}
+
+		It 'should preserve the active connection when the OAuth listener fails' {
+			Pester\InModuleScope $ModuleName {
+				$connection = @{
+					AuthMode = 'Client Credentials'
+					Instance = 'us'
+					ClientId = 'existing-client-id'
+					ClientSecret = 'existing-client-secret'
+					ParseDateTimes = $true
+				}
+				$authentication = @{
+					Type = 'Bearer'
+					Access = 'existing-access-token'
+					Expires = [DateTime]::UtcNow.AddHours(1)
+					Refresh = 'existing-refresh-token'
+				}
+				$script:NRAPIConnectionInformation = $connection
+				$script:NRAPIAuthenticationInformation = $authentication
+				$script:ParseDateTimes = $true
+
+				Pester\Mock -CommandName Invoke-NinjaOnePreFlightCheck -MockWith {}
+				Pester\Mock -CommandName Start-OAuthHTTPListener -MockWith {
+					throw 'Callback port is occupied.'
+				}
+				Pester\Mock -CommandName Invoke-WebRequest -MockWith {}
+
+				{
+					Connect-NinjaOne -Instance 'us' -ClientId 'new-client-id' -ClientSecret 'new-client-secret' -UseWebAuth
+				} | Pester\Should -Throw
+
+				[object]::ReferenceEquals($script:NRAPIConnectionInformation, $connection) | Pester\Should -BeTrue
+				[object]::ReferenceEquals($script:NRAPIAuthenticationInformation, $authentication) | Pester\Should -BeTrue
+				$script:NRAPIAuthenticationInformation.Access | Pester\Should -Be 'existing-access-token'
+				$script:ParseDateTimes | Pester\Should -BeTrue
+				Pester\Should-Invoke -CommandName Start-OAuthHTTPListener -Times 1 -Exactly
+				Pester\Should-Invoke -CommandName Invoke-WebRequest -Times 0 -Exactly
+			}
+		}
+
+		It 'should preserve the active connection when token acquisition fails' {
+			$module = Get-Module -Name $ModuleName
+			Pester\InModuleScope $ModuleName {
+				$script:NRAPIConnectionInformation = @{
+					AuthMode = 'Client Credentials'
+					Instance = 'us'
+					ClientId = 'existing-client-id'
+					ClientSecret = 'existing-client-secret'
+					ParseDateTimes = $true
+				}
+				$script:NRAPIAuthenticationInformation = @{
+					Type = 'Bearer'
+					Access = 'existing-access-token'
+					Expires = [DateTime]::UtcNow.AddHours(1)
+					Refresh = 'existing-refresh-token'
+				}
+				$script:ParseDateTimes = $true
+
+				Pester\Mock -CommandName Invoke-NinjaOnePreFlightCheck -MockWith {}
+				Pester\Mock -CommandName Invoke-WebRequest -MockWith {
+					throw 'Token request failed.'
+				}
+
+				{
+					Connect-NinjaOne -Instance 'us' -ClientId 'new-client-id' -ClientSecret 'new-client-secret' -UseClientAuth
+				} | Pester\Should -Throw
+
+				$script:NRAPIConnectionInformation.ClientId | Pester\Should -Be 'existing-client-id'
+				$script:NRAPIConnectionInformation.ClientSecret | Pester\Should -Be 'existing-client-secret'
+				$script:NRAPIConnectionInformation.ParseDateTimes | Pester\Should -BeTrue
+				$script:NRAPIAuthenticationInformation.Access | Pester\Should -Be 'existing-access-token'
+				$script:NRAPIAuthenticationInformation.Expires | Pester\Should -BeGreaterThan ([DateTime]::UtcNow)
+				$script:NRAPIAuthenticationInformation.Refresh | Pester\Should -Be 'existing-refresh-token'
+				$script:ParseDateTimes | Pester\Should -BeTrue
+			}
+		}
+	}
+}
+
 Describe 'Update-NinjaOneToken' {
 	BeforeEach {
 		$module = Get-Module -Name $ModuleName
@@ -2961,6 +3091,7 @@ Describe 'Update-NinjaOneToken' {
 				Instance = 'us'
 				ClientId = 'test-id'
 				ClientSecret = 'test-secret'
+				AuthScopes = 'monitoring offline_access'
 				UseSecretManagement = $false
 				WriteToSecretVault = $false
 				VaultName = 'TestVault'
@@ -3013,6 +3144,9 @@ Describe 'Update-NinjaOneToken' {
 				$script:CapturedReauthParams.ContainsKey('UseSecretManagement') | Pester\Should -BeFalse
 				$script:CapturedReauthParams.ContainsKey('VaultName') | Pester\Should -BeFalse
 				$script:CapturedReauthParams.ContainsKey('WriteToSecretVault') | Pester\Should -BeFalse
+			}
+			Pester\Should-Invoke -CommandName Connect-NinjaOne -ModuleName $ModuleName -Times 1 -ParameterFilter {
+				($Scopes -join ' ') -eq 'monitoring offline_access'
 			}
 		}
 

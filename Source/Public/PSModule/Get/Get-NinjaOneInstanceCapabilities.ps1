@@ -4,6 +4,8 @@ function Get-NinjaOneInstanceCapabilities {
 			Gets API capability information for a NinjaOne instance.
 		.DESCRIPTION
 			Downloads the instance app version and OpenAPI spec, then reports supported endpoints.
+			AppVersion is null and a warning is emitted if the version response is unavailable
+			or invalid, including HTML responses. Endpoint discovery still proceeds.
 		.FUNCTIONALITY
 			Tooling
 		.EXAMPLE

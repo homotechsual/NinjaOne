@@ -36,7 +36,31 @@ function Update-NinjaOneToken {
 			Instance = $Script:NRAPIConnectionInformation.Instance
 			ClientId = $Script:NRAPIConnectionInformation.ClientId
 			ClientSecret = $Script:NRAPIConnectionInformation.ClientSecret
-			ShowTokens = $Script:NRAPIConnectionInformation.ShowTokens
+		}
+		if ($Script:NRAPIConnectionInformation.AuthScopes) {
+			$ReauthParams.Scopes = @($Script:NRAPIConnectionInformation.AuthScopes -split '\s+')
+		}
+		if ($Script:NRAPIConnectionInformation.UseSecretManagement -and -not [String]::IsNullOrWhiteSpace($Script:NRAPIConnectionInformation.VaultName)) {
+
+			$ReauthParams.UseSecretManagement = $true
+			$ReauthParams.VaultName = $Script:NRAPIConnectionInformation.VaultName
+			if ($Script:NRAPIConnectionInformation.WriteToSecretVault) {
+
+				$ReauthParams.WriteToSecretVault = $true
+
+				if ($Script:NRAPIConnectionInformation.SecretPrefix) {
+					$ReauthParams.SecretPrefix = $Script:NRAPIConnectionInformation.SecretPrefix
+				}
+				if ($Script:NRAPIConnectionInformation.RedirectURI) {
+					$ReauthParams.RedirectURL = $Script:NRAPIConnectionInformation.RedirectURI.ToString()
+				}
+				if ($Script:NRAPIConnectionInformation.AuthListenerPort) {
+					$ReauthParams.Port = $Script:NRAPIConnectionInformation.AuthListenerPort
+				}
+			}
+		}
+		if ($Script:NRAPIConnectionInformation.ParseDateTimes) {
+			$ReauthParams.ParseDateTimes = $true
 		}
 		if ($Script:NRAPIConnectionInformation.AuthMode -eq 'Client Credentials') {
 			$ReauthParams.UseClientAuth = $True
@@ -53,7 +77,7 @@ function Update-NinjaOneToken {
 		}
 		Connect-NinjaOne @ReauthParams
 		Write-Verbose 'Refreshed authentication token information from NinjaOne.'
-		Write-Verbose ('Authentication information now set to: {0}' -f ($Script:NRAPIAuthenticationInformation | Out-String -Width 2048))
+		Write-Verbose ('Authentication information refreshed with properties: {0}' -f (@($Script:NRAPIAuthenticationInformation.Keys) -join ', '))
 	} catch {
 		New-NinjaOneError $_
 	}

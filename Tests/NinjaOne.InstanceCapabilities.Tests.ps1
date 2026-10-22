@@ -153,6 +153,80 @@ paths:
     }
 }
 
+Describe 'Instance app version validation' -Tags 'Module' {
+	BeforeEach {
+		Pester\InModuleScope -ModuleName $ModuleName {
+			$Script:NRAPIInstanceCapabilities.Clear()
+			Pester\Mock -CommandName Write-Warning -MockWith {}
+			Pester\Mock -CommandName Invoke-WebRequest -ParameterFilter { $Uri -like '*NinjaRMM-API-v2.yaml' } -MockWith {
+				[pscustomobject]@{ Content = "openapi: 3.0.1`npaths:`n  /v2/device:`n    get: {}" }
+			}
+		}
+	}
+
+	It 'accepts a trimmed version and prerelease suffix' {
+		Pester\InModuleScope -ModuleName $ModuleName {
+			Pester\Mock -CommandName Invoke-WebRequest -ParameterFilter { $Uri -like '*app-version.txt' } -MockWith {
+				[pscustomobject]@{ Content = "  8.4.0-f`n" }
+			}
+			$result = Get-NinjaOneInstanceCapabilitiesInternal -baseUrl 'https://fed.ninjarmm.com'
+			$result.Version | Pester\Should -Be '8.4.0-f'
+			Pester\Should-Invoke -CommandName Write-Warning -Times 0
+		}
+	}
+
+	It 'accepts UTF-8 byte responses' {
+		Pester\InModuleScope -ModuleName $ModuleName {
+			Pester\Mock -CommandName Invoke-WebRequest -ParameterFilter { $Uri -like '*app-version.txt' } -MockWith {
+				[pscustomobject]@{ Content = [System.Text.Encoding]::UTF8.GetBytes("12.0.20`n") }
+			}
+			$result = Get-NinjaOneInstanceCapabilitiesInternal -baseUrl 'https://eu.ninjarmm.com'
+			$result.Version | Pester\Should -Be '12.0.20'
+		}
+	}
+
+	It 'rejects <Name> without caching or reporting the response as a version' -ForEach @(
+		@{ Name = 'HTML'; Content = '<!doctype html><html><body>Sign in</body></html>' }
+		@{ Name = 'an empty response'; Content = '' }
+		@{ Name = 'arbitrary text'; Content = 'Service unavailable' }
+		@{ Name = 'embedded markup'; Content = '12.0.20<script>test</script>' }
+	) {
+		Pester\InModuleScope -ModuleName $ModuleName -Parameters @{ Content = $Content } {
+			param($Content)
+			Pester\Mock -CommandName Invoke-WebRequest -ParameterFilter { $Uri -like '*app-version.txt' } -MockWith {
+				[pscustomobject]@{ Content = $Content }
+			}
+			$result = Get-NinjaOneInstanceCapabilities -baseUrl 'https://eu.ninjarmm.com' -includePaths
+			$result.AppVersion | Pester\Should -BeNullOrEmpty
+			$result.Paths.Keys | Pester\Should -Contain '/v2/device'
+			$Script:NRAPIInstanceCapabilities['https://eu.ninjarmm.com'].Version | Pester\Should -BeNullOrEmpty
+			Pester\Should-Invoke -CommandName Write-Warning -Times 1 -ParameterFilter {
+				$Message -like '*invalid app version*' -and $Message -notlike '*<html*' -and $Message -notlike '*<script*'
+			}
+		}
+	}
+
+	It 'warns on version request failure and still discovers endpoints' {
+		Pester\InModuleScope -ModuleName $ModuleName {
+			Pester\Mock -CommandName Invoke-WebRequest -ParameterFilter { $Uri -like '*app-version.txt' } -MockWith {
+				throw 'version-request-failed'
+			}
+			$result = Get-NinjaOneInstanceCapabilitiesInternal -baseUrl 'https://eu.ninjarmm.com'
+			$result.Version | Pester\Should -BeNullOrEmpty
+			$result.Paths.Keys | Pester\Should -Contain '/v2/device'
+			Pester\Should-Invoke -CommandName Write-Warning -Times 1 -ParameterFilter {
+				$Message -like '*Unable to retrieve app version*version-request-failed*'
+			}
+		}
+	}
+
+	AfterAll {
+		Pester\InModuleScope -ModuleName $ModuleName {
+			$Script:NRAPIInstanceCapabilities.Clear()
+		}
+	}
+}
+
 Describe 'Get-NinjaOneInstanceCapabilities -IncludeCmdlets' -Tags 'Module' {
     BeforeAll {
         $capabilities = [pscustomobject]@{

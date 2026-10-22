@@ -46,7 +46,7 @@ function New-NinjaOneError {
 			if ($ErrorDetailsIsJson) {
 				Write-Verbose 'ErrorDetails is JSON.'
 				$ErrorDetails = $errorRecord.ErrorDetails | ConvertFrom-Json
-				Write-Verbose ('Raw error details: {0}' -f ($ErrorDetails | Out-String))
+				Write-Verbose 'Error details received; content omitted.'
 				if ($null -ne $ErrorDetails) {
 					if (($null -ne $ErrorDetails.resultCode) -and ($null -ne $ErrorDetails.errorMessage)) {
 						Write-Verbose 'ErrorDetails contains resultCode and errorMessage.'
@@ -80,7 +80,7 @@ function New-NinjaOneError {
 		}
 		if (($errorRecord.Exception.Response -and $hasResponse) -or $ExceptionMessage -notlike $HTTPResponseMatchString) {
 			$Response = $errorRecord.Exception.Response
-			Write-Verbose ('Raw HTTP response: {0}' -f ($Response | Out-String))
+			Write-Verbose ('HTTP error response received with status code {0}.' -f $Response.StatusCode.value__)
 			if ($Response.StatusCode.value__ -and $Response.ReasonPhrase) {
 				$ExceptionMessage.Add(('The API returned the following HTTP error response: {0} {1}' -f $Response.StatusCode.value__, $Response.ReasonPhrase)) | Out-Null
 			} else {

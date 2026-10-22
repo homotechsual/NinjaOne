@@ -121,7 +121,8 @@ jobs:
 
           foreach ($result in $itemsNeedingAttention) {
             $bodyLines.Add(('### {0} ({1})' -f $result.Instance, $result.BaseUrl)) | Out-Null
-            $bodyLines.Add(('App version: `{0}`' -f $result.AppVersion)) | Out-Null
+            $versionLabel = if ([string]::IsNullOrWhiteSpace($result.AppVersion)) { 'unavailable' } else { $result.AppVersion }
+            $bodyLines.Add(('App version: `{0}`' -f $versionLabel)) | Out-Null
 
             if ($result.LiveEndpointWithoutCmdletCoverageCount -gt 0) {
               $bodyLines.Add('- Live endpoints without matching cmdlet coverage:') | Out-Null
