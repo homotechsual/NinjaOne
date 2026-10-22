@@ -4,8 +4,9 @@ function New-NinjaOneGETRequest {
 			Builds a request for the NinjaOne API.
 		.DESCRIPTION
 			Wrapper function to build web requests for the NinjaOne API. Automatically pages through
-			multi-page responses (activity and cursor style pagination) and returns the combined result set,
-			unless the caller explicitly supplied a `pageSize`, in which case only the requested page is returned.
+			multi-page responses (activity, cursor, after, and anchor style pagination) and returns the combined
+			result set. An explicit `pageSize` controls each page, not the total number of results, and values
+			above 1000 are capped at 1000 with a warning. Raw responses are returned without pagination.
 		.EXAMPLE
 			Make a GET request to the organisations endpoint.
 
@@ -49,10 +50,12 @@ function New-NinjaOneGETRequest {
 		} else {
 			Write-Verbose 'Query string collection not present...'
 		}
+		if ($QueryStringCollection['pageSize'] -and [Int]$QueryStringCollection['pageSize'] -gt 1000) {
+			Write-Warning ('Requested pageSize {0} exceeds the supported maximum of 1000; using 1000.' -f $QueryStringCollection['pageSize'])
+			$QueryStringCollection.Set('pageSize', '1000')
+		}
 		try {
 			# Aggregates pages for 'results'/'activities' shaped responses; cursor state tracked across iterations to detect the last page.
-			# A user-supplied 'pageSize' is an explicit request for a single page, so auto-pagination is skipped in that case.
-			$UserRequestedPageSize = [Bool]($QueryStringCollection -and $QueryStringCollection['pageSize'])
 			$PageResults = [System.Collections.Generic.List[Object]]::new()
 			$ResponseShape = $null
 			$AccountLastActivityId = $null
@@ -160,7 +163,7 @@ function New-NinjaOneGETRequest {
 							$AccountLastNodeActivityId = $Result.lastNodeActivityId
 						}
 						$NextOlderThan = ($Page | Select-Object -Last 1).id
-						if ((-not $UserRequestedPageSize) -and $Page.Count -gt 0 -and $NextOlderThan -and ($NextOlderThan -ne $OlderThanCursor)) {
+						if ($Page.Count -gt 0 -and $NextOlderThan -and ($NextOlderThan -ne $OlderThanCursor)) {
 							$OlderThanCursor = $NextOlderThan
 						} else {
 							$FetchNextPage = $false
@@ -171,7 +174,7 @@ function New-NinjaOneGETRequest {
 						$Page = @($Result.results)
 						$PageResults.AddRange($Page)
 						$NextCursor = $Result.cursor.name
-						if ((-not $UserRequestedPageSize) -and $Page.Count -gt 0 -and $NextCursor -and ($NextCursor -ne $Cursor)) {
+						if ($Page.Count -gt 0 -and $NextCursor -and ($NextCursor -ne $Cursor)) {
 							$Cursor = $NextCursor
 						} else {
 							$FetchNextPage = $false
@@ -184,9 +187,9 @@ function New-NinjaOneGETRequest {
 						$Page = @($Result)
 						$PageResults.AddRange($Page)
 						$NextAnchor = if ($ContinuationPropertyName) { ($Page | Select-Object -Last 1).$ContinuationPropertyName }
-						if ($SupportsAfterPagination -and (-not $UserRequestedPageSize) -and $Page.Count -gt 0 -and $NextAnchor -and ($NextAnchor -ne $AfterCursor)) {
+						if ($SupportsAfterPagination -and $Page.Count -gt 0 -and $NextAnchor -and ($NextAnchor -ne $AfterCursor)) {
 							$AfterCursor = $NextAnchor
-						} elseif ($AnchorParameterName -and (-not $UserRequestedPageSize) -and $Page.Count -gt 0 -and $NextAnchor -and ($NextAnchor -ne $AnchorCursor)) {
+						} elseif ($AnchorParameterName -and $Page.Count -gt 0 -and $NextAnchor -and ($NextAnchor -ne $AnchorCursor)) {
 							$AnchorCursor = $NextAnchor
 						} else {
 							$FetchNextPage = $false

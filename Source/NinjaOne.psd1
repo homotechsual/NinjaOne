@@ -12,7 +12,7 @@
 	RootModule = '.\NinjaOne.psm1'
 
 	# Version number of this module.
-	ModuleVersion = '2.10.0'
+	ModuleVersion = '2.10.1'
 
 	# Supported PSEditions
 	# CompatiblePSEditions = @()
@@ -312,15 +312,12 @@
 
 			# ReleaseNotes of this module
 			ReleaseNotes = @'
-## 2026-10-20 - Version 2.10.0
-
-* Additions:
-  * Add `Get-NinjaOneDeviceGeolocationHistory`, `Get-NinjaOneGlobalKnowledgeBaseArticle`, and the `Get-NinjaOneGlobalCustomFields`/`Set-NinjaOneGlobalCustomFields` cmdlets; extend `Get-NinjaOneKnowledgeBaseArticle` to support article downloads.
+## 2026-10-22 - Version 2.10.1
 
 * Fixes:
-  * Switch accounts cleanly when `Connect-NinjaOne` is called again with new credentials, and use the requested scopes for authentication and token refresh.
-  * Omit credentials, tokens, request and response content, and other potentially sensitive values from diagnostic output.
-  * Reject HTML responses from instance version checks instead of treating them as version data.
+  * {"BC"} Keep automatic GET pagination enabled when `-pageSize` is supplied; it now controls each request rather than requesting a single page.
+  * Cap requested page sizes above 1000 at 1000 with a warning, including ticket board requests.
+
 '@
 
 			# Prerelease string of this module

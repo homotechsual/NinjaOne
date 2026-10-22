@@ -4,6 +4,8 @@ function Get-NinjaOneTickets {
 			Gets tickets from the NinjaOne API.
 		.DESCRIPTION
 			Retrieves tickets from the NinjaOne v2 API.
+		.PARAMETER pageSize
+			Number of results requested from the board. Values above 1000 are capped at 1000 with a warning.
 		.FUNCTIONALITY
 			Tickets
 		.EXAMPLE
@@ -94,6 +96,10 @@ function Get-NinjaOneTickets {
 				$RequestParams.Body.filters = $filters
 			}
 			if ($pageSize) {
+				if ($pageSize -gt 1000) {
+					Write-Warning ('Requested pageSize {0} exceeds the supported maximum of 1000; using 1000.' -f $pageSize)
+					$pageSize = 1000
+				}
 				$RequestParams.Body.pageSize = $pageSize
 			}
 			if ($searchCriteria) {
