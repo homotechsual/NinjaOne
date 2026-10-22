@@ -4,6 +4,12 @@ Please note that backwards compatibility breaks are prefixed with `{"BC"}` (shor
 
 Note: Version 2.3.0 was released in error and will be skipped.
 
+## Unreleased
+
+* Fixes:
+  * {"BC"} Keep automatic GET pagination enabled when `-pageSize` is supplied; it now controls each request rather than requesting a single page.
+  * Cap requested page sizes above 1000 at 1000 with a warning, including ticket board requests.
+
 ## 2026-08-21 - Version 2.9.0
 
 * Additions:

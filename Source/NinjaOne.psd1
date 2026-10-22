@@ -309,6 +309,12 @@
 
 			# ReleaseNotes of this module
 			ReleaseNotes = @'
+## Unreleased
+
+* Fixes:
+  * {"BC"} Keep automatic GET pagination enabled when `-pageSize` is supplied; it now controls each request rather than requesting a single page.
+  * Cap requested page sizes above 1000 at 1000 with a warning, including ticket board requests.
+
 ## 2026-08-21 - Version 2.9.0
 
 * Additions:

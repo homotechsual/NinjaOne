@@ -1106,22 +1106,108 @@ Describe 'Request helper functions' {
 		Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 2
 	}
 
-	It 'does not auto-paginate when an explicit pageSize is supplied' {
+	It 'auto-paginates with pageSize <Requested> using <Effective> per request' -ForEach @(
+		@{ Requested = 25; Effective = 25 }
+		@{ Requested = 1000; Effective = 1000 }
+		@{ Requested = 1001; Effective = 1000 }
+		@{ Requested = 2000; Effective = 1000 }
+		@{ Requested = [Int]::MaxValue; Effective = 1000 }
+	) {
 		Pester\Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
-			[pscustomobject]@{
-				results = @([pscustomobject]@{ id = 1 })
-				cursor = [pscustomobject]@{ name = 'cursor-1' }
+			if ($Uri -match 'cursor=cursor-1') {
+				[pscustomobject]@{
+					results = @([pscustomobject]@{ id = 2 })
+					cursor = $null
+				}
+			} else {
+				[pscustomobject]@{
+					results = @([pscustomobject]@{ id = 1 })
+					cursor = [pscustomobject]@{ name = 'cursor-1' }
+				}
 			}
 		}
-		$module = Get-Module -name $ModuleName
+		Pester\InModuleScope $ModuleName -Parameters @{ Requested = $Requested; Effective = $Effective } {
+			$qs = [System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+			$qs.Add('pageSize', [String]$Requested)
+			$qs.Add('df', 'org = 12')
+			$result = @(New-NinjaOneGETRequest -Resource '/v2/test' -QSCollection $qs -WarningVariable warnings -WarningAction SilentlyContinue)
+
+			$result.Count | Pester\Should -Be 2
+			$result[1].id | Pester\Should -Be 2
+			$qs['pageSize'] | Pester\Should -Be ([String]$Requested)
+			$qs['cursor'] | Pester\Should -BeNullOrEmpty
+			@($warnings).Count | Pester\Should -Be ([Int]($Requested -gt 1000))
+			Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -Times 2 -Exactly -ParameterFilter {
+				$query = [System.Web.HttpUtility]::ParseQueryString(([Uri]$Uri).Query)
+				$query['pageSize'] -eq [String]$Effective -and $query['df'] -eq 'org = 12'
+			}
+			Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -Times 1 -Exactly -ParameterFilter { $Uri -match 'cursor=cursor-1' }
+		}
+		Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 2 -Exactly
+	}
+
+	It 'returns all 1540 locations when pageSize 2000 is capped at 1000' {
+		Pester\Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+			if ($Uri -match 'after=1540') {
+				return
+			} elseif ($Uri -match 'after=1000') {
+				1001..1540 | ForEach-Object { [pscustomobject]@{ id = $_ } }
+			} else {
+				1..1000 | ForEach-Object { [pscustomobject]@{ id = $_ } }
+			}
+		}
+
+		$result = @(Get-NinjaOneLocations -pageSize 2000 -WarningVariable warnings -WarningAction SilentlyContinue)
+
+		$result.Count | Pester\Should -Be 1540
+		@($result.id | Sort-Object -Unique).Count | Pester\Should -Be 1540
+		$result[0].id | Pester\Should -Be 1
+		$result[-1].id | Pester\Should -Be 1540
+		@($warnings).Count | Pester\Should -Be 1
+		[String]$warnings[0] | Pester\Should -BeLike '*2000*1000*'
+		Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 3 -Exactly -ParameterFilter {
+			$Uri -match '/v2/locations\?' -and $Uri -match 'pageSize=1000(&|$)'
+		}
+		Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -Exactly -ParameterFilter { $Uri -match 'after=1000(&|$)' }
+		Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -Exactly -ParameterFilter { $Uri -match 'after=1540(&|$)' }
+	}
+
+	It 'pages activities with an explicit pageSize and preserves response metadata' {
+		Pester\Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+			[pscustomobject]@{
+				lastActivityId = 999
+				lastNodeActivityId = 42
+				activities = if ($Uri -match 'olderThan=19') { @() } else { @([pscustomobject]@{ id = 20 }, [pscustomobject]@{ id = 19 }) }
+			}
+		}
 		Pester\InModuleScope $ModuleName {
 			$qs = [System.Web.HttpUtility]::ParseQueryString([String]::Empty)
-			$qs.Add('pageSize', '50')
-			$result = @(New-NinjaOneGETRequest -Resource '/v2/test' -QSCollection $qs)
+			$qs.Add('pageSize', '25')
+			$result = New-NinjaOneGETRequest -Resource '/v2/device/1/activities' -QSCollection $qs
 
-			$result.Count | Pester\Should -Be 1
+			$result.activities.Count | Pester\Should -Be 2
+			$result.lastActivityId | Pester\Should -Be 999
+			$result.lastNodeActivityId | Pester\Should -Be 42
 		}
-		Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1
+		Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 2 -Exactly -ParameterFilter { $Uri -match 'pageSize=25(&|$)' }
+		Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -Exactly -ParameterFilter { $Uri -match 'olderThan=19(&|$)' }
+	}
+
+	It 'caps raw GET page sizes without enabling pagination' {
+		Pester\Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
+			[pscustomobject]@{ results = @([pscustomobject]@{ id = 1 }); cursor = [pscustomobject]@{ name = 'cursor-1' } }
+		}
+		Pester\InModuleScope $ModuleName {
+			$qs = [System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+			$qs.Add('pageSize', '2000')
+			$result = New-NinjaOneGETRequest -Resource '/v2/test' -QSCollection $qs -Raw -WarningAction SilentlyContinue
+
+			$result.cursor.name | Pester\Should -Be 'cursor-1'
+			$qs['pageSize'] | Pester\Should -Be '2000'
+		}
+		Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -Exactly -ParameterFilter {
+			$Raw -and $Uri -match 'pageSize=1000(&|$)'
+		}
 	}
 
 	It 'does not apply after pagination to non-paginated array responses' {
@@ -1157,7 +1243,7 @@ Describe 'Request helper functions' {
 		Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $Uri -match 'after=1' }
 	}
 
-	It 'pages ticketing users with the natural id anchor' {
+	It 'pages ticketing users with the natural id anchor and an explicit pageSize' {
 		Pester\Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
 			if ($Uri -match 'anchorNaturalId=10') {
 				return
@@ -1167,15 +1253,18 @@ Describe 'Request helper functions' {
 		}
 		$module = Get-Module -name $ModuleName
 		Pester\InModuleScope $ModuleName {
-			$result = @(New-NinjaOneGETRequest -Resource '/v2/ticketing/app-user-contact')
+			$qs = [System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+			$qs.Add('pageSize', '25')
+			$result = @(New-NinjaOneGETRequest -Resource '/v2/ticketing/app-user-contact' -QSCollection $qs)
 
 			$result.Count | Pester\Should -Be 1
 		}
 		Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 2
+		Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 2 -Exactly -ParameterFilter { $Uri -match 'pageSize=25(&|$)' }
 		Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $Uri -match 'anchorNaturalId=10' }
 	}
 
-	It 'pages ticket log entries with the id anchor' {
+	It 'pages ticket log entries with the id anchor and an explicit pageSize' {
 		Pester\Mock -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -MockWith {
 			if ($Uri -match 'anchorId=20') {
 				return
@@ -1185,11 +1274,14 @@ Describe 'Request helper functions' {
 		}
 		$module = Get-Module -name $ModuleName
 		Pester\InModuleScope $ModuleName {
-			$result = @(New-NinjaOneGETRequest -Resource '/v2/ticketing/ticket/1/log-entry')
+			$qs = [System.Web.HttpUtility]::ParseQueryString([String]::Empty)
+			$qs.Add('pageSize', '25')
+			$result = @(New-NinjaOneGETRequest -Resource '/v2/ticketing/ticket/1/log-entry' -QSCollection $qs)
 
 			$result.Count | Pester\Should -Be 1
 		}
 		Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 2
+		Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 2 -Exactly -ParameterFilter { $Uri -match 'pageSize=25(&|$)' }
 		Pester\Should-Invoke -CommandName Invoke-NinjaOneRequest -ModuleName $ModuleName -Times 1 -ParameterFilter { $Uri -match 'anchorId=20' }
 	}
 

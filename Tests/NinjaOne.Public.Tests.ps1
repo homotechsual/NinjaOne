@@ -659,6 +659,21 @@ Describe 'Get-NinjaOneTickets' {
 		$result[0].id | Pester\Should -Be 1
 	}
 
+	It 'caps board pageSize <Requested> at <Effective>' -ForEach @(
+		@{ Requested = 25; Effective = 25 }
+		@{ Requested = 1000; Effective = 1000 }
+		@{ Requested = 1001; Effective = 1000 }
+		@{ Requested = 2000; Effective = 1000 }
+	) {
+		$result = @(Get-NinjaOneTickets -boardId 'board-1' -pageSize $Requested -lastCursorId 'cursor-1' -WarningVariable warnings -WarningAction SilentlyContinue)
+
+		$result.Count | Pester\Should -Be 1
+		@($warnings).Count | Pester\Should -Be ([Int]($Requested -gt 1000))
+		Pester\Should-Invoke -CommandName New-NinjaOnePOSTRequest -ModuleName $ModuleName -Times 1 -Exactly -ParameterFilter {
+			$Body.pageSize -eq $Effective -and $Body.lastCursorId -eq 'cursor-1'
+		}
+	}
+
 	It 'returns the full response from Board when includeMetadata is set' {
 		$result = Get-NinjaOneTickets -boardId 'board-1' -includeMetadata
 

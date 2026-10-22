@@ -3,13 +3,20 @@ function Get-NinjaOneLocations {
 		.SYNOPSIS
 			Gets locations from the NinjaOne API.
 		.DESCRIPTION
-			Retrieves locations from the NinjaOne v2 API.
+			Retrieves locations from the NinjaOne v2 API, automatically combining pages from the global
+			locations endpoint. Page size controls each request, not the total number of locations returned.
+		.PARAMETER pageSize
+			Number of results requested per page. Values above 1000 are capped at 1000 with a warning.
 		.FUNCTIONALITY
 			Locations
 		.EXAMPLE
 			PS> Get-NinjaOneLocations
 
 			Gets all locations.
+		.EXAMPLE
+			PS> Get-NinjaOneLocations -pageSize 1000
+
+			Gets all locations using requests of up to 1000 locations per page.
 		.EXAMPLE
 			PS> Get-NinjaOneLocations -after 1
 

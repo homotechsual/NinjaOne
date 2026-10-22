@@ -16,6 +16,19 @@
 
 Use the [docs website](https://docs.homotechsual.dev/modules/ninjaone) for the most up-to-date information and a full automatically generated commandlet reference.
 
+## Pagination
+
+GET commands automatically combine pages for supported pagination endpoints, including
+global locations, devices, organisations, queries, activities, and anchored ticketing lists.
+Supplying `-pageSize` controls the size of each request; it does not limit the total results
+or disable pagination. Page sizes above 1000 are capped at 1000 with a warning, including
+ticket board requests. Smaller sizes are preserved and omitted sizes use the API default.
+Ticket board requests retain their existing single-response behavior with `-lastCursorId`;
+they are not automatically paginated.
+
+For example, `Get-NinjaOneLocations -pageSize 2000` requests pages of up to 1000 locations
+and continues until all locations have been retrieved.
+
 ## Tooling locations
 
 Common dev and build tooling lives under DevOps:
